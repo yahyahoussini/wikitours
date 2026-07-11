@@ -1,0 +1,256 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "babmakkah": "Bab Makkah",
+    "omraByMonth": "Omra par mois",
+    "omraByOccasion": "Omra par occasion",
+    "hajj": "Hajj",
+    "voyages": "Voyages",
+    "offers": "Nos offres Omra",
+    "destinations": "Destinations",
+    "about": "Qui sommes-nous",
+    "blog": "Blog",
+    "avis": "Avis",
+    "contact": "Contact"
+  },
+  "brand": {
+    "byParent": "by WIKI TOURS",
+    "footerLine": "Bab Makkah — un service premium de Wiki Tours International · Casablanca · depuis 2016",
+    "premiumService": "Le service premium Omra & Hajj de Wiki Tours"
+  },
+  "cta": {
+    "reserve": "Réserver ma place",
+    "reserveShort": "Réserver",
+    "interest": "Je suis intéressé(e)",
+    "whatsappAlt": "ou écrivez-nous sur WhatsApp",
+    "whatsappFloatLabel": "Nous écrire sur WhatsApp",
+    "discoverOffers": "Découvrir nos offres",
+    "seeAllOffers": "Voir toutes les offres",
+    "details": "Détails",
+    "callUs": "Appelez-nous",
+    "readMore": "Lire la suite"
+  },
+  "home": {
+    "metaTitle": "Wiki Tours International — Omra & Hajj depuis le Maroc",
+    "intro": "Wiki Tours International est une agence de voyages marocaine. Bab Makkah, son service premium Omra & Hajj, organise vos départs vers La Mecque et Médine avec accompagnement complet.",
+    "heroBadge": "Agence agréée · Casablanca",
+    "heroLine1": "Votre Omra, organisée",
+    "heroLine2": "comme un voyage d'exception",
+    "spiritualAccent": "Le voyage d'une vie commence par une intention.",
+    "selectorOccasion": "Occasion",
+    "selectorMonth": "Mois",
+    "selectorAll": "Toutes",
+    "selectorGo": "Voir les offres",
+    "packagesTitle": "Nos programmes Omra",
+    "whyTitle": "Pourquoi les familles nous confient leur Omra",
+    "statCommunity": "communauté en ligne",
+    "statSince": "années d'expérience",
+    "statRating": "note Google",
+    "statReviews": "avis Google",
+    "hotelsTitle": "Nos hôtels à La Mecque et Médine",
+    "stepsTitle": "Comment ça marche",
+    "step1Title": "Votre demande",
+    "step1Body": "Choisissez une offre et envoyez votre demande — sans aucun paiement en ligne.",
+    "step2Title": "Confirmation humaine",
+    "step2Body": "Notre équipe vous appelle pour confirmer dates, chambre et documents.",
+    "step3Title": "Contrat écrit",
+    "step3Body": "Signature à l'agence : contrat écrit, reçu officiel, paiement traçable.",
+    "reelsTitle": "En images",
+    "proofTitle": "Ils sont partis avec nous",
+    "googleBadge": "{rating} ★ · {count} avis Google",
+    "monthsTitle": "Omra par mois",
+    "destinationsTitle": "Nos destinations",
+    "storyTitle": "Notre histoire",
+    "guaranteesTitle": "Nos garanties",
+    "guaranteeLicense": "Agrément vérifiable",
+    "guaranteeNoOnlinePayment": "Aucun paiement en ligne",
+    "guaranteeContract": "Contrat écrit & reçu officiel",
+    "guaranteeSupport": "Accompagnement du départ au retour",
+    "blogTitle": "Guide & conseils",
+    "faqTitle": "Questions fréquentes",
+    "finalCtaLine": "Labbayk Allahumma labbayk",
+    "finalCtaSub": "Votre place pour la prochaine Omra se réserve maintenant."
+  },
+  "a11y": {
+    "prevSlide": "Diapositive précédente",
+    "nextSlide": "Diapositive suivante",
+    "goToSlide": "Aller à la diapositive",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "close": "Fermer"
+  },
+  "offer": {
+    "from": "À partir de",
+    "currency": "MAD",
+    "perPerson": "par personne",
+    "status": {
+      "open": "Places disponibles",
+      "few_left": "Dernières places",
+      "full": "Complet"
+    },
+    "duration": "{days} jours / {nights} nuits",
+    "distanceToHaram": "à {m} m du Haram",
+    "breakfastIncluded": "Petit-déjeuner inclus",
+    "pricesTitle": "Prix par personne",
+    "room": {
+      "double": "Chambre double",
+      "triple": "Chambre triple",
+      "quad": "Chambre quadruple",
+      "quint": "Chambre quintuple"
+    },
+    "datesLabel": "Dates",
+    "airlineLabel": "Compagnie aérienne",
+    "hotelsTitle": "Vos hôtels",
+    "makkah": "La Mecque",
+    "madinah": "Médine",
+    "inclusionsTitle": "Ce qui est inclus",
+    "conditionsTitle": "Conditions",
+    "depositLine": "Acompte de 50 % à la réservation — solde avant le départ, à l'agence.",
+    "programmeTitle": "Le programme",
+    "bookingTitle": "Réserver ma place",
+    "bookingArrivesTo": "Votre demande arrive directement chez {name}",
+    "reassurance": "Aucun paiement en ligne — contrat écrit et reçu officiel à l'agence.",
+    "testimonialsTitle": "Ils sont partis sur ce programme",
+    "landOnly": "Sans vol",
+    "tier": {
+      "economique": "Économique",
+      "confort": "Confort",
+      "premium": "Premium",
+      "vip": "VIP"
+    },
+    "roomShort": {
+      "double": "double",
+      "triple": "triple",
+      "quad": "quadruple",
+      "quint": "quintuple"
+    },
+    "priceInRoom": "en chambre {room}",
+    "selectedRoom": "chambre {room}",
+    "chooseRoom": "Votre chambre",
+    "availability": "Disponibilité",
+    "notIncludedTitle": "Non inclus",
+    "similarTitle": "Programmes similaires",
+    "condPassport": "Passeport valide au moins 6 mois après la date de retour",
+    "condPhoto": "Photo récente sur fond blanc",
+    "introLead": "L'Omra {name} de {lockup} part du {start} au {end}",
+    "introFlight": "vol {airline}",
+    "introHotel": "hôtel {hotel} à {m} m du Haram",
+    "introPrice": "à partir de {price} MAD par personne {room}",
+    "subnav": {
+      "overview": "Aperçu",
+      "programme": "Programme",
+      "prices": "Prix",
+      "hotels": "Hôtels",
+      "conditions": "Conditions",
+      "reviews": "Avis",
+      "reserve": "Réserver"
+    },
+    "roomColumn": "Chambre",
+    "priceColumn": "Prix"
+  },
+  "archive": {
+    "title": "Programmes Omra — Bab Makkah",
+    "answerLine": "{n} programmes Omra ouverts · dès {min} MAD · hôtels de {dmin} à {dmax} m du Haram · prochain départ le {date}",
+    "lastUpdated": "Dernière mise à jour",
+    "filterAll": "Tous",
+    "fullAtEnd": "Programmes complets",
+    "hajjTitle": "Et le Hajj ?",
+    "hajjBody": "Le Hajj est soumis à l'habilitation annuelle du Ministère des Habous. Inscrivez votre intérêt : nous vous contactons dès l'ouverture officielle.",
+    "howToTitle": "Comment réserver",
+    "linksTitle": "Explorer",
+    "surMesureTitle": "Omra sur mesure",
+    "surMesureBody": "Vos dates, votre hôtel, votre groupe — construisons votre programme."
+  },
+  "months": {
+    "pageTitle": "Omra {month} {year} depuis le Maroc",
+    "answerWithOffers": "{n} programme(s) Omra en {month} {year}, dès {min} MAD par personne.",
+    "emptyTitle": "Aucun départ publié pour {month} {year} — pour l'instant.",
+    "alertPrompt": "Laissez vos coordonnées : nous vous prévenons dès l'ouverture des inscriptions.",
+    "browseAll": "Voir tous les programmes ouverts"
+  },
+  "occasionPage": {
+    "empty": "Programme en préparation — laissez vos coordonnées pour être averti en premier.",
+    "answerWithOffers": "{n} programme(s) Omra {occasion} au départ du Maroc, dès {min} MAD par personne."
+  },
+  "cityPage": {
+    "title": "Omra depuis {city}",
+    "answer": "Bab Makkah by Wiki Tours organise votre Omra au départ du Maroc — demande en ligne, confirmation humaine, contrat écrit à l'agence de Casablanca."
+  },
+  "voyages": {
+    "title": "Nos voyages",
+    "intro": "Wiki Tours International organise vos voyages individuels, de groupe et d'entreprise.",
+    "individuels": "Voyages individuels",
+    "groupes": "Voyages de groupe",
+    "incentive": "Incentive & entreprises",
+    "askQuote": "Demander un devis"
+  },
+  "hajjPage": {
+    "title": "Hajj avec Wiki Tours",
+    "body": "L'organisation du Hajj est soumise chaque année à l'habilitation officielle du Ministère des Habous et des Affaires Islamiques. Aucune vente n'est ouverte ici : inscrivez votre intérêt et nous vous contactons dès que notre programmation est confirmée.",
+    "interestCta": "Inscrire mon intérêt"
+  },
+  "team": {
+    "encadrantsTitle": "Vos encadrants religieux — avec vous du départ au retour"
+  },
+  "pages": {
+    "avisTitle": "Avis de nos pèlerins",
+    "agrementTitle": "Notre agrément",
+    "agrementBody": "Wiki Tours International est une agence de voyages marocaine agréée. Notre numéro de licence est affiché à l'agence et vérifiable auprès du Ministère du Tourisme.",
+    "aproposTitle": "Qui sommes-nous",
+    "contactTitle": "Contact",
+    "blogTitle": "Guide & conseils",
+    "verifiedBy": "Vérifié par",
+    "publishedOn": "Publié le",
+    "updatedOn": "Mis à jour le",
+    "hoursTitle": "Horaires",
+    "addressTitle": "Adresse",
+    "phonesTitle": "Téléphones",
+    "nextDepartures": "Prochains départs depuis Casablanca",
+    "reviewsCount": "{n} avis publiés de nos pèlerins — textes, messages WhatsApp et vidéos.",
+    "leaveReview": "Laisser un avis sur Google",
+    "contactIntro": "Une question sur une Omra, le Hajj ou un voyage ? Notre équipe vous répond rapidement, en français ou en arabe.",
+    "contactFormTitle": "Envoyez-nous votre demande",
+    "findUs": "Nous trouver"
+  },
+  "agency": {
+    "title": "Agence Omra à Casablanca",
+    "metaDescription": "Wiki Tours International, agence de voyages agréée à Casablanca. Bab Makkah, son service premium Omra & Hajj : programmes, hôtels proches du Haram, contrat écrit.",
+    "identity": "Wiki Tours International est une agence de voyages agréée installée à Casablanca depuis 2016. Bab Makkah, son service premium Omra & Hajj, organise vos départs vers La Mecque et Médine — demande en ligne, confirmation humaine et contrat écrit à l'agence.",
+    "officeTitle": "Notre agence",
+    "testimonialsTitle": "Ils sont partis de Casablanca"
+  },
+  "form": {
+    "fullName": "Nom complet",
+    "city": "Ville",
+    "phone": "Téléphone",
+    "submit": "Envoyer ma demande",
+    "genericError": "Une erreur est survenue. Merci de réessayer ou de nous écrire sur WhatsApp.",
+    "success": "Merci ! Nous vous contactons très vite.",
+    "reassurance": "Aucun paiement en ligne — notre équipe vous appelle pour confirmer, puis contrat écrit à l'agence.",
+    "rateLimited": "Trop de demandes envoyées — réessayez dans quelques minutes ou écrivez-nous sur WhatsApp.",
+    "waContinue": "Continuer sur WhatsApp",
+    "waMessage": "Salam, je suis {name} ({city}). Je viens d'envoyer ma demande pour « {offer} » ({price}) et je souhaite continuer sur WhatsApp.",
+    "waMessageGeneric": "Salam, je suis {name} ({city}). Je viens d'envoyer ma demande sur votre site et je souhaite continuer sur WhatsApp."
+  },
+  "footer": {
+    "rights": "Tous droits réservés.",
+    "licenseLabel": "N° de licence",
+    "ministryMark": "Agence de voyages agréée — Ministère du Tourisme"
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "body": "La page que vous cherchez n'existe pas ou a été déplacée.",
+    "backHome": "Retour à l'accueil"
+  },
+  "consent": {
+    "text": "Nous utilisons des cookies de mesure pour améliorer nos offres et nos campagnes. Acceptez-vous ?",
+    "accept": "Accepter",
+    "decline": "Continuer sans accepter"
+  },
+  "seoTitles": {
+    "home": "Omra 2026 depuis le Maroc — Bab Makkah by Wiki Tours",
+    "babmakkah": "Omra 2026 depuis le Maroc : programmes, dates et prix | Bab Makkah by Wiki Tours",
+    "offer": "Omra {occasion} {year} : {tier} dès {price} MAD | Bab Makkah by Wiki Tours",
+    "month": "Omra {month} {year} depuis le Maroc — dates et prix | Bab Makkah"
+  }
+}

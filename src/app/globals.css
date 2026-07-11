@@ -1,26 +1,329 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+  Design system tokens — LAWS §7.
+  Wiki Tours surfaces: blue #1398C9 identity on warm white #FDFDFC.
+  Bab Makkah surfaces: black #0D0D0D → #1A1A1A + gold #D4AF37 (light #E8C766),
+  blue reserved for primary actions.
+  Exactly 3 shadows (hairline / lift / float), radii 10 / 16 / 24,
+  transitions 200–300ms cubic-bezier(0.16, 1, 0.3, 1).
+  Logical CSS properties only — flawless RTL.
+*/
+@theme {
+  /* Colors — Wiki Tours */
+  --color-wiki-blue: #1398c9;
+  --color-wiki-white: #fdfdfc;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Colors — Bab Makkah */
+  --color-bm-black: #0d0d0d;
+  --color-bm-black-soft: #1a1a1a;
+  --color-bm-gold: #d4af37;
+  --color-bm-gold-light: #e8c766;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* The only 3 shadows in the system */
+  --shadow-hairline: 0 0 0 1px rgb(13 13 13 / 0.07);
+  --shadow-lift: 0 2px 6px rgb(13 13 13 / 0.06), 0 10px 24px rgb(13 13 13 / 0.07);
+  --shadow-float: 0 12px 28px rgb(13 13 13 / 0.14), 0 28px 64px rgb(13 13 13 / 0.12);
+
+  /* The only 3 radii: controls / cards / panels */
+  --radius-ctrl: 10px;
+  --radius-card: 16px;
+  --radius-panel: 24px;
+
+  /* Motion */
+  --ease-luxe: cubic-bezier(0.16, 1, 0.3, 1);
+  --default-transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  --default-transition-duration: 250ms;
+
+  /* Type — Montserrat headings, Inter body, Playfair italic accents, Tajawal (ar) */
+  --font-heading: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-accent: var(--font-playfair), ui-serif, Georgia, serif;
+  --font-arabic: var(--font-tajawal), var(--font-inter), ui-sans-serif, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-wiki-white);
+  color: var(--color-bm-black);
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
+
+/* Arabic surfaces switch the whole type stack to Tajawal */
+html[lang="ar"] body,
+html[lang="ar"] h1,
+html[lang="ar"] h2,
+html[lang="ar"] h3,
+html[lang="ar"] h4,
+html[lang="ar"] h5,
+html[lang="ar"] h6 {
+  font-family: var(--font-arabic);
+}
+
+/* Spiritual accent lines — Playfair Display italic (Latin scripts only) */
+.accent-line {
+  font-family: var(--font-accent);
+  font-style: italic;
+}
+
+html[lang="ar"] .accent-line {
+  font-family: var(--font-arabic);
+  font-style: normal;
+}
+
+/* SmartGallery progress fill — one interval per slide, paused via inline style */
+@keyframes carousel-progress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* Hero slideshow Ken Burns drift (scale only — direction-neutral for RTL) */
+@keyframes hero-kenburns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+/* ============================================================================
+   TYPOGRAPHY TIGHTENING (craft rule A3) — same 4-font system, tighter usage.
+   ============================================================================ */
+h1,
+h2,
+h3 {
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+html[lang="ar"] h1,
+html[lang="ar"] h2,
+html[lang="ar"] h3 {
+  letter-spacing: normal; /* Arabic is never letter-spaced */
+}
+/* Fluid heading scale — one clamp ramp, no stray sizes. */
+h1 {
+  font-size: clamp(2rem, 1.4rem + 3vw, 3.25rem);
+  line-height: 1.05;
+}
+h2 {
+  font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.25rem);
+  line-height: 1.12;
+}
+/* Body rhythm + comfortable measure (prose only — utility widths still win). */
+.prose-measure,
+.accent-line {
+  max-width: 62ch;
+}
+p {
+  text-wrap: pretty;
+}
+
+/* ============================================================================
+   MOTION SYSTEM (craft rule B) — CSS-only; the shared JS utility only toggles
+   classes / sets --p. Everything below is disabled under reduced-motion.
+   ============================================================================ */
+
+/* B4 — staggered scroll-reveal. Hidden ONLY when JS is active (no-JS shows
+   content immediately); the utility sets per-item transition-delay for stagger. */
+.js-motion [data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 500ms var(--ease-luxe), transform 500ms var(--ease-luxe);
+  will-change: opacity, transform;
+}
+.js-motion [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* B5 — animated link underline growing from the start edge (RTL-safe). */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  bottom: -2px;
+  block-size: 1.5px;
+  inline-size: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: inline-start;
+  transition: transform 250ms var(--ease-luxe);
+}
+.link-underline:hover::after,
+.link-underline:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* B6 — primary CTA shine sweep (once on hover) + elastic press. */
+.cta-shine {
+  position: relative;
+  overflow: hidden;
+}
+.cta-shine::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgb(255 255 255 / 0.35) 50%,
+    transparent 70%
+  );
+  transform: translateX(-120%);
+  transition: transform 600ms var(--ease-luxe);
+  pointer-events: none;
+}
+.cta-shine:hover::before {
+  transform: translateX(120%);
+}
+[dir="rtl"] .cta-shine::before {
+  transform: translateX(120%);
+}
+[dir="rtl"] .cta-shine:hover::before {
+  transform: translateX(-120%);
+}
+.cta-press:active {
+  transform: scale(0.97);
+}
+
+/* B9 — extremely subtle animated gold shimmer on Bab Makkah H2s + prices.
+   Self-contained (horizontal 2-stop gold) so the position drift is visible and
+   overrides any vertical Tailwind gradient it sits on. */
+.gold-shimmer {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-bm-gold-light),
+    var(--color-bm-gold) 50%,
+    var(--color-bm-gold-light)
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: gold-shimmer 6s ease-in-out infinite;
+}
+@keyframes gold-shimmer {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* B12 — scroll progress hairline (2px gold), driven by --p from the utility. */
+.scroll-progress {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 2px;
+  z-index: 60;
+  transform: scaleX(var(--p, 0));
+  transform-origin: inline-start;
+  background: linear-gradient(90deg, var(--color-bm-gold), var(--color-bm-gold-light));
+  will-change: transform;
+}
+
+/* B13 — pure-CSS infinite marquee of trust marks; pauses on hover. */
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee__track {
+  display: inline-flex;
+  gap: 4rem;
+  white-space: nowrap;
+  animation: marquee 30s linear infinite;
+}
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js-motion [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .gold-shimmer {
+    animation: none;
+  }
+  .marquee__track {
+    animation: none;
+  }
+  .cta-shine::before {
+    display: none;
+  }
+  .scroll-progress {
+    display: none;
+  }
+}
+
+/*
+  Room-type sync (offer page) — the selector only flips data-selected-room on
+  the page wrapper; CSS shows the matching server-rendered price span and
+  highlights the matching table row. Everything stays in the served HTML and
+  the default (cheapest room) is rendered server-side, so no-JS still works.
+*/
+[data-selected-room] [data-room-price] {
+  display: none;
+}
+[data-selected-room="double"] [data-room-price="double"],
+[data-selected-room="triple"] [data-room-price="triple"],
+[data-selected-room="quad"] [data-room-price="quad"],
+[data-selected-room="quint"] [data-room-price="quint"] {
+  display: inline;
+}
+[data-selected-room="double"] [data-room-row="double"],
+[data-selected-room="triple"] [data-room-row="triple"],
+[data-selected-room="quad"] [data-room-row="quad"],
+[data-selected-room="quint"] [data-room-row="quint"] {
+  background: rgb(212 175 55 / 0.12);
+  box-shadow: inset 3px 0 0 0 var(--color-bm-gold);
+}
+[dir="rtl"] [data-selected-room="double"] [data-room-row="double"],
+[dir="rtl"] [data-selected-room="triple"] [data-room-row="triple"],
+[dir="rtl"] [data-selected-room="quad"] [data-room-row="quad"],
+[dir="rtl"] [data-selected-room="quint"] [data-room-row="quint"] {
+  box-shadow: inset -3px 0 0 0 var(--color-bm-gold);
+}
+
+/* Floating WhatsApp pulse ring */
+@keyframes wa-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(37 211 102 / 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 14px rgb(37 211 102 / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(37 211 102 / 0);
+  }
 }

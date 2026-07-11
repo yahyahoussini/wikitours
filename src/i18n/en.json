@@ -1,0 +1,256 @@
+{
+  "nav": {
+    "home": "Home",
+    "babmakkah": "Bab Makkah",
+    "omraByMonth": "Umrah by month",
+    "omraByOccasion": "Umrah by occasion",
+    "hajj": "Hajj",
+    "voyages": "Travel",
+    "offers": "Umrah offers",
+    "destinations": "Destinations",
+    "about": "About us",
+    "blog": "Blog",
+    "avis": "Reviews",
+    "contact": "Contact"
+  },
+  "brand": {
+    "byParent": "by WIKI TOURS",
+    "footerLine": "Bab Makkah — a premium service by Wiki Tours International · Casablanca · since 2016",
+    "premiumService": "Wiki Tours' premium Umrah & Hajj service"
+  },
+  "cta": {
+    "reserve": "Reserve my place",
+    "reserveShort": "Reserve",
+    "interest": "I'm interested",
+    "whatsappAlt": "or write to us on WhatsApp",
+    "whatsappFloatLabel": "Write to us on WhatsApp",
+    "discoverOffers": "Discover our offers",
+    "seeAllOffers": "See all offers",
+    "details": "Details",
+    "callUs": "Call us",
+    "readMore": "Read more"
+  },
+  "home": {
+    "metaTitle": "Wiki Tours International — Umrah & Hajj from Morocco",
+    "intro": "Wiki Tours International is a Moroccan travel agency. Bab Makkah, its premium Umrah & Hajj service, organises your journeys to Makkah and Madinah with full accompaniment.",
+    "heroBadge": "Licensed agency · Casablanca",
+    "heroLine1": "Your Umrah, organised",
+    "heroLine2": "like an exceptional journey",
+    "spiritualAccent": "The journey of a lifetime begins with an intention.",
+    "selectorOccasion": "Occasion",
+    "selectorMonth": "Month",
+    "selectorAll": "All",
+    "selectorGo": "See offers",
+    "packagesTitle": "Our Umrah programmes",
+    "whyTitle": "Why families trust us with their Umrah",
+    "statCommunity": "online community",
+    "statSince": "years of experience",
+    "statRating": "Google rating",
+    "statReviews": "Google reviews",
+    "hotelsTitle": "Our hotels in Makkah and Madinah",
+    "stepsTitle": "How it works",
+    "step1Title": "Your request",
+    "step1Body": "Choose an offer and send your request — no online payment.",
+    "step2Title": "Human confirmation",
+    "step2Body": "Our team calls you to confirm dates, room and documents.",
+    "step3Title": "Written contract",
+    "step3Body": "Signed at the agency: written contract, official receipt, traceable payment.",
+    "reelsTitle": "In pictures",
+    "proofTitle": "They travelled with us",
+    "googleBadge": "{rating} ★ · {count} Google reviews",
+    "monthsTitle": "Umrah by month",
+    "destinationsTitle": "Our destinations",
+    "storyTitle": "Our story",
+    "guaranteesTitle": "Our guarantees",
+    "guaranteeLicense": "Verifiable license",
+    "guaranteeNoOnlinePayment": "No online payment",
+    "guaranteeContract": "Written contract & official receipt",
+    "guaranteeSupport": "Accompanied from departure to return",
+    "blogTitle": "Guide & advice",
+    "faqTitle": "Frequently asked questions",
+    "finalCtaLine": "Labbayk Allahumma labbayk",
+    "finalCtaSub": "Your place for the next Umrah is reserved now."
+  },
+  "a11y": {
+    "prevSlide": "Previous slide",
+    "nextSlide": "Next slide",
+    "goToSlide": "Go to slide",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "close": "Close"
+  },
+  "offer": {
+    "from": "From",
+    "currency": "MAD",
+    "perPerson": "per person",
+    "status": {
+      "open": "Places available",
+      "few_left": "Last places",
+      "full": "Fully booked"
+    },
+    "duration": "{days} days / {nights} nights",
+    "distanceToHaram": "{m} m from the Haram",
+    "breakfastIncluded": "Breakfast included",
+    "pricesTitle": "Prices per person",
+    "room": {
+      "double": "Double room",
+      "triple": "Triple room",
+      "quad": "Quadruple room",
+      "quint": "Quintuple room"
+    },
+    "datesLabel": "Dates",
+    "airlineLabel": "Airline",
+    "hotelsTitle": "Your hotels",
+    "makkah": "Makkah",
+    "madinah": "Madinah",
+    "inclusionsTitle": "What's included",
+    "conditionsTitle": "Conditions",
+    "depositLine": "50% deposit at booking — balance before departure, at the agency.",
+    "programmeTitle": "The programme",
+    "bookingTitle": "Reserve my place",
+    "bookingArrivesTo": "Your request goes directly to {name}",
+    "reassurance": "No online payment — written contract and official receipt at the agency.",
+    "testimonialsTitle": "They travelled on this programme",
+    "landOnly": "Land only",
+    "tier": {
+      "economique": "Economy",
+      "confort": "Comfort",
+      "premium": "Premium",
+      "vip": "VIP"
+    },
+    "roomShort": {
+      "double": "double",
+      "triple": "triple",
+      "quad": "quadruple",
+      "quint": "quintuple"
+    },
+    "priceInRoom": "in a {room} room",
+    "selectedRoom": "{room} room",
+    "chooseRoom": "Your room",
+    "availability": "Availability",
+    "notIncludedTitle": "Not included",
+    "similarTitle": "Similar programmes",
+    "condPassport": "Passport valid at least 6 months after the return date",
+    "condPhoto": "Recent photo on a white background",
+    "introLead": "The {name} Umrah by {lockup} departs from {start} to {end}",
+    "introFlight": "{airline} flight",
+    "introHotel": "{hotel} hotel {m} m from the Haram",
+    "introPrice": "from {price} MAD per person {room}",
+    "subnav": {
+      "overview": "Overview",
+      "programme": "Programme",
+      "prices": "Prices",
+      "hotels": "Hotels",
+      "conditions": "Conditions",
+      "reviews": "Reviews",
+      "reserve": "Reserve"
+    },
+    "roomColumn": "Room",
+    "priceColumn": "Price"
+  },
+  "archive": {
+    "title": "Umrah programmes — Bab Makkah",
+    "answerLine": "{n} open Umrah programmes · from {min} MAD · hotels {dmin}–{dmax} m from the Haram · next departure {date}",
+    "lastUpdated": "Last updated",
+    "filterAll": "All",
+    "fullAtEnd": "Fully booked programmes",
+    "hajjTitle": "What about Hajj?",
+    "hajjBody": "Hajj is subject to the annual accreditation of the Ministry of Habous. Register your interest: we contact you as soon as it officially opens.",
+    "howToTitle": "How to book",
+    "linksTitle": "Explore",
+    "surMesureTitle": "Tailor-made Umrah",
+    "surMesureBody": "Your dates, your hotel, your group — let's build your programme."
+  },
+  "months": {
+    "pageTitle": "Umrah {month} {year} from Morocco",
+    "answerWithOffers": "{n} Umrah programme(s) in {month} {year}, from {min} MAD per person.",
+    "emptyTitle": "No published departures for {month} {year} — yet.",
+    "alertPrompt": "Leave your details: we'll notify you as soon as registration opens.",
+    "browseAll": "See all open programmes"
+  },
+  "occasionPage": {
+    "empty": "Programme in preparation — leave your details to be notified first.",
+    "answerWithOffers": "{n} Umrah {occasion} programme(s) from Morocco, from {min} MAD per person."
+  },
+  "cityPage": {
+    "title": "Umrah from {city}",
+    "answer": "Bab Makkah by Wiki Tours organises your Umrah from Morocco — online request, human confirmation, written contract at the Casablanca agency."
+  },
+  "voyages": {
+    "title": "Our travel services",
+    "intro": "Wiki Tours International organises your individual, group and corporate travel.",
+    "individuels": "Individual travel",
+    "groupes": "Group travel",
+    "incentive": "Incentive & corporate",
+    "askQuote": "Request a quote"
+  },
+  "hajjPage": {
+    "title": "Hajj with Wiki Tours",
+    "body": "Hajj organisation is subject each year to official accreditation by the Ministry of Habous and Islamic Affairs. No sale is open here: register your interest and we will contact you once our programme is confirmed.",
+    "interestCta": "Register my interest"
+  },
+  "team": {
+    "encadrantsTitle": "Your religious guides — with you from departure to return"
+  },
+  "pages": {
+    "avisTitle": "Pilgrims' reviews",
+    "agrementTitle": "Our license",
+    "agrementBody": "Wiki Tours International is a licensed Moroccan travel agency. Our license number is displayed at the agency and verifiable with the Ministry of Tourism.",
+    "aproposTitle": "About us",
+    "contactTitle": "Contact",
+    "blogTitle": "Guide & advice",
+    "verifiedBy": "Verified by",
+    "publishedOn": "Published on",
+    "updatedOn": "Updated on",
+    "hoursTitle": "Opening hours",
+    "addressTitle": "Address",
+    "phonesTitle": "Phones",
+    "nextDepartures": "Next departures from Casablanca",
+    "reviewsCount": "{n} published reviews from our pilgrims — texts, WhatsApp messages and videos.",
+    "leaveReview": "Leave a review on Google",
+    "contactIntro": "A question about Umrah, Hajj or another trip? Our team replies quickly, in French or Arabic.",
+    "contactFormTitle": "Send us your request",
+    "findUs": "Find us"
+  },
+  "agency": {
+    "title": "Umrah agency in Casablanca",
+    "metaDescription": "Wiki Tours International, a licensed travel agency in Casablanca. Bab Makkah, its premium Umrah & Hajj service: programmes, hotels near the Haram, written contract.",
+    "identity": "Wiki Tours International is a licensed travel agency based in Casablanca since 2016. Bab Makkah, its premium Umrah & Hajj service, organises your departures to Makkah and Madinah — online request, human confirmation and a written contract at the agency.",
+    "officeTitle": "Our agency",
+    "testimonialsTitle": "They departed from Casablanca"
+  },
+  "form": {
+    "fullName": "Full name",
+    "city": "City",
+    "phone": "Phone",
+    "submit": "Send my request",
+    "genericError": "Something went wrong. Please try again or write to us on WhatsApp.",
+    "success": "Thank you! We will contact you very soon.",
+    "reassurance": "No online payment — our team calls you to confirm, then a written contract at the agency.",
+    "rateLimited": "Too many requests — try again in a few minutes or write to us on WhatsApp.",
+    "waContinue": "Continue on WhatsApp",
+    "waMessage": "Salam, I am {name} ({city}). I just sent my request for “{offer}” ({price}) and would like to continue on WhatsApp.",
+    "waMessageGeneric": "Salam, I am {name} ({city}). I just sent my request on your website and would like to continue on WhatsApp."
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "licenseLabel": "License no.",
+    "ministryMark": "Licensed travel agency — Ministry of Tourism"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The page you are looking for does not exist or has been moved.",
+    "backHome": "Back to home"
+  },
+  "consent": {
+    "text": "We use measurement cookies to improve our offers and campaigns. Do you accept?",
+    "accept": "Accept",
+    "decline": "Continue without accepting"
+  },
+  "seoTitles": {
+    "home": "Umrah 2026 from Morocco — Bab Makkah by Wiki Tours",
+    "babmakkah": "Umrah 2026 from Morocco: programmes, dates & prices | Bab Makkah by Wiki Tours",
+    "offer": "Umrah {occasion} {year}: {tier} from {price} MAD | Bab Makkah by Wiki Tours",
+    "month": "Umrah {month} {year} from Morocco — dates & prices | Bab Makkah"
+  }
+}
