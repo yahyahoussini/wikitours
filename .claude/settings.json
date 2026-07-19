@@ -113,7 +113,9 @@
       "Bash(git switch *)",
       "Bash(git add *)",
       "Bash(git restore *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(git remote *)",
+      "Bash(git push *)"
     ],
     "additionalDirectories": [
       "C:\\Users\\yahya\\Desktop\\wiki tours app\\wiki-tours\\src\\app\\[locale]\\[flat]",

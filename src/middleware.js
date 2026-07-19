@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { LOCALES } from '@/lib/i18n';
-import { getDefaultLocale, getRedirectsMap } from '@/lib/edge-data';
+import { getRedirectsMap } from '@/lib/edge-data';
 import { resolveLegacyRedirect } from '@/lib/redirects/legacy-map';
 import { MONTH_SLUGS } from '@/lib/months';
 
@@ -8,6 +8,18 @@ import { MONTH_SLUGS } from '@/lib/months';
 const LOCALE_SHAPE = /^[a-z]{2}(-[a-zA-Z]{2})?$/;
 
 const ADMIN_HOST = process.env.ADMIN_HOST ?? 'admin.wikitours.ma';
+
+/** Locale from the browser's Accept-Language: the visitor's first preference
+ *  among fr/ar/en wins (browsers list tags in preference order); any other
+ *  main language falls back to French (business default). */
+function detectLocale(request) {
+  const header = request.headers.get('accept-language') ?? '';
+  for (const part of header.split(',')) {
+    const primary = part.split(';')[0].trim().toLowerCase().split('-')[0];
+    if (LOCALES.includes(primary)) return primary;
+  }
+  return 'fr';
+}
 
 // AI/search crawlers we log (GEO observability). Human analytics live in
 // wt.js//api/t, which drops these UAs — the two datasets never overlap.
@@ -107,20 +119,23 @@ export async function middleware(request, event) {
   // Supported locale prefix — let it through.
   if (LOCALES.includes(first)) return NextResponse.next();
 
-  const defaultLocale = await getDefaultLocale();
+  const preferred = detectLocale(request);
   const url = request.nextUrl.clone();
 
   // Invalid locale (e.g. /es/..., /en-us/...) — 404, keep the URL.
-  // Rewriting under the default locale lands in the [...rest] catch-all,
+  // Rewriting under a supported locale lands in the [...rest] catch-all,
   // which renders the localized not-found page with a 404 status.
   if (LOCALE_SHAPE.test(first)) {
-    url.pathname = `/${defaultLocale}${pathname}`;
+    url.pathname = `/${preferred}${pathname}`;
     return NextResponse.rewrite(url);
   }
 
-  // Bare path (/, /offres, ...) — redirect to the default locale.
-  url.pathname = `/${defaultLocale}${pathname === '/' ? '' : pathname}`;
-  return NextResponse.redirect(url);
+  // Bare path (/, /offres, ...) — redirect to the visitor's language.
+  // Temporary redirect + Vary so caches never pin one locale for everyone.
+  url.pathname = `/${preferred}${pathname === '/' ? '' : pathname}`;
+  const res = NextResponse.redirect(url);
+  res.headers.set('vary', 'accept-language');
+  return res;
 }
 
 export const config = {
