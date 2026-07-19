@@ -1,6 +1,6 @@
 import BrandLoader from '@/components/site/BrandLoader';
 
-/** Offer pages are Bab Makka surfaces — branded transition (BRAND LAW). */
+/** The Bab Makka hub — branded transition. */
 export default function Loading() {
   return <BrandLoader variant="babmakka" />;
 }
