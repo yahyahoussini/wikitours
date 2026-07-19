@@ -114,9 +114,12 @@ export async function deleteMedia(id) {
   }
 }
 
+// entityId is guid, not uuid: virtual galleries (settings_hero/office/team)
+// use sentinel ids whose version bits fail Zod 4's strict RFC uuid check.
+// DB-generated ids (media, gallery rows) stay strict.
 const attachSchema = z.object({
   entityType: z.enum(ENTITY_TYPES),
-  entityId: z.uuid(),
+  entityId: z.guid(),
   mediaId: z.uuid(),
 });
 
@@ -156,7 +159,7 @@ export async function attachMedia(input) {
 const detachSchema = z.object({
   galleryId: z.uuid(),
   entityType: z.enum(ENTITY_TYPES),
-  entityId: z.uuid(),
+  entityId: z.guid(),
 });
 
 export async function detachMedia(input) {
@@ -179,7 +182,7 @@ export async function detachMedia(input) {
 
 const reorderSchema = z.object({
   entityType: z.enum(ENTITY_TYPES),
-  entityId: z.uuid(),
+  entityId: z.guid(),
   orderedIds: z.array(z.uuid()).min(1).max(200),
 });
 

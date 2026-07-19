@@ -3,15 +3,8 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { updateLeadStatus } from '@/app/admin/entity-actions';
-
-export const LEAD_STATUSES = [
-  { value: 'new', label: 'Nouveau' },
-  { value: 'contacted', label: 'Contacté' },
-  { value: 'qualified', label: 'Qualifié' },
-  { value: 'paid_deposit', label: 'Acompte payé' },
-  { value: 'traveled', label: 'A voyagé' },
-  { value: 'lost', label: 'Perdu' },
-];
+import { LEAD_STATUSES } from '@/lib/admin/lead-statuses';
+import { phoneKey } from '@/lib/crm/client-key';
 
 export default function LeadRow({ lead, staleCutoffIso }) {
   const router = useRouter();
@@ -33,6 +26,12 @@ export default function LeadRow({ lead, staleCutoffIso }) {
             &gt; 48 h
           </span>
         ) : null}
+        <Link
+          href={`/admin/crm/client/${phoneKey(lead.phone)}`}
+          className="block w-fit text-[11px] text-bm-black/45 hover:text-wiki-blue"
+        >
+          Profil client →
+        </Link>
       </td>
       <td className="px-4 py-2.5 tabular-nums">
         <a href={`tel:${lead.phone}`} className="hover:text-wiki-blue">{lead.phone}</a>

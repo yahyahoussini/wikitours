@@ -1,7 +1,10 @@
 import { BRAND } from '@/lib/brand';
 import { SITE_URL, absoluteUrl } from '@/lib/seo';
-import { pickLang } from '@/lib/i18n';
+import { pickLang, getDictionary } from '@/lib/i18n';
 import { getSettings } from '@/lib/data/settings';
+import { getPublishedOffers, computeMinPrice } from '@/lib/data/content';
+import { CITY_SLUGS } from '@/lib/months';
+import { warnCriticalSettingsOnce } from '@/lib/seo/health';
 import JsonLd from '@/components/site/JsonLd';
 
 /**
@@ -13,10 +16,23 @@ import JsonLd from '@/components/site/JsonLd';
  */
 export default async function OrgJsonLd({ locale }) {
   const s = await getSettings();
-  const socials = [s?.facebook_url, s?.instagram_url, s?.tiktok_url, s?.youtube_url].filter(Boolean);
+  warnCriticalSettingsOnce(s);
+  const t = getDictionary(locale);
+  // GBP listing joins the social profiles: engines resolve them to ONE entity.
+  const socials = [s?.facebook_url, s?.instagram_url, s?.tiktok_url, s?.youtube_url, s?.gbp_url].filter(Boolean);
   const phones = [s?.phone_1, s?.phone_2, s?.phone_3].filter(Boolean);
   const address = pickLang(s, 'address', locale);
   const hours = pickLang(s, 'opening_hours', locale);
+
+  // priceRange from the REAL published offers (never typed by hand): the span
+  // of per-offer minimum prices. Omitted when no priced offer exists.
+  const offerPrices = (await getPublishedOffers())
+    .map((o) => computeMinPrice(o.tiers) ?? o.starting_price)
+    .filter((p) => typeof p === 'number' && p > 0);
+  const nf = new Intl.NumberFormat('fr-MA');
+  const priceRange = offerPrices.length
+    ? `${nf.format(Math.min(...offerPrices))}–${nf.format(Math.max(...offerPrices))} MAD`
+    : null;
 
   const data = {
     '@context': 'https://schema.org',
@@ -24,18 +40,54 @@ export default async function OrgJsonLd({ locale }) {
     '@id': `${SITE_URL}/#organization`,
     name: BRAND.parent,
     legalName: BRAND.parent,
-    alternateName: BRAND.lockup,
+    // Canonical service lockup + the "Makkah"/short variants, so an engine
+    // resolves every spelling to this one entity (decision: Makka is canonical).
+    alternateName: [BRAND.lockup, ...BRAND.alternates],
+    // ONE canonical description (i18n brand.description), reused verbatim by
+    // llms.txt. AI engines cross-reference the description they find on the
+    // site, GBP, directories and socials — every divergent wording lowers
+    // entity confidence, so this string is the single source to copy from.
+    description: t.brand.description,
+    // Topic scope, stated identically in every locale: helps an engine resolve
+    // WHAT this entity is expert in, not just who it is.
+    knowsAbout: ['Omra', 'Hajj', 'La Mecque', 'Médine', 'Pèlerinage islamique', 'Agence de voyages'],
     foundingDate: '2016',
     url: absoluteUrl(locale, ''),
     logo: `${SITE_URL}/brand/wikitours-logo.png`,
     image: `${SITE_URL}/brand/wikitours-logo.png`,
-    ...(s?.license_number ? { taxID: undefined, identifier: s.license_number } : {}),
+    ...(s?.license_number
+      ? {
+          identifier: s.license_number,
+          // The licence is the core E-E-A-T signal in this niche — model it as a
+          // real credential recognized by the ministry that issues it, not just
+          // a loose identifier string.
+          hasCredential: {
+            '@type': 'EducationalOccupationalCredential',
+            credentialCategory: 'license',
+            identifier: s.license_number,
+            recognizedBy: {
+              '@type': 'GovernmentOrganization',
+              name: 'Ministère du Tourisme — Royaume du Maroc',
+            },
+          },
+        }
+      : {}),
     ...(phones.length ? { telephone: phones[0] } : {}),
     ...(s?.email ? { email: s.email } : {}),
     ...(address ? { address: { '@type': 'PostalAddress', streetAddress: address, addressLocality: 'Casablanca', addressCountry: 'MA' } } : {}),
+    ...(s?.latitude != null && s?.longitude != null
+      ? { geo: { '@type': 'GeoCoordinates', latitude: s.latitude, longitude: s.longitude } }
+      : {}),
     ...(hours ? { openingHours: hours } : {}),
     ...(socials.length ? { sameAs: socials } : {}),
-    areaServed: 'MA',
+    ...(s?.gbp_url ? { hasMap: s.gbp_url } : {}),
+    ...(priceRange ? { priceRange } : {}),
+    // Country + the whitelisted departure cities (the same 8 the /omra-depuis
+    // pages serve — a stated, admin-approved service area, never invented).
+    areaServed: [
+      { '@type': 'Country', name: 'Maroc' },
+      ...Object.values(CITY_SLUGS).map((name) => ({ '@type': 'City', name })),
+    ],
     ...(s?.gbp_rating && s?.gbp_review_count > 0
       ? { aggregateRating: { '@type': 'AggregateRating', ratingValue: s.gbp_rating, reviewCount: s.gbp_review_count } }
       : {}),

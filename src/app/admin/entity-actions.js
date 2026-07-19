@@ -44,10 +44,6 @@ export async function saveEntity(entityKey, id, values) {
     if (!parsed.success) return { ok: false, error: firstZodMessage(parsed.error) };
     const data = { ...parsed.data };
 
-    if (config.table === 'offers') {
-      data.starting_price = computeStartingPrice(data);
-    }
-
     if (config.table === 'redirects') {
       const { data: rows } = await sb
         .from('redirects')
@@ -202,6 +198,126 @@ export async function deleteEntity(entityKey, id) {
     revalidateForTable(config.table, row);
     return { ok: true };
   } catch {
+    return { ok: false, error: GENERIC_ERROR };
+  }
+}
+
+/** Turn a Postgres/PostgREST error into a message the admin can act on. */
+function offerTierDbError(error) {
+  if (error?.code === '23505') return 'Deux gammes portent le même nom pour cette offre.';
+  if (error?.code === '42501') {
+    return "Accès refusé par la sécurité (RLS) : la politique « admin_full_access » manque sur offer_tiers. Exécutez la migration 004 (section 1d) dans Supabase.";
+  }
+  return GENERIC_ERROR;
+}
+
+/** Upsert tiers for an offer. Deletes removed tiers, inserts/updates the rest. */
+export async function saveOfferTiers(offerId, tiers) {
+  const tierSchema = z.object({
+    id: z.string().nullable().optional(),
+    label: z.enum(['economique', 'confort', 'premium', 'vip']),
+    sort_order: z.number().int().default(0),
+    hotel_makkah_id: z.string().uuid().nullable().optional(),
+    hotel_madinah_id: z.string().uuid().nullable().optional(),
+    nights_makkah: z.number().int().nullable().optional(),
+    nights_madinah: z.number().int().nullable().optional(),
+    distance_to_haram_m: z.number().int().nullable().optional(),
+    breakfast_included: z.boolean().optional(),
+    price_double: z.number().int().nullable().optional(),
+    price_triple: z.number().int().nullable().optional(),
+    price_quad: z.number().int().nullable().optional(),
+    price_quint: z.number().int().nullable().optional(),
+    is_published: z.boolean().optional(),
+  });
+
+  try {
+    const sb = await requireAuthClient();
+    const parsedId = z.uuid().parse(offerId);
+
+    const parse = z.array(tierSchema).safeParse(tiers);
+    if (!parse.success) {
+      // Most common cause: a gamme row left without a "Gamme" selected.
+      return {
+        ok: false,
+        error: 'Vérifiez chaque gamme : sélectionnez une gamme (Économique / Confort / …) et saisissez des prix valides.',
+      };
+    }
+    const parsedTiers = parse.data;
+
+    // Fetch existing tier ids for this offer.
+    const { data: existing, error: readErr } = await sb
+      .from('offer_tiers')
+      .select('id')
+      .eq('offer_id', parsedId);
+    if (readErr) {
+      console.error('saveOfferTiers: read existing failed', readErr);
+      return { ok: false, error: offerTierDbError(readErr) };
+    }
+    const existingIds = new Set((existing ?? []).map((r) => r.id));
+    const incomingIds = new Set(parsedTiers.filter((t) => t.id).map((t) => t.id));
+
+    // Delete removed tiers.
+    for (const id of existingIds) {
+      if (!incomingIds.has(id)) {
+        const { error } = await sb.from('offer_tiers').delete().eq('id', id);
+        if (error) {
+          console.error('saveOfferTiers: delete failed', error);
+          return { ok: false, error: offerTierDbError(error) };
+        }
+      }
+    }
+
+    // Upsert tiers — every write is now checked so a silent failure can't
+    // masquerade as success (this was the "saves nothing yet says saved" bug).
+    for (const tier of parsedTiers) {
+      const payload = {
+        offer_id: parsedId,
+        label: tier.label,
+        sort_order: tier.sort_order,
+        hotel_makkah_id: tier.hotel_makkah_id || null,
+        hotel_madinah_id: tier.hotel_madinah_id || null,
+        nights_makkah: tier.nights_makkah || null,
+        nights_madinah: tier.nights_madinah || null,
+        distance_to_haram_m: tier.distance_to_haram_m || null,
+        breakfast_included: tier.breakfast_included ?? false,
+        price_double: tier.price_double || null,
+        price_triple: tier.price_triple || null,
+        price_quad: tier.price_quad || null,
+        price_quint: tier.price_quint || null,
+        is_published: tier.is_published ?? true,
+      };
+      // No-id rows UPSERT on (offer_id, label): after a first save the client
+      // may still hold id:null for a row that already exists — a plain insert
+      // then hit 23505 and aborted the save halfway (fields silently lost).
+      const { error } =
+        tier.id && existingIds.has(tier.id)
+          ? await sb.from('offer_tiers').update(payload).eq('id', tier.id)
+          : await sb.from('offer_tiers').upsert(payload, { onConflict: 'offer_id,label' });
+      if (error) {
+        console.error('saveOfferTiers: write failed', error);
+        return { ok: false, error: offerTierDbError(error) };
+      }
+    }
+
+    // Revalidate the actual offer page (needs the slug, not just the id) plus
+    // the home / bab-makka surfaces that list offers.
+    const { data: offerRow } = await sb
+      .from('offers')
+      .select('slug')
+      .eq('id', parsedId)
+      .maybeSingle();
+    revalidateForTable('offers', offerRow ?? {});
+
+    // Return the stored rows so the client re-syncs its local state (ids of
+    // newly inserted tiers, canonical sort orders) instead of drifting.
+    const { data: freshTiers } = await sb
+      .from('offer_tiers')
+      .select('*')
+      .eq('offer_id', parsedId)
+      .order('sort_order', { ascending: true });
+    return { ok: true, tiers: freshTiers ?? [] };
+  } catch (err) {
+    console.error('saveOfferTiers: unexpected', err);
     return { ok: false, error: GENERIC_ERROR };
   }
 }

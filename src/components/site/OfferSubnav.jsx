@@ -33,18 +33,20 @@ export default function OfferSubnav({ items }) {
   return (
     <nav
       aria-label="Sections"
-      className="sticky top-16 z-30 -mx-6 mt-4 overflow-x-auto px-6 py-2 backdrop-blur md:top-20 [scrollbar-width:none]"
+      className="sticky top-16 z-30 mt-4 py-2 backdrop-blur md:top-20"
     >
-      <div className="flex w-max min-w-full snap-x gap-1 rounded-full border border-white/10 bg-bm-black/85 p-1.5">
+      {/* Chips share the row equally, so the bar always fits the viewport —
+          no horizontal scrolling on any screen. */}
+      <div className="flex w-full gap-0.5 rounded-full border border-bm-black/10 bg-white/90 p-1 shadow-hairline sm:gap-1 sm:p-1.5">
         {items.map(({ id, label }) => (
           <a
             key={id}
             href={`#${id}`}
             aria-current={active === id ? 'true' : undefined}
-            className={`snap-start whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-semibold transition ${
+            className={`min-w-0 flex-1 truncate whitespace-nowrap rounded-full px-1.5 py-1.5 text-center text-[11px] font-semibold transition sm:px-4 sm:text-xs ${
               active === id
                 ? 'bg-bm-gold text-bm-black'
-                : 'text-white/65 hover:bg-white/10 hover:text-white'
+                : 'text-bm-black/60 hover:bg-bm-black/5 hover:text-bm-black'
             }`}
           >
             {label}

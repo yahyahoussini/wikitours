@@ -3,14 +3,13 @@ import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { getPublishedOffers, getOccasions, getFaqs, getCovers } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
-import { publicMediaUrl } from '@/lib/media';
+import { toOfferCard } from '@/lib/offer-card';
 import { waLink } from '@/lib/whatsapp';
 import { OMRA_YEAR, MONTH_SLUGS, monthName } from '@/lib/months';
-import { absoluteUrl, hreflangAlternates } from '@/lib/seo';
+import { SITE_URL, absoluteUrl, hreflangAlternates } from '@/lib/seo';
 import { routeTitle } from '@/lib/titles';
 import BrandLockup from '@/components/site/BrandLockup';
 import PackagesSection from '@/components/site/PackagesSection';
-import SectionBridge from '@/components/site/SectionBridge';
 import JsonLd from '@/components/site/JsonLd';
 import { StepsSection, FaqSection, MonthsLinks } from '@/components/site/HomeSections';
 import LeadForm from '@/components/LeadForm';
@@ -27,7 +26,7 @@ export async function generateMetadata({ params }) {
   return {
     title: { absolute: routeTitle('babmakkah', locale) },
     description: t.brand.premiumService,
-    alternates: hreflangAlternates(locale, '/bab-makkah'),
+    alternates: hreflangAlternates(locale, '/bab-makka'),
   };
 }
 
@@ -49,7 +48,7 @@ export default async function BabMakkahPage({ params }) {
   const open = offers.filter((o) => o.status !== 'full');
   const minPrice = Math.min(...open.map((o) => o.starting_price).filter((p) => p != null));
   const distances = open
-    .flatMap((o) => [o.hotel_makkah?.distance_to_haram_m])
+    .flatMap((o) => [o.tiers?.[0]?.distance_to_haram_m ?? o.tiers?.[0]?.hotel_makkah?.distance_to_haram_m])
     .filter((d) => d != null);
   const nextDeparture = open
     .map((o) => o.date_start)
@@ -103,9 +102,24 @@ export default async function BabMakkahPage({ params }) {
       }
     : null;
 
+  // WebPage + speakable: tells answer engines which sentence IS the answer.
+  const webPageJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': `${absoluteUrl(locale, '/bab-makka')}#webpage`,
+    url: absoluteUrl(locale, '/bab-makka'),
+    name: t.archive.title,
+    inLanguage: locale,
+    isPartOf: { '@id': `${SITE_URL}/#website` },
+    about: { '@id': `${SITE_URL}/#organization` },
+    ...(answer ? { description: answer } : {}),
+    speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '[data-answer]'] },
+  };
+
   return (
-    <div className="bg-bm-black text-white">
+    <div className="bg-wiki-white text-bm-black">
       {itemListJsonLd ? <JsonLd data={itemListJsonLd} /> : null}
+      <JsonLd data={webPageJsonLd} />
       <main className="mx-auto max-w-6xl px-6 pb-20 pt-8">
         {/* Compact dark hero */}
         <header>
@@ -114,12 +128,15 @@ export default async function BabMakkahPage({ params }) {
             {t.archive.title}
           </h1>
           {answer ? (
-            <p className="mt-4 max-w-2xl rounded-card border border-bm-gold/25 bg-bm-gold/5 px-5 py-4 text-lg leading-relaxed text-bm-gold-light">
+            <p
+              data-answer
+              className="mt-4 max-w-2xl rounded-card border border-bm-gold/30 bg-bm-gold/5 px-5 py-4 text-lg leading-relaxed text-bm-black/80"
+            >
               {answer}
             </p>
           ) : null}
           {lastUpdated ? (
-            <p className="mt-2 text-xs text-white/60">
+            <p className="mt-2 text-xs text-bm-black/60">
               {t.archive.lastUpdated} : {dateFmt.format(new Date(lastUpdated))}
             </p>
           ) : null}
@@ -129,15 +146,7 @@ export default async function BabMakkahPage({ params }) {
         <div className="mt-8">
           <PackagesSection
             mode="archive"
-            offers={offers.map((offer) => ({
-              ...offer,
-              cover: covers.get(offer.id)
-                ? {
-                    src: publicMediaUrl(covers.get(offer.id).path),
-                    alt: pickLang(covers.get(offer.id), 'alt', locale),
-                  }
-                : null,
-            }))}
+            offers={offers.map((offer) => toOfferCard(offer, covers.get(offer.id), locale))}
             occasions={activeOccasions.map((o) => ({
               slug: o.slug,
               name_fr: o.name_fr,
@@ -151,14 +160,14 @@ export default async function BabMakkahPage({ params }) {
         </div>
 
         {/* Omra sur mesure — captures demand that fits no card (zero inventory cost) */}
-        <section className="mt-14 rounded-panel border border-bm-gold/30 bg-gradient-to-br from-bm-black-soft to-bm-black p-8">
+        <section className="mt-14 rounded-panel border border-bm-gold/30 bg-white shadow-hairline p-8">
           <div className="grid items-center gap-8 lg:grid-cols-2">
             <div>
-              <h2 className="text-2xl font-bold text-bm-gold-light">{t.archive.surMesureTitle}</h2>
-              <p className="accent-line mt-2 max-w-md text-lg text-white/80">{t.archive.surMesureBody}</p>
+              <h2 className="text-2xl font-bold text-bm-black">{t.archive.surMesureTitle}</h2>
+              <p className="accent-line mt-2 max-w-md text-lg text-bm-black/80">{t.archive.surMesureBody}</p>
             </div>
             <div>
-              <LeadForm locale={locale} labels={t.form} dark source="sur_mesure" whatsappNumber={settings?.whatsapp_number} />
+              <LeadForm locale={locale} labels={t.form} source="sur_mesure" whatsappNumber={settings?.whatsapp_number} />
               {whatsappHref ? (
                 <a
                   href={whatsappHref}
@@ -166,7 +175,7 @@ export default async function BabMakkahPage({ params }) {
                   rel="noopener noreferrer"
                   data-wt="whatsapp_click"
                   data-wt-label="sur_mesure"
-                  className="mt-3 inline-block text-xs text-white/60 underline-offset-4 hover:text-white hover:underline"
+                  className="mt-3 inline-block text-xs text-bm-black/60 underline-offset-4 hover:text-bm-black hover:underline"
                 >
                   {t.cta.whatsappAlt}
                 </a>
@@ -176,16 +185,15 @@ export default async function BabMakkahPage({ params }) {
         </section>
 
         {/* Hajj honest block (LAWS §6: interest-only) */}
-        <section className="mt-14 max-w-2xl rounded-panel border border-white/10 bg-bm-black-soft p-6">
-          <h2 className="text-xl font-bold text-bm-gold-light">{t.archive.hajjTitle}</h2>
-          <p className="mt-2 text-sm leading-relaxed text-white/70">{t.archive.hajjBody}</p>
+        <section className="mt-14 max-w-2xl rounded-panel border border-bm-black/10 bg-white shadow-hairline p-6">
+          <h2 className="text-xl font-bold text-bm-black">{t.archive.hajjTitle}</h2>
+          <p className="mt-2 text-sm leading-relaxed text-bm-black/70">{t.archive.hajjBody}</p>
           <Link href={`/${locale}/hajj`} className="mt-3 inline-block text-sm font-semibold text-bm-gold underline-offset-4 hover:underline">
             {t.hajjPage.interestCta} →
           </Link>
         </section>
       </main>
 
-      <SectionBridge from="dark" to="light" />
       <div className="bg-wiki-white text-bm-black">
         <StepsSection locale={locale} />
         <FaqSection locale={locale} faqs={faqs.slice(0, 4)} title={t.archive.howToTitle} />

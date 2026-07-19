@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { updateLeadStatus, addLeadNote, updateLeadFields, logReviewRequest } from '@/app/admin/entity-actions';
-import { LEAD_STATUSES } from '@/components/admin/LeadRow';
+import { LEAD_STATUSES } from '@/lib/admin/lead-statuses';
+import { phoneKey } from '@/lib/crm/client-key';
 
 const KIND_LABEL = {
   note: 'Note',
@@ -47,6 +49,7 @@ export default function LeadDetail({ lead, activities, journey, gbpReviewUrl }) 
     ['Ville', lead.city],
     ['Offre', lead.offer_title],
     ['Chambre souhaitée', roomLabels[lead.room_type]],
+    ['Commentaire client', lead.message],
     ['Langue', lead.locale],
     ['Créé le', new Date(lead.created_at).toLocaleString('fr-FR')],
   ].filter(([, v]) => v);
@@ -111,6 +114,12 @@ export default function LeadDetail({ lead, activities, journey, gbpReviewUrl }) 
           >
             Appeler {lead.phone}
           </a>
+          <Link
+            href={`/admin/crm/client/${phoneKey(lead.phone)}`}
+            className="rounded-ctrl bg-bm-black/5 px-3 py-1.5 text-sm font-semibold transition hover:bg-bm-black/10"
+          >
+            Profil client
+          </Link>
           {lead.status === 'traveled' && gbpReviewUrl ? (
             <button
               type="button"
@@ -134,7 +143,7 @@ export default function LeadDetail({ lead, activities, journey, gbpReviewUrl }) 
         <div className="mt-4 flex flex-wrap items-end gap-2 border-t border-bm-black/5 pt-4">
           <label className="flex flex-col gap-1 text-xs font-semibold">
             Valeur (MAD)
-            <input type="number" min="0" value={value} onChange={(e) => { setValue(e.target.value); setSavedFields(false); }} className={`${INPUT} w-32`} />
+            <input type="number" min="0" value={value} onChange={(e) => { setValue(e.target.value); setSavedFields(false); }} onWheel={(e) => e.currentTarget.blur()} className={`${INPUT} w-32`} />
           </label>
           <label className="flex flex-col gap-1 text-xs font-semibold">
             Assigné à

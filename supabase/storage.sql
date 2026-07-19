@@ -13,7 +13,7 @@ values (
   'public-images',
   true,
   15728640, -- 15 MB (the largest allowed kind: mp4)
-  array['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'video/mp4', 'application/pdf']
+  array['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/gif', 'video/mp4', 'video/webm', 'application/pdf']
 )
 on conflict (id) do update set
   public = excluded.public,

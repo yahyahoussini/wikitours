@@ -1,7 +1,7 @@
 {
   "nav": {
     "home": "Home",
-    "babmakkah": "Bab Makkah",
+    "babmakkah": "Bab Makka",
     "omraByMonth": "Umrah by month",
     "omraByOccasion": "Umrah by occasion",
     "hajj": "Hajj",
@@ -14,8 +14,9 @@
     "contact": "Contact"
   },
   "brand": {
+    "description": "Wiki Tours International is a licensed Moroccan travel agency based in Casablanca since 2016. Bab Makka is its premium Omra & Hajj service departing from Morocco.",
     "byParent": "by WIKI TOURS",
-    "footerLine": "Bab Makkah — a premium service by Wiki Tours International · Casablanca · since 2016",
+    "footerLine": "Bab Makka — a premium service by Wiki Tours International · Casablanca · since 2016",
     "premiumService": "Wiki Tours' premium Umrah & Hajj service"
   },
   "cta": {
@@ -32,7 +33,7 @@
   },
   "home": {
     "metaTitle": "Wiki Tours International — Umrah & Hajj from Morocco",
-    "intro": "Wiki Tours International is a Moroccan travel agency. Bab Makkah, its premium Umrah & Hajj service, organises your journeys to Makkah and Madinah with full accompaniment.",
+    "intro": "Wiki Tours International is a Moroccan travel agency. Bab Makka, its premium Umrah & Hajj service, organises your journeys to Makkah and Madinah with full accompaniment.",
     "heroBadge": "Licensed agency · Casablanca",
     "heroLine1": "Your Umrah, organised",
     "heroLine2": "like an exceptional journey",
@@ -47,7 +48,9 @@
     "statSince": "years of experience",
     "statRating": "Google rating",
     "statReviews": "Google reviews",
-    "hotelsTitle": "Our hotels in Makkah and Madinah",
+    "hotelsTitle": "Our partner hotels in Makkah and Madinah",
+    "hotelsSubtitle": "We work with these partner hotels, chosen for their comfort and proximity to the Haram.",
+    "hotelsLoadMore": "See more hotels",
     "stepsTitle": "How it works",
     "step1Title": "Your request",
     "step1Body": "Choose an offer and send your request — no online payment.",
@@ -55,7 +58,7 @@
     "step2Body": "Our team calls you to confirm dates, room and documents.",
     "step3Title": "Written contract",
     "step3Body": "Signed at the agency: written contract, official receipt, traceable payment.",
-    "reelsTitle": "In pictures",
+    "reelsTitle": "In video",
     "proofTitle": "They travelled with us",
     "googleBadge": "{rating} ★ · {count} Google reviews",
     "monthsTitle": "Umrah by month",
@@ -83,6 +86,8 @@
     "from": "From",
     "currency": "MAD",
     "perPerson": "per person",
+    "departed": "This departure has passed — see the next departures.",
+    "seatsLeft": "Only {n} seats left on this departure",
     "status": {
       "open": "Places available",
       "few_left": "Last places",
@@ -91,6 +96,12 @@
     "duration": "{days} days / {nights} nights",
     "distanceToHaram": "{m} m from the Haram",
     "breakfastIncluded": "Breakfast included",
+    "gammesTitle": "Our packages",
+    "gammesSubtitle": "Compare and choose your package",
+    "recommended": "Recommended",
+    "chooseThisGamme": "Choose this package",
+    "selectedGamme": "Your choice",
+    "nightsCount": "{n} nights",
     "pricesTitle": "Prices per person",
     "room": {
       "double": "Double room",
@@ -149,7 +160,7 @@
     "priceColumn": "Price"
   },
   "archive": {
-    "title": "Umrah programmes — Bab Makkah",
+    "title": "Umrah programmes — Bab Makka",
     "answerLine": "{n} open Umrah programmes · from {min} MAD · hotels {dmin}–{dmax} m from the Haram · next departure {date}",
     "lastUpdated": "Last updated",
     "filterAll": "All",
@@ -174,7 +185,9 @@
   },
   "cityPage": {
     "title": "Umrah from {city}",
-    "answer": "Bab Makkah by Wiki Tours organises your Umrah from Morocco — online request, human confirmation, written contract at the Casablanca agency."
+    "answer": "Bab Makka by Wiki Tours organises your Umrah from Morocco — online request, human confirmation, written contract at the Casablanca agency.",
+    "logisticsTitle": "Departure from {city}",
+    "faqTitle": "FAQ — {city}"
   },
   "voyages": {
     "title": "Our travel services",
@@ -198,30 +211,86 @@
     "agrementBody": "Wiki Tours International is a licensed Moroccan travel agency. Our license number is displayed at the agency and verifiable with the Ministry of Tourism.",
     "aproposTitle": "About us",
     "contactTitle": "Contact",
-    "blogTitle": "Guide & advice",
+    "seeAlso": "See also",
+    "blogTitle": "Guide & advice and articles",
+    "blogSearch": "Search an article…",
+    "blogNoResults": "No article matches your search.",
     "verifiedBy": "Verified by",
     "publishedOn": "Published on",
     "updatedOn": "Updated on",
     "hoursTitle": "Opening hours",
     "addressTitle": "Address",
     "phonesTitle": "Phones",
+    "hotelsCompareTitle": "Omra hotels in Makkah and Madinah — Haram distances",
+    "hotelsCompareLede": "Our {n} partner hotels in Makkah and Madinah, ranked by walking distance to the Haram. The closest is {closest}, {closestM} m from the Grand Mosque.",
+    "hotelsCompareIntro": "Compare Haram distance, star rating and breakfast at a glance. Distance is measured on foot to the mosque (Masjid al-Haram in Makkah, Masjid an-Nabawi in Madinah).",
+    "colHotel": "Hotel",
+    "colCity": "City",
+    "colStars": "Rating",
+    "colDistance": "Distance to Haram",
+    "colBreakfast": "Breakfast",
+    "yes": "Yes",
+    "no": "No",
+    "pressTitle": "Press & media",
+    "pressLede": "Wiki Tours International and its Bab Makka service in the media.",
+    "pressVisit": "Read the article",
+    "pressEmpty": "[CONTENT NEEDED] Add the press link in Settings.",
+    "pasCherTitle": "Cheap Umrah from Morocco",
+    "pasCherLede": "Our best-value Umrah from Morocco, from {min} MAD per person. Real prices, written contract, no online payment.",
+    "pasCherIntro": "How we keep Umrah affordable without cutting the guidance — hotels, shared rooms and off-peak dates.",
+    "ramadanTitle": "Ramadan Umrah {year} from Morocco",
+    "ramadanLede": "Our Ramadan {year} Umrah departures from Morocco — the most sought-after period of the year.",
+    "seasonalUpdated": "Updated on",
+    "pasCherFaq": [
+      {
+        "q": "Do I have to pay online to book?",
+        "a": "No — no online payment is ever requested. You send your request from the website, an adviser confirms the details with you by phone or WhatsApp, and the booking is then finalised with a written contract signed at our Casablanca agency, with an official receipt."
+      },
+      {
+        "q": "How do I get the lowest price?",
+        "a": "The lowest fares usually go with shared rooms, quadruple or quintuple, and with departures outside the Ramadan period. Also compare the tiers offered on each programme: the economy tier relies on hotels a little further from the Haram, which noticeably lowers the price per person."
+      },
+      {
+        "q": "What does the displayed price include?",
+        "a": "Each programme details exactly what the price includes — flight, hotels, transfers and guidance — and what it does not, on its own page. Prices are in Moroccan dirhams per person and vary with the chosen tier and room type: double, triple, quadruple or quintuple."
+      }
+    ],
+    "ramadanFaq": [
+      {
+        "q": "Why is Ramadan Umrah more expensive?",
+        "a": "Demand peaks during Ramadan, especially over the last ten days of the month, so flight prices and near-Haram hotel rates rise accordingly. Booking early and choosing a shared room, quadruple or quintuple, remains the most reliable way to keep the budget under control."
+      },
+      {
+        "q": "When should I book Ramadan Umrah?",
+        "a": "As early as possible: seats and hotels near the Haram sell out months ahead, especially for the last ten days. Send your request from the website or on WhatsApp, and an adviser will confirm the real availability of the departure you are interested in."
+      },
+      {
+        "q": "Do I pay online?",
+        "a": "No — no online payment is requested. The booking is first confirmed by phone or WhatsApp, then with a written contract signed at our Casablanca agency, with an official receipt. This human confirmation applies to every departure, including those during Ramadan."
+      }
+    ],
     "nextDepartures": "Next departures from Casablanca",
     "reviewsCount": "{n} published reviews from our pilgrims — texts, WhatsApp messages and videos.",
     "leaveReview": "Leave a review on Google",
     "contactIntro": "A question about Umrah, Hajj or another trip? Our team replies quickly, in French or Arabic.",
     "contactFormTitle": "Send us your request",
-    "findUs": "Find us"
+    "findUs": "Find us",
+    "whereQuestion": "Where is the agency located?",
+    "whereAnswer": "Our agency welcomes you at the following address: {address}.",
+    "avisDesc": "Reviews and testimonials from pilgrims who travelled with Bab Makka by Wiki Tours International: videos, screenshots and verified feedback.",
+    "blogDesc": "Omra & Hajj guides and tips from the Bab Makka team: documents, budget, hotels and departure preparation from Morocco."
   },
   "agency": {
     "title": "Umrah agency in Casablanca",
-    "metaDescription": "Wiki Tours International, a licensed travel agency in Casablanca. Bab Makkah, its premium Umrah & Hajj service: programmes, hotels near the Haram, written contract.",
-    "identity": "Wiki Tours International is a licensed travel agency based in Casablanca since 2016. Bab Makkah, its premium Umrah & Hajj service, organises your departures to Makkah and Madinah — online request, human confirmation and a written contract at the agency.",
+    "metaDescription": "Wiki Tours International, a licensed travel agency in Casablanca. Bab Makka, its premium Umrah & Hajj service: programmes, hotels near the Haram, written contract.",
+    "identity": "Wiki Tours International is a licensed travel agency based in Casablanca since 2016. Bab Makka, its premium Umrah & Hajj service, organises your departures to Makkah and Madinah — online request, human confirmation and a written contract at the agency.",
     "officeTitle": "Our agency",
     "testimonialsTitle": "They departed from Casablanca"
   },
   "form": {
     "fullName": "Full name",
     "city": "City",
+    "message": "Comment (optional)",
     "phone": "Phone",
     "submit": "Send my request",
     "genericError": "Something went wrong. Please try again or write to us on WhatsApp.",
@@ -248,9 +317,53 @@
     "decline": "Continue without accepting"
   },
   "seoTitles": {
-    "home": "Umrah 2026 from Morocco — Bab Makkah by Wiki Tours",
-    "babmakkah": "Umrah 2026 from Morocco: programmes, dates & prices | Bab Makkah by Wiki Tours",
-    "offer": "Umrah {occasion} {year}: {tier} from {price} MAD | Bab Makkah by Wiki Tours",
-    "month": "Umrah {month} {year} from Morocco — dates & prices | Bab Makkah"
+    "home": "Umrah 2026 from Morocco | Bab Makka",
+    "babmakkah": "Umrah from Morocco: programmes & prices | Bab Makka",
+    "offer": "Umrah {occasion} {year} from {price} MAD | Bab Makka",
+    "month": "Umrah {month} {year} from Morocco | Bab Makka"
+  },
+  "guide": {
+    "pillarTitle": "Omra Guide from Morocco",
+    "pillarDesc": "The Bab Makka Omra guide: documents, budget, rites, checklist and best period — chapter by chapter, from Morocco.",
+    "pillarLede": "This guide gathers, chapter by chapter, the essentials to prepare your Omra from Morocco: documents, budget, rites and checklist.",
+    "chapters": "Guide chapters",
+    "inPreparation": "This chapter is being prepared by our team. Ask your question directly on WhatsApp — a human answers.",
+    "backToPillar": "Omra Guide",
+    "seeDepartures": "See Omra departures",
+    "writtenBy": "Written by",
+    "chapterTitles": {
+      "documents-visa": "Omra documents & visa",
+      "femme-mahram": "Omra for women & mahram",
+      "budget": "Omra budget",
+      "rituels": "Omra rites",
+      "checklist": "Pre-departure checklist",
+      "meilleure-periode": "Best period for Omra"
+    }
+  },
+  "glossary": {
+    "title": "Omra glossary",
+    "desc": "Pilgrimage terms — ihram, tawaf, sa'i… — plainly defined by the Bab Makka team.",
+    "lede": "The essential Omra terms, defined simply.",
+    "empty": "The glossary is being prepared by our team."
+  },
+  "barometer": {
+    "title": "Omra price barometer",
+    "desc": "Minimum and average prices of published Omra departures, month by month — computed only from the agency’s real offers.",
+    "lede": "Prices observed across the agency’s published Omra departures, by departure month. No estimates: real offers only.",
+    "empty": "Not enough published departures yet for reliable statistics. See current offers.",
+    "colMonth": "Departure month",
+    "colOffers": "Departures",
+    "colMin": "Min price / pers.",
+    "colAvg": "Avg price / pers.",
+    "basedOn": "Based on {n} published departure(s).",
+    "note": "Computed only from offers published by Bab Makka — never extrapolated."
+  },
+  "priceTable": {
+    "title": "Departures & price comparison",
+    "colOffer": "Program",
+    "colDeparture": "Departure",
+    "colDuration": "Duration",
+    "colFrom": "From (MAD/pers.)",
+    "days": "{n} days"
   }
 }

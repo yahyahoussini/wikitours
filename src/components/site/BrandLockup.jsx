@@ -20,7 +20,7 @@ export default function BrandLockup({ locale, size = 'md', className = '' }) {
     <span className={`inline-flex items-end gap-2 ${className}`}>
       <Image
         src="/brand/bab-makka-logo.png"
-        alt="Bab Makkah"
+        alt="Bab Makka"
         width={5888}
         height={3640}
         className={`w-auto ${s.logo}`}

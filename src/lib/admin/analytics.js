@@ -13,6 +13,24 @@ function groupCount(rows, keyFn) {
   return map;
 }
 
+/** AI answer engines whose referrals we surface as their own dimension. */
+const AI_REFERRERS = [
+  ['chatgpt.com', 'ChatGPT'],
+  ['chat.openai.com', 'ChatGPT'],
+  ['perplexity.ai', 'Perplexity'],
+  ['gemini.google.com', 'Gemini'],
+  ['copilot.microsoft.com', 'Copilot'],
+  ['claude.ai', 'Claude'],
+];
+
+export function aiSourceOf(referrer) {
+  if (!referrer) return null;
+  for (const [host, name] of AI_REFERRERS) {
+    if (referrer.includes(host)) return name;
+  }
+  return null;
+}
+
 export async function getAnalytics(sb, from, to) {
   const today = new Date().toISOString().slice(0, 10);
   const includesToday = to >= today;
@@ -28,7 +46,7 @@ export async function getAnalytics(sb, from, to) {
       .limit(20000),
     sb
       .from('leads')
-      .select('id, created_at, utm_source, utm_medium, city, geo_city, offer_id, offer_title, status')
+      .select('id, created_at, visitor_id, utm_source, utm_medium, city, geo_city, offer_id, offer_title, status')
       .gte('created_at', `${from}T00:00:00Z`)
       .lte('created_at', `${to}T23:59:59Z`)
       .limit(10000),
@@ -140,5 +158,86 @@ export async function getAnalytics(sb, from, to) {
     .map(([device, count]) => ({ device, count }))
     .sort((a, b) => b.count - a.count);
 
-  return { cards, trafficByDay, topSources, cities, topPaths, entryPages, funnel, deviceSplit };
+  // ---- AI referrals (GEO measurement) ---------------------------------------
+  // Sessions whose referrer is an AI answer engine; leads attributed via the
+  // visitor's AI-referred session (first engine seen wins).
+  const visitorAi = new Map();
+  for (const s of sessions) {
+    const ai = aiSourceOf(s.referrer);
+    if (ai && s.visitor_id && !visitorAi.has(s.visitor_id)) visitorAi.set(s.visitor_id, ai);
+  }
+  const aiSessions = groupCount(sessions, (s) => aiSourceOf(s.referrer));
+  const aiLeads = groupCount(leads, (l) => (l.visitor_id ? visitorAi.get(l.visitor_id) : null));
+  const aiReferrals = [...aiSessions.entries()]
+    .map(([source, count]) => ({ source, sessions: count, leads: aiLeads.get(source) ?? 0 }))
+    .sort((a, b) => b.sessions - a.sessions);
+
+  // ---- conversions by page --------------------------------------------------
+  const convByPage = new Map();
+  const bump = (path, key, n = 1) => {
+    if (!path) return;
+    const entry = convByPage.get(path) ?? { leads: 0, whatsapp: 0 };
+    entry[key] += n;
+    convByPage.set(path, entry);
+  };
+  for (const r of rollups) {
+    if (r.leads) bump(r.path, 'leads', r.leads);
+    if (r.whatsapp_clicks) bump(r.path, 'whatsapp', r.whatsapp_clicks);
+  }
+  for (const e of tail) {
+    if (e.type === 'form_submit') bump(e.path, 'leads');
+    if (e.type === 'whatsapp_click') bump(e.path, 'whatsapp');
+  }
+  const conversionsByPage = [...convByPage.entries()]
+    .map(([path, v]) => ({ path, ...v }))
+    .sort((a, b) => b.leads + b.whatsapp - (a.leads + a.whatsapp))
+    .slice(0, 12);
+
+  return { cards, trafficByDay, topSources, cities, topPaths, entryPages, funnel, deviceSplit, aiReferrals, conversionsByPage };
+}
+
+/**
+ * AI/search bot crawl report (bot logger, migration 009): weekly counts from
+ * the rollup + the still-raw tail, and the paths bots read most. Reads via the
+ * authenticated admin client (admin_full_access policy).
+ */
+export async function getBotReport(sb) {
+  const since = new Date(Date.now() - 56 * 86400000).toISOString().slice(0, 10);
+  const [weeklyRes, rawRes] = await Promise.all([
+    sb.from('bot_hits_weekly').select('week, bot, path, hits').gte('week', since).limit(20000),
+    sb.from('bot_hits').select('bot, path, ts').limit(20000),
+  ]);
+  const weekly = weeklyRes.data ?? [];
+  const raw = rawRes.data ?? [];
+
+  const weekOf = (ts) => {
+    const d = new Date(ts);
+    const day = (d.getUTCDay() + 6) % 7; // ISO week starts Monday
+    d.setUTCDate(d.getUTCDate() - day);
+    return d.toISOString().slice(0, 10);
+  };
+
+  const byWeekBot = new Map();
+  const byPath = new Map();
+  const addHit = (week, bot, path, hits) => {
+    const key = `${week}|${bot}`;
+    byWeekBot.set(key, (byWeekBot.get(key) ?? 0) + hits);
+    byPath.set(path, (byPath.get(path) ?? 0) + hits);
+  };
+  for (const r of weekly) addHit(r.week, r.bot, r.path, r.hits);
+  for (const r of raw) addHit(weekOf(r.ts), r.bot, r.path, 1);
+
+  const perWeek = [...byWeekBot.entries()]
+    .map(([key, hits]) => {
+      const [week, bot] = key.split('|');
+      return { week, bot, hits };
+    })
+    .sort((a, b) => (a.week === b.week ? b.hits - a.hits : a.week < b.week ? 1 : -1));
+
+  const topPaths = [...byPath.entries()]
+    .map(([path, hits]) => ({ path, hits }))
+    .sort((a, b) => b.hits - a.hits)
+    .slice(0, 12);
+
+  return { perWeek: perWeek.slice(0, 40), topPaths, total: raw.length + weekly.reduce((a, r) => a + r.hits, 0) };
 }

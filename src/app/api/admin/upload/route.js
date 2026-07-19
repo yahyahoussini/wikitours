@@ -9,7 +9,7 @@ export const runtime = 'nodejs';
 
 const KIND_LABEL = {
   image: 'Image (max 4 Mo)',
-  video: 'Vidéo MP4 (max 15 Mo)',
+  video: 'Vidéo MP4/WebM (max 15 Mo)',
   document: 'PDF (max 10 Mo)',
 };
 
@@ -54,7 +54,7 @@ export async function POST(request) {
     const sniffed = sniffMedia(buf);
     if (!sniffed) {
       return NextResponse.json(
-        { error: 'Format non pris en charge (JPEG, PNG, WebP, GIF, MP4, PDF).' },
+        { error: 'Format non pris en charge (JPEG, PNG, WebP, AVIF, GIF, MP4, WebM, PDF).' },
         { status: 415 },
       );
     }
@@ -81,6 +81,9 @@ export async function POST(request) {
       .from(MEDIA_BUCKET)
       .upload(path, buf, { contentType: sniffed.mime, upsert: false });
     if (storageError) {
+      // Generic message to the client; the real cause (e.g. bucket mime
+      // allow-list, quota) only ever shows up server-side.
+      console.error('[upload] storage error:', sniffed.mime, storageError.message ?? storageError);
       return NextResponse.json({ error: 'Une erreur est survenue.' }, { status: 500 });
     }
 
@@ -91,12 +94,14 @@ export async function POST(request) {
       .single();
     if (dbError) {
       // Don't leave an orphan object behind.
+      console.error('[upload] media insert error:', dbError.message ?? dbError);
       await admin.storage.from(MEDIA_BUCKET).remove([path]);
       return NextResponse.json({ error: 'Une erreur est survenue.' }, { status: 500 });
     }
 
     return NextResponse.json({ media });
-  } catch {
+  } catch (err) {
+    console.error('[upload] unexpected error:', err?.message ?? err);
     return NextResponse.json({ error: 'Une erreur est survenue.' }, { status: 500 });
   }
 }

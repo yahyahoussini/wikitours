@@ -19,11 +19,11 @@ export default async function SiteHeader({ locale }) {
     : [
         { href: `/${locale}`, label: t.nav.home },
         {
-          href: `/${locale}/bab-makkah`,
+          href: `/${locale}/bab-makka`,
           label: t.nav.babmakkah,
           children: [
-            { href: `/${locale}/bab-makkah#par-mois`, label: t.nav.omraByMonth },
-            { href: `/${locale}/bab-makkah#par-occasion`, label: t.nav.omraByOccasion },
+            { href: `/${locale}/bab-makka#par-mois`, label: t.nav.omraByMonth },
+            { href: `/${locale}/bab-makka#par-occasion`, label: t.nav.omraByOccasion },
             { href: `/${locale}/hajj`, label: t.nav.hajj },
           ],
         },
@@ -39,7 +39,7 @@ export default async function SiteHeader({ locale }) {
         locale={locale}
         items={items}
         reserveLabel={t.cta.reserveShort}
-        reserveHref={`/${locale}/bab-makkah`}
+        reserveHref={`/${locale}/bab-makka`}
         a11y={{ openMenu: t.a11y.openMenu, closeMenu: t.a11y.closeMenu }}
       />
       {/* Spacer under the fixed capsule */}

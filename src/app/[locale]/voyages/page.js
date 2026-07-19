@@ -57,7 +57,7 @@ export default async function VoyagesPage({ params }) {
                         <p className="text-sm text-bm-black/65">{pickLang(service, 'description', locale)}</p>
                       ) : null}
                       {isOmra ? (
-                        <Link href={`/${locale}/bab-makkah`} className="mt-auto inline-flex items-center gap-3">
+                        <Link href={`/${locale}/bab-makka`} className="mt-auto inline-flex items-center gap-3">
                           <BrandLockup locale={locale} size="sm" />
                           <span className="text-sm font-semibold text-wiki-blue underline-offset-4 hover:underline">→</span>
                         </Link>

@@ -1,8 +1,9 @@
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
-import { hreflangAlternates } from '@/lib/seo';
+import { SITE_URL, absoluteUrl, hreflangAlternates } from '@/lib/seo';
 import { getSettings } from '@/lib/data/settings';
 import { waLink } from '@/lib/whatsapp';
+import JsonLd from '@/components/site/JsonLd';
 import LeadForm from '@/components/LeadForm';
 import WhatsAppIcon from '@/components/WhatsAppIcon';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
@@ -33,8 +34,32 @@ export default async function ContactPage({ params }) {
   return (
     <>
       <main className="mx-auto max-w-5xl px-6 py-12">
+        <JsonLd
+          data={{
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            '@id': `${absoluteUrl(locale, '/contact')}#webpage`,
+            url: absoluteUrl(locale, '/contact'),
+            name: t.pages.contactTitle,
+            inLanguage: locale,
+            isPartOf: { '@id': `${SITE_URL}/#website` },
+            about: { '@id': `${SITE_URL}/#organization` },
+            speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '[data-answer]'] },
+          }}
+        />
         <h1 className="text-3xl font-bold text-bm-black sm:text-4xl">{t.pages.contactTitle}</h1>
         <p className="mt-3 max-w-2xl text-lg leading-relaxed text-bm-black/70">{t.pages.contactIntro}</p>
+
+        {/* Local-AEO direct answer ("Où se trouve l'agence ?") — rendered from
+            the settings address only, omitted while it is empty (LAW §10). */}
+        {address ? (
+          <section className="mt-6 max-w-2xl rounded-panel border border-bm-black/10 bg-white p-5 shadow-hairline">
+            <h2 className="text-lg font-bold text-bm-black">{t.pages.whereQuestion}</h2>
+            <p data-answer className="mt-2 leading-relaxed text-bm-black/80">
+              {t.pages.whereAnswer.replace('{address}', address)}
+            </p>
+          </section>
+        ) : null}
 
         <div className="mt-10 grid gap-10 lg:grid-cols-2">
           {/* Channels — WhatsApp is the primary action (blue per LAWS §7) */}

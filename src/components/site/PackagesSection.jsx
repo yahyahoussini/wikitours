@@ -28,16 +28,24 @@ function formatDateRange(startISO, endISO, locale) {
   return `${startLabel} → ${full.format(end)}`;
 }
 
-/** The room whose per-person price is the offer's displayed minimum. */
-function cheapestRoom(offer) {
-  const rooms = [
-    ['double', offer.price_double],
-    ['triple', offer.price_triple],
-    ['quad', offer.price_quad],
-    ['quint', offer.price_quint],
-  ].filter(([, p]) => p != null);
-  if (!rooms.length) return null;
-  return rooms.reduce((min, r) => (r[1] < min[1] ? r : min));
+const ROOM_KEYS = ['double', 'triple', 'quad', 'quint'];
+
+/**
+ * The (gamme × room) combination whose per-person price is the offer's
+ * displayed minimum. Prices live on offer_tiers; offers that predate the tiers
+ * model still carry them on the offer row itself, so fall back to that.
+ */
+function cheapestCombo(offer) {
+  const sources = offer.tiers?.length ? offer.tiers : [offer];
+  let best = null;
+  for (const tier of sources) {
+    for (const room of ROOM_KEYS) {
+      const price = tier[`price_${room}`];
+      if (typeof price !== 'number' || price <= 0) continue;
+      if (!best || price < best.price) best = { tier, room, price };
+    }
+  }
+  return best;
 }
 
 /**
@@ -51,14 +59,25 @@ export function OfferCard({ offer, locale, t, whatsappHref, compact = false }) {
   const occasionName = offer.occasion
     ? offer.occasion[`name_${locale}`] || offer.occasion.name_fr
     : null;
-  const minRoom = cheapestRoom(offer);
-  const price = minRoom?.[1] ?? offer.starting_price;
-  const logoUrl = publicMediaUrl(offer.hotel_makkah?.logo_path);
+  const tiers = offer.tiers ?? [];
+  const combo = cheapestCombo(offer);
+  // Everything below describes the gamme the displayed "from" price belongs to,
+  // so the card never pairs one gamme's price with another's hotel (LAWS §6).
+  const priceTier = combo?.tier ?? tiers[0] ?? null;
+  const tierLabel = priceTier?.label ?? offer.tier_label ?? null;
+  const makkahHotel = priceTier?.hotel_makkah ?? offer.hotel_makkah ?? null;
+  const price = combo?.price ?? offer.starting_price;
+  const minRoom = combo?.room ?? null;
+  const distance = priceTier?.distance_to_haram_m ?? makkahHotel?.distance_to_haram_m ?? null;
+  const logoUrl = publicMediaUrl(makkahHotel?.logo_path);
 
   return (
     <article
       data-reveal
-      className={`group relative flex h-full flex-col overflow-hidden rounded-panel border border-white/10 bg-bm-black-soft shadow-lift transition duration-300 hover:border-bm-gold/40 hover:shadow-float ${
+      // wt-motion adds is-in/transition-delay before this lazy boundary
+      // hydrates — suppress that expected attribute diff.
+      suppressHydrationWarning
+      className={`group relative flex h-full flex-col overflow-hidden rounded-panel border border-bm-black/10 bg-white shadow-lift transition duration-300 hover:border-bm-gold/40 hover:shadow-float ${
         full ? 'opacity-55 saturate-50' : ''
       }`}
     >
@@ -82,7 +101,7 @@ export function OfferCard({ offer, locale, t, whatsappHref, compact = false }) {
             className="object-cover transition duration-500 ease-luxe group-hover:scale-105"
           />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-bm-black to-bm-black-soft" />
+          <div className="absolute inset-0 bg-bm-black/5" />
         )}
         {occasionName ? (
           <span className="absolute start-3 top-3 rounded-full bg-bm-gold px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-bm-black">
@@ -103,10 +122,10 @@ export function OfferCard({ offer, locale, t, whatsappHref, compact = false }) {
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col gap-3 p-5 text-white">
+      <div className="flex flex-1 flex-col gap-3 p-5 text-bm-black">
         {/* DATE CHIP — the #1 scan target, first-class */}
         {offer.date_start && offer.date_end ? (
-          <p className="inline-flex w-fit items-center gap-2 rounded-full border border-bm-gold/40 bg-bm-gold/10 px-3.5 py-1.5 text-sm font-bold text-bm-gold-light">
+          <p className="inline-flex w-fit items-center gap-2 rounded-full border border-bm-gold/40 bg-bm-gold/10 px-3.5 py-1.5 text-sm font-bold text-bm-gold">
             <svg viewBox="0 0 16 16" aria-hidden="true" className="size-3.5 fill-current">
               <path d="M4 0v2H2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-2V0h-2v2H6V0H4Zm10 6v8H2V6h12Z" />
             </svg>
@@ -114,48 +133,48 @@ export function OfferCard({ offer, locale, t, whatsappHref, compact = false }) {
           </p>
         ) : null}
 
-        <h3 className="flex flex-wrap items-center gap-2 text-lg font-bold leading-snug">
+        <h2 className="flex flex-wrap items-center gap-2 text-lg font-bold leading-snug">
           {title}
-          {offer.tier_label && t.tier?.[offer.tier_label] ? (
+          {tierLabel && t.tier?.[tierLabel] ? (
             <span className="rounded-full border border-bm-gold/50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-bm-gold">
-              {t.tier[offer.tier_label]}
+              {t.tier[tierLabel]}
             </span>
           ) : null}
-        </h3>
+        </h2>
 
-        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-white/60">
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-bm-black/55">
           {offer.duration_days && offer.duration_nights ? (
             <span className="inline-flex items-center gap-1">
-              <Icon name="clock" className="size-3.5 text-white/40" />
+              <Icon name="clock" className="size-3.5 text-bm-black/40" />
               {t.duration.replace('{days}', offer.duration_days).replace('{nights}', offer.duration_nights)}
             </span>
           ) : null}
           {offer.airline ? (
             <span className="inline-flex items-center gap-1">
-              <Icon name="plane" className="size-3.5 text-white/40" />
+              <Icon name="plane" className="size-3.5 text-bm-black/40" />
               {offer.airline}
             </span>
           ) : null}
           {offer.land_only ? <span>{t.landOnly}</span> : null}
-          {offer.hotel_makkah?.breakfast_included ? (
+          {priceTier?.breakfast_included ? (
             <span className="inline-flex items-center gap-1">
-              <Icon name="coffee" className="size-3.5 text-white/40" />
+              <Icon name="coffee" className="size-3.5 text-bm-black/40" />
               {t.breakfastIncluded}
             </span>
           ) : null}
         </p>
 
-        {offer.hotel_makkah ? (
-          <p className="flex flex-wrap items-center gap-2 text-sm text-white/80">
+        {makkahHotel ? (
+          <p className="flex flex-wrap items-center gap-2 text-sm text-bm-black/70">
             {logoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element -- tiny brand mark
               <img src={logoUrl} alt="" className="h-5 w-auto rounded-[4px] bg-white/90 px-1 py-0.5" />
             ) : null}
-            <span className="truncate">{offer.hotel_makkah.name}</span>
-            {offer.hotel_makkah.distance_to_haram_m != null ? (
+            <span className="truncate">{makkahHotel.name}</span>
+            {distance != null ? (
               <span className="inline-flex items-center gap-1 rounded-full border border-bm-gold/50 px-2 py-0.5 text-[11px] font-semibold text-bm-gold">
                 <Icon name="pin" className="size-3" />
-                {t.distanceToHaram.replace('{m}', offer.hotel_makkah.distance_to_haram_m)}
+                {t.distanceToHaram.replace('{m}', distance)}
               </span>
             ) : null}
           </p>
@@ -164,17 +183,17 @@ export function OfferCard({ offer, locale, t, whatsappHref, compact = false }) {
         {price != null ? (
           <div className="mt-auto">
             <p>
-              <span className="text-xs text-white/50">{t.from} </span>
+              <span className="text-xs text-bm-black/50">{t.from} </span>
               <span className="bg-gradient-to-b from-bm-gold-light to-bm-gold bg-clip-text text-2xl font-bold tabular-nums text-transparent">
                 {nf.format(price)}
               </span>
               <span className="text-sm font-semibold text-bm-gold"> {t.currency}</span>
-              <span className="text-xs text-white/50"> / {t.perPerson}</span>
+              <span className="text-xs text-bm-black/50"> / {t.perPerson}</span>
             </p>
             {/* Price honesty: which room this price means */}
             {minRoom ? (
-              <p className="mt-0.5 text-[11px] text-white/60">
-                {t.priceInRoom.replace('{room}', t.roomShort[minRoom[0]])}
+              <p className="mt-0.5 text-[11px] text-bm-black/55">
+                {t.priceInRoom.replace('{room}', t.roomShort[minRoom])}
               </p>
             ) : null}
           </div>
@@ -198,7 +217,7 @@ export function OfferCard({ offer, locale, t, whatsappHref, compact = false }) {
                 rel="noopener noreferrer"
                 data-wt="whatsapp_click"
                 data-wt-offer={offer.id}
-                className="inline-flex items-center justify-center gap-2 text-xs text-white/50 underline-offset-4 transition hover:text-white hover:underline"
+                className="inline-flex items-center justify-center gap-2 text-xs text-bm-black/50 underline-offset-4 transition hover:text-bm-black hover:underline"
               >
                 <WhatsAppIcon className="size-3.5" />
                 {t.whatsappAlt}
@@ -206,7 +225,7 @@ export function OfferCard({ offer, locale, t, whatsappHref, compact = false }) {
             ) : null}
             <Link
               href={`/${locale}/omra/${offer.slug}`}
-              className="inline-block py-1.5 text-center text-xs font-medium text-bm-gold-light underline-offset-4 hover:underline"
+              className="inline-block py-1.5 text-center text-xs font-medium text-bm-gold underline-offset-4 hover:underline"
             >
               {t.details} →
             </Link>
@@ -264,7 +283,7 @@ export default function PackagesSection({
 
   const pill = (active) =>
     `rounded-full px-4 py-1.5 text-sm font-semibold transition ${
-      active ? 'bg-bm-gold text-bm-black' : 'bg-white/10 text-white/70 hover:bg-white/20 hover:text-white'
+      active ? 'bg-bm-gold text-bm-black' : 'bg-bm-black/5 text-bm-black/70 hover:bg-bm-black/10 hover:text-bm-black'
     }`;
 
   return (
@@ -272,7 +291,7 @@ export default function PackagesSection({
       {occasions.length > 0 ? (
         <div
           id="par-occasion"
-          className={`flex flex-wrap items-center gap-2 ${mode === 'archive' ? 'sticky top-20 z-30 rounded-full bg-bm-black/85 p-2 backdrop-blur' : ''}`}
+          className={`flex flex-wrap items-center gap-2 ${mode === 'archive' ? 'sticky top-20 z-30 rounded-full bg-white/90 p-2 shadow-hairline backdrop-blur' : ''}`}
         >
           <button type="button" onClick={() => { setOccasion(''); syncUrl('', month); }} className={pill(occasion === '')}>
             {t.filterAll}
@@ -293,7 +312,7 @@ export default function PackagesSection({
               aria-label={t.monthAll}
               value={month}
               onChange={(e) => { setMonth(e.target.value); syncUrl(occasion, e.target.value); }}
-              className="ms-auto rounded-full bg-white/10 px-3 py-1.5 text-sm font-semibold text-white outline-none"
+              className="ms-auto rounded-full bg-bm-black/5 px-3 py-1.5 text-sm font-semibold text-bm-black outline-none"
             >
               <option value="">{t.monthAll}</option>
               {months.map((m) => (
@@ -311,7 +330,7 @@ export default function PackagesSection({
           <OfferCard key={offer.id} offer={offer} locale={locale} t={t} whatsappHref={whatsappHref} />
         ))}
       </div>
-      {list.length === 0 ? <p className="text-sm text-white/50">—</p> : null}
+      {list.length === 0 ? <p className="text-sm text-bm-black/50">—</p> : null}
     </div>
   );
 }

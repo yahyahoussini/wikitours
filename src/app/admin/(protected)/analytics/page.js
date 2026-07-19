@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { supabaseServer } from '@/lib/supabase/server';
-import { getAnalytics } from '@/lib/admin/analytics';
+import { getAnalytics, getBotReport } from '@/lib/admin/analytics';
 
 export const dynamic = 'force-dynamic';
 
@@ -120,9 +120,12 @@ export default async function AdminAnalyticsPage({ searchParams }) {
   const from = /^\d{4}-\d{2}-\d{2}$/.test(params.from ?? '') ? params.from : isoDaysAgo(29);
 
   const sb = await supabaseServer();
-  const data = sb
-    ? await getAnalytics(sb, from, to)
-    : { cards: { visitors: 0, sessions: 0, pageviews: 0, leads: 0, leadRate: 0, whatsappClicks: 0 }, trafficByDay: [], topSources: [], cities: [], topPaths: [], entryPages: [], funnel: [], deviceSplit: [] };
+  const [data, bots] = sb
+    ? await Promise.all([getAnalytics(sb, from, to), getBotReport(sb)])
+    : [
+        { cards: { visitors: 0, sessions: 0, pageviews: 0, leads: 0, leadRate: 0, whatsappClicks: 0 }, trafficByDay: [], topSources: [], cities: [], topPaths: [], entryPages: [], funnel: [], deviceSplit: [], aiReferrals: [], conversionsByPage: [] },
+        { perWeek: [], topPaths: [], total: 0 },
+      ];
 
   const presets = [
     ['7 jours', isoDaysAgo(6)],
@@ -203,6 +206,29 @@ export default async function AdminAnalyticsPage({ searchParams }) {
           title="Pages d'entrée"
           headers={['Page', 'Sessions']}
           rows={data.entryPages.map((p) => [p.path, nf.format(p.count)])}
+        />
+        <DataTable
+          title="Conversions par page — leads & WhatsApp"
+          headers={['Page', 'Leads', 'WhatsApp']}
+          rows={data.conversionsByPage.map((p) => [p.path, nf.format(p.leads), nf.format(p.whatsapp)])}
+        />
+        <DataTable
+          title="Référents IA — ChatGPT, Perplexity, Gemini, Copilot, Claude"
+          headers={['Moteur IA', 'Sessions', 'Leads']}
+          rows={data.aiReferrals.map((r) => [r.source, nf.format(r.sessions), nf.format(r.leads)])}
+        />
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <DataTable
+          title={`Robots IA & moteurs — passages par semaine (${nf.format(bots.total)} hits)`}
+          headers={['Semaine', 'Robot', 'Hits']}
+          rows={bots.perWeek.map((r) => [r.week, r.bot, nf.format(r.hits)])}
+        />
+        <DataTable
+          title="Robots — pages les plus lues"
+          headers={['Page', 'Hits']}
+          rows={bots.topPaths.map((p) => [p.path, nf.format(p.hits)])}
         />
       </div>
 

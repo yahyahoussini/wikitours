@@ -2,8 +2,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, pickLang } from '@/lib/i18n';
-import { getMenu } from '@/lib/data/content';
+import { getMenu, getCityPages } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
+import { MONTH_SLUGS, monthPagePath, monthName, CITY_SLUGS, cityPageIndexable } from '@/lib/months';
 import BrandLockup from '@/components/site/BrandLockup';
 
 async function column(location, locale, fallback) {
@@ -18,9 +19,13 @@ async function column(location, locale, fallback) {
 export default async function SiteFooter({ locale }) {
   const t = getDictionary(locale);
   const settings = await getSettings();
+  // City pages join the hub layer only once their guard passes — a sitemap URL
+  // must always be internally linked (orphan rule in scripts/seo-audit.js).
+  const cityPages = await getCityPages();
+  const liveCities = Object.keys(CITY_SLUGS).filter((slug) => cityPageIndexable(cityPages.get(slug)));
 
   const col1 = await column('footer_col1', locale, [
-    { href: `/${locale}/bab-makkah`, label: t.nav.babmakkah },
+    { href: `/${locale}/bab-makka`, label: t.nav.babmakkah },
     { href: `/${locale}/hajj`, label: t.nav.hajj },
     { href: `/${locale}/avis`, label: t.nav.avis },
     { href: `/${locale}/agrement`, label: t.pages.agrementTitle },
@@ -32,12 +37,28 @@ export default async function SiteFooter({ locale }) {
     { href: `/${locale}/contact`, label: t.nav.contact },
   ]);
 
-  const socials = [
-    ['Facebook', settings?.facebook_url],
-    ['Instagram', settings?.instagram_url],
-    ['TikTok', settings?.tiktok_url],
-    ['YouTube', settings?.youtube_url],
-  ].filter(([, url]) => url);
+  // Two profiles per network: the Wiki Tours main accounts + the Bab Makka
+  // brand accounts. Each group renders only when at least one URL is set.
+  const socialGroups = [
+    {
+      label: BRAND.parent,
+      links: [
+        ['Facebook', settings?.facebook_url],
+        ['Instagram', settings?.instagram_url],
+        ['TikTok', settings?.tiktok_url],
+        ['YouTube', settings?.youtube_url],
+      ].filter(([, url]) => url),
+    },
+    {
+      label: BRAND.service,
+      links: [
+        ['Facebook', settings?.babmakka_facebook_url],
+        ['Instagram', settings?.babmakka_instagram_url],
+        ['TikTok', settings?.babmakka_tiktok_url],
+        ['YouTube', settings?.babmakka_youtube_url],
+      ].filter(([, url]) => url),
+    },
+  ].filter((g) => g.links.length);
 
   const phones = [settings?.phone_1, settings?.phone_2, settings?.phone_3].filter(Boolean);
 
@@ -45,9 +66,9 @@ export default async function SiteFooter({ locale }) {
     <footer className="bg-bm-black text-white/70">
       <div className="mx-auto grid max-w-5xl gap-10 px-6 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div className="sm:col-span-2">
-          <Image src="/brand/wikitours-logo-white.png" alt={BRAND.parent} width={1536} height={1024} className="h-14 w-auto" />
+          <Image src="/brand/wikitours-logo-white.png" alt={BRAND.parent} width={1536} height={1024} className="h-20 w-auto" />
           <div className="mt-4">
-            <BrandLockup locale={locale} size="sm" />
+            <BrandLockup locale={locale} size="md" />
           </div>
           <p className="mt-3 max-w-sm text-sm leading-relaxed">{t.brand.footerLine}</p>
           {/* Ministère du Tourisme mark — ONLY when the license is set (LAWS §10) */}
@@ -62,15 +83,16 @@ export default async function SiteFooter({ locale }) {
               </span>
             </p>
           ) : null}
-          {socials.length ? (
-            <p className="mt-3 flex gap-4 text-sm">
-              {socials.map(([name, url]) => (
+          {socialGroups.map((group) => (
+            <p key={group.label} className="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-sm">
+              <span className="text-xs font-semibold uppercase tracking-wide text-white/40">{group.label}</span>
+              {group.links.map(([name, url]) => (
                 <a key={name} href={url} target="_blank" rel="noopener noreferrer" className="transition hover:text-bm-gold-light">
                   {name}
                 </a>
               ))}
             </p>
-          ) : null}
+          ))}
         </div>
 
         {[col1, col2].map((col, i) => (
@@ -82,6 +104,40 @@ export default async function SiteFooter({ locale }) {
             ))}
           </nav>
         ))}
+      </div>
+
+      {/* SEO hub layer — permanent internal links to the evergreen hubs
+          (decision C9: hubs are the permanent SEO layer, in sitewide linking). */}
+      <div className="border-t border-white/10">
+        <div className="mx-auto max-w-5xl px-6 py-8">
+          <nav className="flex flex-wrap gap-x-4 gap-y-2 text-xs font-semibold text-white/75">
+            <Link href={`/${locale}/bab-makka`} className="hover:text-bm-gold-light">{t.nav.offers}</Link>
+            <Link href={`/${locale}/omra-ramadan`} className="hover:text-bm-gold-light">Omra Ramadan</Link>
+            <Link href={`/${locale}/omra-pas-cher`} className="hover:text-bm-gold-light">{t.pages.pasCherTitle}</Link>
+            <Link href={`/${locale}/hotels-omra`} className="hover:text-bm-gold-light">{t.home.hotelsTitle}</Link>
+            <Link href={`/${locale}/guide-omra`} className="hover:text-bm-gold-light">{t.guide.backToPillar}</Link>
+            <Link href={`/${locale}/glossaire-omra`} className="hover:text-bm-gold-light">{t.glossary.title}</Link>
+            <Link href={`/${locale}/barometre-prix-omra`} className="hover:text-bm-gold-light">{t.barometer.title}</Link>
+            <Link href={`/${locale}/presse`} className="hover:text-bm-gold-light">{t.pages.pressTitle}</Link>
+          </nav>
+          <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-white/40">{t.home.monthsTitle}</p>
+          <nav className="mt-2 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-white/55">
+            {MONTH_SLUGS.map((slug, i) => (
+              <Link key={slug} href={`/${locale}${monthPagePath(i)}`} className="capitalize hover:text-bm-gold-light">
+                {monthName(i, locale)}
+              </Link>
+            ))}
+          </nav>
+          {liveCities.length ? (
+            <nav className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-white/55">
+              {liveCities.map((slug) => (
+                <Link key={slug} href={`/${locale}/omra-depuis-${slug}`} className="hover:text-bm-gold-light">
+                  {t.cityPage.title.replace('{city}', CITY_SLUGS[slug])}
+                </Link>
+              ))}
+            </nav>
+          ) : null}
+        </div>
       </div>
 
       <div className="border-t border-white/10">

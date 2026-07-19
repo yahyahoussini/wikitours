@@ -31,12 +31,38 @@ const SECTIONS = [
     ],
   },
   {
+    title: 'Localisation & presse',
+    fields: [
+      { name: 'latitude', label: 'Latitude (ex. 33.5731)', type: 'number', step: 'any', hint: 'Coordonnées GPS de l’agence — alimentent le schema LocalBusiness (SEO local / map pack).' },
+      { name: 'longitude', label: 'Longitude (ex. -7.5898)', type: 'number', step: 'any' },
+      { name: 'press_url', label: 'Lien presse / média (ex. article Yabiladi)', hint: 'Affiché sur la page /presse comme couverture média (E-E-A-T).' },
+    ],
+  },
+  {
+    title: 'Notre histoire & équipe',
+    fields: [
+      { name: 'story_fr', label: 'Notre histoire (FR)', type: 'textarea', rows: 5, hint: 'Séparez les paragraphes par une ligne vide.' },
+      { name: 'story_ar', label: 'Notre histoire (AR)', type: 'textarea', rows: 5, dir: 'rtl' },
+      { name: 'story_en', label: 'Notre histoire (EN)', type: 'textarea', rows: 5 },
+      { name: 'team_enabled', label: 'Afficher la section équipe', type: 'bool' },
+      { name: 'team_display', label: 'Affichage de l’équipe', type: 'select', options: [
+        { value: 'members', label: 'Membres individuels' },
+        { value: 'photo', label: 'Une seule photo d’équipe' },
+      ], hint: 'Pour « une seule photo », téléversez-la dans Galeries → Photo équipe.' },
+    ],
+  },
+  {
     title: 'Réseaux sociaux & Google Business',
     fields: [
-      { name: 'facebook_url', label: 'Facebook' },
-      { name: 'instagram_url', label: 'Instagram' },
-      { name: 'tiktok_url', label: 'TikTok' },
-      { name: 'youtube_url', label: 'YouTube' },
+      { name: 'facebook_url', label: 'Facebook (Wiki Tours)' },
+      { name: 'instagram_url', label: 'Instagram (Wiki Tours)' },
+      { name: 'tiktok_url', label: 'TikTok (Wiki Tours)' },
+      { name: 'youtube_url', label: 'YouTube (Wiki Tours)' },
+      { name: 'babmakka_facebook_url', label: 'Facebook (Bab Makka)' },
+      { name: 'babmakka_instagram_url', label: 'Instagram (Bab Makka)' },
+      { name: 'babmakka_tiktok_url', label: 'TikTok (Bab Makka)' },
+      { name: 'babmakka_youtube_url', label: 'YouTube (Bab Makka)' },
+      { name: 'gbp_url', label: 'Fiche Google Business (URL de la fiche / Maps)', hint: 'Utilisée dans le schéma (hasMap + sameAs) — copier l’URL publique de la fiche.' },
       { name: 'gbp_review_url', label: 'Lien avis Google' },
       { name: 'gbp_rating', label: 'Note Google (0–5)', type: 'number', step: '0.1' },
       { name: 'gbp_review_count', label: 'Nombre d’avis Google', type: 'number' },
@@ -67,6 +93,19 @@ const SECTIONS = [
 ];
 
 const ALL_FIELDS = SECTIONS.flatMap((s) => s.fields);
+
+/**
+ * Fields that carry real SEO/E-E-A-T weight. Leaving them empty silently hides
+ * the licence card on /agrement and strips address / rating / verification from
+ * the schema.org output — invisible from the site itself, so surface it here.
+ */
+const CRITICAL = [
+  { name: 'license_number', label: 'N° de licence', why: 'la page /agrément reste vide et le schema Organization perd sa crédibilité' },
+  { name: 'address_fr', label: 'Adresse (FR)', why: 'le schema LocalBusiness / Organization sort sans adresse (SEO local)' },
+  { name: 'gbp_rating', label: 'Note Google', why: 'aucune étoile ne peut apparaître dans les résultats de recherche' },
+  { name: 'gbp_review_count', label: 'Nombre d’avis Google', why: 'aucune étoile ne peut apparaître dans les résultats de recherche' },
+  { name: 'verification_metas', label: 'Balises de vérification', why: 'Search Console / Bing ne peuvent pas valider le site' },
+];
 
 export default function SettingsForm({ settings }) {
   const router = useRouter();
@@ -101,8 +140,45 @@ export default function SettingsForm({ settings }) {
     }
   }
 
+  const isEmpty = (name) => {
+    const v = values[name];
+    return v === '' || v === null || v === undefined;
+  };
+  const missing = CRITICAL.filter((f) => isEmpty(f.name));
+  // sameAs (social profile links) is how AI engines resolve the site, GBP and
+  // socials into ONE entity. Zero links = the brand can't be confidently cited.
+  const socialFields = ['facebook_url', 'instagram_url', 'tiktok_url', 'youtube_url'];
+  const noSocials = socialFields.every(isEmpty);
+
   return (
     <div className="flex flex-col gap-6 pb-24">
+      {missing.length ? (
+        <section className="rounded-card border border-amber-300 bg-amber-50 p-5">
+          <h2 className="text-sm font-bold text-amber-900">
+            {missing.length} information{missing.length > 1 ? 's' : ''} manquante
+            {missing.length > 1 ? 's' : ''} — impact SEO direct
+          </h2>
+          <ul className="mt-2 flex flex-col gap-1.5">
+            {missing.map((f) => (
+              <li key={f.name} className="text-xs leading-relaxed text-amber-900/80">
+                <span className="font-semibold">{f.label}</span> — sans ça, {f.why}.
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {noSocials ? (
+        <section className="rounded-card border border-amber-300 bg-amber-50 p-5">
+          <h2 className="text-sm font-bold text-amber-900">Aucun réseau social renseigné — visibilité IA réduite</h2>
+          <p className="mt-1 text-xs leading-relaxed text-amber-900/80">
+            Les liens Facebook / Instagram / TikTok / YouTube alimentent le champ <code>sameAs</code> du
+            schema. C’est le principal signal qui permet à ChatGPT, Perplexity et Google de reconnaître
+            « {'Bab Makka by Wiki Tours International'} » comme une entité fiable et de la citer. Ajoutez-en au moins un.
+          </p>
+        </section>
+      ) : null}
+
       {SECTIONS.map((section) => (
         <section key={section.title} className="rounded-card border border-bm-black/10 bg-white p-5 shadow-hairline">
           <h2 className="mb-4 text-sm font-bold">{section.title}</h2>
@@ -161,6 +237,7 @@ export default function SettingsForm({ settings }) {
                       step={f.step}
                       value={values[f.name] ?? ''}
                       onChange={(e) => set(f.name, e.target.value)}
+                      onWheel={f.type === 'number' ? (e) => e.currentTarget.blur() : undefined}
                       className={INPUT}
                     />
                   )}

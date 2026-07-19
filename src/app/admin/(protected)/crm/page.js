@@ -1,6 +1,6 @@
 import { supabaseServer } from '@/lib/supabase/server';
 import LeadsBoard from '@/components/admin/LeadsBoard';
-import { LEAD_STATUSES } from '@/components/admin/LeadRow';
+import { LEAD_STATUSES } from '@/lib/admin/lead-statuses';
 
 export const dynamic = 'force-dynamic';
 

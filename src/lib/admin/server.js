@@ -78,6 +78,19 @@ export function clientConfig(entityKey) {
   };
 }
 
+/** Fetch all tiers for a given offer, with hotel data joined. */
+export async function fetchOfferTiers(offerId) {
+  if (!offerId) return [];
+  const sb = await supabaseServer();
+  if (!sb) return [];
+  const { data } = await sb
+    .from('offer_tiers')
+    .select('*, hotel_makkah:hotel_makkah_id (*), hotel_madinah:hotel_madinah_id (*)')
+    .eq('offer_id', offerId)
+    .order('sort_order', { ascending: true });
+  return data ?? [];
+}
+
 export function publicUrlBase(entityKey) {
   const base = PUBLIC_BASES[entityKey];
   return base ? `${SITE_URL}/{locale}${base}` : null;

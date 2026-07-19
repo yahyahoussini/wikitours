@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seo:audit": "node scripts/seo-audit.js"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.0",

@@ -11,7 +11,21 @@ const short = (max) =>
   z.preprocess((v) => (v === '' ? null : v), z.string().max(max).nullable().optional());
 
 const eventSchema = z.object({
-  t: z.enum(['pageview', 'offer_view', 'form_start', 'form_submit', 'whatsapp_click', 'cta_click']),
+  // web_vital carries the metric in m.label ('LCP:2400' | 'CLS:0.052' | 'INP:120').
+  t: z.enum([
+    'pageview',
+    'offer_view',
+    'form_start',
+    'form_submit',
+    'whatsapp_click',
+    'cta_click',
+    'web_vital',
+    'tier_select',
+    'room_select',
+    'tel_click',
+    'faq_expand',
+    'devis_request',
+  ]),
   p: z.string().max(500),
   o: z.preprocess((v) => (v ? v : null), z.uuid().nullable().optional()),
   m: z.object({ label: z.string().max(200).optional() }).nullable().optional(),

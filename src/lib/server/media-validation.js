@@ -31,7 +31,20 @@ export function sniffMedia(buf) {
   ) {
     return { kind: 'image', mime: 'image/webp', ext: 'webp' };
   }
+  // Matroska/EBML container — accept only WebM (doctype "webm" in the header),
+  // not MKV. Magic: 1A 45 DF A3.
+  if (buf[0] === 0x1a && buf[1] === 0x45 && buf[2] === 0xdf && buf[3] === 0xa3) {
+    if (buf.subarray(0, Math.min(buf.length, 256)).includes('webm', 0, 'ascii')) {
+      return { kind: 'video', mime: 'video/webm', ext: 'webm' };
+    }
+    return null;
+  }
+  // ISO-BMFF `ftyp` box is shared by MP4 AND AVIF — the brand disambiguates.
   if (buf.toString('ascii', 4, 8) === 'ftyp') {
+    const brands = buf.toString('ascii', 8, 24); // major brand + start of compatible brands
+    if (brands.includes('avif') || brands.includes('avis')) {
+      return { kind: 'image', mime: 'image/avif', ext: 'avif' };
+    }
     return { kind: 'video', mime: 'video/mp4', ext: 'mp4' };
   }
   if (buf.toString('ascii', 0, 5) === '%PDF-') {
@@ -50,8 +63,23 @@ export function imageDimensions(buf, mime) {
     if (mime === 'image/jpeg') return jpegDims(buf);
     if (mime === 'image/gif') return gifDims(buf);
     if (mime === 'image/webp') return webpDims(buf);
+    if (mime === 'image/avif') return avifDims(buf);
   } catch {
     return null;
+  }
+  return null;
+}
+
+function avifDims(buf) {
+  // Best-effort: read the `ispe` (image spatial extents) box — box type (4) then
+  // version+flags (4), width (4, BE), height (4, BE). Dimensions are optional
+  // (nullable in the DB), so an unusual layout simply stores null.
+  const idx = buf.indexOf('ispe', 0, 'ascii');
+  if (idx === -1 || idx + 16 > buf.length) return null;
+  const width = buf.readUInt32BE(idx + 8);
+  const height = buf.readUInt32BE(idx + 12);
+  if (width > 0 && height > 0 && width < 100000 && height < 100000) {
+    return { width, height };
   }
   return null;
 }

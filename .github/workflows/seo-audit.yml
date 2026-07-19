@@ -1,0 +1,67 @@
+name: SEO Audit (blocking gate)
+
+# Fails the pipeline when scripts/seo-audit.js reports any failure, so a build
+# that regresses SEO fundamentals (title/desc/H1/canonical/JSON-LD, offer Offer
+# schema + FAQ, or a stale offer) cannot ship. Make this a REQUIRED status check
+# on the deploy branch so a red audit blocks the merge/deploy.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'Audit an already-deployed staging URL instead of building here'
+        required: false
+        default: ''
+
+jobs:
+  seo-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # --- Mode A: audit an existing staging deployment ---------------------
+      - name: Audit staging URL
+        if: ${{ inputs.base_url != '' }}
+        run: BASE_URL='${{ inputs.base_url }}' node scripts/seo-audit.js
+
+      # --- Mode B (default): build + serve here, then audit ----------------
+      - name: Install
+        if: ${{ inputs.base_url == '' }}
+        run: npm ci
+
+      - name: Build
+        if: ${{ inputs.base_url == '' }}
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: http://localhost:3000
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      - name: Start server, wait, audit (fails on any audit failure)
+        if: ${{ inputs.base_url == '' }}
+        env:
+          NEXT_PUBLIC_SITE_URL: http://localhost:3000
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          npm start -- -p 3000 &
+          SERVER_PID=$!
+          # Poll until the sitemap answers (no extra deps).
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:3000/sitemap.xml >/dev/null && break
+            sleep 2
+          done
+          set +e
+          BASE_URL=http://localhost:3000 node scripts/seo-audit.js
+          CODE=$?
+          kill $SERVER_PID 2>/dev/null
+          exit $CODE

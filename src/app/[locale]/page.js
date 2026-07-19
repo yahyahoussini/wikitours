@@ -1,6 +1,6 @@
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { BRAND } from '@/lib/brand';
-import { SITE_URL, absoluteUrl, hreflangAlternates } from '@/lib/seo';
+import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc } from '@/lib/seo';
 import { routeTitle } from '@/lib/titles';
 import { getSettings } from '@/lib/data/settings';
 import {
@@ -10,12 +10,11 @@ import {
   getTeam,
   getTestimonials,
   getFaqs,
-  getTimeline,
   getArticles,
   getDestinations,
   getCovers,
 } from '@/lib/data/content';
-import { publicMediaUrl } from '@/lib/media';
+import { toOfferCard } from '@/lib/offer-card';
 import { waLink } from '@/lib/whatsapp';
 import { monthName } from '@/lib/months';
 import BrandLockup from '@/components/site/BrandLockup';
@@ -46,19 +45,8 @@ export async function generateMetadata({ params }) {
   const t = getDictionary(locale);
   return {
     title: { absolute: routeTitle('home', locale) },
-    description: t.home.intro,
+    description: clampDesc(t.home.intro),
     alternates: hreflangAlternates(locale, ''),
-  };
-}
-
-/** Serializes an offer row + cover for the client packages grid. */
-function serializeOffer(offer, covers, locale) {
-  const cover = covers.get(offer.id);
-  return {
-    ...offer,
-    cover: cover
-      ? { src: publicMediaUrl(cover.path), alt: pickLang(cover, 'alt', locale) }
-      : null,
   };
 }
 
@@ -67,7 +55,7 @@ export default async function HomePage({ params }) {
   if (!isLocale(locale)) return null; // layout already 404s
 
   const t = getDictionary(locale);
-  const [settings, offers, occasions, hotels, team, testimonials, faqs, timeline, articles, destinations] =
+  const [settings, offers, occasions, hotels, team, testimonials, faqs, articles, destinations] =
     await Promise.all([
       getSettings(),
       getPublishedOffers(),
@@ -76,14 +64,14 @@ export default async function HomePage({ params }) {
       getTeam(),
       getTestimonials(),
       getFaqs(),
-      getTimeline(),
       getArticles(3),
       getDestinations(),
     ]);
 
-  const [offerCovers, hotelCovers] = await Promise.all([
+  const [offerCovers, hotelCovers, articleCovers] = await Promise.all([
     getCovers('offers', offers.map((o) => o.id)),
     getCovers('hotels', hotels.map((h) => h.id)),
+    getCovers('articles', articles.map((a) => a.id)),
   ]);
 
   const whatsappHref = waLink(settings?.whatsapp_number);
@@ -100,20 +88,36 @@ export default async function HomePage({ params }) {
     monthAll: t.home.selectorAll,
   };
 
-  // WebSite entity only — the organization is the sitewide TravelAgency in the
-  // layout, and FAQPage is deliberately NOT emitted (no FAQPage stacking).
+  // WebSite entity — the organization is the sitewide TravelAgency in the layout.
   const siteJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
+    '@id': `${SITE_URL}/#website`,
     name: BRAND.parent,
     url: absoluteUrl(locale, ''),
     inLanguage: locale,
     publisher: { '@id': `${SITE_URL}/#organization` },
   };
 
+  // FAQPage lives HERE and only here. The no-stacking rule is about repeating
+  // the same block sitewide; the home renders the full FAQ set, so a single
+  // owner recovers the answer-engine value without duplicating it everywhere.
+  const faqJsonLd = faqs.length
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.slice(0, 10).map((faq) => ({
+          '@type': 'Question',
+          name: pickLang(faq, 'question', locale),
+          acceptedAnswer: { '@type': 'Answer', text: pickLang(faq, 'answer', locale) },
+        })),
+      }
+    : null;
+
   return (
     <main>
       <JsonLd data={siteJsonLd} />
+      {faqJsonLd ? <JsonLd data={faqJsonLd} /> : null}
 
       {/* 1 — hero */}
       <Hero locale={locale} />
@@ -133,20 +137,19 @@ export default async function HomePage({ params }) {
         />
       </div>
 
-      {/* 3 — packages (Bab Makkah dark surface) */}
+      {/* 3 — packages (Bab Makkah light surface) */}
       {offers.length > 0 ? (
         <>
-          <SectionBridge from="light" to="dark" />
-          <section id="offres" className="bg-bm-black">
+          <section id="offres" className="bg-wiki-white">
             <div className="mx-auto max-w-6xl px-6 py-14">
               <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <BrandLockup locale={locale} size="md" />
-                  <h2 className="mt-3 text-3xl font-bold text-white">{t.home.packagesTitle}</h2>
+                  <BrandLockup locale={locale} size="lg" />
+                  <h2 className="mt-3 text-3xl font-bold text-bm-black">{t.home.packagesTitle}</h2>
                 </div>
               </div>
               <PackagesSection
-                offers={offers.map((o) => serializeOffer(o, offerCovers, locale))}
+                offers={offers.map((o) => toOfferCard(o, offerCovers.get(o.id), locale))}
                 occasions={activeOccasions.map((o) => ({
                   slug: o.slug,
                   name_fr: o.name_fr,
@@ -160,19 +163,26 @@ export default async function HomePage({ params }) {
           </section>
 
           {/* 4 — why-us stays on the dark surface */}
+          <SectionBridge from="light" to="dark" />
           <StatsBand locale={locale} settings={settings} />
-          <SectionBridge from="dark" to="light" />
         </>
       ) : null}
+
+      {/* Proof directly under the why/stats band. With offers above, it keeps
+          the dark surface through the reels then bridges back to light; the
+          leading/trailing bridges are handled inside via enterDark. */}
+      <ProofSection
+        locale={locale}
+        testimonials={testimonials}
+        settings={settings}
+        enterDark={offers.length > 0}
+      />
 
       {/* 5 — hotels */}
       <HotelsSection locale={locale} hotels={hotels} covers={hotelCovers} />
 
       {/* 6 — how it works */}
       <StepsSection locale={locale} />
-
-      {/* 7+8 — reels + proof wall (bridges handled inside) */}
-      <ProofSection locale={locale} testimonials={testimonials} settings={settings} />
 
       {/* 9 — months hub */}
       <MonthsLinks locale={locale} />
@@ -181,7 +191,7 @@ export default async function HomePage({ params }) {
       <DestinationsSection locale={locale} destinations={destinations} />
 
       {/* 11 — story + team */}
-      <StorySection locale={locale} timeline={timeline} team={team} />
+      <StorySection locale={locale} team={team} settings={settings} fallbackStory={t.home.intro} />
 
       {/* 12 — guarantees + trust-marks marquee (Saudia + hotel names) */}
       <GuaranteesStrip
@@ -191,7 +201,7 @@ export default async function HomePage({ params }) {
       />
 
       {/* 13 — blog */}
-      <BlogTeasers locale={locale} articles={articles} />
+      <BlogTeasers locale={locale} articles={articles} covers={articleCovers} />
 
       {/* 14 — FAQ */}
       <FaqSection locale={locale} faqs={faqs} />

@@ -31,13 +31,23 @@ export function renderMarkdown(md) {
   const blocks = escapeHtml(md.replaceAll('\r\n', '\n')).split(/\n{2,}/);
   const html = [];
 
+  // Heading normalization: the page H1 belongs to the layout, so the SMALLEST
+  // heading level used in the body must render as <h2> — whatever hash depth
+  // the author typed. Keeps the hierarchy gap-free (audit: no skipped levels).
+  let minHashes = Infinity;
+  for (const block of blocks) {
+    const m = block.match(/^(#{1,4})\s+/);
+    if (m && m[1].length < minHashes) minHashes = m[1].length;
+  }
+  if (!Number.isFinite(minHashes)) minHashes = 1;
+
   for (const block of blocks) {
     const lines = block.split('\n').filter((l) => l.trim() !== '');
     if (lines.length === 0) continue;
 
     const heading = lines[0].match(/^(#{1,4})\s+(.*)$/);
     if (heading && lines.length === 1) {
-      const level = heading[1].length + 1; // page H1 belongs to the layout
+      const level = Math.min(6, heading[1].length - minHashes + 2);
       html.push(`<h${level}>${inline(heading[2])}</h${level}>`);
       continue;
     }

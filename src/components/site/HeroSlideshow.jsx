@@ -47,6 +47,7 @@ export default function HeroSlideshow({ slides }) {
             fill
             priority={i === 0}
             sizes="100vw"
+            quality={65}
             className="object-cover"
             style={{
               animation: !reduced && i === index ? `hero-kenburns ${INTERVAL_MS + 1500}ms linear forwards` : 'none',

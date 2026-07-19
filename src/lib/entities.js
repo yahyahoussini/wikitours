@@ -16,6 +16,13 @@ export const SETTINGS_HERO_ENTITY_ID = '00000000-0000-0000-0000-000000000001';
 /** Office/agency photos (LocalBusiness landing) — second virtual gallery. */
 export const SETTINGS_OFFICE_ENTITY_ID = '00000000-0000-0000-0000-000000000002';
 
+/** Single "full team" photo shown on the home story section — third virtual. */
+export const SETTINGS_TEAM_ENTITY_ID = '00000000-0000-0000-0000-000000000003';
+
+/** Framed photo of the "Pourquoi les familles nous confient leur Omra" band —
+ *  fourth virtual gallery. Falls back to hero image #2 while empty. */
+export const SETTINGS_WHY_ENTITY_ID = '00000000-0000-0000-0000-000000000004';
+
 export const GALLERY_ENTITIES = {
   offers: {
     table: 'offers',
@@ -76,6 +83,18 @@ export const GALLERY_ENTITIES = {
     adminLabel: "Photos de l'agence",
     labelField: null,
     publicPath: () => '/agence-omra-casablanca',
+  },
+  settings_team: {
+    table: null, // virtual: single full-team photo, id is the sentinel
+    adminLabel: 'Photo équipe',
+    labelField: null,
+    publicPath: () => '/', // team block lives on the home page
+  },
+  settings_why: {
+    table: null, // virtual: "Pourquoi nous" framed photo, id is the sentinel
+    adminLabel: 'Photo « Pourquoi nous »',
+    labelField: null,
+    publicPath: () => '/', // why-us band lives on the home page
   },
 };
 

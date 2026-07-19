@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
-import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
+import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
 import { getSettings } from '@/lib/data/settings';
 import { supabasePublic } from '@/lib/supabase/public';
 import { waLink } from '@/lib/whatsapp';
@@ -10,6 +10,19 @@ import LeadForm from '@/components/LeadForm';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
 export const revalidate = 60;
+
+/** Prebuild every public LP × locale so campaign traffic hits the ISR cache
+ *  instead of a per-request render. Unknown slugs still resolve on demand. */
+export async function generateStaticParams() {
+  try {
+    const supabase = supabasePublic();
+    if (!supabase) return [];
+    const { data } = await supabase.from('landing_pages').select('slug');
+    return LOCALES.flatMap((locale) => (data ?? []).map(({ slug }) => ({ locale, slug })));
+  } catch {
+    return [];
+  }
+}
 
 async function getLandingPage(slug) {
   try {

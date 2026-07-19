@@ -58,6 +58,10 @@ create table if not exists public.settings (
   instagram_url text,
   tiktok_url text,
   youtube_url text,
+  babmakka_facebook_url text,
+  babmakka_instagram_url text,
+  babmakka_tiktok_url text,
+  babmakka_youtube_url text,
   gbp_review_url text,
   gbp_rating numeric(2, 1) check (gbp_rating is null or (gbp_rating >= 0 and gbp_rating <= 5)),
   gbp_review_count integer,
@@ -72,6 +76,15 @@ create table if not exists public.settings (
   verification_metas text,
   consent_banner_enabled boolean not null default true,
   indexnow_key text,
+  story_fr text,
+  story_ar text,
+  story_en text,
+  team_enabled boolean not null default true,
+  team_display text not null default 'members' check (team_display in ('members', 'photo')),
+  latitude numeric(9, 6) check (latitude is null or (latitude between -90 and 90)),
+  longitude numeric(9, 6) check (longitude is null or (longitude between -180 and 180)),
+  press_url text,
+  gbp_url text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -187,6 +200,7 @@ create table if not exists public.offers (
   price_quad integer,
   price_quint integer,
   starting_price integer,
+  seats_remaining int check (seats_remaining is null or seats_remaining >= 0),
   status text not null default 'open' check (status in ('open', 'few_left', 'full')),
   is_featured boolean not null default false,
   land_only boolean not null default false,
@@ -205,6 +219,32 @@ create index if not exists offers_occasion_idx on public.offers (occasion_id);
 create index if not exists offers_published_idx on public.offers (is_published, status);
 create index if not exists offers_date_end_idx on public.offers (date_end);
 create index if not exists offers_featured_idx on public.offers (is_featured) where is_featured;
+
+create table if not exists public.offer_tiers (
+  id               uuid primary key default gen_random_uuid(),
+  offer_id         uuid not null references public.offers (id) on delete cascade,
+  sort_order       int not null default 0,
+  label            text not null check (label in ('economique', 'confort', 'premium', 'vip')),
+  hotel_makkah_id  uuid references public.hotels (id) on delete set null,
+  hotel_madinah_id uuid references public.hotels (id) on delete set null,
+  nights_makkah    int,
+  nights_madinah   int,
+  distance_to_haram_m int,
+  breakfast_included boolean not null default false,
+  price_double     int,
+  price_triple     int,
+  price_quad       int,
+  price_quint      int,
+  is_published     boolean not null default true,
+  created_at       timestamptz not null default now(),
+  updated_at       timestamptz not null default now()
+);
+
+create unique index if not exists idx_offer_tiers_unique
+  on public.offer_tiers (offer_id, label);
+
+create index if not exists idx_offer_tiers_offer
+  on public.offer_tiers (offer_id, sort_order);
 
 create table if not exists public.destinations (
   id uuid primary key default gen_random_uuid(),
@@ -227,6 +267,7 @@ create table if not exists public.team_members (
   role_fr text,
   role_ar text,
   role_en text,
+  sameas_url text,
   sort_order integer not null default 0,
   is_published boolean not null default false,
   created_at timestamptz not null default now(),
@@ -424,6 +465,8 @@ create table if not exists public.leads (
   full_name text not null,
   city text,
   phone text not null,
+  message text,
+  ip text,
   source text,
   utm_source text,
   utm_medium text,
@@ -504,7 +547,12 @@ create table if not exists public.events (
   visitor_id uuid,
   ts timestamptz not null default now(),
   type text not null check (
-    type in ('pageview', 'offer_view', 'form_start', 'form_submit', 'whatsapp_click', 'cta_click')
+    type in (
+      'pageview', 'offer_view', 'form_start', 'form_submit',
+      'whatsapp_click', 'cta_click', 'web_vital',
+      'tier_select', 'room_select',
+      'tel_click', 'faq_expand', 'devis_request'
+    )
   ),
   path text,
   offer_id uuid references public.offers (id) on delete set null,
@@ -548,6 +596,74 @@ create table if not exists public.keyword_checks (
 
 create index if not exists keyword_checks_kw_idx
   on public.keyword_checks (keyword, engine, checked_at desc);
+
+-- AI/search bot logger (migration 009): raw hits from the middleware
+-- (service role writes; no anon policy). The nightly cron folds rows older
+-- than 7 days into bot_hits_weekly and deletes them (bounded growth).
+create table if not exists public.bot_hits (
+  id bigint generated always as identity primary key,
+  bot text not null,
+  path text not null,
+  ua text,
+  ts timestamptz not null default now()
+);
+
+create index if not exists bot_hits_ts_idx on public.bot_hits (ts);
+create index if not exists bot_hits_bot_ts_idx on public.bot_hits (bot, ts);
+
+create table if not exists public.bot_hits_weekly (
+  week date not null,
+  bot text not null,
+  path text not null,
+  hits int not null default 0,
+  updated_at timestamptz not null default now(),
+  primary key (week, bot, path)
+);
+
+-- ============================================================================
+-- PROGRAMMATIC CONTENT SURFACES (migration 009)
+-- ============================================================================
+
+-- City pages (/omra-depuis-{ville}) anti-doorway guard: unique local content
+-- + explicit indexability toggle. Page ships NOINDEX until content is filled
+-- AND the toggle is on.
+create table if not exists public.city_pages (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  is_indexable boolean not null default false,
+  intro_fr text, intro_ar text, intro_en text,
+  logistics_fr text, logistics_ar text, logistics_en text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- Guide cluster (/guide-omra + children). is_published = anon-visible;
+-- is_indexable = admin index switch (page also self-noindexes while empty).
+create table if not exists public.guide_pages (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  is_published boolean not null default false,
+  is_indexable boolean not null default false,
+  title_fr text, title_ar text, title_en text,
+  summary_fr text, summary_ar text, summary_en text,
+  body_fr text, body_ar text, body_en text,
+  author_name text,
+  author_sameas_url text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- Glossary (/glossaire-omra) — DefinedTerm entries.
+create table if not exists public.glossary_terms (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  is_published boolean not null default false,
+  term_fr text, term_ar text, term_en text,
+  definition_fr text, definition_ar text, definition_en text,
+  sort_order int not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
 
 -- ============================================================================
 -- updated_at triggers on every table that has the column
@@ -618,7 +734,8 @@ $$;
 
 -- ---- anon read policies: PUBLISHED CONTENT ONLY --------------------------
 -- (No anon policy exists on settings, leads, lead_activities, visitors,
---  sessions, events, daily_rollups, keyword_checks → anon is fully denied.)
+--  sessions, events, daily_rollups, keyword_checks, bot_hits,
+--  bot_hits_weekly → anon is fully denied.)
 
 drop policy if exists anon_read on public.media;
 create policy anon_read on public.media
@@ -638,10 +755,17 @@ create policy anon_read on public.hotels
 
 -- Past offers auto-hidden at the DB layer (LAWS §6): once date_end passes,
 -- anon can no longer read the row — no code change, no cron needed.
+drop policy if exists anon_read on public.offer_tiers;
+create policy anon_read on public.offer_tiers
+  for select to anon
+  using (is_published);
+
+-- 60-day grace after date_end (migration 008): the departed page stays
+-- readable for its "Départ effectué" state until the cron 301s it.
 drop policy if exists anon_read on public.offers;
 create policy anon_read on public.offers
   for select to anon
-  using (is_published and (date_end is null or date_end >= current_date));
+  using (is_published and (date_end is null or date_end >= current_date - interval '60 days'));
 
 drop policy if exists anon_read on public.destinations;
 create policy anon_read on public.destinations
@@ -693,6 +817,18 @@ drop policy if exists anon_read on public.services;
 create policy anon_read on public.services
   for select to anon using (is_published);
 
+drop policy if exists anon_read on public.city_pages;
+create policy anon_read on public.city_pages
+  for select to anon using (true);
+
+drop policy if exists anon_read on public.guide_pages;
+create policy anon_read on public.guide_pages
+  for select to anon using (is_published);
+
+drop policy if exists anon_read on public.glossary_terms;
+create policy anon_read on public.glossary_terms
+  for select to anon using (is_published);
+
 -- ============================================================================
 -- ANALYTICS MAINTENANCE
 -- ============================================================================
@@ -710,6 +846,25 @@ as $$
   delete from public.events where ts < now() - interval '90 days';
   delete from public.sessions where started_at < now() - interval '13 months';
   delete from public.visitors where first_seen < now() - interval '13 months';
+$$;
+
+-- Fold raw bot hits older than 7 days into weekly counts, then purge them.
+-- Idempotent under daily cron: each slice is aggregated once and deleted.
+create or replace function public.rollup_bot_hits()
+returns void
+language sql
+security definer
+set search_path = public
+as $$
+  insert into public.bot_hits_weekly (week, bot, path, hits)
+  select date_trunc('week', ts)::date, bot, path, count(*)
+  from public.bot_hits
+  where ts < now() - interval '7 days'
+  group by 1, 2, 3
+  on conflict (week, bot, path) do update set
+    hits = public.bot_hits_weekly.hits + excluded.hits,
+    updated_at = now();
+  delete from public.bot_hits where ts < now() - interval '7 days';
 $$;
 
 -- Materialize one day of per-path rollups (idempotent upsert). Run monthly

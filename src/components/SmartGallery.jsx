@@ -32,7 +32,7 @@ export default async function SmartGallery({
       (slide.width && slide.height ? `${slide.width} / ${slide.height}` : '16 / 10');
     return (
       <div className={`relative overflow-hidden ${className}`} style={{ aspectRatio }}>
-        <Image src={slide.src} alt={slide.alt} fill sizes={sizes} priority placeholder="blur" blurDataURL={BLUR_DATA_URL} className="object-cover" />
+        <Image src={slide.src} alt={slide.alt} fill sizes={sizes} priority quality={65} placeholder="blur" blurDataURL={BLUR_DATA_URL} className="object-cover" />
       </div>
     );
   }

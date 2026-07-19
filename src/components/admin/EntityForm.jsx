@@ -509,6 +509,9 @@ function Field({ field, value, onChange, relOptions }) {
         onChange={(e) =>
           onChange(field.type === 'number' && e.target.value !== '' ? Number(e.target.value) : e.target.value)
         }
+        // Number inputs mutate on wheel-scroll while focused — that silently
+        // drifted prices/seats by ±1 when admins scrolled the page.
+        onWheel={field.type === 'number' ? (e) => e.currentTarget.blur() : undefined}
         className={INPUT_CLASSES}
       />
     );

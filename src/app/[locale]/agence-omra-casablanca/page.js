@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
-import { SITE_URL, hreflangAlternates } from '@/lib/seo';
+import { SITE_URL, hreflangAlternates, clampDesc } from '@/lib/seo';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { getPublishedOffers, getTestimonials } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }) {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = getDictionary(locale);
-  return { title: t.agency.title, description: t.agency.metaDescription, alternates: hreflangAlternates(locale, '/agence-omra-casablanca') };
+  return { title: t.agency.title, description: clampDesc(t.agency.metaDescription), alternates: hreflangAlternates(locale, '/agence-omra-casablanca') };
 }
 
 /* /agence-omra-casablanca — the LocalBusiness landing: identity answer-first,
@@ -61,8 +61,7 @@ export default async function AgencyCasablancaPage({ params }) {
   );
 
   // LocalBusiness = the physical Casablanca office (distinct from the sitewide
-  // TravelAgency org). Geo omitted until lat/lng exist; address stays out until
-  // the client designates THE one (LAW §10).
+  // TravelAgency org). Geo + address stay out until the client sets them (LAW §10).
   const socials = [settings?.facebook_url, settings?.instagram_url, settings?.tiktok_url, settings?.youtube_url].filter(Boolean);
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -72,6 +71,9 @@ export default async function AgencyCasablancaPage({ params }) {
     parentOrganization: { '@id': `${SITE_URL}/#organization` },
     url: `${SITE_URL}/${locale}/agence-omra-casablanca`,
     ...(address ? { address: { '@type': 'PostalAddress', streetAddress: address, addressLocality: 'Casablanca', addressCountry: 'MA' } } : {}),
+    ...(settings?.latitude != null && settings?.longitude != null
+      ? { geo: { '@type': 'GeoCoordinates', latitude: settings.latitude, longitude: settings.longitude } }
+      : {}),
     ...(phones[0] ? { telephone: phones[0] } : {}),
     ...(settings?.email ? { email: settings.email } : {}),
     ...(hours ? { openingHours: hours } : {}),
@@ -201,7 +203,7 @@ export default async function AgencyCasablancaPage({ params }) {
                   ))}
                 </ul>
                 <Link
-                  href={`/${locale}/bab-makkah`}
+                  href={`/${locale}/bab-makka`}
                   className="mt-5 inline-block text-sm font-semibold text-bm-gold underline-offset-4 hover:underline"
                 >
                   {t.cta.seeAllOffers} →

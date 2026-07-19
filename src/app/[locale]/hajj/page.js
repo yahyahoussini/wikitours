@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale } from '@/lib/i18n';
-import { hreflangAlternates } from '@/lib/seo';
+import { hreflangAlternates, clampDesc } from '@/lib/seo';
 import { getSettings } from '@/lib/data/settings';
 import BrandLockup from '@/components/site/BrandLockup';
 import LeadForm from '@/components/LeadForm';
@@ -12,7 +12,7 @@ export async function generateMetadata({ params }) {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = getDictionary(locale);
-  return { title: t.hajjPage.title, description: t.hajjPage.body, alternates: hreflangAlternates(locale, '/hajj') };
+  return { title: t.hajjPage.title, description: clampDesc(t.hajjPage.body), alternates: hreflangAlternates(locale, '/hajj') };
 }
 
 /** Hajj: interest-only until the agrément is confirmed (LAWS §6). */

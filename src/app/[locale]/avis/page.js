@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
-import { hreflangAlternates } from '@/lib/seo';
+import { SITE_URL, hreflangAlternates } from '@/lib/seo';
 import { getTestimonials } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { getTestimonialMedia } from '@/lib/data/gallery';
+import JsonLd from '@/components/site/JsonLd';
 import SectionBridge from '@/components/site/SectionBridge';
 import ReelsRow from '@/components/site/ReelsRow';
 import ScreenshotWall from '@/components/site/ScreenshotWall';
@@ -16,7 +17,7 @@ export async function generateMetadata({ params }) {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = getDictionary(locale);
-  return { title: t.pages.avisTitle, alternates: hreflangAlternates(locale, '/avis') };
+  return { title: t.pages.avisTitle, description: t.pages.avisDesc, alternates: hreflangAlternates(locale, '/avis') };
 }
 
 /* /avis — every proof kind on one page: reels (dark band), text cards,
@@ -29,9 +30,49 @@ export default async function AvisPage({ params }) {
   const [testimonials, settings] = await Promise.all([getTestimonials(), getSettings()]);
   const { reels, shots, texts } = await getTestimonialMedia(testimonials, locale);
 
+  // Real, rated testimonials as Review nodes pointing at the organization —
+  // enriches the entity for answer engines. Only rows carrying a real rating.
+  const rated = texts.filter((x) => typeof x.rating === 'number' && x.rating > 0);
+  const reviewsJsonLd = rated.length
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: t.pages.avisTitle,
+        numberOfItems: rated.length,
+        itemListElement: rated.slice(0, 20).map((r, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          item: {
+            '@type': 'Review',
+            itemReviewed: { '@id': `${SITE_URL}/#organization` },
+            reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5 },
+            ...(r.author_name ? { author: { '@type': 'Person', name: r.author_name } } : {}),
+            ...(pickLang(r, 'content', locale) ? { reviewBody: pickLang(r, 'content', locale) } : {}),
+          },
+        })),
+      }
+    : null;
+
+  // Uploaded testimonial videos as VideoObject nodes — only real fields
+  // (contentUrl from storage, poster when one exists); nothing invented.
+  const videosJsonLd = reels
+    .filter((r) => r.src)
+    .map((r) => ({
+      '@context': 'https://schema.org',
+      '@type': 'VideoObject',
+      name: r.caption ? `${t.pages.avisTitle} — ${r.caption}` : t.pages.avisTitle,
+      contentUrl: r.src,
+      ...(r.poster ? { thumbnailUrl: r.poster } : {}),
+      publisher: { '@id': `${SITE_URL}/#organization` },
+    }));
+
   return (
     <>
       <main>
+        {reviewsJsonLd ? <JsonLd data={reviewsJsonLd} /> : null}
+        {videosJsonLd.map((node) => (
+          <JsonLd key={node.contentUrl} data={node} />
+        ))}
         <div className="mx-auto max-w-5xl px-6 pb-4 pt-10">
           <h1 className="text-3xl font-bold text-bm-black sm:text-4xl">{t.pages.avisTitle}</h1>
 
@@ -112,7 +153,7 @@ export default async function AvisPage({ params }) {
 
         <div className="mx-auto max-w-5xl px-6 py-12">
           <Link
-            href={`/${locale}/bab-makkah`}
+            href={`/${locale}/bab-makka`}
             data-wt="cta_click"
             data-wt-label="avis"
             className="inline-block rounded-full bg-wiki-blue px-8 py-3.5 text-sm font-semibold text-white shadow-lift transition hover:bg-wiki-blue/90"

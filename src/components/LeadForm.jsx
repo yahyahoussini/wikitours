@@ -58,11 +58,13 @@ export default function LeadForm({
           full_name: name,
           phone,
           city,
+          message: form.get('message'),
           website: form.get('website'), // honeypot
           locale,
           offer_id: offerId,
           offer_title: offerTitle,
-          room_type: offerId ? (roomStore.get() ?? defaultRoomType) : null,
+          room_type: offerId ? (roomStore.get()?.roomType ?? defaultRoomType) : null,
+          tier_label: offerId ? (roomStore.get()?.tierLabel ?? null) : null,
           source,
           event_id: eventId,
           utm_source: params.get('utm_source'),
@@ -77,6 +79,9 @@ export default function LeadForm({
         setSent({ name, city });
         setState('done');
         window.wt?.track('form_submit', { offer_id: offerId ?? undefined });
+        // The lead form IS the quote request — devis_request is the business
+        // conversion event (form_submit stays the generic funnel step).
+        window.wt?.track('devis_request', { offer_id: offerId ?? undefined, label: source });
         window.wt?.flush?.();
         // Browser-side conversions, deduped against the server via event_id.
         fireLeadPixels({ eventId, phone });
@@ -134,18 +139,25 @@ export default function LeadForm({
   }
 
   return (
+    // suppressHydrationWarning on the controls: form-filler extensions stamp
+    // attributes (fdprocessedid, …) on inputs/buttons before React hydrates —
+    // same false positive the layouts silence on <html>/<body>.
     <form onSubmit={onSubmit} className="flex max-w-md flex-col gap-3">
       <label className="flex flex-col gap-1 text-sm font-medium">
         {labels.fullName}
-        <input name="full_name" required minLength={2} maxLength={80} onFocus={onFirstFocus} className={inputClasses} />
+        <input name="full_name" required minLength={2} maxLength={80} onFocus={onFirstFocus} className={inputClasses} suppressHydrationWarning />
       </label>
       <label className="flex flex-col gap-1 text-sm font-medium">
         {labels.phone}
-        <input name="phone" type="tel" required minLength={6} onFocus={onFirstFocus} className={inputClasses} />
+        <input name="phone" type="tel" required minLength={6} onFocus={onFirstFocus} className={inputClasses} suppressHydrationWarning />
       </label>
       <label className="flex flex-col gap-1 text-sm font-medium">
         {labels.city}
-        <input name="city" maxLength={60} onFocus={onFirstFocus} className={inputClasses} />
+        <input name="city" maxLength={60} onFocus={onFirstFocus} className={inputClasses} suppressHydrationWarning />
+      </label>
+      <label className="flex flex-col gap-1 text-sm font-medium">
+        {labels.message}
+        <textarea name="message" maxLength={500} rows={3} onFocus={onFirstFocus} className={inputClasses} suppressHydrationWarning />
       </label>
       {/* Honeypot — visually hidden, never autofilled by humans */}
       <div aria-hidden="true" className="absolute -start-[9999px] h-0 w-0 overflow-hidden">
@@ -163,6 +175,7 @@ export default function LeadForm({
         disabled={state === 'sending'}
         {...(magnetic ? { 'data-magnetic': true } : {})}
         className="cta-shine cta-press mt-1 rounded-ctrl bg-wiki-blue px-6 py-3 text-sm font-semibold text-white shadow-lift transition hover:bg-wiki-blue/90 disabled:opacity-60"
+        suppressHydrationWarning
       >
         {state === 'sending' ? '…' : labels.submit}
       </button>

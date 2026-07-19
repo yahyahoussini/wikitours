@@ -4,7 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { updateLeadStatus } from '@/app/admin/entity-actions';
-import LeadRow, { LEAD_STATUSES } from '@/components/admin/LeadRow';
+import LeadRow from '@/components/admin/LeadRow';
+import { LEAD_STATUSES } from '@/lib/admin/lead-statuses';
 
 const priceFmt = new Intl.NumberFormat('fr-MA');
 

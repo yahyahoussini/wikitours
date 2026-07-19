@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { supabaseAdmin } from '@/lib/supabase/admin';
-import { GALLERY_ENTITIES, SETTINGS_HERO_ENTITY_ID, SETTINGS_OFFICE_ENTITY_ID } from '@/lib/entities';
+import { GALLERY_ENTITIES, SETTINGS_HERO_ENTITY_ID, SETTINGS_OFFICE_ENTITY_ID, SETTINGS_TEAM_ENTITY_ID, SETTINGS_WHY_ENTITY_ID } from '@/lib/entities';
 
 export const dynamic = 'force-dynamic';
 
@@ -45,6 +45,18 @@ export default async function AdminGalleriesPage() {
           id: SETTINGS_OFFICE_ENTITY_ID,
           title: "Photos de l'agence",
           hint: 'Galerie du bureau de Casablanca (page Agence Omra).',
+        },
+        {
+          type: 'settings_team',
+          id: SETTINGS_TEAM_ENTITY_ID,
+          title: 'Photo équipe',
+          hint: 'Photo de groupe utilisée quand « une seule photo d’équipe » est choisie (Réglages).',
+        },
+        {
+          type: 'settings_why',
+          id: SETTINGS_WHY_ENTITY_ID,
+          title: 'Photo « Pourquoi nous »',
+          hint: 'Photo encadrée de la section « Pourquoi les familles nous confient leur Omra » (accueil). Vide ⇒ la 2ᵉ image du héros est utilisée.',
         },
       ].map((virtual) => (
         <section key={virtual.type} className="rounded-card border border-bm-black/10 bg-white p-4 shadow-hairline">

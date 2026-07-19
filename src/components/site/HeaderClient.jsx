@@ -18,6 +18,7 @@ export default function HeaderClient({ locale, items, reserveLabel, reserveHref,
   const [dropOpen, setDropOpen] = useState(false);
   const pathname = usePathname() ?? `/${locale}`;
   const dropRef = useRef(null);
+  const rootRef = useRef(null);
 
   useEffect(() => {
     const onScroll = () => setCompressed(window.scrollY > 24);
@@ -31,11 +32,28 @@ export default function HeaderClient({ locale, items, reserveLabel, reserveHref,
     setDropOpen(false);
   }, [pathname]);
 
+  // Open mobile sheet: tap/click anywhere outside the header (or Escape) closes it.
+  useEffect(() => {
+    if (!sheetOpen) return undefined;
+    const onDown = (e) => {
+      if (rootRef.current && !rootRef.current.contains(e.target)) setSheetOpen(false);
+    };
+    const onKey = (e) => {
+      if (e.key === 'Escape') setSheetOpen(false);
+    };
+    document.addEventListener('pointerdown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('pointerdown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [sheetOpen]);
+
   // Swap the locale prefix, keep the rest of the path.
   const pathRest = pathname.replace(/^\/(fr|ar|en)(?=\/|$)/, '') || '';
 
   return (
-    <header className="fixed inset-x-3 top-3 z-50">
+    <header ref={rootRef} className="fixed inset-x-3 top-3 z-50">
       <div
         className={`mx-auto flex max-w-5xl items-center gap-2 rounded-full border border-bm-black/10 bg-gradient-to-b from-white/95 to-wiki-white/90 shadow-lift backdrop-blur transition-all duration-300 ${
           compressed ? 'px-4 py-1.5' : 'px-5 py-2.5'

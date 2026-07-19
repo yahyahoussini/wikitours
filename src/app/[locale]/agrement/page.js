@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
-import { hreflangAlternates } from '@/lib/seo';
+import { hreflangAlternates, clampDesc } from '@/lib/seo';
 import { getSettings } from '@/lib/data/settings';
 import { GuaranteesStrip } from '@/components/site/HomeSections';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
@@ -12,7 +12,7 @@ export async function generateMetadata({ params }) {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = getDictionary(locale);
-  return { title: t.pages.agrementTitle, description: t.pages.agrementBody, alternates: hreflangAlternates(locale, '/agrement') };
+  return { title: t.pages.agrementTitle, description: clampDesc(t.pages.agrementBody), alternates: hreflangAlternates(locale, '/agrement') };
 }
 
 /* /agrement — deliberately spare and official: the real license number in a

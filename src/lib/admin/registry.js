@@ -53,7 +53,7 @@ export const ADMIN_ENTITIES = {
       { name: 'distance_to_haram_m', type: 'number', label: 'Distance au Haram (m)' },
       { name: 'stars', type: 'number', label: 'Étoiles (1–5)' },
       { name: 'breakfast_included', type: 'bool', label: 'Petit-déjeuner inclus' },
-      { name: 'logo_path', type: 'media', label: 'Logo de l’hôtel', accept: 'image/jpeg,image/png,image/webp' },
+      { name: 'logo_path', type: 'media', label: 'Logo de l’hôtel', accept: 'image/jpeg,image/png,image/webp,image/avif' },
       { name: 'description', type: 'textarea3', label: 'Description' },
     ],
   },
@@ -265,23 +265,7 @@ export const ADMIN_ENTITIES = {
     fields: [
       { name: 'name', type: 'text', label: 'Nom', required: true },
       { name: 'role', type: 'text3', label: 'Rôle' },
-      { name: 'sort_order', type: 'number', label: 'Ordre' },
-    ],
-  },
-
-  timeline: {
-    table: 'timeline_items',
-    title: 'Timeline',
-    publishField: 'is_published',
-    orderBy: 'sort_order',
-    listColumns: ['title_fr', 'sort_order'],
-    searchKeys: ['title_fr', 'title_ar', 'title_en'],
-    hasSeo: false,
-    hasGallery: false,
-    labelField: 'title_fr',
-    fields: [
-      { name: 'title', type: 'text3', label: 'Titre' },
-      { name: 'body', type: 'textarea3', label: 'Texte' },
+      { name: 'sameas_url', type: 'text', label: 'Profil public (LinkedIn…) — schéma Person sameAs' },
       { name: 'sort_order', type: 'number', label: 'Ordre' },
     ],
   },
@@ -315,6 +299,100 @@ export const ADMIN_ENTITIES = {
     ],
   },
 
+  'pages-villes': {
+    table: 'city_pages',
+    title: 'Pages villes (Omra depuis…)',
+    // The publish toggle IS the index switch: off ⇒ the public page stays
+    // noindex (anti-doorway, Phase 4 A2 §12). The page also self-noindexes
+    // while the intro is empty, even if the toggle is on.
+    publishField: 'is_indexable',
+    orderBy: 'slug',
+    listColumns: ['slug', 'updated_at'],
+    searchKeys: ['slug', 'intro_fr'],
+    hasSeo: false,
+    hasGallery: false,
+    labelField: 'slug',
+    duplicateDisabled: true,
+    publicPath: (row) => (row?.slug ? `/omra-depuis-${row.slug}` : null),
+    fields: [
+      {
+        name: 'slug',
+        type: 'select',
+        label: 'Ville',
+        required: true,
+        options: [
+          { value: 'casablanca', label: 'Casablanca' },
+          { value: 'rabat', label: 'Rabat' },
+          { value: 'marrakech', label: 'Marrakech' },
+          { value: 'fes', label: 'Fès' },
+          { value: 'tanger', label: 'Tanger' },
+          { value: 'agadir', label: 'Agadir' },
+          { value: 'meknes', label: 'Meknès' },
+          { value: 'oujda', label: 'Oujda' },
+        ],
+      },
+      { name: 'intro', type: 'textarea3', label: 'Introduction locale (contenu unique de la ville)' },
+      { name: 'logistics', type: 'textarea3', label: 'Logistique de départ depuis cette ville' },
+    ],
+  },
+
+  guides: {
+    table: 'guide_pages',
+    title: 'Guide Omra (pilier + chapitres)',
+    publishField: 'is_published',
+    orderBy: 'slug',
+    listColumns: ['slug', 'title_fr', 'author_name'],
+    searchKeys: ['slug', 'title_fr', 'title_ar', 'title_en'],
+    hasSeo: false,
+    hasGallery: false,
+    labelField: 'slug',
+    duplicateDisabled: true,
+    publicPath: (row) =>
+      row?.slug === 'guide-omra' ? '/guide-omra' : row?.slug ? `/guide-omra/${row.slug}` : null,
+    fields: [
+      {
+        name: 'slug',
+        type: 'select',
+        label: 'Page',
+        required: true,
+        options: [
+          { value: 'guide-omra', label: 'Pilier — Guide Omra' },
+          { value: 'documents-visa', label: 'Documents & visa' },
+          { value: 'femme-mahram', label: 'Femme & mahram' },
+          { value: 'budget', label: 'Budget' },
+          { value: 'rituels', label: 'Rituels' },
+          { value: 'checklist', label: 'Checklist' },
+          { value: 'meilleure-periode', label: 'Meilleure période' },
+        ],
+      },
+      { name: 'title', type: 'text3', label: 'Titre' },
+      { name: 'summary', type: 'textarea3', label: 'Réponse directe (lede, 2 phrases)' },
+      { name: 'body', type: 'md3', label: 'Corps (markdown)' },
+      { name: 'author_name', type: 'text', label: 'Auteur (personne réelle)' },
+      { name: 'author_sameas_url', type: 'text', label: 'Profil public de l’auteur (LinkedIn…)' },
+      { name: 'is_indexable', type: 'bool', label: 'Indexable (uniquement quand le contenu est complet)' },
+    ],
+  },
+
+  glossaire: {
+    table: 'glossary_terms',
+    title: 'Glossaire Omra',
+    publishField: 'is_published',
+    orderBy: 'sort_order',
+    listColumns: ['term_fr', 'slug', 'sort_order'],
+    searchKeys: ['term_fr', 'term_ar', 'term_en', 'slug'],
+    hasSeo: false,
+    hasGallery: false,
+    labelField: 'term_fr',
+    publicPath: () => '/glossaire-omra',
+    fields: [
+      { name: 'slug', type: 'text', label: 'Slug (ancre)', required: true },
+      { name: 'term', type: 'text3', label: 'Terme' },
+      { name: 'definition', type: 'textarea3', label: 'Définition (réponse directe d’abord)' },
+      { name: 'sort_order', type: 'number', label: 'Ordre' },
+    ],
+  },
+
   redirections: {
     table: 'redirects',
     title: 'Redirections',
@@ -334,12 +412,48 @@ export const ADMIN_ENTITIES = {
     ],
   },
 
+  'offer-tiers': {
+    table: 'offer_tiers',
+    title: 'Gammes',
+    publishField: 'is_published',
+    orderBy: 'sort_order',
+    listColumns: ['label', 'offer_id', 'price_double'],
+    searchKeys: ['label'],
+    hasSeo: false,
+    hasGallery: false,
+    labelField: 'label',
+    duplicateDisabled: true,
+    fields: [
+      { name: 'offer_id', type: 'rel', label: 'Offre', relTable: 'offers', relLabel: 'title_fr', required: true },
+      { name: 'sort_order', type: 'number', label: 'Ordre', default: 0 },
+      {
+        name: 'label', type: 'select', label: 'Gamme', required: true,
+        options: [
+          { value: 'economique', label: 'Économique' },
+          { value: 'confort', label: 'Confort' },
+          { value: 'premium', label: 'Premium' },
+          { value: 'vip', label: 'VIP' },
+        ],
+      },
+      { name: 'hotel_makkah_id', type: 'rel', label: 'Hôtel La Mecque', relTable: 'hotels', relLabel: 'name', relFilter: { city: 'makkah' } },
+      { name: 'hotel_madinah_id', type: 'rel', label: 'Hôtel Médine', relTable: 'hotels', relLabel: 'name', relFilter: { city: 'madinah' } },
+      { name: 'nights_makkah', type: 'number', label: 'Nuits à La Mecque' },
+      { name: 'nights_madinah', type: 'number', label: 'Nuits à Médine' },
+      { name: 'distance_to_haram_m', type: 'number', label: 'Distance au Haram (m)' },
+      { name: 'breakfast_included', type: 'bool', label: 'Petit-déjeuner inclus' },
+      { name: 'price_double', type: 'number', label: 'Prix ch. double (MAD/pers)' },
+      { name: 'price_triple', type: 'number', label: 'Prix ch. triple (MAD/pers)' },
+      { name: 'price_quad', type: 'number', label: 'Prix ch. quadruple (MAD/pers)' },
+      { name: 'price_quint', type: 'number', label: 'Prix ch. quintuple (MAD/pers)' },
+    ],
+  },
+
   offres: {
     table: 'offers',
     title: 'Offres',
     publishField: 'is_published',
     orderBy: 'date_start',
-    listColumns: ['title_fr', 'tier_label', 'date_start', 'starting_price', 'status'],
+    listColumns: ['title_fr', 'date_start', 'status'],
     searchKeys: ['title_fr', 'title_ar', 'title_en', 'slug', 'airline'],
     hasSeo: true,
     hasGallery: true,
@@ -350,38 +464,20 @@ export const ADMIN_ENTITIES = {
       { name: 'title', type: 'text3', label: 'Titre' },
       { name: 'summary', type: 'textarea3', label: 'Résumé' },
       { name: 'occasion_id', type: 'rel', label: 'Occasion', relTable: 'occasions', relLabel: 'name_fr' },
-      {
-        name: 'tier_label',
-        type: 'select',
-        label: 'Gamme',
-        options: [
-          { value: 'economique', label: 'Économique' },
-          { value: 'confort', label: 'Confort' },
-          { value: 'premium', label: 'Premium' },
-          { value: 'vip', label: 'VIP' },
-        ],
-      },
-      { name: 'hotel_makkah_id', type: 'rel', label: 'Hôtel La Mecque', relTable: 'hotels', relLabel: 'name', relFilter: { city: 'makkah' } },
-      { name: 'hotel_madinah_id', type: 'rel', label: 'Hôtel Médine', relTable: 'hotels', relLabel: 'name', relFilter: { city: 'madinah' } },
       { name: 'duration_days', type: 'number', label: 'Jours' },
       { name: 'duration_nights', type: 'number', label: 'Nuits' },
       { name: 'airline', type: 'text', label: 'Compagnie aérienne' },
       { name: 'date_start', type: 'date', label: 'Départ' },
       { name: 'date_end', type: 'date', label: 'Retour' },
-      { name: 'price_double', type: 'number', label: 'Prix ch. double (MAD)' },
-      { name: 'price_triple', type: 'number', label: 'Prix ch. triple (MAD)' },
-      { name: 'price_quad', type: 'number', label: 'Prix ch. quadruple (MAD)' },
-      { name: 'price_quint', type: 'number', label: 'Prix ch. quintuple (MAD)' },
       {
-        name: 'status',
-        type: 'select',
-        label: 'Statut',
+        name: 'status', type: 'select', label: 'Statut',
         options: [
           { value: 'open', label: 'Places disponibles' },
           { value: 'few_left', label: 'Dernières places' },
           { value: 'full', label: 'Complet' },
         ],
       },
+      { name: 'seats_remaining', type: 'number', label: 'Places restantes (laisser vide si non suivi)' },
       { name: 'is_featured', type: 'bool', label: 'Mise en avant' },
       { name: 'land_only', type: 'bool', label: 'Sans vol (land only)' },
       { name: 'inclusions', type: 'textarea3', label: 'Inclusions' },
@@ -391,15 +487,16 @@ export const ADMIN_ENTITIES = {
   },
 };
 
-/** starting_price auto = min of the per-room prices (offers save hook). */
-export function computeStartingPrice(values) {
-  const prices = [
-    values.price_double,
-    values.price_triple,
-    values.price_quad,
-    values.price_quint,
-  ].filter((p) => typeof p === 'number' && p > 0);
-  return prices.length ? Math.min(...prices) : (values.starting_price ?? null);
+/** Compute cheapest price across all tiers of an offer. */
+export function computeStartingPrice(tiers) {
+  if (!tiers?.length) return null;
+  const allPrices = [];
+  for (const tier of tiers) {
+    for (const key of ['price_double', 'price_triple', 'price_quad', 'price_quint']) {
+      if (typeof tier[key] === 'number' && tier[key] > 0) allPrices.push(tier[key]);
+    }
+  }
+  return allPrices.length ? Math.min(...allPrices) : null;
 }
 
 /** Entity-type key for the polymorphic galleries table (= real table name). */

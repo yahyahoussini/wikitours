@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getDictionary, pickLang } from '@/lib/i18n';
 import { getGallerySlides, getTestimonialMedia } from '@/lib/data/gallery';
-import { SETTINGS_HERO_ENTITY_ID } from '@/lib/entities';
+import { SETTINGS_HERO_ENTITY_ID, SETTINGS_TEAM_ENTITY_ID, SETTINGS_WHY_ENTITY_ID } from '@/lib/entities';
 import { publicMediaUrl } from '@/lib/media';
 import { BLUR_DATA_URL } from '@/lib/blur';
 import { OMRA_YEAR, MONTH_SLUGS, monthName } from '@/lib/months';
@@ -12,7 +12,9 @@ import SectionBridge from '@/components/site/SectionBridge';
 import HeroSlideshow from '@/components/site/HeroSlideshow';
 import ReelsRow from '@/components/site/ReelsRow';
 import ScreenshotWall from '@/components/site/ScreenshotWall';
+import TestimonialsCarousel from '@/components/site/TestimonialsCarousel';
 import SmartGallery from '@/components/SmartGallery';
+import HotelsGrid from '@/components/site/HotelsGrid';
 
 /* 1 — Inset rounded slideshow hero (admin-managed via entity settings_hero) */
 export async function Hero({ locale }) {
@@ -41,10 +43,11 @@ export async function Hero({ locale }) {
           </h1>
           <p className="max-w-xl text-white/75">{t.home.intro}</p>
           <Link
-            href={`/${locale}/bab-makkah`}
+            href={`/${locale}/bab-makka`}
             data-wt="cta_click"
             data-wt-label="hero"
             data-magnetic
+            suppressHydrationWarning
             className="cta-shine cta-press rounded-full border-2 border-bm-gold-light px-8 py-3 text-sm font-semibold text-bm-gold-light transition hover:bg-bm-gold-light hover:text-bm-black"
           >
             {t.cta.discoverOffers}
@@ -58,8 +61,15 @@ export async function Hero({ locale }) {
 /* 4 — WHY-US dark band: lockup, 4 real stats (gold), framed image */
 export async function StatsBand({ locale, settings }) {
   const t = getDictionary(locale);
-  const slides = await getGallerySlides('settings_hero', SETTINGS_HERO_ENTITY_ID, locale);
-  const frame = slides.filter((s) => s.kind === 'image')[1] ?? null;
+  // Dedicated "Pourquoi nous" gallery first (admin-settable independently of
+  // the hero); while it's empty, fall back to the hero's second image so the
+  // band never loses its photo.
+  const whySlides = await getGallerySlides('settings_why', SETTINGS_WHY_ENTITY_ID, locale);
+  let frame = whySlides.find((s) => s.kind === 'image') ?? null;
+  if (!frame) {
+    const slides = await getGallerySlides('settings_hero', SETTINGS_HERO_ENTITY_ID, locale);
+    frame = slides.filter((s) => s.kind === 'image')[1] ?? null;
+  }
 
   const stats = [
     settings?.community_count ? [settings.community_count, t.home.statCommunity] : null,
@@ -74,12 +84,14 @@ export async function StatsBand({ locale, settings }) {
     <section className="bg-bm-black text-white">
       <div className="mx-auto grid max-w-5xl items-center gap-10 px-6 py-16 lg:grid-cols-2">
         <div>
-          <BrandLockup locale={locale} size="md" />
+          <BrandLockup locale={locale} size="lg" />
           <h2 className="mt-5 text-3xl font-bold leading-tight">{t.home.whyTitle}</h2>
           <dl className="mt-8 grid grid-cols-2 gap-6">
             {stats.map(([value, label]) => (
-              <div key={label} data-reveal>
-                <dt className="gold-shimmer text-3xl font-bold tabular-nums" data-count={value}>
+              <div key={label} data-reveal suppressHydrationWarning>
+                {/* wt-motion.js animates this number from 0, mutating the text
+                    before React hydrates — suppress the expected text mismatch. */}
+                <dt className="gold-shimmer text-3xl font-bold tabular-nums" data-count={value} suppressHydrationWarning>
                   {value}
                 </dt>
                 <dd className="mt-1 text-sm text-white/60">{label}</dd>
@@ -112,53 +124,36 @@ export function HotelsSection({ locale, hotels, covers }) {
   const t = getDictionary(locale);
   if (!hotels.length) return null;
 
+  // Serialize for the client grid (LAWS §3: all cards stay in the served HTML).
+  const cards = hotels.map((hotel) => {
+    const cover = covers.get(hotel.id);
+    return {
+      id: hotel.id,
+      slug: hotel.slug,
+      name: hotel.name,
+      stars: hotel.stars,
+      city: hotel.city,
+      distance_to_haram_m: hotel.distance_to_haram_m,
+      cover: cover
+        ? { src: publicMediaUrl(cover.path), alt: pickLang(cover, 'alt', locale) ?? null }
+        : null,
+    };
+  });
+
   return (
     <section className="mx-auto max-w-5xl px-6 py-[72px] lg:py-32">
       <h2 className="text-3xl font-bold text-bm-black">{t.home.hotelsTitle}</h2>
-      <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {hotels.map((hotel) => {
-          const cover = covers.get(hotel.id);
-          return (
-            <Link
-              key={hotel.id}
-              data-reveal
-              href={`/${locale}/hotel/${hotel.slug}`}
-              className="group overflow-hidden rounded-card bg-white shadow-hairline transition hover:shadow-lift"
-            >
-              <div className="relative aspect-[16/10] bg-bm-black/5">
-                {cover ? (
-                  <Image
-                    src={publicMediaUrl(cover.path)}
-                    alt={pickLang(cover, 'alt', locale) ?? hotel.name}
-                    fill
-                    sizes="(min-width: 1024px) 33vw, 50vw"
-                    loading="lazy"
-                    placeholder="blur"
-                    blurDataURL={BLUR_DATA_URL}
-                    className="object-cover transition duration-500 ease-luxe group-hover:scale-105"
-                  />
-                ) : null}
-              </div>
-              <div className="p-4">
-                <h3 className="font-bold text-bm-black">
-                  {hotel.name}
-                  {hotel.stars ? (
-                    <span className="ms-2 text-sm font-normal tracking-widest text-bm-gold">
-                      {'★'.repeat(hotel.stars)}
-                    </span>
-                  ) : null}
-                </h3>
-                <p className="mt-1 text-sm text-bm-black/60">
-                  {hotel.city === 'makkah' ? t.offer.makkah : t.offer.madinah}
-                  {hotel.distance_to_haram_m != null
-                    ? ` · ${t.offer.distanceToHaram.replace('{m}', hotel.distance_to_haram_m)}`
-                    : ''}
-                </p>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
+      <p className="mt-3 max-w-2xl text-bm-black/60">{t.home.hotelsSubtitle}</p>
+      <HotelsGrid
+        hotels={cards}
+        locale={locale}
+        labels={{
+          makkah: t.offer.makkah,
+          madinah: t.offer.madinah,
+          distanceToHaram: t.offer.distanceToHaram,
+          loadMore: t.home.hotelsLoadMore,
+        }}
+      />
     </section>
   );
 }
@@ -174,38 +169,88 @@ export function StepsSection({ locale, dark = false }) {
   return (
     <section className={`mx-auto max-w-5xl px-6 py-[72px] lg:py-32 ${dark ? 'text-white' : ''}`}>
       <h2 className={`text-3xl font-bold ${dark ? '' : 'text-bm-black'}`}>{t.home.stepsTitle}</h2>
-      <ol className="mt-6 grid gap-5 sm:grid-cols-3">
-        {steps.map(([title, body], i) => (
-          <li
-            key={title}
-            data-reveal
-            className={`rounded-card p-5 shadow-hairline ${dark ? 'border border-white/10 bg-white/5' : 'bg-white'}`}
-          >
-            <span className="flex size-8 items-center justify-center rounded-full bg-bm-gold text-sm font-bold text-bm-black">
-              {i + 1}
-            </span>
-            <h3 className="mt-3 font-bold">{title}</h3>
-            <p className={`mt-1 text-sm ${dark ? 'text-white/60' : 'text-bm-black/60'}`}>{body}</p>
-          </li>
-        ))}
-      </ol>
+
+      {/* The 3 steps drawn as a traced route on a stylized map: numbered map
+          pins joined by a dashed line that draws in — horizontal across the
+          desktop row, vertical timeline on phone. */}
+      <div
+        className={`${dark ? 'map-canvas-dark border-white/10 bg-white/[0.03]' : 'map-canvas border-bm-black/10 bg-white'} relative mt-8 overflow-hidden rounded-panel border px-6 py-10 sm:px-10 lg:py-16`}
+      >
+        <ol className="relative grid gap-10 lg:grid-cols-3 lg:gap-5">
+          {steps.map(([title, body], i) => {
+            const last = i === steps.length - 1;
+            return (
+              <li
+                key={title}
+                data-reveal
+                suppressHydrationWarning
+                className="relative flex items-start gap-4 lg:flex-col lg:items-center lg:gap-5 lg:text-center"
+              >
+                {/* Route to the next pin — vertical (phone) / horizontal (desktop) */}
+                {!last ? (
+                  <>
+                    <span
+                      data-reveal
+                      suppressHydrationWarning
+                      aria-hidden="true"
+                      className="map-trace-y absolute start-[15px] top-[17px] h-[calc(100%_+_2.5rem)] border-s-2 border-dashed border-bm-gold/45 lg:hidden"
+                    />
+                    <span
+                      data-reveal
+                      suppressHydrationWarning
+                      aria-hidden="true"
+                      className="map-trace-x absolute start-1/2 top-[17px] hidden w-[calc(100%_+_1.25rem)] border-t-2 border-dashed border-bm-gold/45 lg:block"
+                    />
+                  </>
+                ) : null}
+
+                {/* Map pin marker with the step number in its head */}
+                <span className="relative z-[1] inline-flex h-11 w-8 shrink-0">
+                  <svg
+                    viewBox="0 0 24 34"
+                    aria-hidden="true"
+                    className="h-full w-full fill-bm-gold drop-shadow-[0_4px_8px_rgba(212,175,55,0.35)]"
+                  >
+                    <path d="M12 0C5.373 0 0 5.373 0 12c0 8.4 8.7 18.6 11.1 21.3a1.2 1.2 0 0 0 1.8 0C15.3 30.6 24 20.4 24 12 24 5.373 18.627 0 12 0Z" />
+                  </svg>
+                  <span className="absolute left-1/2 top-[36%] -translate-x-1/2 -translate-y-1/2 text-sm font-extrabold text-bm-black">
+                    {i + 1}
+                  </span>
+                </span>
+
+                <div className="lg:mt-1">
+                  <h3 className="font-bold">{title}</h3>
+                  <p className={`mt-1 text-sm ${dark ? 'text-white/60' : 'text-bm-black/60'}`}>{body}</p>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
     </section>
   );
 }
 
-/* 7+8 — Proof: reels (dark) + screenshot wall + Google badge */
-export async function ProofSection({ locale, testimonials, settings }) {
+/* 7+8 — Proof: reels (dark) + screenshot wall + Google badge. `enterDark` means
+   a dark surface (the stats band) sits directly above, so the leading
+   light→dark bridge is skipped to keep one continuous dark cluster. */
+export async function ProofSection({ locale, testimonials, settings, enterDark = false }) {
   const t = getDictionary(locale);
   // Media comes from each testimonial's gallery.
   const { reels, shots, texts } = await getTestimonialMedia(testimonials, locale);
 
-  if (!reels.length && !shots.length && !texts.length) return null;
+  // Nothing to show — but if we arrived on a dark surface, still soften back to
+  // light so the following light section doesn't hard-edge the dark cluster.
+  if (!reels.length && !shots.length && !texts.length) {
+    return enterDark ? <SectionBridge from="dark" to="light" /> : null;
+  }
 
   return (
     <>
       {reels.length ? (
         <>
-          <SectionBridge from="light" to="dark" />
+          {/* Already dark (stats above)? stay on it; otherwise dip into dark. */}
+          {enterDark ? null : <SectionBridge from="light" to="dark" />}
           <section className="bg-bm-black text-white">
             <div className="mx-auto max-w-5xl px-6 py-[72px] lg:py-32">
               <h2 className="text-3xl font-bold">{t.home.reelsTitle}</h2>
@@ -216,6 +261,9 @@ export async function ProofSection({ locale, testimonials, settings }) {
           </section>
           <SectionBridge from="dark" to="light" />
         </>
+      ) : enterDark ? (
+        // No reels, but we entered on dark — close the surface before the wall.
+        <SectionBridge from="dark" to="light" />
       ) : null}
 
       <section className="mx-auto max-w-5xl px-6 py-[72px] lg:py-32">
@@ -236,22 +284,18 @@ export async function ProofSection({ locale, testimonials, settings }) {
         </div>
 
         {texts.length ? (
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {texts.slice(0, 6).map((item) => (
-              <figure key={item.id} className="rounded-card bg-white p-5 shadow-hairline">
-                {item.rating ? (
-                  <p className="text-sm tracking-widest text-bm-gold">{'★'.repeat(item.rating)}</p>
-                ) : null}
-                <blockquote className="mt-2 text-sm leading-relaxed text-bm-black/80">
-                  {pickLang(item, 'content', locale)}
-                </blockquote>
-                <figcaption className="mt-3 text-xs font-semibold text-bm-black/50">
-                  {item.author_name}
-                  {item.author_city ? ` · ${item.author_city}` : ''}
-                  {pickLang(item, 'trip_label', locale) ? ` · ${pickLang(item, 'trip_label', locale)}` : ''}
-                </figcaption>
-              </figure>
-            ))}
+          <div className="mt-6">
+            <TestimonialsCarousel
+              items={texts.slice(0, 6).map((item) => ({
+                id: item.id,
+                rating: item.rating ?? null,
+                content: pickLang(item, 'content', locale),
+                author: item.author_name,
+                city: item.author_city ?? null,
+                trip: pickLang(item, 'trip_label', locale) ?? null,
+              }))}
+              labels={{ readMore: t.cta.readMore, close: t.a11y.close, goTo: t.a11y.goToSlide }}
+            />
           </div>
         ) : null}
 
@@ -286,40 +330,72 @@ export function MonthsLinks({ locale, compact = true }) {
   );
 }
 
-/* 11 — Histoire + équipe (timeline + faces) */
-export async function StorySection({ locale, timeline, team }) {
+/* 11 — Notre histoire: admin-written story + team (individual members or one
+   full-team photo). All content is admin-controlled (LAWS §3/§10). */
+export async function StorySection({ locale, team, settings, fallbackStory = null }) {
   const t = getDictionary(locale);
-  if (!timeline.length && !team.length) return null;
 
+  // The written story — blank-line-separated paragraphs, admin-editable. Falls
+  // back to the provided copy (e.g. the site intro) so the section stays
+  // visible before a custom story is written.
+  const story = pickLang(settings, 'story', locale) || fallbackStory;
+  const paragraphs = story
+    ? story.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean)
+    : [];
+
+  const teamEnabled = settings?.team_enabled ?? true;
+  const usePhoto = settings?.team_display === 'photo';
+
+  // Resolve the team block: one full-team photo, or individual member faces.
+  let teamPhoto = null;
   const faces = new Map();
-  for (const member of team) {
-    const slides = await getGallerySlides('team_members', member.id, locale);
-    const face = slides.find((s) => s.kind === 'image');
-    if (face) faces.set(member.id, face);
+  if (teamEnabled && usePhoto) {
+    const slides = await getGallerySlides('settings_team', SETTINGS_TEAM_ENTITY_ID, locale);
+    teamPhoto = slides.find((s) => s.kind === 'image') ?? null;
+  } else if (teamEnabled && team.length) {
+    for (const member of team) {
+      const slides = await getGallerySlides('team_members', member.id, locale);
+      const face = slides.find((s) => s.kind === 'image');
+      if (face) faces.set(member.id, face);
+    }
   }
+
+  const showMembers = teamEnabled && !usePhoto && team.length > 0;
+  const showTeam = Boolean(teamEnabled && (teamPhoto || showMembers));
+
+  if (!paragraphs.length && !showTeam) return null;
 
   return (
     <section className="mx-auto max-w-5xl px-6 py-[72px] lg:py-32">
       <h2 className="text-3xl font-bold text-bm-black">{t.home.storyTitle}</h2>
-      <div className="mt-6 grid gap-10 lg:grid-cols-2">
-        {timeline.length ? (
-          <ol className="relative flex flex-col gap-6 border-s-2 border-bm-gold/40 ps-6">
-            {timeline.map((item) => (
-              <li key={item.id}>
-                <span className="absolute -start-[7px] mt-1.5 block size-3 rounded-full bg-bm-gold" aria-hidden="true" />
-                <h3 className="font-bold text-bm-black">{pickLang(item, 'title', locale)}</h3>
-                <p className="mt-1 text-sm text-bm-black/60">{pickLang(item, 'body', locale)}</p>
-              </li>
+      <div className={`mt-6 grid gap-10 ${showTeam ? 'lg:grid-cols-2' : ''}`}>
+        {paragraphs.length ? (
+          <div data-reveal suppressHydrationWarning className="max-w-2xl space-y-4 text-[15px] leading-relaxed text-bm-black/70">
+            {paragraphs.map((p, i) => (
+              <p key={i}>{p}</p>
             ))}
-          </ol>
+          </div>
         ) : null}
 
-        {team.length ? (
+        {teamPhoto ? (
+          <figure data-reveal suppressHydrationWarning className="self-start">
+            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-panel bg-bm-black/5 shadow-hairline">
+              <Image
+                src={teamPhoto.src}
+                alt={teamPhoto.alt || t.home.storyTitle}
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                loading="lazy"
+                className="object-cover"
+              />
+            </div>
+          </figure>
+        ) : showMembers ? (
           <div className="grid grid-cols-2 gap-4 self-start sm:grid-cols-3">
             {team.map((member) => {
               const face = faces.get(member.id);
               return (
-                <figure key={member.id} className="text-center">
+                <figure key={member.id} data-reveal suppressHydrationWarning className="text-center">
                   <div className="relative mx-auto aspect-square w-full max-w-32 overflow-hidden rounded-full bg-bm-black/5 shadow-hairline">
                     {face ? (
                       <Image src={face.src} alt={member.name} fill sizes="128px" loading="lazy" className="object-cover" />
@@ -384,28 +460,50 @@ export function GuaranteesStrip({ locale, license, marks = [] }) {
 }
 
 /* 13 — Blog latest 3 */
-export function BlogTeasers({ locale, articles }) {
+export function BlogTeasers({ locale, articles, covers }) {
   const t = getDictionary(locale);
   if (!articles.length) return null;
   return (
     <section className="mx-auto max-w-5xl px-6 py-[72px] lg:py-32">
       <h2 className="text-3xl font-bold text-bm-black">{t.home.blogTitle}</h2>
       <div className="mt-6 grid gap-5 sm:grid-cols-3">
-        {articles.slice(0, 3).map((article) => (
-          <Link
-            key={article.id}
-            data-reveal
-            href={`/${locale}/blog/${article.slug}`}
-            className="group rounded-card bg-white p-5 shadow-hairline transition hover:shadow-lift"
-          >
-            <p className="text-xs font-semibold uppercase tracking-wide text-wiki-blue">{article.category}</p>
-            <h3 className="mt-2 font-bold leading-snug text-bm-black group-hover:text-wiki-blue">
-              {pickLang(article, 'title', locale)}
-            </h3>
-            <p className="mt-2 line-clamp-3 text-sm text-bm-black/60">{pickLang(article, 'excerpt', locale)}</p>
-            <p className="mt-3 text-xs font-semibold text-bm-gold">{t.cta.readMore} →</p>
-          </Link>
-        ))}
+        {articles.slice(0, 3).map((article) => {
+          // Cover = first image of the article's gallery (admin-uploaded).
+          const cover = covers?.get(article.id);
+          const title = pickLang(article, 'title', locale);
+          return (
+            <Link
+              key={article.id}
+              data-reveal
+              suppressHydrationWarning
+              href={`/${locale}/blog/${article.slug}`}
+              className="group overflow-hidden rounded-card bg-white shadow-hairline transition hover:shadow-lift"
+            >
+              <div className="relative aspect-[16/10] bg-bm-black/5">
+                {cover ? (
+                  <Image
+                    src={publicMediaUrl(cover.path)}
+                    alt={pickLang(cover, 'alt', locale) ?? title ?? ''}
+                    fill
+                    sizes="(min-width: 640px) 33vw, 100vw"
+                    loading="lazy"
+                    placeholder="blur"
+                    blurDataURL={BLUR_DATA_URL}
+                    className="object-cover transition duration-500 ease-luxe group-hover:scale-105"
+                  />
+                ) : null}
+              </div>
+              <div className="p-5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-wiki-blue">{article.category}</p>
+                <h3 className="mt-2 font-bold leading-snug text-bm-black group-hover:text-wiki-blue">
+                  {title}
+                </h3>
+                <p className="mt-2 line-clamp-3 text-sm text-bm-black/60">{pickLang(article, 'excerpt', locale)}</p>
+                <p className="mt-3 text-xs font-semibold text-bm-gold">{t.cta.readMore} →</p>
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </section>
   );
@@ -443,7 +541,7 @@ export function FaqSection({ locale, faqs, title = null }) {
   );
 }
 
-/* 15 — Final CTA with the Playfair labbayk line */
+/* 15 — Final CTA with the serif-accent labbayk line */
 export function FinalCta({ locale }) {
   const t = getDictionary(locale);
   return (
@@ -452,14 +550,14 @@ export function FinalCta({ locale }) {
         <p className="accent-line text-3xl text-bm-gold-light sm:text-4xl">{t.home.finalCtaLine}</p>
         <p className="text-white/70">{t.home.finalCtaSub}</p>
         <Link
-          href={`/${locale}/bab-makkah`}
+          href={`/${locale}/bab-makka`}
           data-wt="cta_click"
           data-wt-label="final"
           className="cta-shine cta-press rounded-full bg-wiki-blue px-8 py-3.5 text-sm font-semibold text-white shadow-lift transition hover:bg-wiki-blue/90"
         >
           {t.cta.reserve}
         </Link>
-        <BrandLockup locale={locale} size="sm" className="mt-4 opacity-80" />
+        <BrandLockup locale={locale} size="lg" className="mt-4 opacity-90" />
       </div>
     </section>
   );

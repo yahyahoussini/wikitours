@@ -35,10 +35,13 @@
   --default-transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   --default-transition-duration: 250ms;
 
-  /* Type — Montserrat headings, Inter body, Playfair italic accents, Tajawal (ar) */
+  /* Type — Montserrat headings, Inter body, system serif italic accents,
+     Tajawal (ar). Accent lines ride the system serif stack: shipping a whole
+     webfont (Playfair) for one decorative selector was ~35KB on the critical
+     path of every page. */
   --font-heading: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-accent: var(--font-playfair), ui-serif, Georgia, serif;
+  --font-accent: ui-serif, Georgia, 'Times New Roman', serif;
   --font-arabic: var(--font-tajawal), var(--font-inter), ui-sans-serif, sans-serif;
 }
 
@@ -68,7 +71,7 @@ html[lang="ar"] h6 {
   font-family: var(--font-arabic);
 }
 
-/* Spiritual accent lines — Playfair Display italic (Latin scripts only) */
+/* Spiritual accent lines — system serif italic (Latin scripts only) */
 .accent-line {
   font-family: var(--font-accent);
   font-style: italic;
@@ -147,6 +150,67 @@ p {
 .js-motion [data-reveal].is-in {
   opacity: 1;
   transform: none;
+}
+
+/* B4b — map-trace connectors for the "how it works" route. The dashed line
+   draws from its start edge as each step reveals (composes with B4; RTL-safe
+   via logical transform origins). */
+.js-motion [data-reveal].map-trace-x {
+  opacity: 1;
+  transform: scaleX(0);
+  transform-origin: inline-start;
+  transition: transform 700ms var(--ease-luxe);
+}
+.js-motion [data-reveal].map-trace-x.is-in {
+  transform: scaleX(1);
+}
+.js-motion [data-reveal].map-trace-y {
+  opacity: 1;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 700ms var(--ease-luxe);
+}
+.js-motion [data-reveal].map-trace-y.is-in {
+  transform: scaleY(1);
+}
+
+/* Horizontal swipe strips: scroll works, the scrollbar itself never shows. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Partner-hotels grid, collapsed: full rows only — 3 (1-col), 4 (sm 2-col),
+   3 (lg 3-col). Collapse lives on the CONTAINER so per-card classes never
+   re-render (see HotelsGrid.jsx: a card-level toggle wiped the reveal
+   observer's is-in classes). */
+.hotels-collapsed > :nth-child(n + 4) {
+  display: none;
+}
+@media (min-width: 640px) {
+  .hotels-collapsed > :nth-child(4) {
+    display: block;
+  }
+  .hotels-collapsed > :nth-child(n + 5) {
+    display: none;
+  }
+}
+@media (min-width: 1024px) {
+  .hotels-collapsed > :nth-child(4) {
+    display: none;
+  }
+}
+
+/* Faint dotted "map" canvas behind the route. */
+.map-canvas {
+  background-image: radial-gradient(circle, rgba(13, 13, 13, 0.05) 1px, transparent 1.6px);
+  background-size: 22px 22px;
+}
+.map-canvas-dark {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.06) 1px, transparent 1.6px);
+  background-size: 22px 22px;
 }
 
 /* B5 — animated link underline growing from the start edge (RTL-safe). */
@@ -267,7 +331,9 @@ p {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .js-motion [data-reveal] {
+  .js-motion [data-reveal],
+  .js-motion [data-reveal].map-trace-x,
+  .js-motion [data-reveal].map-trace-y {
     opacity: 1;
     transform: none;
     transition: none;
@@ -287,32 +353,51 @@ p {
 }
 
 /*
-  Room-type sync (offer page) — the selector only flips data-selected-room on
-  the page wrapper; CSS shows the matching server-rendered price span and
-  highlights the matching table row. Everything stays in the served HTML and
-  the default (cheapest room) is rendered server-side, so no-JS still works.
+  Gamme (tier) + room selection sync on the offer page. #offer-root carries
+  data-selected-tier / data-selected-room (rendered server-side from defaults,
+  updated client-side by the comparison cards and the booking selector). The
+  cards themselves are ALWAYS visible; CSS only reveals the matching booking-card
+  price span and highlights the chosen gamme card + chosen room line. Defaults
+  render server-side, so the correct price shows before hydration / with no JS.
 */
-[data-selected-room] [data-room-price] {
-  display: none;
-}
-[data-selected-room="double"] [data-room-price="double"],
-[data-selected-room="triple"] [data-room-price="triple"],
-[data-selected-room="quad"] [data-room-price="quad"],
-[data-selected-room="quint"] [data-room-price="quint"] {
+
+/* Booking-card price: one span per (tier,room); reveal only the selected combo. */
+.tier-price { display: none; }
+[data-selected-tier="economique"][data-selected-room="double"] .tier-price[data-tier="economique"][data-room="double"],
+[data-selected-tier="economique"][data-selected-room="triple"] .tier-price[data-tier="economique"][data-room="triple"],
+[data-selected-tier="economique"][data-selected-room="quad"]   .tier-price[data-tier="economique"][data-room="quad"],
+[data-selected-tier="economique"][data-selected-room="quint"]  .tier-price[data-tier="economique"][data-room="quint"],
+[data-selected-tier="confort"][data-selected-room="double"]    .tier-price[data-tier="confort"][data-room="double"],
+[data-selected-tier="confort"][data-selected-room="triple"]    .tier-price[data-tier="confort"][data-room="triple"],
+[data-selected-tier="confort"][data-selected-room="quad"]      .tier-price[data-tier="confort"][data-room="quad"],
+[data-selected-tier="confort"][data-selected-room="quint"]     .tier-price[data-tier="confort"][data-room="quint"],
+[data-selected-tier="premium"][data-selected-room="double"]    .tier-price[data-tier="premium"][data-room="double"],
+[data-selected-tier="premium"][data-selected-room="triple"]    .tier-price[data-tier="premium"][data-room="triple"],
+[data-selected-tier="premium"][data-selected-room="quad"]      .tier-price[data-tier="premium"][data-room="quad"],
+[data-selected-tier="premium"][data-selected-room="quint"]     .tier-price[data-tier="premium"][data-room="quint"],
+[data-selected-tier="vip"][data-selected-room="double"]        .tier-price[data-tier="vip"][data-room="double"],
+[data-selected-tier="vip"][data-selected-room="triple"]        .tier-price[data-tier="vip"][data-room="triple"],
+[data-selected-tier="vip"][data-selected-room="quad"]          .tier-price[data-tier="vip"][data-room="quad"],
+[data-selected-tier="vip"][data-selected-room="quint"]         .tier-price[data-tier="vip"][data-room="quint"] {
   display: inline;
 }
-[data-selected-room="double"] [data-room-row="double"],
-[data-selected-room="triple"] [data-room-row="triple"],
-[data-selected-room="quad"] [data-room-row="quad"],
-[data-selected-room="quint"] [data-room-row="quint"] {
-  background: rgb(212 175 55 / 0.12);
-  box-shadow: inset 3px 0 0 0 var(--color-bm-gold);
+
+/* Selected gamme card — gold outline. */
+.gamme-card { transition: border-color 0.2s, box-shadow 0.2s; }
+[data-selected-tier="economique"] .gamme-card[data-tier="economique"],
+[data-selected-tier="confort"]    .gamme-card[data-tier="confort"],
+[data-selected-tier="premium"]    .gamme-card[data-tier="premium"],
+[data-selected-tier="vip"]        .gamme-card[data-tier="vip"] {
+  border-color: var(--color-bm-gold);
+  box-shadow: inset 0 0 0 1px var(--color-bm-gold);
 }
-[dir="rtl"] [data-selected-room="double"] [data-room-row="double"],
-[dir="rtl"] [data-selected-room="triple"] [data-room-row="triple"],
-[dir="rtl"] [data-selected-room="quad"] [data-room-row="quad"],
-[dir="rtl"] [data-selected-room="quint"] [data-room-row="quint"] {
-  box-shadow: inset -3px 0 0 0 var(--color-bm-gold);
+
+/* Chosen room type highlighted inside every gamme card (aids comparison). */
+[data-selected-room="double"] .gamme-card [data-room-line="double"],
+[data-selected-room="triple"] .gamme-card [data-room-line="triple"],
+[data-selected-room="quad"]   .gamme-card [data-room-line="quad"],
+[data-selected-room="quint"]  .gamme-card [data-room-line="quint"] {
+  background: rgb(212 175 55 / 0.12);
 }
 
 /* Floating WhatsApp pulse ring */

@@ -26,7 +26,8 @@ export default async function EntityEditPage({ params }) {
     config.hasGallery && record ? await fetchGalleryItems(config.table, record.id) : null;
 
   return (
-    <div className="flex flex-col gap-5">
+    // pb-24 reserves the fixed save bar's height so it can't cover the end of the page.
+    <div className="flex flex-col gap-5 pb-24">
       <div>
         <Link href={`/admin/e/${entity}`} className="text-sm text-bm-black/50 hover:text-bm-black">
           ← {config.title}

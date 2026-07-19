@@ -108,15 +108,83 @@
   }
 
   // <a data-wt="whatsapp_click|cta_click" data-wt-label data-wt-offer>
+  // tel: links are auto-instrumented (tel_click) so no markup is needed —
+  // unless the anchor already carries data-wt, which then wins.
   D.addEventListener('click', function (e) {
     var el = e.target && e.target.closest && e.target.closest('[data-wt]');
-    if (!el) return;
-    track(el.getAttribute('data-wt'), {
-      label: el.getAttribute('data-wt-label') || undefined,
-      offer_id: el.getAttribute('data-wt-offer') || undefined
-    });
-    flush(); // may navigate away — keepalive carries it
+    if (el) {
+      track(el.getAttribute('data-wt'), {
+        label: el.getAttribute('data-wt-label') || undefined,
+        offer_id: el.getAttribute('data-wt-offer') || undefined
+      });
+      flush(); // may navigate away — keepalive carries it
+      return;
+    }
+    var tel = e.target && e.target.closest && e.target.closest('a[href^="tel:"]');
+    if (tel) {
+      track('tel_click', { label: tel.getAttribute('href').slice(4) });
+      flush();
+    }
   });
+
+  // FAQ opens: any <details> on the page (capture — toggle doesn't bubble).
+  D.addEventListener('toggle', function (e) {
+    var d = e.target;
+    if (!d || d.tagName !== 'DETAILS' || !d.open) return;
+    var s = d.querySelector('summary');
+    track('faq_expand', { label: (s && s.textContent || '').trim().slice(0, 120) || undefined });
+  }, true);
+
+  // Core Web Vitals — field data, no library, reported once on page hide.
+  //   LCP  exact: last largest-contentful-paint entry.
+  //   CLS  exact: the session-window algorithm Google itself uses (max burst,
+  //        1s gap / 5s cap, ignoring shifts that follow real input).
+  //   INP  approximated by the SLOWEST interaction. True INP is a high
+  //        percentile across all interactions; on typical pages here the max is
+  //        the same value or one bucket worse, so it errs pessimistic — never
+  //        flattering. Treat it as a ceiling, not a exact score.
+  (function vitals() {
+    if (!('PerformanceObserver' in window)) return;
+    var lcp = 0, cls = 0, inp = 0, burst = 0, entries = [];
+
+    function obs(type, cb, opts) {
+      try {
+        var o = new PerformanceObserver(function (list) { list.getEntries().forEach(cb); });
+        var init = { type: type, buffered: true };
+        for (var k in opts) init[k] = opts[k];
+        o.observe(init);
+      } catch (e) { /* unsupported metric — never breaks the beacon */ }
+    }
+
+    obs('largest-contentful-paint', function (e) { lcp = e.startTime; });
+
+    obs('layout-shift', function (e) {
+      if (e.hadRecentInput) return;
+      var first = entries[0], last = entries[entries.length - 1];
+      if (entries.length && e.startTime - last.startTime < 1000 && e.startTime - first.startTime < 5000) {
+        burst += e.value; entries.push(e);
+      } else {
+        burst = e.value; entries = [e];
+      }
+      if (burst > cls) cls = burst;
+    });
+
+    obs('event', function (e) {
+      if (e.interactionId && e.duration > inp) inp = e.duration;
+    }, { durationThreshold: 40 });
+
+    var sent = false;
+    function report() {
+      if (sent) return;
+      sent = true;
+      if (lcp) track('web_vital', { label: 'LCP:' + Math.round(lcp) });
+      if (entries.length) track('web_vital', { label: 'CLS:' + cls.toFixed(3) });
+      if (inp) track('web_vital', { label: 'INP:' + Math.round(inp) });
+      flush();
+    }
+    D.addEventListener('visibilitychange', function () { if (D.visibilityState === 'hidden') report(); });
+    window.addEventListener('pagehide', report);
+  })();
 
   D.addEventListener('visibilitychange', function () {
     if (D.visibilityState === 'hidden') flush();

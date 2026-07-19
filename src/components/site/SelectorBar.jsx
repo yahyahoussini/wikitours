@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { OMRA_YEAR, MONTH_SLUGS } from '@/lib/months';
+import { MONTH_SLUGS } from '@/lib/months';
 
 /** Floating Occasion · Mois · Voir les offres selector under the hero. */
 export default function SelectorBar({ locale, occasions, monthNames, labels }) {
@@ -12,19 +12,22 @@ export default function SelectorBar({ locale, occasions, monthNames, labels }) {
 
   function go() {
     if (month !== '') {
-      router.push(`/${locale}/omra-${MONTH_SLUGS[Number(month)]}-${OMRA_YEAR}`);
+      router.push(`/${locale}/omra-${MONTH_SLUGS[Number(month)]}`);
     } else if (occasion) {
       router.push(`/${locale}/omra-${occasion}`);
     } else {
-      router.push(`/${locale}/bab-makkah`);
+      router.push(`/${locale}/bab-makka`);
     }
   }
 
+  // Stacked card on phone/tablet (a wrapped rounded-full pill reads as a blob
+  // and squeezes the controls); the floating pill row only from md up, where
+  // both selects + the CTA genuinely fit on one line.
   const select =
-    'flex-1 rounded-full border border-bm-black/10 bg-white px-4 py-2.5 text-sm font-medium outline-none focus:border-wiki-blue';
+    'w-full rounded-full border border-bm-black/10 bg-white px-4 py-3 text-sm font-medium outline-none focus:border-wiki-blue md:flex-1 md:py-2.5';
 
   return (
-    <div className="relative z-20 mx-auto -mt-9 flex w-full max-w-2xl flex-wrap items-center gap-2 rounded-full border border-bm-black/10 bg-white/95 p-2 shadow-float backdrop-blur">
+    <div className="relative z-20 mx-auto -mt-6 flex w-full max-w-2xl flex-col gap-2 rounded-panel border border-bm-black/10 bg-white/95 p-2.5 shadow-float backdrop-blur md:-mt-9 md:flex-row md:items-center md:rounded-full md:p-2">
       <select value={occasion} onChange={(e) => setOccasion(e.target.value)} aria-label={labels.occasion} className={select}>
         <option value="">{labels.occasion} : {labels.all}</option>
         {occasions.map((o) => (
@@ -40,7 +43,7 @@ export default function SelectorBar({ locale, occasions, monthNames, labels }) {
       <button
         type="button"
         onClick={go}
-        className="rounded-full bg-bm-black px-6 py-2.5 text-sm font-semibold text-white shadow-lift transition hover:bg-bm-black-soft"
+        className="w-full rounded-full bg-bm-black px-6 py-3 text-sm font-semibold text-white shadow-lift transition hover:bg-bm-black-soft md:w-auto md:py-2.5"
       >
         {labels.go}
       </button>

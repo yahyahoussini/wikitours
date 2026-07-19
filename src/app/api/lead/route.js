@@ -34,6 +34,12 @@ const leadSchema = z.object({
     (v) => (v === '' ? null : v),
     z.enum(['double', 'triple', 'quad', 'quint']).nullable().optional(),
   ),
+  tier_label: z.preprocess(
+    (v) => (v === '' ? null : v),
+    z.enum(['economique', 'confort', 'premium', 'vip']).nullable().optional(),
+  ),
+  // Free-text comment from the reservation form (optional).
+  message: optional(500),
   source: optional(80),
   utm_source: optional(200),
   utm_medium: optional(200),
@@ -154,20 +160,25 @@ export async function POST(request) {
     const visitorId = z.uuid().safeParse(vidCookie).success ? vidCookie : null;
 
     // The row is written BEFORE any success UI or side effect.
-    const { data: inserted, error } = await admin
-      .from('leads')
-      .insert({
-        ...lead,
-        visitor_id: visitorId,
-        source: lead.source ?? 'website',
-        country: request.headers.get('x-vercel-ip-country') ?? null,
-        region: request.headers.get('x-vercel-ip-country-region') ?? null,
-        geo_city: request.headers.get('x-vercel-ip-city') ?? null,
-        device,
-        user_agent: userAgent,
-      })
-      .select('id')
-      .single();
+    const row = {
+      ...lead,
+      visitor_id: visitorId,
+      source: lead.source ?? 'website',
+      ip: ip === 'unknown' ? null : ip,
+      country: request.headers.get('x-vercel-ip-country') ?? null,
+      region: request.headers.get('x-vercel-ip-country-region') ?? null,
+      geo_city: request.headers.get('x-vercel-ip-city') ?? null,
+      device,
+      user_agent: userAgent,
+    };
+    let { data: inserted, error } = await admin.from('leads').insert(row).select('id').single();
+    if (error && (row.message != null || row.ip != null)) {
+      // leads.message / leads.ip arrive with migrations 012/013 — if not yet
+      // applied, NEVER lose the lead over them: retry without both.
+      console.error('[lead] insert failed, retrying without message/ip:', error.message);
+      const { message: _m, ip: _i, ...compat } = row;
+      ({ data: inserted, error } = await admin.from('leads').insert(compat).select('id').single());
+    }
     if (error) {
       return NextResponse.json({ error: 'generic' }, { status: 500 });
     }

@@ -38,7 +38,18 @@ const nextConfig = {
   // path, Next 15.5 Turbopack fails page-data collection when the root is
   // pinned. The multiple-lockfile warning at build time is cosmetic (a stray
   // package-lock.json exists in the user home directory).
+  //
+  // NEXT_DIST_DIR lets the seo:audit gate build+serve from an isolated dir
+  // (e.g. .next-audit) while `next dev` keeps rewriting .next — the two
+  // otherwise corrupt each other's output. Set it on BOTH build and start.
+  distDir: process.env.NEXT_DIST_DIR || '.next',
   images: {
+    // AVIF first (~30% smaller than WebP) with WebP fallback — Next defaults to
+    // WebP only, and these are photo-heavy pages where LCP is the image.
+    formats: ['image/avif', 'image/webp'],
+    // 65 = hero/gallery LCP images (photo under a scrim — the ~30% byte cut is
+    // invisible there); 75 = Next's default for everything else.
+    qualities: [65, 75],
     remotePatterns: [
       {
         protocol: 'https',
@@ -49,9 +60,26 @@ const nextConfig = {
   },
   async headers() {
     return [
+      // /_next/static is immutable-cached by Next itself; /public files are
+      // not. Brand assets change ~never; the analytics beacons change on
+      // deploy, so they get a short TTL with a stale window instead.
+      {
+        source: '/brand/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=604800, stale-while-revalidate=86400' },
+        ],
+      },
+      {
+        source: '/:file(wt.js|wt-motion.js)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=3600, stale-while-revalidate=86400' },
+        ],
+      },
       {
         source: '/(.*)',
         headers: [
+          // HSTS: the site is HTTPS-only in prod (Vercel); 2 years + preload.
+          { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
           { key: 'X-Frame-Options', value: 'DENY' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },

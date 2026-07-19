@@ -10,7 +10,10 @@ export const dynamic = 'force-dynamic';
 export default async function AdminGalleryEditPage({ params }) {
   const { entityType, id } = await params;
   if (!ENTITY_TYPES.includes(entityType)) notFound();
-  const parsedId = z.uuid().safeParse(id);
+  // guid, not uuid: the virtual galleries (settings_hero/office/team) use
+  // sentinel ids (…0001/0002/0003) whose version bits fail Zod 4's strict
+  // RFC uuid check.
+  const parsedId = z.guid().safeParse(id);
   if (!parsedId.success) notFound();
 
   const admin = supabaseAdmin();

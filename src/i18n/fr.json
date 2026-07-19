@@ -1,7 +1,7 @@
 {
   "nav": {
     "home": "Accueil",
-    "babmakkah": "Bab Makkah",
+    "babmakkah": "Bab Makka",
     "omraByMonth": "Omra par mois",
     "omraByOccasion": "Omra par occasion",
     "hajj": "Hajj",
@@ -14,8 +14,9 @@
     "contact": "Contact"
   },
   "brand": {
+    "description": "Wiki Tours International est une agence de voyages marocaine agréée, basée à Casablanca depuis 2016. Bab Makka est son service premium Omra & Hajj au départ du Maroc.",
     "byParent": "by WIKI TOURS",
-    "footerLine": "Bab Makkah — un service premium de Wiki Tours International · Casablanca · depuis 2016",
+    "footerLine": "Bab Makka — un service premium de Wiki Tours International · Casablanca · depuis 2016",
     "premiumService": "Le service premium Omra & Hajj de Wiki Tours"
   },
   "cta": {
@@ -32,7 +33,7 @@
   },
   "home": {
     "metaTitle": "Wiki Tours International — Omra & Hajj depuis le Maroc",
-    "intro": "Wiki Tours International est une agence de voyages marocaine. Bab Makkah, son service premium Omra & Hajj, organise vos départs vers La Mecque et Médine avec accompagnement complet.",
+    "intro": "Wiki Tours International est une agence de voyages marocaine. Bab Makka, son service premium Omra & Hajj, organise vos départs vers La Mecque et Médine avec accompagnement complet.",
     "heroBadge": "Agence agréée · Casablanca",
     "heroLine1": "Votre Omra, organisée",
     "heroLine2": "comme un voyage d'exception",
@@ -47,7 +48,9 @@
     "statSince": "années d'expérience",
     "statRating": "note Google",
     "statReviews": "avis Google",
-    "hotelsTitle": "Nos hôtels à La Mecque et Médine",
+    "hotelsTitle": "Nos hôtels partenaires à La Mecque et Médine",
+    "hotelsSubtitle": "Nous collaborons avec ces hôtels partenaires, sélectionnés pour leur confort et leur proximité du Haram.",
+    "hotelsLoadMore": "Voir plus d'hôtels",
     "stepsTitle": "Comment ça marche",
     "step1Title": "Votre demande",
     "step1Body": "Choisissez une offre et envoyez votre demande — sans aucun paiement en ligne.",
@@ -55,7 +58,7 @@
     "step2Body": "Notre équipe vous appelle pour confirmer dates, chambre et documents.",
     "step3Title": "Contrat écrit",
     "step3Body": "Signature à l'agence : contrat écrit, reçu officiel, paiement traçable.",
-    "reelsTitle": "En images",
+    "reelsTitle": "En vidéo",
     "proofTitle": "Ils sont partis avec nous",
     "googleBadge": "{rating} ★ · {count} avis Google",
     "monthsTitle": "Omra par mois",
@@ -83,6 +86,8 @@
     "from": "À partir de",
     "currency": "MAD",
     "perPerson": "par personne",
+    "departed": "Départ effectué — découvrez les prochains départs.",
+    "seatsLeft": "Plus que {n} places à ce départ",
     "status": {
       "open": "Places disponibles",
       "few_left": "Dernières places",
@@ -91,6 +96,12 @@
     "duration": "{days} jours / {nights} nuits",
     "distanceToHaram": "à {m} m du Haram",
     "breakfastIncluded": "Petit-déjeuner inclus",
+    "gammesTitle": "Nos gammes",
+    "gammesSubtitle": "Comparez et choisissez votre formule",
+    "recommended": "Recommandé",
+    "chooseThisGamme": "Choisir cette gamme",
+    "selectedGamme": "Votre choix",
+    "nightsCount": "{n} nuits",
     "pricesTitle": "Prix par personne",
     "room": {
       "double": "Chambre double",
@@ -149,7 +160,7 @@
     "priceColumn": "Prix"
   },
   "archive": {
-    "title": "Programmes Omra — Bab Makkah",
+    "title": "Programmes Omra — Bab Makka",
     "answerLine": "{n} programmes Omra ouverts · dès {min} MAD · hôtels de {dmin} à {dmax} m du Haram · prochain départ le {date}",
     "lastUpdated": "Dernière mise à jour",
     "filterAll": "Tous",
@@ -174,7 +185,9 @@
   },
   "cityPage": {
     "title": "Omra depuis {city}",
-    "answer": "Bab Makkah by Wiki Tours organise votre Omra au départ du Maroc — demande en ligne, confirmation humaine, contrat écrit à l'agence de Casablanca."
+    "answer": "Bab Makka by Wiki Tours organise votre Omra au départ du Maroc — demande en ligne, confirmation humaine, contrat écrit à l'agence de Casablanca.",
+    "logisticsTitle": "Départ depuis {city}",
+    "faqTitle": "Questions fréquentes — {city}"
   },
   "voyages": {
     "title": "Nos voyages",
@@ -198,30 +211,86 @@
     "agrementBody": "Wiki Tours International est une agence de voyages marocaine agréée. Notre numéro de licence est affiché à l'agence et vérifiable auprès du Ministère du Tourisme.",
     "aproposTitle": "Qui sommes-nous",
     "contactTitle": "Contact",
-    "blogTitle": "Guide & conseils",
+    "seeAlso": "Voir aussi",
+    "blogTitle": "Guide & conseils et articles",
+    "blogSearch": "Rechercher un article…",
+    "blogNoResults": "Aucun article ne correspond à votre recherche.",
     "verifiedBy": "Vérifié par",
     "publishedOn": "Publié le",
     "updatedOn": "Mis à jour le",
     "hoursTitle": "Horaires",
     "addressTitle": "Adresse",
     "phonesTitle": "Téléphones",
+    "hotelsCompareTitle": "Hôtels Omra à La Mecque et Médine — distances du Haram",
+    "hotelsCompareLede": "Nos {n} hôtels partenaires à La Mecque et Médine, classés par distance à pied du Haram. Le plus proche est {closest} à {closestM} m de la Grande Mosquée.",
+    "hotelsCompareIntro": "Comparez d'un coup d'œil la distance au Haram, la catégorie et le petit-déjeuner. La distance est mesurée à pied jusqu'à la mosquée (Masjid al-Haram à La Mecque, Masjid an-Nabawi à Médine).",
+    "colHotel": "Hôtel",
+    "colCity": "Ville",
+    "colStars": "Catégorie",
+    "colDistance": "Distance du Haram",
+    "colBreakfast": "Petit-déjeuner",
+    "yes": "Oui",
+    "no": "Non",
+    "pressTitle": "Presse & médias",
+    "pressLede": "Wiki Tours International et son service Bab Makka dans les médias.",
+    "pressVisit": "Lire l’article",
+    "pressEmpty": "[CONTENT NEEDED] Ajoutez le lien presse dans Réglages.",
+    "pasCherTitle": "Omra pas cher depuis le Maroc",
+    "pasCherLede": "Nos Omra au meilleur prix au départ du Maroc, à partir de {min} MAD par personne. Prix réels, contrat écrit, aucun paiement en ligne.",
+    "pasCherIntro": "Comment nous gardons l’Omra accessible sans sacrifier l’encadrement — hôtels, chambres partagées et périodes hors pic.",
+    "ramadanTitle": "Omra Ramadan {year} depuis le Maroc",
+    "ramadanLede": "Nos départs pour l’Omra du Ramadan {year} depuis le Maroc — la période la plus recherchée de l’année.",
+    "seasonalUpdated": "Mis à jour le",
+    "pasCherFaq": [
+      {
+        "q": "Faut-il payer en ligne pour réserver ?",
+        "a": "Non, aucun paiement en ligne n'est demandé. Vous envoyez votre demande depuis le site, un conseiller vous confirme les détails par téléphone ou WhatsApp, puis la réservation est finalisée par un contrat écrit signé à l'agence de Casablanca, avec un reçu officiel."
+      },
+      {
+        "q": "Comment obtenir le prix le plus bas ?",
+        "a": "Les tarifs les plus bas correspondent aux chambres partagées, quadruple ou quintuple, et aux départs hors période de Ramadan. Comparez aussi les gammes proposées sur chaque programme : la gamme économique s'appuie sur des hôtels plus éloignés du Haram, ce qui réduit le prix par personne."
+      },
+      {
+        "q": "Que comprend le prix affiché ?",
+        "a": "Chaque programme détaille précisément ce qui est inclus — vol, hôtels, transferts et encadrement — ainsi que ce qui ne l'est pas, sur sa propre page. Les prix s'entendent en dirhams par personne et varient selon la gamme choisie et le type de chambre : double, triple, quadruple ou quintuple."
+      }
+    ],
+    "ramadanFaq": [
+      {
+        "q": "Pourquoi l’Omra du Ramadan est-elle plus chère ?",
+        "a": "La demande atteint son pic pendant le Ramadan, surtout les dix derniers jours du mois ; les prix des vols et des hôtels proches du Haram augmentent en conséquence. Réserver tôt et choisir une chambre partagée, quadruple ou quintuple, reste le moyen le plus sûr de limiter le budget."
+      },
+      {
+        "q": "Quand faut-il réserver l’Omra du Ramadan ?",
+        "a": "Le plus tôt possible : les places et les hôtels proches du Haram partent des mois à l'avance, surtout pour les dix derniers jours du mois. Envoyez votre demande depuis le site ou par WhatsApp, et un conseiller vous confirme les disponibilités réelles du départ qui vous intéresse."
+      },
+      {
+        "q": "Faut-il payer en ligne ?",
+        "a": "Non, aucun paiement en ligne n'est demandé. La réservation se confirme d'abord par téléphone ou WhatsApp, puis par un contrat écrit signé à l'agence de Casablanca, avec un reçu officiel. Cette confirmation humaine s'applique à tous les départs, y compris ceux du Ramadan."
+      }
+    ],
     "nextDepartures": "Prochains départs depuis Casablanca",
     "reviewsCount": "{n} avis publiés de nos pèlerins — textes, messages WhatsApp et vidéos.",
     "leaveReview": "Laisser un avis sur Google",
     "contactIntro": "Une question sur une Omra, le Hajj ou un voyage ? Notre équipe vous répond rapidement, en français ou en arabe.",
     "contactFormTitle": "Envoyez-nous votre demande",
-    "findUs": "Nous trouver"
+    "findUs": "Nous trouver",
+    "whereQuestion": "Où se trouve l'agence ?",
+    "whereAnswer": "Notre agence vous accueille à l’adresse suivante : {address}.",
+    "avisDesc": "Avis et témoignages de pèlerins partis en Omra avec Bab Makka by Wiki Tours International : vidéos, captures et retours vérifiés.",
+    "blogDesc": "Guides et conseils Omra & Hajj par l'équipe Bab Makka : documents, budget, hôtels et préparation du départ depuis le Maroc."
   },
   "agency": {
     "title": "Agence Omra à Casablanca",
-    "metaDescription": "Wiki Tours International, agence de voyages agréée à Casablanca. Bab Makkah, son service premium Omra & Hajj : programmes, hôtels proches du Haram, contrat écrit.",
-    "identity": "Wiki Tours International est une agence de voyages agréée installée à Casablanca depuis 2016. Bab Makkah, son service premium Omra & Hajj, organise vos départs vers La Mecque et Médine — demande en ligne, confirmation humaine et contrat écrit à l'agence.",
+    "metaDescription": "Wiki Tours International, agence de voyages agréée à Casablanca. Bab Makka, son service premium Omra & Hajj : programmes, hôtels proches du Haram, contrat écrit.",
+    "identity": "Wiki Tours International est une agence de voyages agréée installée à Casablanca depuis 2016. Bab Makka, son service premium Omra & Hajj, organise vos départs vers La Mecque et Médine — demande en ligne, confirmation humaine et contrat écrit à l'agence.",
     "officeTitle": "Notre agence",
     "testimonialsTitle": "Ils sont partis de Casablanca"
   },
   "form": {
     "fullName": "Nom complet",
     "city": "Ville",
+    "message": "Commentaire (optionnel)",
     "phone": "Téléphone",
     "submit": "Envoyer ma demande",
     "genericError": "Une erreur est survenue. Merci de réessayer ou de nous écrire sur WhatsApp.",
@@ -248,9 +317,53 @@
     "decline": "Continuer sans accepter"
   },
   "seoTitles": {
-    "home": "Omra 2026 depuis le Maroc — Bab Makkah by Wiki Tours",
-    "babmakkah": "Omra 2026 depuis le Maroc : programmes, dates et prix | Bab Makkah by Wiki Tours",
-    "offer": "Omra {occasion} {year} : {tier} dès {price} MAD | Bab Makkah by Wiki Tours",
-    "month": "Omra {month} {year} depuis le Maroc — dates et prix | Bab Makkah"
+    "home": "Omra 2026 depuis le Maroc | Bab Makka",
+    "babmakkah": "Omra depuis le Maroc : programmes & prix | Bab Makka",
+    "offer": "Omra {occasion} {year} dès {price} MAD | Bab Makka",
+    "month": "Omra {month} {year} depuis le Maroc | Bab Makka"
+  },
+  "guide": {
+    "pillarTitle": "Guide Omra depuis le Maroc",
+    "pillarDesc": "Le guide Omra de Bab Makka : documents, budget, rituels, checklist et meilleure période — chapitre par chapitre, depuis le Maroc.",
+    "pillarLede": "Ce guide rassemble, chapitre par chapitre, l'essentiel pour préparer votre Omra depuis le Maroc : documents, budget, rituels et checklist.",
+    "chapters": "Chapitres du guide",
+    "inPreparation": "Ce chapitre est en préparation par notre équipe. Posez votre question sur WhatsApp — réponse humaine.",
+    "backToPillar": "Guide Omra",
+    "seeDepartures": "Voir les départs Omra",
+    "writtenBy": "Rédigé par",
+    "chapterTitles": {
+      "documents-visa": "Documents & visa Omra",
+      "femme-mahram": "Omra pour les femmes & mahram",
+      "budget": "Budget d'une Omra",
+      "rituels": "Les rituels de l'Omra",
+      "checklist": "Checklist avant le départ",
+      "meilleure-periode": "Meilleure période pour l'Omra"
+    }
+  },
+  "glossary": {
+    "title": "Glossaire de l'Omra",
+    "desc": "Les termes du pèlerinage — ihram, tawaf, sa'i… — définis simplement par l'équipe Bab Makka.",
+    "lede": "Les termes essentiels de l'Omra, définis simplement et sans jargon.",
+    "empty": "Le glossaire est en préparation par notre équipe."
+  },
+  "barometer": {
+    "title": "Baromètre des prix Omra",
+    "desc": "Prix minimum et moyen des départs Omra publiés, mois par mois — calculés uniquement à partir des offres réelles de l’agence.",
+    "lede": "Prix observés sur les départs Omra publiés par l’agence, par mois de départ. Aucun chiffre estimé : uniquement nos offres réelles.",
+    "empty": "Pas encore assez de départs publiés pour des statistiques fiables. Consultez les offres en cours.",
+    "colMonth": "Mois de départ",
+    "colOffers": "Départs",
+    "colMin": "Prix min / pers.",
+    "colAvg": "Prix moyen / pers.",
+    "basedOn": "Basé sur {n} départ(s) publié(s).",
+    "note": "Calculé uniquement à partir des offres publiées par Bab Makka — jamais extrapolé."
+  },
+  "priceTable": {
+    "title": "Comparatif des départs et des prix",
+    "colOffer": "Programme",
+    "colDeparture": "Départ",
+    "colDuration": "Durée",
+    "colFrom": "À partir de (MAD/pers.)",
+    "days": "{n} jours"
   }
 }

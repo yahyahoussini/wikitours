@@ -124,6 +124,7 @@ export default function KeywordPanel({ groups }) {
             min="1"
             value={form.position}
             onChange={(e) => setForm((f) => ({ ...f, position: e.target.value }))}
+            onWheel={(e) => e.currentTarget.blur()}
             className={`${INPUT} w-24`}
           />
         </label>

@@ -3,13 +3,46 @@
    CSS; this only toggles classes and sets --p. Respects reduced-motion. */
 (function () {
   var docEl = document.documentElement;
-  docEl.classList.add('js-motion');
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Defer DOM mutations until after React hydration COMMITS. <HydrationSignal>
+  // calls __wtMotionStart from useEffect — the only signal that cannot race
+  // the hydration diff (a bare rAF fires after first paint, and a short timer
+  // loses to slow dev hydration; both produced mismatch warnings). The 12s
+  // timer is a pure crash rescue: if hydration never commits, [data-reveal]
+  // content is CSS-hidden until is-in and must not be stranded invisible.
+  var started = false;
+  function start() {
+    if (started) return;
+    started = true;
+    requestAnimationFrame(init);
+  }
+  window.__wtMotionStart = start;
+  if (docEl.dataset.hydrated) start();
+  else setTimeout(start, 12000);
+
+  function init() {
 
   // B4 — staggered scroll-reveal (once per element, never re-triggers).
   var reveals = document.querySelectorAll('[data-reveal]');
+  // [data-reveal] content is CSS-hidden until is-in. React REMOUNTS nodes when
+  // lists re-render (the offers filter, client-side navigations) — those fresh
+  // nodes were never observed, so without the MutationObserver below they
+  // stayed invisible forever (the "filter twice → no offers" bug).
   if (reduce || !('IntersectionObserver' in window)) {
     for (var i = 0; i < reveals.length; i++) reveals[i].classList.add('is-in');
+    var moPlain = new MutationObserver(function (muts) {
+      muts.forEach(function (m) {
+        Array.prototype.forEach.call(m.addedNodes, function (node) {
+          if (node.nodeType !== 1) return;
+          if (node.hasAttribute && node.hasAttribute('data-reveal')) node.classList.add('is-in');
+          if (node.querySelectorAll) {
+            node.querySelectorAll('[data-reveal]').forEach(function (el) { el.classList.add('is-in'); });
+          }
+        });
+      });
+    });
+    moPlain.observe(document.body, { childList: true, subtree: true });
   } else {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
@@ -19,7 +52,7 @@
         }
       });
     }, { rootMargin: '0px 0px -10% 0px', threshold: 0.12 });
-    reveals.forEach(function (el) {
+    var setupReveal = function (el) {
       var p = el.parentElement;
       if (p) {
         var sibs = p.querySelectorAll(':scope > [data-reveal]');
@@ -27,7 +60,22 @@
         if (idx > 0) el.style.transitionDelay = idx * 70 + 'ms';
       }
       io.observe(el);
+    };
+    reveals.forEach(setupReveal);
+    var mo = new MutationObserver(function (muts) {
+      muts.forEach(function (m) {
+        Array.prototype.forEach.call(m.addedNodes, function (node) {
+          if (node.nodeType !== 1) return;
+          if (node.hasAttribute && node.hasAttribute('data-reveal') && !node.classList.contains('is-in')) {
+            setupReveal(node);
+          }
+          if (node.querySelectorAll) {
+            node.querySelectorAll('[data-reveal]:not(.is-in)').forEach(setupReveal);
+          }
+        });
+      });
     });
+    mo.observe(document.body, { childList: true, subtree: true });
   }
 
   // B10 — number counters (ease-out 1.2s, once on reveal). data-count holds
@@ -85,6 +133,44 @@
     tick();
   }
 
+  // B13 — weighted in-page anchor scrolling ("inertial" ease-out with a long
+  // settle). Delegated, so it also covers content mounted after client-side
+  // navigations. Honors each target's scroll-margin-top; a wheel/touch from
+  // the user cancels the glide; reduced-motion keeps the instant jump.
+  if (!reduce) {
+    document.addEventListener('click', function (ev) {
+      var a = ev.target && ev.target.closest && ev.target.closest('a[href^="#"]');
+      if (!a) return;
+      var id = a.getAttribute('href').slice(1);
+      var el = id && document.getElementById(id);
+      if (!el) return;
+      ev.preventDefault();
+      var margin = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
+      var startY = window.scrollY;
+      var targetY = Math.min(
+        el.getBoundingClientRect().top + startY - margin,
+        docEl.scrollHeight - window.innerHeight,
+      );
+      var dist = targetY - startY;
+      if (!dist) return;
+      var dur = Math.min(1100, Math.max(550, Math.abs(dist) * 0.45));
+      var t0 = performance.now();
+      var cancelled = false;
+      var cancel = function () { cancelled = true; };
+      addEventListener('wheel', cancel, { once: true, passive: true });
+      addEventListener('touchstart', cancel, { once: true, passive: true });
+      var easeOutQuart = function (t) { return 1 - Math.pow(1 - t, 4); };
+      var step = function (now) {
+        if (cancelled) return;
+        var p = Math.min(1, (now - t0) / dur);
+        window.scrollTo(0, startY + dist * easeOutQuart(p));
+        if (p < 1) requestAnimationFrame(step);
+        else history.pushState(null, '', '#' + id);
+      };
+      requestAnimationFrame(step);
+    });
+  }
+
   // B7 — magnetic primary buttons (fine pointer only; hero + booking CTA).
   if (!reduce && matchMedia('(pointer:fine)').matches) {
     var mags = document.querySelectorAll('[data-magnetic]');
@@ -100,5 +186,7 @@
       });
       el.addEventListener('pointerleave', function () { el.style.transform = ''; });
     });
+  }
+
   }
 })();

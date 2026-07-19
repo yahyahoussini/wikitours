@@ -7,7 +7,7 @@ import { SITE_URL } from '@/lib/seo';
  */
 export default function robots() {
   const disallow = ['/admin', '/api/'];
-  const aiBots = ['GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-Web', 'PerplexityBot', 'Google-Extended'];
+  const aiBots = ['GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-Web', 'PerplexityBot', 'Google-Extended', 'Bingbot', 'CCBot'];
   return {
     rules: [
       { userAgent: '*', allow: '/', disallow },

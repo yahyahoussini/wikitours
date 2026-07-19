@@ -136,6 +136,10 @@ export const settingsSchema = z
     instagram_url: nullableText(300),
     tiktok_url: nullableText(300),
     youtube_url: nullableText(300),
+    babmakka_facebook_url: nullableText(300),
+    babmakka_instagram_url: nullableText(300),
+    babmakka_tiktok_url: nullableText(300),
+    babmakka_youtube_url: nullableText(300),
     gbp_review_url: nullableText(300),
     gbp_rating: z.preprocess(
       (v) => (v === '' || v === undefined ? null : Number(v)),
@@ -153,6 +157,28 @@ export const settingsSchema = z
     verification_metas: nullableText(4000),
     consent_banner_enabled: z.boolean().optional(),
     indexnow_key: nullableText(120),
+    // "Notre histoire" written story (per locale) + team block controls.
+    story_fr: nullableText(5000),
+    story_ar: nullableText(5000),
+    story_en: nullableText(5000),
+    team_enabled: z.boolean().optional(),
+    // The form can send '' before a choice is made — coerce to the default.
+    team_display: z.preprocess(
+      (v) => (v === '' || v == null ? 'members' : v),
+      z.enum(['members', 'photo']),
+    ),
+    // Geo coordinates (LocalBusiness/Organization schema) + canonical press URL.
+    latitude: z.preprocess(
+      (v) => (v === '' || v == null ? null : Number(v)),
+      z.number().min(-90).max(90).nullable().optional(),
+    ),
+    longitude: z.preprocess(
+      (v) => (v === '' || v == null ? null : Number(v)),
+      z.number().min(-180).max(180).nullable().optional(),
+    ),
+    press_url: nullableText(500),
+    // Google Business Profile listing URL — schema hasMap + sameAs.
+    gbp_url: nullableText(500),
   })
   .strict();
 
