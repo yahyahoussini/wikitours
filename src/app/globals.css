@@ -19,6 +19,9 @@
   --color-bm-black-soft: #1a1a1a;
   --color-bm-gold: #d4af37;
   --color-bm-gold-light: #e8c766;
+  /* Small gold TEXT on white needs ≥4.5:1 — #d4af37 is ~2.1:1. Use this for
+     helper text / links; keep --color-bm-gold for decorative fills & borders. */
+  --color-bm-gold-deep: #8a6d1f;
 
   /* The only 3 shadows in the system */
   --shadow-hairline: 0 0 0 1px rgb(13 13 13 / 0.07);

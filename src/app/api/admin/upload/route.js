@@ -79,7 +79,10 @@ export async function POST(request) {
 
     const { error: storageError } = await admin.storage
       .from(MEDIA_BUCKET)
-      .upload(path, buf, { contentType: sniffed.mime, upsert: false });
+      // Paths are content-addressed (uuid) → objects are immutable → cache
+      // for a year (Lighthouse flagged the 1h Supabase default on ~12MB of
+      // media). A replaced image gets a new uuid, never a stale cache.
+      .upload(path, buf, { contentType: sniffed.mime, upsert: false, cacheControl: '31536000' });
     if (storageError) {
       // Generic message to the client; the real cause (e.g. bucket mime
       // allow-list, quota) only ever shows up server-side.

@@ -129,7 +129,7 @@ export default function TestimonialsCarousel({ items, labels }) {
                 {item.content}
               </blockquote>
               {clamped.has(i) ? (
-                <p className="mt-1.5 text-xs font-semibold text-bm-gold">{labels.readMore} →</p>
+                <p className="mt-1.5 text-xs font-semibold text-bm-gold-deep">{labels.readMore} →</p>
               ) : null}
               <figcaption className="mt-3 text-xs font-semibold text-bm-black/50">
                 {item.author}
@@ -143,16 +143,21 @@ export default function TestimonialsCarousel({ items, labels }) {
         {items.length > 1 ? (
           <div className="mt-2 flex justify-center gap-1.5">
             {items.map((item, i) => (
+              // 24px+ touch target (a11y); the visible dot stays small inside.
               <button
                 key={item.id}
                 type="button"
                 aria-label={`${labels.goTo} ${i + 1}`}
                 aria-current={i === index}
                 onClick={() => goTo(i)}
-                className={`h-1.5 rounded-full transition-all ${
-                  i === index ? 'w-5 bg-bm-gold' : 'w-1.5 bg-bm-black/15 hover:bg-bm-black/30'
-                }`}
-              />
+                className="flex size-6 items-center justify-center"
+              >
+                <span
+                  className={`h-1.5 rounded-full transition-all ${
+                    i === index ? 'w-5 bg-bm-gold' : 'w-1.5 bg-bm-black/15 hover:bg-bm-black/30'
+                  }`}
+                />
+              </button>
             ))}
           </div>
         ) : null}

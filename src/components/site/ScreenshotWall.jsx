@@ -15,6 +15,7 @@ export default function ScreenshotWall({ shots, closeLabel }) {
             key={shot.id}
             type="button"
             onClick={() => setOpen(shot)}
+            aria-label={shot.alt || 'Agrandir la capture'}
             className="block w-full overflow-hidden rounded-card shadow-hairline transition hover:shadow-lift"
           >
             <Image

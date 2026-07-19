@@ -780,7 +780,7 @@ async function EncadrantsSection({ encadrants, locale, title }) {
           return (
             <figure key={member.id} className="flex items-center gap-3">
               {face ? (
-                <img src={face.src} alt={member.name} className="size-14 rounded-full object-cover" />
+                <img src={face.src} alt={member.name} width={56} height={56} className="size-14 rounded-full object-cover" />
               ) : null}
               <figcaption>
                 <p className="font-bold">{member.name}</p>

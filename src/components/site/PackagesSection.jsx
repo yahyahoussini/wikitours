@@ -168,7 +168,7 @@ export function OfferCard({ offer, locale, t, whatsappHref, compact = false }) {
           <p className="flex flex-wrap items-center gap-2 text-sm text-bm-black/70">
             {logoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element -- tiny brand mark
-              <img src={logoUrl} alt="" className="h-5 w-auto rounded-[4px] bg-white/90 px-1 py-0.5" />
+              <img src={logoUrl} alt="" width={96} height={20} className="h-5 w-auto rounded-[4px] bg-white/90 px-1 py-0.5" />
             ) : null}
             <span className="truncate">{makkahHotel.name}</span>
             {distance != null ? (

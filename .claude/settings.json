@@ -115,7 +115,8 @@
       "Bash(git restore *)",
       "Bash(git commit -m ' *)",
       "Bash(git remote *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(cd \"C:/Users/yahya/AppData/Local/Temp/claude/c--Users-yahya-Desktop-wiki-tours-app-wiki-tours/760438e4-e9e4-4277-956e-47cc2f6b579f/scratchpad\")"
     ],
     "additionalDirectories": [
       "C:\\Users\\yahya\\Desktop\\wiki tours app\\wiki-tours\\src\\app\\[locale]\\[flat]",
