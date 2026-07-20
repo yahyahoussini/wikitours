@@ -173,6 +173,15 @@
       if (e.interactionId && e.duration > inp) inp = e.duration;
     }, { durationThreshold: 40 });
 
+    // TTFB — Time To First Byte from the Navigation Timing entry (responseStart
+    // relative to the request start). The server-response half of the load;
+    // the admin p75 panel reads it alongside LCP/CLS/INP.
+    var ttfb = 0;
+    try {
+      var nav = performance.getEntriesByType('navigation')[0];
+      if (nav && nav.responseStart > 0) ttfb = nav.responseStart;
+    } catch (e) { /* Navigation Timing L2 unsupported — skip TTFB */ }
+
     var sent = false;
     function report() {
       if (sent) return;
@@ -180,6 +189,7 @@
       if (lcp) track('web_vital', { label: 'LCP:' + Math.round(lcp) });
       if (entries.length) track('web_vital', { label: 'CLS:' + cls.toFixed(3) });
       if (inp) track('web_vital', { label: 'INP:' + Math.round(inp) });
+      if (ttfb) track('web_vital', { label: 'TTFB:' + Math.round(ttfb) });
       flush();
     }
     D.addEventListener('visibilitychange', function () { if (D.visibilityState === 'hidden') report(); });

@@ -62,15 +62,20 @@ export async function saveEntity(entityKey, id, values) {
       : sb.from(config.table).insert(data);
     const { data: row, error } = await query.select().single();
     if (error) {
+      console.error('saveEntity: write failed', key, error.code, error.message);
       if (error.code === '23505') {
         return { ok: false, error: 'Ce slug (ou cette valeur unique) existe déjà.' };
+      }
+      if (error.code === '42501') {
+        return { ok: false, error: `Accès refusé par la sécurité (RLS) sur ${config.table}.` };
       }
       return { ok: false, error: GENERIC_ERROR };
     }
 
     revalidateForTable(config.table, row);
     return { ok: true, row };
-  } catch {
+  } catch (err) {
+    console.error('saveEntity: unexpected', entityKey, err?.message ?? err);
     return { ok: false, error: GENERIC_ERROR };
   }
 }

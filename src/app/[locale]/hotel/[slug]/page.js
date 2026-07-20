@@ -21,7 +21,7 @@ export async function generateMetadata({ params }) {
   const { locale, slug } = await params;
   if (!isLocale(locale)) return {};
   const hotel = await getHotelBySlug(slug);
-  if (!hotel) return {};
+  if (!hotel) notFound(); // metadata-phase 404: real status before streaming
   return {
     // absolute → no template suffix (keeps titles ≤60); description clamped ≤155.
     title: { absolute: withBrand(pickLang(hotel, 'seo_title', locale) ?? hotel.name) },

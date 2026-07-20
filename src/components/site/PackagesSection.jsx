@@ -289,30 +289,39 @@ export default function PackagesSection({
   return (
     <div className="flex flex-col gap-6">
       {occasions.length > 0 ? (
+        // Phone: two deliberate rows in a rounded PANEL (pills scroll
+        // horizontally, month select spans full width below) — the old
+        // single rounded-full capsule broke visually the moment the select
+        // wrapped onto its own line, leaving it floating with dead space.
+        // sm+: back to one row, capsule shape, select pinned end via ms-auto.
         <div
           id="par-occasion"
-          className={`flex flex-wrap items-center gap-2 ${mode === 'archive' ? 'sticky top-20 z-30 rounded-full bg-white/90 p-2 shadow-hairline backdrop-blur' : ''}`}
+          className={`flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center ${
+            mode === 'archive' ? 'sticky top-20 z-30 rounded-2xl bg-white/90 p-2 shadow-hairline backdrop-blur sm:rounded-full' : ''
+          }`}
         >
-          <button type="button" onClick={() => { setOccasion(''); syncUrl('', month); }} className={pill(occasion === '')}>
-            {t.filterAll}
-          </button>
-          {occasions.map((o) => (
-            <button
-              key={o.slug}
-              type="button"
-              onClick={() => { setOccasion(o.slug); syncUrl(o.slug, month); }}
-              className={pill(occasion === o.slug)}
-            >
-              {o[`name_${locale}`] || o.name_fr}
+          <div className="no-scrollbar flex items-center gap-2 overflow-x-auto sm:flex-wrap">
+            <button type="button" onClick={() => { setOccasion(''); syncUrl('', month); }} className={`shrink-0 ${pill(occasion === '')}`}>
+              {t.filterAll}
             </button>
-          ))}
+            {occasions.map((o) => (
+              <button
+                key={o.slug}
+                type="button"
+                onClick={() => { setOccasion(o.slug); syncUrl(o.slug, month); }}
+                className={`shrink-0 ${pill(occasion === o.slug)}`}
+              >
+                {o[`name_${locale}`] || o.name_fr}
+              </button>
+            ))}
+          </div>
           {mode === 'archive' && months ? (
             <select
               id="par-mois"
               aria-label={t.monthAll}
               value={month}
               onChange={(e) => { setMonth(e.target.value); syncUrl(occasion, e.target.value); }}
-              className="ms-auto rounded-full bg-bm-black/5 px-3 py-1.5 text-sm font-semibold text-bm-black outline-none"
+              className="w-full rounded-full bg-bm-black/5 px-3 py-1.5 text-sm font-semibold text-bm-black outline-none sm:ms-auto sm:w-auto"
             >
               <option value="">{t.monthAll}</option>
               {months.map((m) => (

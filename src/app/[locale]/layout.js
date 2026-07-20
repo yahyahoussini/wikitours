@@ -11,6 +11,7 @@ import SiteFooter from '@/components/site/SiteFooter';
 import TrackingScripts from '@/components/TrackingScripts';
 import ConsentBanner from '@/components/ConsentBanner';
 import HydrationSignal from '@/components/HydrationSignal';
+import NavigationOverlay from '@/components/site/NavigationOverlay';
 import OrgJsonLd from '@/components/site/OrgJsonLd';
 import '../globals.css';
 
@@ -114,6 +115,8 @@ export default async function LocaleLayout({ children, params }) {
         <ConsentBanner labels={t.consent} />
         {/* Gates wt-motion's DOM writes behind hydration commit */}
         <HydrationSignal />
+        {/* Branded transition overlay — click-based, not loading.js (see its own comment) */}
+        <NavigationOverlay />
         {/* First-party beacon — deferred, ~1.6KB gzipped, public pages only */}
         <script src="/wt.js" defer />
         {/* Shared motion utility — reveal + scroll-progress + magnetic (no libs) */}

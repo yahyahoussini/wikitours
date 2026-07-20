@@ -69,7 +69,7 @@ export async function generateMetadata({ params }) {
   if (!isLocale(locale)) return {};
   const t = getDictionary(locale);
   const resolved = await resolveFlat(flat);
-  if (!resolved) return {};
+  if (!resolved) notFound(); // metadata-phase 404: real status before streaming
   const alternates = hreflangAlternates(locale, `/${flat}`);
   if (resolved.kind === 'month') {
     const month = monthName(resolved.monthIndex, locale);
@@ -246,26 +246,37 @@ export default async function FlatLandingPage({ params }) {
     <div className="bg-bm-black text-white">
       <JsonLd data={webPageJsonLd} />
       {faqJsonLd ? <JsonLd data={faqJsonLd} /> : null}
-      <main className="mx-auto max-w-6xl px-6 pb-20 pt-8">
-        <BrandLockup locale={locale} size="sm" />
-        <BreadcrumbTrail
-          dark
-          className="mt-3"
-          items={[
-            { label: t.nav.home, href: `/${locale}` },
-            { label: BRAND.service, href: `/${locale}/bab-makka` },
-            { label: heading },
-          ]}
-        />
-        <h1 className="mt-4 max-w-2xl text-3xl font-bold leading-tight sm:text-4xl">{heading}</h1>
-        {answer ? (
-          <p data-answer className="mt-3 max-w-2xl text-lg leading-relaxed text-white/80">{answer}</p>
-        ) : null}
-        {updated ? (
-          <p className="mt-2 text-sm text-white/50">
-            {t.pages.seasonalUpdated} <time dateTime={updated}>{dateFmt.format(new Date(updated))}</time>
-          </p>
-        ) : null}
+      {/* Premium header band — a soft gold-lit dark panel with the dotted map
+          canvas, so the H1/answer sit on a crafted surface instead of bare
+          black (matches the elevated Hajj/offer treatment). */}
+      <section className="px-3 pt-3">
+        <div className="map-canvas-dark relative mx-auto max-w-6xl overflow-hidden rounded-panel border border-white/10 bg-bm-black-soft px-6 py-10 shadow-float sm:px-10 sm:py-14">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-bm-gold/10 blur-3xl" />
+          <div className="relative">
+            <BrandLockup locale={locale} size="sm" />
+            <BreadcrumbTrail
+              dark
+              className="mt-3"
+              items={[
+                { label: t.nav.home, href: `/${locale}` },
+                { label: BRAND.service, href: `/${locale}/bab-makka` },
+                { label: heading },
+              ]}
+            />
+            <h1 className="mt-4 max-w-2xl text-3xl font-bold leading-tight sm:text-4xl">{heading}</h1>
+            {answer ? (
+              <p data-answer className="mt-3 max-w-2xl text-lg leading-relaxed text-white/80">{answer}</p>
+            ) : null}
+            {updated ? (
+              <p className="mt-2 text-sm text-white/50">
+                {t.pages.seasonalUpdated} <time dateTime={updated}>{dateFmt.format(new Date(updated))}</time>
+              </p>
+            ) : null}
+          </div>
+        </div>
+      </section>
+
+      <main className="mx-auto max-w-6xl px-6 pb-20 pt-10">
         {/* Anti-doorway guard hook: present only while the city page lacks its
             unique content — the audit fails if this coexists with indexability. */}
         {resolved.kind === 'city' && !cityPageIndexable(cityRow) ? <span data-guard="empty" hidden /> : null}

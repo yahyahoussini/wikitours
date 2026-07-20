@@ -43,6 +43,14 @@ const nextConfig = {
   // (e.g. .next-audit) while `next dev` keeps rewriting .next — the two
   // otherwise corrupt each other's output. Set it on BOTH build and start.
   distDir: process.env.NEXT_DIST_DIR || '.next',
+  // Streamed metadata means a late notFound() can't change the HTTP status —
+  // unknown slugs would soft-404 (200 + 404 UI) for crawlers. UAs matched
+  // here get BLOCKING metadata instead, so the metadata-phase notFound()
+  // returns a real 404 to every engine that matters, while human browsers
+  // keep streaming (and the branded loaders). curl + the audit UA are
+  // included so the seo:audit 404 probes and manual checks see real statuses.
+  htmlLimitedBots:
+    /Googlebot|Google-Extended|Bingbot|GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|Claude-Web|PerplexityBot|CCBot|DuckDuckBot|YandexBot|Applebot|facebookexternalhit|Twitterbot|LinkedInBot|WhatsApp|wt-seo-audit|curl/i,
   images: {
     // AVIF first (~30% smaller than WebP) with WebP fallback — Next defaults to
     // WebP only, and these are photo-heavy pages where LCP is the image.

@@ -334,6 +334,28 @@ async function main() {
     }
   }
 
+  // Hard-404 statuses: unknown URLs must return a REAL 404, not a 200 with
+  // 404 UI streamed inside (soft 404 — the loading.js boundary once committed
+  // the status before the page's notFound() fired; fixed by throwing in the
+  // metadata phase). Guards every dynamic-slug class + the catch-all.
+  const probes = [
+    `/fr/inexistant-${Date.now()}`,
+    `/fr/omra/inexistant-${Date.now()}`,
+    `/fr/hotel/inexistant-${Date.now()}`,
+    `/fr/blog/inexistant-${Date.now()}`,
+    `/fr/lp/inexistant-${Date.now()}`,
+  ];
+  // The probe UA must be in next.config's htmlLimitedBots so metadata blocks
+  // and the status is real (browsers get streamed metadata + 200 by design).
+  for (const probe of probes) {
+    try {
+      const res = await get(`${BASE}${probe}`, { 'user-agent': 'wt-seo-audit/404-probe' });
+      if (res.status !== 404) addErr(probe, `soft 404: unknown URL returned HTTP ${res.status} (want 404)`);
+    } catch (e) {
+      addErr(probe, `404-probe fetch failed: ${e.message}`);
+    }
+  }
+
   // Bot-logger health (informational unless the endpoint reports an error).
   try {
     const res = await fetch(`${BASE}/api/health/seo`, { headers: { 'user-agent': 'wt-seo-audit' } });

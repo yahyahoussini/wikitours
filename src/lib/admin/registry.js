@@ -160,6 +160,23 @@ export const ADMIN_ENTITIES = {
     ],
   },
 
+  'pages-legales': {
+    table: 'legal_pages',
+    title: 'Pages légales',
+    publishField: 'is_published',
+    orderBy: 'slug',
+    listColumns: ['title_fr', 'slug'],
+    searchKeys: ['title_fr', 'slug'],
+    hasSeo: false,
+    hasGallery: false,
+    labelField: 'title_fr',
+    fields: [
+      { name: 'slug', type: 'text', label: 'Slug (URL — ne pas modifier)', required: true },
+      { name: 'title', type: 'text3', label: 'Titre' },
+      { name: 'body_md', type: 'md3', label: 'Contenu (markdown)' },
+    ],
+  },
+
   'landing-pages': {
     table: 'landing_pages',
     title: 'Landing Pages',
@@ -470,7 +487,12 @@ export const ADMIN_ENTITIES = {
       { name: 'date_start', type: 'date', label: 'Départ' },
       { name: 'date_end', type: 'date', label: 'Retour' },
       {
-        name: 'status', type: 'select', label: 'Statut',
+        // required: the DB column is NOT NULL — an unselected "—" used to
+        // send null and silently fail the ENTIRE offer save with a generic
+        // error (masking as "gammes won't save", since gammes can't exist
+        // without a saved offer). default pre-fills new offers so this never
+        // even comes up in the common case.
+        name: 'status', type: 'select', label: 'Statut', required: true, default: 'open',
         options: [
           { value: 'open', label: 'Places disponibles' },
           { value: 'few_left', label: 'Dernières places' },

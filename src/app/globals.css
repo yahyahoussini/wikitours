@@ -177,12 +177,13 @@ p {
   transform: scaleY(1);
 }
 
-/* Branded route-transition loader: the logo breathes while a gold hairline
-   sweeps beneath it. Fades in after 150ms so instant navigations (ISR cache
-   hits) never flash it. Reduced-motion gets a static logo. */
-.brand-loader {
+/* Branded route-transition overlay (NavigationOverlay): the logo breathes
+   while a gold hairline sweeps beneath it. The WHOLE overlay (backdrop +
+   content together) fades in only after 150ms, so fast/cached navigations
+   never flash a blank white screen. Reduced-motion gets a static logo. */
+.brand-loader-overlay {
   opacity: 0;
-  animation: loader-in 250ms var(--ease-luxe, ease-out) 150ms forwards;
+  animation: loader-in 200ms var(--ease-luxe, ease-out) 150ms forwards;
 }
 .brand-loader-logo {
   animation: loader-breathe 2.2s var(--ease-luxe, ease-in-out) infinite;
@@ -213,7 +214,7 @@ p {
   to { inset-inline-start: 100%; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .brand-loader { opacity: 1; animation: none; }
+  .brand-loader-overlay { opacity: 1; animation: none; }
   .brand-loader-logo { animation: none; }
   .brand-loader-track::after { animation: none; inset-inline-start: 30%; }
 }
@@ -245,6 +246,16 @@ p {
   .hotels-collapsed > :nth-child(4) {
     display: none;
   }
+}
+
+/* Soft blurred dark shadow that isolates white/gold text from a busy photo
+   background — layered (tight + wide) so it reads as depth, not a hard
+   outline. Used on hero-style text sitting directly over an image. */
+.text-shadow-photo {
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.75),
+    0 4px 18px rgba(0, 0, 0, 0.55),
+    0 12px 36px rgba(0, 0, 0, 0.35);
 }
 
 /* Faint dotted "map" canvas behind the route. */

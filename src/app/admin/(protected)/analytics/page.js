@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { supabaseServer } from '@/lib/supabase/server';
 import { getAnalytics, getBotReport } from '@/lib/admin/analytics';
+import { getWebVitals, CWV_THRESHOLDS } from '@/lib/admin/web-vitals';
 
 export const dynamic = 'force-dynamic';
 
@@ -82,6 +83,75 @@ function FunnelRow({ item }) {
   );
 }
 
+/** Core Web Vitals p75 panel — field data (RUM) from wt.js, graded against
+ *  Google's thresholds, split by device. This is what Search ranks with. */
+const GRADE_STYLE = {
+  good: 'bg-green-100 text-green-800',
+  'needs-improvement': 'bg-amber-100 text-amber-800',
+  poor: 'bg-red-100 text-red-800',
+  unknown: 'bg-bm-black/5 text-bm-black/40',
+};
+function fmtVital(metric, value, unit) {
+  if (value == null) return '—';
+  return metric === 'CLS' ? value.toFixed(3) : `${nf.format(Math.round(value))}${unit}`;
+}
+function VitalCell({ metric, value, grade, unit }) {
+  return (
+    <td className="py-1.5 text-end">
+      <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums ${GRADE_STYLE[grade] ?? GRADE_STYLE.unknown}`}>
+        {fmtVital(metric, value, unit)}
+      </span>
+    </td>
+  );
+}
+function WebVitalsPanel({ vitals }) {
+  const hasData = vitals.total > 0 && vitals.metrics.some((m) => m.sampleAll > 0);
+  return (
+    <section className="rounded-card border border-bm-black/10 bg-white p-5 shadow-hairline">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="text-sm font-bold">Core Web Vitals — terrain (p75)</h2>
+        <p className="text-xs text-bm-black/40">
+          Données réelles des visiteurs · {nf.format(vitals.total)} mesures · vert = bon selon Google
+        </p>
+      </div>
+      {!hasData ? (
+        <p className="mt-2 text-sm text-bm-black/40">
+          Aucune mesure encore — les vitals arrivent quand de vrais visiteurs chargent le site (production).
+        </p>
+      ) : (
+        <div className="mt-3 overflow-x-auto">
+          <table className="w-full min-w-[30rem] text-sm">
+            <thead>
+              <tr className="text-xs uppercase tracking-wide text-bm-black/40">
+                <th className="py-1 text-start font-semibold">Métrique</th>
+                <th className="py-1 text-end font-semibold">Global</th>
+                <th className="py-1 text-end font-semibold">Mobile</th>
+                <th className="py-1 text-end font-semibold">Desktop</th>
+                <th className="py-1 text-end font-semibold">Seuil « bon »</th>
+                <th className="py-1 text-end font-semibold">Échantillon</th>
+              </tr>
+            </thead>
+            <tbody>
+              {vitals.metrics.map((m) => (
+                <tr key={m.metric} className="border-t border-bm-black/5">
+                  <td className="py-1.5 font-semibold">{m.metric}</td>
+                  <VitalCell metric={m.metric} value={m.all} grade={m.allGrade} unit={m.unit} />
+                  <VitalCell metric={m.metric} value={m.mobile} grade={m.mobileGrade} unit={m.unit} />
+                  <VitalCell metric={m.metric} value={m.desktop} grade={m.desktopGrade} unit={m.unit} />
+                  <td className="py-1.5 text-end text-xs text-bm-black/45 tabular-nums">
+                    ≤ {fmtVital(m.metric, CWV_THRESHOLDS[m.metric][0], m.unit)}
+                  </td>
+                  <td className="py-1.5 text-end tabular-nums text-bm-black/45">{nf.format(m.sampleAll)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
+
 function DataTable({ title, headers, rows }) {
   return (
     <section className="rounded-card border border-bm-black/10 bg-white p-5 shadow-hairline">
@@ -120,11 +190,12 @@ export default async function AdminAnalyticsPage({ searchParams }) {
   const from = /^\d{4}-\d{2}-\d{2}$/.test(params.from ?? '') ? params.from : isoDaysAgo(29);
 
   const sb = await supabaseServer();
-  const [data, bots] = sb
-    ? await Promise.all([getAnalytics(sb, from, to), getBotReport(sb)])
+  const [data, bots, vitals] = sb
+    ? await Promise.all([getAnalytics(sb, from, to), getBotReport(sb), getWebVitals(sb, from, to)])
     : [
         { cards: { visitors: 0, sessions: 0, pageviews: 0, leads: 0, leadRate: 0, whatsappClicks: 0 }, trafficByDay: [], topSources: [], cities: [], topPaths: [], entryPages: [], funnel: [], deviceSplit: [], aiReferrals: [], conversionsByPage: [] },
         { perWeek: [], topPaths: [], total: 0 },
+        { total: 0, metrics: [] },
       ];
 
   const presets = [
@@ -185,6 +256,8 @@ export default async function AdminAnalyticsPage({ searchParams }) {
           <DayBars data={data.trafficByDay} />
         </div>
       </section>
+
+      <WebVitalsPanel vitals={vitals} />
 
       <div className="grid gap-4 lg:grid-cols-2">
         <DataTable

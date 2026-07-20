@@ -75,14 +75,17 @@ export async function middleware(request, event) {
     return NextResponse.rewrite(url);
   }
 
-  // Main-domain /admin: served in dev, 308 to the admin host in prod.
-  if (pathname === '/admin' || pathname.startsWith('/admin/')) {
-    if (process.env.NODE_ENV === 'production') {
-      const target = new URL(pathname.replace(/^\/admin/, '') || '/', `https://${ADMIN_HOST}`);
-      return NextResponse.redirect(target, 308);
-    }
+  // Main-domain /admin: served in dev (no separate host to test against).
+  // In production it falls straight through to the normal locale routing
+  // below, which 404s it like any other unknown path — a redirect to
+  // ADMIN_HOST would hand a recon scan the exact working hostname of the
+  // dashboard. Admins are expected to already know that address.
+  if ((pathname === '/admin' || pathname.startsWith('/admin/')) && process.env.NODE_ENV !== 'production') {
     return NextResponse.next();
   }
+  // In production, /admin* on the main domain intentionally falls through to
+  // the same locale-routing / catch-all logic as any other unknown path
+  // below — no early return, no special-casing, so it 404s indistinguishably.
 
   // 1.4) Legacy dated month hub (/xx/omra-juillet-2026) → evergreen
   // (/xx/omra-juillet). Handled here, not in the [flat] page, because the hub

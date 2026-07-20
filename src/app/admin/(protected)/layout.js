@@ -26,6 +26,7 @@ const NAV = [
   { href: '/admin/analytics', label: 'Analytics' },
   { href: '/admin/seo', label: 'SEO' },
   { href: '/admin/e/redirections', label: 'Redirections' },
+  { href: '/admin/e/pages-legales', label: 'Pages légales' },
   { href: '/admin/reglages', label: 'Réglages' },
 ];
 

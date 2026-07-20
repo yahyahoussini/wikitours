@@ -122,7 +122,10 @@ export async function generateMetadata({ params }) {
   const { locale, slug } = await params;
   if (!isLocale(locale)) return {};
   const offer = await getOfferBySlug(slug);
-  if (!offer) return {};
+  // notFound() HERE (metadata resolves before streaming starts) so unknown
+  // slugs return a real 404 status — thrown from the page body it happens
+  // after the loading.js boundary already committed a 200 (soft 404).
+  if (!offer) notFound();
   const t = getDictionary(locale);
   const occasionName = offer.occasion ? pickLang(offer.occasion, 'name', locale) : '';
   const minPrice = computeMinPrice(offer.tiers);

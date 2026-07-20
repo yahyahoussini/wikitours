@@ -1,11 +1,13 @@
 import Image from 'next/image';
 
 /**
- * Branded route-transition screen (the loading.js fallback): the brand logo
- * breathing over a sweeping gold hairline. `variant="babmakka"` on Bab Makka
- * surfaces (offer pages, omra hubs), default Wiki Tours elsewhere. Client-side
- * navigations only — first paint always ships real server HTML (SEO/LCP), and
- * the CSS delays the fade-in 150ms so cached navigations never flash it.
+ * Branded content: the brand logo breathing over a sweeping gold hairline.
+ * `variant="babmakka"` on Bab Makka surfaces (offer pages, omra hubs),
+ * default Wiki Tours elsewhere. Bare content only — mounted exclusively by
+ * <NavigationOverlay>, which owns the entrance timing/positioning. (NOT a
+ * loading.js fallback: that file convention creates a Suspense boundary that
+ * flushes a 200 status before a deeper notFound() can run — see
+ * NavigationOverlay's comment.)
  */
 export default function BrandLoader({ variant = 'wikitours' }) {
   const babmakka = variant === 'babmakka';
@@ -13,7 +15,7 @@ export default function BrandLoader({ variant = 'wikitours' }) {
     <div
       role="status"
       aria-label="Chargement"
-      className="brand-loader flex min-h-[60vh] flex-col items-center justify-center gap-6 px-6"
+      className="flex flex-col items-center justify-center gap-6 px-6"
     >
       <Image
         src={babmakka ? '/brand/bab-makka-logo.png' : '/brand/wikitours-logo.png'}

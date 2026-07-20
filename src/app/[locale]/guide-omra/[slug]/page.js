@@ -17,7 +17,8 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }) {
   const { locale, slug } = await params;
-  if (!isLocale(locale) || !GUIDE_CHILD_SLUGS.includes(slug)) return {};
+  if (!isLocale(locale)) return {};
+  if (!GUIDE_CHILD_SLUGS.includes(slug)) notFound(); // metadata-phase 404
   const t = getDictionary(locale);
   const row = (await getGuidePages()).get(slug) ?? null;
   return {

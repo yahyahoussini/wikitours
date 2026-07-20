@@ -4,6 +4,8 @@ import { BRAND } from '@/lib/brand';
 import { getDictionary, pickLang } from '@/lib/i18n';
 import { getMenu, getCityPages } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
+import { supabasePublic } from '@/lib/supabase/public';
+import { legalIsFilled } from '@/lib/legal-page';
 import { MONTH_SLUGS, monthPagePath, monthName, CITY_SLUGS, cityPageIndexable } from '@/lib/months';
 import BrandLockup from '@/components/site/BrandLockup';
 
@@ -23,6 +25,22 @@ export default async function SiteFooter({ locale }) {
   // must always be internally linked (orphan rule in scripts/seo-audit.js).
   const cityPages = await getCityPages();
   const liveCities = Object.keys(CITY_SLUGS).filter((slug) => cityPageIndexable(cityPages.get(slug)));
+
+  // Legal pages: only link the ones the admin has actually filled (fr+ar+
+  // published) — never a dead/empty link (LAW §10, parity gate). Titles come
+  // from the row itself (seeded fr/ar/en by migration 014, editable in admin).
+  let legalLinks = [];
+  try {
+    const supabase = supabasePublic();
+    if (supabase) {
+      const { data } = await supabase.from('legal_pages').select('slug, title_fr, title_ar, title_en, body_md_fr, body_md_ar, is_published');
+      legalLinks = (data ?? [])
+        .filter(legalIsFilled)
+        .map((row) => ({ href: `/${locale}/${row.slug}`, label: pickLang(row, 'title', locale) }));
+    }
+  } catch {
+    /* footer must never break the page over this */
+  }
 
   const col1 = await column('footer_col1', locale, [
     { href: `/${locale}/bab-makka`, label: t.nav.babmakkah },
@@ -147,6 +165,9 @@ export default async function SiteFooter({ locale }) {
             <a key={p} href={`tel:${p}`} className="tabular-nums hover:text-white/70">{p}</a>
           ))}
           {pickLang(settings, 'address', locale) ? <span>{pickLang(settings, 'address', locale)}</span> : null}
+          {legalLinks.map((l) => (
+            <Link key={l.href} href={l.href} className="hover:text-white/70">{l.label}</Link>
+          ))}
         </div>
       </div>
     </footer>

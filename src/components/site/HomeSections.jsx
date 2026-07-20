@@ -31,17 +31,24 @@ export async function Hero({ locale }) {
           <div className="absolute inset-0 bg-gradient-to-br from-bm-black via-bm-black-soft to-[#20303a]" aria-hidden="true" />
         )}
 
+        {/* Extra darkening directly behind the text column — the slideshow's
+            own scrim keeps the whole photo legible; this isolates the text
+            block specifically, so a busy sky/crowd never fights the copy. */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 bottom-0 h-[85%] bg-gradient-to-t from-bm-black/55 via-bm-black/15 to-transparent"
+        />
         <div className="relative flex min-h-[70vh] flex-col items-center justify-center gap-5 px-6 py-20 text-center text-white">
-          <span className="rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-semibold tracking-wide backdrop-blur">
+          <span className="rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-semibold tracking-wide text-shadow-photo backdrop-blur">
             {t.home.heroBadge}
           </span>
-          <h1 className="max-w-3xl text-4xl font-bold leading-tight sm:text-5xl">
+          <h1 className="max-w-3xl text-4xl font-bold leading-tight text-shadow-photo sm:text-5xl">
             {t.home.heroLine1}
             <span className="accent-line mt-1 block font-normal text-bm-gold-light">
               {t.home.heroLine2}
             </span>
           </h1>
-          <p className="max-w-xl text-white/75">{t.home.intro}</p>
+          <p className="max-w-xl text-white/85 text-shadow-photo">{t.home.intro}</p>
           <Link
             href={`/${locale}/bab-makka`}
             data-wt="cta_click"

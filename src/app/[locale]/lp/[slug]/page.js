@@ -43,7 +43,7 @@ export async function generateMetadata({ params }) {
   const { locale, slug } = await params;
   if (!isLocale(locale)) return {};
   const page = await getLandingPage(slug);
-  if (!page) return {};
+  if (!page) notFound(); // metadata-phase 404: real status before streaming
   return {
     title: pickLang(page, 'seo_title', locale) ?? pickLang(page, 'title', locale),
     description: pickLang(page, 'seo_description', locale) ?? pickLang(page, 'subtitle', locale),

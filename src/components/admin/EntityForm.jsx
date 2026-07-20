@@ -24,6 +24,10 @@ function initialValues(fields, publishField, hasSeo, record) {
       }
     } else if (field.type === 'bool') {
       values[field.name] = record?.[field.name] ?? false;
+    } else if (!record && field.default !== undefined) {
+      // New record only — pre-fill so a required-with-no-DB-default field
+      // (e.g. offers.status) never blocks the very first save.
+      values[field.name] = field.default;
     } else {
       values[field.name] = record?.[field.name] ?? '';
     }
@@ -121,6 +125,16 @@ export default function EntityForm({
   }, []);
 
   const save = useCallback(async () => {
+    // Catch empty required fields BEFORE the round-trip, with a message that
+    // names the field — the alternative is a round-trip DB constraint error
+    // that reads as "nothing saves" with no clue why (this masked the offer
+    // status bug: the whole offer, and everything depending on it — gammes
+    // included — silently failed to save).
+    const missing = fields.find((f) => f.required && !f.type.endsWith('3') && !values[f.name]);
+    if (missing) {
+      setError(`Champ requis manquant : « ${missing.label} ».`);
+      return;
+    }
     setSaving(true);
     setError(null);
     const result = await saveEntity(entityKey, record?.id ?? null, values);
@@ -136,7 +150,7 @@ export default function EntityForm({
       router.replace(`${basePath}/${result.row.id}`);
     }
     router.refresh();
-  }, [entityKey, record, values, draftKey, basePath, router]);
+  }, [entityKey, record, values, draftKey, basePath, router, fields]);
 
   // Ctrl/Cmd+S saves — keyboard-friendly.
   useEffect(() => {
@@ -477,7 +491,7 @@ function Field({ field, value, onChange, relOptions }) {
   if (field.type === 'select' || field.type === 'rel') {
     const options = field.type === 'rel' ? (relOptions ?? []) : field.options;
     input = (
-      <select value={value ?? ''} onChange={(e) => onChange(e.target.value)} className={INPUT_CLASSES}>
+      <select value={value ?? ''} required={field.required} onChange={(e) => onChange(e.target.value)} className={INPUT_CLASSES}>
         <option value="">—</option>
         {options.map((o) => (
           <option key={o.value} value={o.value}>

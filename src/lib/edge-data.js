@@ -7,14 +7,32 @@ import { LOCALES, FALLBACK_LOCALE } from '@/lib/i18n';
  */
 
 const TTL_MS = 60_000;
+const FETCH_TIMEOUT_MS = 2_500;
 const memos = new Map();
+const inflight = new Map();
 
-async function memoized(key, loader) {
+/**
+ * Stale-while-revalidate memo. The middleware awaits this on EVERY public
+ * request, so it must never wedge the site: refreshes are deduped (one fetch
+ * per key regardless of concurrency), an expired memo keeps serving its stale
+ * value while the refresh runs, and the fetch itself is hard-capped at 2.5s —
+ * a hung Supabase connection degrades to "redirect map up to a minute stale",
+ * never to queued requests.
+ */
+function memoized(key, loader) {
   const hit = memos.get(key);
-  if (hit && Date.now() - hit.at < TTL_MS) return hit.value;
-  const value = await loader();
-  memos.set(key, { value, at: Date.now() });
-  return value;
+  if (hit && Date.now() - hit.at < TTL_MS) return Promise.resolve(hit.value);
+  if (!inflight.has(key)) {
+    const p = loader()
+      .then((value) => {
+        memos.set(key, { value, at: Date.now() });
+        return value;
+      })
+      .finally(() => inflight.delete(key));
+    inflight.set(key, p);
+  }
+  // Stale value (if any) answers immediately; only cold starts await the fetch.
+  return hit ? Promise.resolve(hit.value) : inflight.get(key);
 }
 
 async function restFetch(path, key) {
@@ -24,6 +42,7 @@ async function restFetch(path, key) {
     const res = await fetch(`${url}/rest/v1/${path}`, {
       headers: { apikey: key, authorization: `Bearer ${key}` },
       cache: 'no-store',
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     });
     if (!res.ok) return null;
     return await res.json();
