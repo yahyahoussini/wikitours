@@ -131,7 +131,7 @@ export default function TestimonialsCarousel({ items, labels }) {
               {clamped.has(i) ? (
                 <p className="mt-1.5 text-xs font-semibold text-bm-gold-deep">{labels.readMore} →</p>
               ) : null}
-              <figcaption className="mt-3 text-xs font-semibold text-bm-black/50">
+              <figcaption className="mt-3 text-xs font-semibold text-bm-black/60">
                 {item.author}
                 {item.city ? ` · ${item.city}` : ''}
                 {item.trip ? ` · ${item.trip}` : ''}

@@ -84,7 +84,7 @@ export default async function SiteFooter({ locale }) {
     <footer className="bg-bm-black text-white/70">
       <div className="mx-auto grid max-w-5xl gap-10 px-6 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div className="sm:col-span-2">
-          <Image src="/brand/wikitours-logo-white.png" alt={BRAND.parent} width={1536} height={1024} className="h-20 w-auto" />
+          <Image src="/brand/wikitours-logo-white.png" alt={BRAND.parent} width={1536} height={1024} sizes="200px" style={{ aspectRatio: '1536 / 1024' }} className="h-20 w-auto" />
           <div className="mt-4">
             <BrandLockup locale={locale} size="md" />
           </div>
@@ -103,7 +103,7 @@ export default async function SiteFooter({ locale }) {
           ) : null}
           {socialGroups.map((group) => (
             <p key={group.label} className="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-sm">
-              <span className="text-xs font-semibold uppercase tracking-wide text-white/40">{group.label}</span>
+              <span className="text-xs font-semibold uppercase tracking-wide text-white/60">{group.label}</span>
               {group.links.map(([name, url]) => (
                 <a key={name} href={url} target="_blank" rel="noopener noreferrer" className="transition hover:text-bm-gold-light">
                   {name}
@@ -138,10 +138,10 @@ export default async function SiteFooter({ locale }) {
             <Link href={`/${locale}/barometre-prix-omra`} className="hover:text-bm-gold-light">{t.barometer.title}</Link>
             <Link href={`/${locale}/presse`} className="hover:text-bm-gold-light">{t.pages.pressTitle}</Link>
           </nav>
-          <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-white/40">{t.home.monthsTitle}</p>
+          <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-white/60">{t.home.monthsTitle}</p>
           <nav className="mt-2 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-white/55">
             {MONTH_SLUGS.map((slug, i) => (
-              <Link key={slug} href={`/${locale}${monthPagePath(i)}`} className="capitalize hover:text-bm-gold-light">
+              <Link key={slug} href={`/${locale}${monthPagePath(i)}`} className="inline-flex min-h-6 items-center py-0.5 capitalize hover:text-bm-gold-light">
                 {monthName(i, locale)}
               </Link>
             ))}

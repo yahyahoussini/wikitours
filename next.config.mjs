@@ -51,6 +51,13 @@ const nextConfig = {
   // included so the seo:audit 404 probes and manual checks see real statuses.
   htmlLimitedBots:
     /Googlebot|Google-Extended|Bingbot|GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|Claude-Web|PerplexityBot|CCBot|DuckDuckBot|YandexBot|Applebot|facebookexternalhit|Twitterbot|LinkedInBot|WhatsApp|wt-seo-audit|curl/i,
+  experimental: {
+    // The whole stylesheet is only ~9KB gzipped — inline it into the HTML so
+    // it never becomes a render-blocking request. Lighthouse measured ~600ms
+    // of render-block from the two CSS files on Slow-4G, which was the LCP's
+    // dominant "element render delay" (540ms).
+    inlineCss: true,
+  },
   images: {
     // AVIF first (~30% smaller than WebP) with WebP fallback — Next defaults to
     // WebP only, and these are photo-heavy pages where LCP is the image.

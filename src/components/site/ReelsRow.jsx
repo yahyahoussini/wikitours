@@ -4,57 +4,67 @@ import { useEffect, useRef, useState } from 'react';
 
 /**
  * 9:16 reels strip — center-snapped so the current ("main") reel sits in the
- * middle of the screen. Muted autoplay while on screen; CLICKING a reel turns
- * its sound on and hands it native controls (pause/seek/volume). Only one reel
- * has sound at a time. preload="metadata" paints the first video frame as the
- * thumbnail when the reel has no poster. No captions by design.
+ * middle of the screen. POSTER-FIRST, tap to play: the reel's bytes are never
+ * fetched until the visitor taps. That matters because these webm files carry
+ * their seek-index at the END, so even preload="metadata" pulls the whole
+ * 10MB+ file — autoplaying/​preloading them was a ~15MB page weight. Tapping
+ * mounts the <video>, plays WITH sound and shows native controls; only one
+ * reel plays at a time.
  */
 export default function ReelsRow({ reels }) {
-  const rootRef = useRef(null);
-  const [activeId, setActiveId] = useState(null); // reel with sound + controls
+  const [activeId, setActiveId] = useState(null);
+  const videoRef = useRef(null);
 
+  // Play (unmuted) once the active reel's <video> has actually mounted —
+  // setState is async, so this can't happen inside the click handler.
   useEffect(() => {
-    const root = rootRef.current;
-    if (!root || typeof IntersectionObserver === 'undefined') return undefined;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          const video = entry.target;
-          if (entry.isIntersecting) video.play().catch(() => {});
-          else video.pause();
-        }
-      },
-      { threshold: 0.6 },
-    );
-    root.querySelectorAll('video').forEach((v) => observer.observe(v));
-    return () => observer.disconnect();
-  }, []);
+    if (!activeId) return;
+    const el = videoRef.current;
+    if (el) {
+      el.muted = false;
+      el.play().catch(() => {});
+    }
+  }, [activeId]);
 
   return (
-    <div
-      ref={rootRef}
-      className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto px-[calc(50%-7rem)] pb-3"
-    >
-      {reels.map((reel) => (
-        <figure key={reel.id} className="w-56 flex-none snap-center">
-          {/* eslint-disable-next-line jsx-a11y/media-has-caption -- decorative social reels */}
-          <video
-            src={reel.src}
-            poster={reel.poster ?? undefined}
-            muted={activeId !== reel.id}
-            controls={activeId === reel.id}
-            loop
-            playsInline
-            preload="metadata"
-            onClick={(e) => {
-              if (activeId === reel.id) return; // native controls own the clicks now
-              setActiveId(reel.id);
-              e.currentTarget.play().catch(() => {});
-            }}
-            className="aspect-[9/16] w-full cursor-pointer rounded-card object-cover shadow-lift"
-          />
-        </figure>
-      ))}
+    <div className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto px-[calc(50%-7rem)] pb-3">
+      {reels.map((reel) => {
+        const active = activeId === reel.id;
+        return (
+          <figure key={reel.id} className="relative w-56 flex-none snap-center">
+            {active ? (
+              /* eslint-disable-next-line jsx-a11y/media-has-caption -- decorative social reels */
+              <video
+                ref={videoRef}
+                src={reel.src}
+                poster={reel.poster ?? undefined}
+                controls
+                loop
+                playsInline
+                preload="none"
+                className="aspect-9/16 w-full rounded-card bg-bm-black object-cover shadow-lift"
+              />
+            ) : (
+              // Poster-first tile — zero video bytes until tapped. Real poster
+              // image if one exists, else a branded gradient with a play
+              // affordance so it reads as "tap to watch", never a black box.
+              <button
+                type="button"
+                aria-label="Lire la vidéo"
+                onClick={() => setActiveId(reel.id)}
+                style={reel.poster ? { backgroundImage: `url(${reel.poster})` } : undefined}
+                className="group flex aspect-9/16 w-full items-center justify-center rounded-card bg-linear-to-b from-bm-black-soft to-bm-black bg-cover bg-center shadow-lift"
+              >
+                <span className="flex size-14 items-center justify-center rounded-full bg-white/90 shadow-float backdrop-blur transition group-hover:scale-105">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" className="ms-0.5 size-6 fill-bm-black">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </span>
+              </button>
+            )}
+          </figure>
+        );
+      })}
     </div>
   );
 }

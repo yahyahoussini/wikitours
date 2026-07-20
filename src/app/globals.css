@@ -85,13 +85,15 @@ html[lang="ar"] .accent-line {
   font-style: normal;
 }
 
-/* SmartGallery progress fill — one interval per slide, paused via inline style */
+/* SmartGallery progress fill — one interval per slide, paused via inline style.
+   transform (not width) so it's GPU-composited: no per-frame layout, no CLS
+   cost (Lighthouse flagged the old width animation as non-composited). */
 @keyframes carousel-progress {
   from {
-    width: 0%;
+    transform: scaleX(0);
   }
   to {
-    width: 100%;
+    transform: scaleX(1);
   }
 }
 

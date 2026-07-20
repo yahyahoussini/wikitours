@@ -206,6 +206,10 @@ export function OfferCard({ offer, locale, t, whatsappHref, compact = false }) {
               data-wt="cta_click"
               data-wt-label="card_reserve"
               data-wt-offer={offer.id}
+              // Distinct accessible name per card — the visible label repeats
+              // ("Réserver"), so name it by offer to satisfy "identical links,
+              // same purpose" and help screen-reader users.
+              aria-label={title ? `${t.reserve} — ${title}` : t.reserve}
               className="rounded-ctrl bg-wiki-blue px-5 py-2.5 text-center text-sm font-semibold text-white shadow-lift transition hover:bg-wiki-blue/90"
             >
               {t.reserve}

@@ -629,7 +629,7 @@ export default async function OfferPage({ params }) {
                     <figure key={item.id} className="rounded-card border border-bm-black/10 bg-white p-4">
                       {item.rating ? <p className="text-sm tracking-widest text-bm-gold">{'★'.repeat(item.rating)}</p> : null}
                       <blockquote className="mt-2 text-sm text-bm-black/80">{pickLang(item, 'content', locale)}</blockquote>
-                      <figcaption className="mt-2 text-xs text-bm-black/50">
+                      <figcaption className="mt-2 text-xs text-bm-black/60">
                         {item.author_name}{item.author_city ? ` · ${item.author_city}` : ''}
                       </figcaption>
                     </figure>

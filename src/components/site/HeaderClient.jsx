@@ -66,6 +66,8 @@ export default function HeaderClient({ locale, items, reserveLabel, reserveHref,
             width={5780}
             height={934}
             priority
+            sizes="170px"
+            style={{ aspectRatio: '5780 / 934' }}
             className={`w-auto transition-all duration-300 ${compressed ? 'h-5' : 'h-6'}`}
           />
         </Link>

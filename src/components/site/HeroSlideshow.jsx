@@ -46,6 +46,9 @@ export default function HeroSlideshow({ slides }) {
             alt={slide.alt}
             fill
             priority={i === 0}
+            // Explicit — priority alone wasn't emitting fetchpriority here, so
+            // the LCP hero raced the rest of the page instead of leading it.
+            fetchPriority={i === 0 ? 'high' : undefined}
             sizes="100vw"
             quality={65}
             className="object-cover"
@@ -65,8 +68,8 @@ export default function HeroSlideshow({ slides }) {
               {i === index ? (
                 <span
                   key={index}
-                  className="block h-full bg-bm-gold-light"
-                  style={{ animation: paused || reduced ? 'none' : `carousel-progress ${INTERVAL_MS}ms linear`, width: paused || reduced ? '100%' : undefined }}
+                  className="block h-full w-full bg-bm-gold-light"
+                  style={{ transformOrigin: 'left', animation: paused || reduced ? 'none' : `carousel-progress ${INTERVAL_MS}ms linear`, transform: paused || reduced ? 'scaleX(1)' : undefined }}
                 />
               ) : i < index ? (
                 <span className="block h-full w-full bg-white/50" />

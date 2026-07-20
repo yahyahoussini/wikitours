@@ -224,10 +224,11 @@ export default function Carousel({
                   {i === index ? (
                     <span
                       key={`${index}-${cycle}`}
-                      className="block h-full bg-white"
+                      className="block h-full w-full bg-white"
                       style={{
+                        transformOrigin: 'left',
                         animation: playing ? `carousel-progress ${INTERVAL_MS}ms linear` : 'none',
-                        width: playing ? undefined : '100%',
+                        transform: playing ? undefined : 'scaleX(1)',
                       }}
                     />
                   ) : null}
@@ -250,10 +251,11 @@ export default function Carousel({
                   ) : i === index ? (
                     <span
                       key={`${index}-${cycle}`}
-                      className="block h-full bg-white"
+                      className="block h-full w-full bg-white"
                       style={{
+                        transformOrigin: 'left',
                         animation: playing ? `carousel-progress ${INTERVAL_MS}ms linear` : 'none',
-                        width: playing ? undefined : '100%',
+                        transform: playing ? undefined : 'scaleX(1)',
                       }}
                     />
                   ) : null}
