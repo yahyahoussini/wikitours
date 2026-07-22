@@ -30,6 +30,8 @@ estimate it in code or content.
 | agrément agence de voyage (marque) | `/agrement` | trust | [ADMIN DATA] |
 | presse · wiki tours média | `/presse` | E-E-A-T | [ADMIN DATA] |
 | {offre précise} | `/omra/{slug}` | transactional | [ADMIN DATA] |
+| voyage organisé maroc · voyages organisés | `/voyages` | commercial (non-Omra) | [ADMIN DATA] |
+| voyage organisé {destination} depuis maroc | `/voyage/{slug}` | transactional (non-Omra) | [ADMIN DATA] |
 
 ## AEO core-question ownership (Phase 4 A3 §17)
 

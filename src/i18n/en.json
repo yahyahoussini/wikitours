@@ -191,11 +191,14 @@
   },
   "voyages": {
     "title": "Our travel services",
-    "intro": "Wiki Tours International organises your individual, group and corporate travel.",
+    "intro": "Organized tours and getaways departing from Morocco — destinations curated and guided by Wiki Tours International.",
     "individuels": "Individual travel",
     "groupes": "Group travel",
     "incentive": "Incentive & corporate",
-    "askQuote": "Request a quote"
+    "askQuote": "Request a quote",
+    "empty": "Our upcoming organized trips will be published here very soon.",
+    "departure": "Departure",
+    "priceNote": "per person"
   },
   "hajjPage": {
     "title": "Hajj with Wiki Tours",

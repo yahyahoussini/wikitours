@@ -450,6 +450,53 @@ create table if not exists public.services (
 
 create index if not exists services_section_idx on public.services (section, sort_order);
 
+-- Voyages — organized trips (Istanbul, Dubaï, …), Wiki Tours surfaces fully
+-- separate from Omra/Hajj (Bab Makka). Cards on /voyages + /voyage/{slug}
+-- detail pages; galleries via galleries(entity_type='voyages'). Every factual
+-- field nullable, rendered only when present (LAW §10).
+create table if not exists public.voyages (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  title_fr text,
+  title_ar text,
+  title_en text,
+  destination text,
+  summary_fr text,
+  summary_ar text,
+  summary_en text,
+  description_fr text,
+  description_ar text,
+  description_en text,
+  inclusions_fr text,
+  inclusions_ar text,
+  inclusions_en text,
+  exclusions_fr text,
+  exclusions_ar text,
+  exclusions_en text,
+  conditions_fr text,
+  conditions_ar text,
+  conditions_en text,
+  duration_days integer,
+  duration_nights integer,
+  date_start date,
+  date_end date,
+  starting_price integer,
+  airline text,
+  is_featured boolean not null default false,
+  sort_order integer not null default 0,
+  seo_title_fr text,
+  seo_title_ar text,
+  seo_title_en text,
+  seo_description_fr text,
+  seo_description_ar text,
+  seo_description_en text,
+  is_published boolean not null default false,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists idx_voyages_published on public.voyages (is_published, sort_order);
+
 -- ============================================================================
 -- CRM — never readable by anon. Inserts only via server routes
 -- (service role); reads only for authenticated admins.
@@ -794,6 +841,10 @@ create policy anon_read on public.articles
 
 drop policy if exists anon_read on public.landing_pages;
 create policy anon_read on public.landing_pages
+  for select to anon using (is_published);
+
+drop policy if exists anon_read on public.voyages;
+create policy anon_read on public.voyages
   for select to anon using (is_published);
 
 drop policy if exists anon_read on public.announcements;

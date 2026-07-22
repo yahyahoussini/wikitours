@@ -9,6 +9,7 @@ import {
   getCityPages,
   getGuidePages,
   getGlossaryTerms,
+  getVoyages,
 } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { OMRA_YEAR, MONTH_SLUGS, CITY_SLUGS, cityPageIndexable } from '@/lib/months';
@@ -25,7 +26,7 @@ export const revalidate = 3600;
  * are campaign surfaces and stay out of organic discovery.
  */
 export default async function sitemap() {
-  const [offers, hotels, articles, occasions, landingPages, settings, cityPages, guidePages, glossaryTerms] =
+  const [offers, hotels, articles, occasions, landingPages, settings, cityPages, guidePages, glossaryTerms, voyages] =
     await Promise.all([
       getPublishedOffers(),
       getHotels(),
@@ -36,6 +37,7 @@ export default async function sitemap() {
       getCityPages(),
       getGuidePages(),
       getGlossaryTerms(),
+      getVoyages(),
     ]);
 
   // [locale-relative path, priority, changeFrequency, optional lastModified]
@@ -44,7 +46,6 @@ export default async function sitemap() {
     ['/bab-makka', 0.9, 'daily'],
     ['/hotels-omra', 0.7, 'weekly'],
     ['/agence-omra-casablanca', 0.8, 'weekly'],
-    ['/voyages', 0.6, 'monthly'],
     ['/hajj', 0.6, 'monthly'],
     ['/blog', 0.6, 'weekly'],
     ['/avis', 0.6, 'weekly'],
@@ -66,6 +67,10 @@ export default async function sitemap() {
 
   const dynamicPaths = [
     ...offers.map((o) => [`/omra/${o.slug}`, 0.8, 'weekly', o.updated_at]),
+    // Voyages catalog: the hub is noindex while empty (scaffold law), so it
+    // only enters the sitemap once a voyage is published.
+    ...(voyages.length ? [['/voyages', 0.7, 'weekly']] : []),
+    ...voyages.map((v) => [`/voyage/${v.slug}`, 0.7, 'weekly', v.updated_at]),
     ...hotels.map((h) => [`/hotel/${h.slug}`, 0.5, 'monthly', h.updated_at]),
     ...articles.map((a) => [`/blog/${a.slug}`, 0.6, 'monthly', a.updated_at ?? a.published_at]),
     // Programmatic SEO landings: months with departures, DB occasions, 8 cities.

@@ -56,6 +56,7 @@ const TABLE_PATHS = {
   ],
   glossary_terms: () => ['/glossaire-omra', 'raw:/llms.txt'],
   services: () => ['/voyages'],
+  voyages: (row) => ['/voyages', row?.slug ? `/voyage/${row.slug}` : '/[locale]/voyage/[slug]'],
   // 'layout': the footer's link visibility depends on legalIsFilled() for
   // EVERY row, so any edit can flip the footer on every page, not just the
   // one legal page's own content.

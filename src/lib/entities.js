@@ -96,6 +96,12 @@ export const GALLERY_ENTITIES = {
     labelField: null,
     publicPath: () => '/', // why-us band lives on the home page
   },
+  voyages: {
+    table: 'voyages',
+    adminLabel: 'Voyages',
+    labelField: 'title_fr',
+    publicPath: (row) => (row?.slug ? `/voyage/${row.slug}` : '/voyages'),
+  },
 };
 
 export const ENTITY_TYPES = Object.keys(GALLERY_ENTITIES);

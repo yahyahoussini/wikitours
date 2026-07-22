@@ -191,11 +191,14 @@
   },
   "voyages": {
     "title": "Nos voyages",
-    "intro": "Wiki Tours International organise vos voyages individuels, de groupe et d'entreprise.",
+    "intro": "Circuits et séjours organisés au départ du Maroc — destinations sélectionnées et accompagnées par Wiki Tours International.",
     "individuels": "Voyages individuels",
     "groupes": "Voyages de groupe",
     "incentive": "Incentive & entreprises",
-    "askQuote": "Demander un devis"
+    "askQuote": "Demander un devis",
+    "empty": "Nos prochains voyages organisés seront publiés ici très bientôt.",
+    "departure": "Départ",
+    "priceNote": "par personne"
   },
   "hajjPage": {
     "title": "Hajj avec Wiki Tours",

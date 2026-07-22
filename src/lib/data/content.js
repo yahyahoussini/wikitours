@@ -246,6 +246,36 @@ export const getServices = cache(async function getServices() {
   }
 });
 
+/** Published organized trips (/voyages catalog — Wiki Tours, non-Omra).
+ *  RLS already filters to is_published; errors (incl. table not yet
+ *  migrated) degrade to an empty catalog, never a crash. */
+export const getVoyages = cache(async function getVoyages() {
+  try {
+    const supabase = supabasePublic();
+    if (!supabase) return [];
+    const { data, error } = await supabase
+      .from('voyages')
+      .select('*')
+      .order('sort_order', { ascending: true })
+      .order('date_start', { ascending: true });
+    if (error) return [];
+    return data ?? [];
+  } catch {
+    return [];
+  }
+});
+
+export const getVoyageBySlug = cache(async function getVoyageBySlug(slug) {
+  try {
+    const supabase = supabasePublic();
+    if (!supabase || !slug) return null;
+    const { data } = await supabase.from('voyages').select('*').eq('slug', slug).maybeSingle();
+    return data;
+  } catch {
+    return null;
+  }
+});
+
 export const getMenu = cache(async function getMenu(location) {
   try {
     const supabase = supabasePublic();
