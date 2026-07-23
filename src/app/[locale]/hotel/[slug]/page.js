@@ -85,6 +85,43 @@ export default async function HotelPage({ params }) {
     ...(amenities.length ? { amenityFeature: amenities } : {}),
   };
 
+  // Auto-FAQ computed from DB fields only (LAW: never invented): the distance
+  // question is the long-tail query these pages exist for. Answers are built
+  // to sit in the audit's 25–75-word extractability window.
+  const fill = (s) =>
+    s
+      .replaceAll('{name}', hotel.name)
+      .replace('{m}', String(hotel.distance_to_haram_m))
+      .replace('{city}', cityLabel)
+      .replace('{stars}', String(hotel.stars ?? ''));
+  const hotelFaqs = [];
+  if (hotel.distance_to_haram_m != null) {
+    hotelFaqs.push({
+      q: fill(t.offer.hotelFaqDistanceQ),
+      a: fill(
+        [
+          t.offer.hotelFaqDistanceBase,
+          hotel.stars ? t.offer.hotelFaqDistanceStars : t.offer.hotelFaqDistanceNoStars,
+          t.offer.hotelFaqDistanceTail,
+        ].join(' '),
+      ),
+    });
+  }
+  if (hotel.breakfast_included) {
+    hotelFaqs.push({ q: fill(t.offer.hotelFaqBreakfastQ), a: fill(t.offer.hotelFaqBreakfastA) });
+  }
+  const faqJsonLd = hotelFaqs.length
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: hotelFaqs.map((f) => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      }
+    : null;
+
   const breadcrumbJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -99,6 +136,7 @@ export default async function HotelPage({ params }) {
     <main className="mx-auto max-w-4xl px-6 pb-24 pt-10">
       <JsonLd data={hotelJsonLd} />
       <JsonLd data={breadcrumbJsonLd} />
+      {faqJsonLd ? <JsonLd data={faqJsonLd} /> : null}
       <BrandLockup locale={locale} size="sm" />
 
       <Breadcrumbs
@@ -138,6 +176,22 @@ export default async function HotelPage({ params }) {
         <p className="mt-8 max-w-prose whitespace-pre-line text-lg leading-relaxed text-bm-black/80">
           {description}
         </p>
+      ) : null}
+
+      {hotelFaqs.length ? (
+        <section className="mt-10 max-w-prose">
+          <h2 className="text-xl font-bold text-bm-black">{t.offer.faqTitle}</h2>
+          <div className="mt-4 flex flex-col gap-3">
+            {hotelFaqs.map((faq, i) => (
+              <details key={faq.q} open={i === 0} className="group rounded-card border border-bm-black/10 bg-white px-5 py-4 shadow-hairline">
+                <summary className="cursor-pointer list-none font-semibold marker:content-none">
+                  {faq.q}
+                </summary>
+                <p className="mt-3 text-sm leading-relaxed text-bm-black/70">{faq.a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
       ) : null}
 
       {/* Reciprocal link to the comparison hub — closes the cluster loop. */}

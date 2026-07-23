@@ -28,6 +28,8 @@ States audited 2026-07-23. "live" = published, indexable, passing `seo:audit`.
 | première omra · erreurs à éviter | `/blog/premiere-omra-7-erreurs-a-eviter` | informational | [ADMIN DATA] |
 | agence omra agréée · vérifier agrément | `/blog/comment-verifier-agence-omra-agreee-maroc` | informational E-E-A-T | [ADMIN DATA] |
 | différence omra hajj · omra ou hajj | `/blog/difference-omra-hajj` | informational | [ADMIN DATA] |
+| comment choisir agence omra (critères) | `/blog/comment-choisir-agence-omra` | informational (comparison) | [ADMIN DATA] |
+| {nom d'hôtel} distance haram (FAQ auto) | `/hotel/{slug}` (computed from DB fields) | informational long-tail | [ADMIN DATA] |
 | omra rajab · omra chaâbane · omra chawal | `/omra-{occasion}` (hubs hijri, gated) | seasonal commercial | [ADMIN DATA] |
 | hôtel proche du haram · hôtels omra | `/hotels-omra` | comparison | [ADMIN DATA] |
 | {nom d'hôtel} la mecque/médine | `/hotel/{slug}` | informational | [ADMIN DATA] |
