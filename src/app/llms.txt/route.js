@@ -1,7 +1,7 @@
 import { BRAND } from '@/lib/brand';
 import { FALLBACK_LOCALE, pickLang, getDictionary } from '@/lib/i18n';
 import { absoluteUrl } from '@/lib/seo';
-import { getPublishedOffers, getHotels, getArticles, computeMinPrice } from '@/lib/data/content';
+import { getPublishedOffers, getHotels, getArticles, getFaqs, computeMinPrice } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 
 export const runtime = 'nodejs';
@@ -16,11 +16,12 @@ export const revalidate = 3600;
  * the explicitly public fields below may ever be read here.
  */
 export async function GET() {
-  const [settings, offers, hotels, articles] = await Promise.all([
+  const [settings, offers, hotels, articles, faqs] = await Promise.all([
     getSettings(),
     getPublishedOffers(),
     getHotels(),
     getArticles(20),
+    getFaqs(),
   ]);
 
   const L = FALLBACK_LOCALE;
@@ -84,6 +85,17 @@ export async function GET() {
       out.push(`- [${h.name}](${url(`/hotel/${h.slug}`)}) — ${bits.join(', ')}.`);
     }
     out.push('');
+  }
+
+  // Full Q&A corpus — the exact strings rendered on-page (same DB rows), so an
+  // answer engine quoting this file quotes the site verbatim.
+  if (faqs.length) {
+    out.push(`## Questions fréquentes — réponses officielles de l'agence (${faqs.length})`, '');
+    for (const f of faqs) {
+      const q = pickLang(f, 'question', L);
+      const a = pickLang(f, 'answer', L);
+      if (q && a) out.push(`**${q}**`, a, '');
+    }
   }
 
   if (articles.length) {
