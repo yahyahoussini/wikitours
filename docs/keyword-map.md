@@ -16,7 +16,7 @@ States audited 2026-07-23. "live" = published, indexable, passing `seo:audit`.
 | omra ramadan {année} (commercial) | `/omra-ramadan` | seasonal commercial | [ADMIN DATA] |
 | quand réserver omra ramadan (info) | `/blog/omra-ramadan-2027-quand-reserver` | informational seasonal | [ADMIN DATA] |
 | omra {mois} {année} | `/omra-{mois}` (12 hubs) | seasonal commercial | [ADMIN DATA] |
-| omra depuis {ville} | `/omra-depuis-{ville}` (8, gated) | local commercial | [ADMIN DATA] |
+| omra depuis {ville} | `/omra-depuis-{ville}` (8 villes, live) | local commercial | [ADMIN DATA] |
 | guide omra · préparer sa omra | `/guide-omra` | informational pillar | [ADMIN DATA] |
 | documents omra · visa omra | `/guide-omra/documents-visa` | informational | [ADMIN DATA] |
 | omra femme sans mahram · mahram omra | `/guide-omra/femme-mahram` | informational | [ADMIN DATA] |
@@ -56,6 +56,7 @@ Internal intelligence, never shipped as content. Source: manual SERP review
 | première omra | 100 % French .fr sites | zero Moroccan agencies in the SERP | the only Moroccan-agency answer, with ar parity |
 | définitions (ihram, tawaf…) | scattered wiki/blog fragments | no agency owns the definition cluster | 30-term glossary + verbatim `llms.txt` ingestion |
 | requêtes en arabe (عمرة من المغرب…) | **nobody** — all rivals are French-only | zero ar content anywhere | full fr/ar/en parity is a standing law of this site |
+| omra depuis rabat / marrakech / fès… | **nobody** — rivals have zero per-city pages | Casablanca-generic offers only | 8 dedicated city pages: answer-first lede, real route logistics, 3 local FAQs each, ar parity |
 
 ## AEO core-question ownership (Phase 4 A3 §17)
 
@@ -82,7 +83,7 @@ Every question below is answered verbatim in `/llms.txt` (single source: the
 | Comment vérifier une agence agréée ? | `/blog/comment-verifier-agence-omra-agreee-maroc` | live |
 | Que veut dire ihram / tawaf / miqat ? | `/glossaire-omra` | live (30 termes) |
 | Où se trouve l'agence ? | `/contact` (direct-answer block) | live |
-| Omra depuis {ville} ? | `/omra-depuis-{ville}` FAQ (catégorie `ville-{slug}`) | [ADMIN DATA] — seed city FAQs |
+| Omra depuis {ville} ? | `/omra-depuis-{ville}` FAQ (catégorie `ville-{slug}`) | live (8 villes × 3 FAQ) |
 
 Cannibalization rule: before adding content answering one of these questions on
 another page, move ownership here first — two owners for one query is a FAIL.
@@ -93,7 +94,6 @@ Honest backlog — each needs real data before it can exist (LAW: never invent).
 
 | Gap | Blocked on | Candidate owner |
 |---|---|---|
-| omra depuis {ville} FAQs (8 cities) | real per-city facts (departure logistics per city) [ADMIN DATA] | `ville-{slug}` FAQ categories |
 | omra vacances scolaires | a real offer aligned on school holidays | month hub of that period (no new page) |
 | hajj {année} prix / inscription | client's Hajj program data [CONTENT NEEDED] | `/hajj` (existing owner — content refresh) |
 | licence / agrément number visible | `settings.license_number` [ADMIN DATA] | `/agrement` (already wired, renders when set) |

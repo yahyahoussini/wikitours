@@ -63,7 +63,9 @@ export default async function HomePage({ params }) {
       getHotels(),
       getTeam(),
       getTestimonials(),
-      getFaqs(),
+      // Home carries the general FAQ corpus only — city FAQs (`ville-*`) belong
+      // to their /omra-depuis-{ville} owner page (keyword-map ownership rule).
+      Promise.all([getFaqs('confiance'), getFaqs('omra')]).then((r) => r.flat()),
       getArticles(3),
       getDestinations(),
     ]);

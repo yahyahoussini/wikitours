@@ -1,9 +1,10 @@
 import { BRAND } from '@/lib/brand';
 import { FALLBACK_LOCALE, pickLang, getDictionary } from '@/lib/i18n';
 import { absoluteUrl } from '@/lib/seo';
-import { getPublishedOffers, getHotels, getArticles, getFaqs, getGuidePages, getGlossaryTerms, computeMinPrice } from '@/lib/data/content';
+import { getPublishedOffers, getHotels, getArticles, getFaqs, getGuidePages, getGlossaryTerms, getCityPages, computeMinPrice } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { GUIDE_PILLAR_SLUG, GUIDE_CHILD_SLUGS, guideIndexable, GLOSSARY_MIN_TERMS } from '@/lib/guides';
+import { CITY_SLUGS, cityPageIndexable } from '@/lib/months';
 
 export const runtime = 'nodejs';
 export const revalidate = 3600;
@@ -17,14 +18,16 @@ export const revalidate = 3600;
  * the explicitly public fields below may ever be read here.
  */
 export async function GET() {
-  const [settings, offers, hotels, articles, faqs, guides, glossary] = await Promise.all([
+  const [settings, offers, hotels, articles, faqs, guides, glossary, cities] = await Promise.all([
     getSettings(),
     getPublishedOffers(),
     getHotels(),
     getArticles(20),
-    getFaqs(),
+    // General corpus only — city FAQs are emitted inside their city entries.
+    Promise.all([getFaqs('confiance'), getFaqs('omra')]).then((r) => r.flat()),
     getGuidePages(),
     getGlossaryTerms(),
+    getCityPages(),
   ]);
 
   const L = FALLBACK_LOCALE;
@@ -98,6 +101,22 @@ export async function GET() {
       const q = pickLang(f, 'question', L);
       const a = pickLang(f, 'answer', L);
       if (q && a) out.push(`**${q}**`, a, '');
+    }
+  }
+
+  // City pages — only those past the anti-doorway guard (indexable on-site).
+  // intro = the answer-first lede, logistics = the per-city route facts.
+  const cityRows = Object.entries(CITY_SLUGS)
+    .map(([slug, name]) => ({ slug, name, row: cities.get(slug) }))
+    .filter(({ row }) => cityPageIndexable(row));
+  if (cityRows.length) {
+    out.push(`## Omra depuis les villes du Maroc (${cityRows.length} pages)`, '');
+    for (const { slug, name, row } of cityRows) {
+      out.push(`### [Omra depuis ${name}](${url(`/omra-depuis-${slug}`)})`, '');
+      const intro = pickLang(row, 'intro', L);
+      const logistics = pickLang(row, 'logistics', L);
+      if (intro) out.push(intro, '');
+      if (logistics) out.push(logistics, '');
     }
   }
 
