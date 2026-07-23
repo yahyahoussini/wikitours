@@ -209,6 +209,22 @@ export const getFaqs = cache(async function getFaqs(category) {
   }
 });
 
+/** Active announcements — RLS already scopes anon reads to active rows inside
+ *  their schedule window, so every row returned is currently shown on-site. */
+export const getAnnouncements = cache(async function getAnnouncements() {
+  try {
+    const supabase = supabasePublic();
+    if (!supabase) return [];
+    const { data } = await supabase
+      .from('announcements')
+      .select('id, text_fr, text_ar, text_en, link, variant, ends_at')
+      .order('created_at', { ascending: false });
+    return data ?? [];
+  } catch {
+    return [];
+  }
+});
+
 export const getArticles = cache(async function getArticles(limit = 50) {
   try {
     const supabase = supabasePublic();

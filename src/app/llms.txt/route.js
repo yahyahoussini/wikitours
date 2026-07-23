@@ -1,7 +1,7 @@
 import { BRAND } from '@/lib/brand';
 import { FALLBACK_LOCALE, pickLang, getDictionary } from '@/lib/i18n';
 import { absoluteUrl } from '@/lib/seo';
-import { getPublishedOffers, getHotels, getArticles, getFaqs, getGuidePages, getGlossaryTerms, getCityPages, computeMinPrice } from '@/lib/data/content';
+import { getPublishedOffers, getHotels, getArticles, getFaqs, getGuidePages, getGlossaryTerms, getCityPages, getAnnouncements, computeMinPrice } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { GUIDE_PILLAR_SLUG, GUIDE_CHILD_SLUGS, guideIndexable, GLOSSARY_MIN_TERMS } from '@/lib/guides';
 import { CITY_SLUGS, cityPageIndexable } from '@/lib/months';
@@ -18,7 +18,7 @@ export const revalidate = 3600;
  * the explicitly public fields below may ever be read here.
  */
 export async function GET() {
-  const [settings, offers, hotels, articles, faqs, guides, glossary, cities] = await Promise.all([
+  const [settings, offers, hotels, articles, faqs, guides, glossary, cities, annonces] = await Promise.all([
     getSettings(),
     getPublishedOffers(),
     getHotels(),
@@ -28,6 +28,7 @@ export async function GET() {
     getGuidePages(),
     getGlossaryTerms(),
     getCityPages(),
+    getAnnouncements(),
   ]);
 
   const L = FALLBACK_LOCALE;
@@ -62,6 +63,20 @@ export async function GET() {
     `- Devise des prix : MAD (dirham marocain), par personne`,
   ].filter(Boolean);
   if (facts.length) out.push('## Informations', '', ...facts, '');
+
+  // Live announcements — RLS returns only active rows inside their window, so
+  // anything listed here is the banner currently shown on-site (freshness signal).
+  if (annonces.length) {
+    out.push(`## Annonces en cours (${annonces.length})`, '');
+    for (const a of annonces) {
+      const text = pickLang(a, 'text', L);
+      if (!text) continue;
+      const until = a.ends_at ? ` — valable jusqu'au ${String(a.ends_at).slice(0, 10)}` : '';
+      const target = a.link ? (a.link.startsWith('http') ? a.link : url(a.link)) : null;
+      out.push(target ? `- [${text}](${target})${until}` : `- ${text}${until}`);
+    }
+    out.push('');
+  }
 
   if (offers.length) {
     out.push(`## Offres Omra publiées (${offers.length})`, '');
