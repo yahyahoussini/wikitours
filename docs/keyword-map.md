@@ -27,6 +27,8 @@ States audited 2026-07-23. "live" = published, indexable, passing `seo:audit`.
 | ihram / tawaf / sa'i (définitions) | `/glossaire-omra` | informational | [ADMIN DATA] |
 | première omra · erreurs à éviter | `/blog/premiere-omra-7-erreurs-a-eviter` | informational | [ADMIN DATA] |
 | agence omra agréée · vérifier agrément | `/blog/comment-verifier-agence-omra-agreee-maroc` | informational E-E-A-T | [ADMIN DATA] |
+| différence omra hajj · omra ou hajj | `/blog/difference-omra-hajj` | informational | [ADMIN DATA] |
+| omra rajab · omra chaâbane · omra chawal | `/omra-{occasion}` (hubs hijri, gated) | seasonal commercial | [ADMIN DATA] |
 | hôtel proche du haram · hôtels omra | `/hotels-omra` | comparison | [ADMIN DATA] |
 | {nom d'hôtel} la mecque/médine | `/hotel/{slug}` | informational | [ADMIN DATA] |
 | avis wiki tours · avis bab makka | `/avis` | trust | [ADMIN DATA] |
@@ -82,6 +84,7 @@ Every question below is answered verbatim in `/llms.txt` (single source: the
 | Quand réserver le Ramadan ? | `/blog/omra-ramadan-2027-quand-reserver` | live |
 | Comment vérifier une agence agréée ? | `/blog/comment-verifier-agence-omra-agreee-maroc` | live |
 | Que veut dire ihram / tawaf / miqat ? | `/glossaire-omra` | live (30 termes) |
+| Omra ou Hajj — quelle différence ? | `/blog/difference-omra-hajj` | live |
 | Où se trouve l'agence ? | `/contact` (direct-answer block) | live |
 | Omra depuis {ville} ? | `/omra-depuis-{ville}` FAQ (catégorie `ville-{slug}`) | live (8 villes × 3 FAQ) |
 
