@@ -25,6 +25,14 @@ export function fireLeadPixels({ eventId, phone }) {
   } catch { /* never blocks */ }
 
   try {
+    // GA4: generate_lead is the standard lead event — mark it as a key event
+    // in the GA4 UI. transaction_id mirrors the cross-platform event_id.
+    if (window.gtag && window.__wtMkt?.ga4) {
+      window.gtag('event', 'generate_lead', { transaction_id: eventId });
+    }
+  } catch { /* never blocks */ }
+
+  try {
     const mkt = window.__wtMkt;
     if (window.gtag && mkt?.ads && mkt?.label) {
       // Enhanced conversions: Google hashes user_data itself.
