@@ -1,8 +1,9 @@
 import { BRAND } from '@/lib/brand';
 import { FALLBACK_LOCALE, pickLang, getDictionary } from '@/lib/i18n';
 import { absoluteUrl } from '@/lib/seo';
-import { getPublishedOffers, getHotels, getArticles, getFaqs, computeMinPrice } from '@/lib/data/content';
+import { getPublishedOffers, getHotels, getArticles, getFaqs, getGuidePages, getGlossaryTerms, computeMinPrice } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
+import { GUIDE_PILLAR_SLUG, GUIDE_CHILD_SLUGS, guideIndexable, GLOSSARY_MIN_TERMS } from '@/lib/guides';
 
 export const runtime = 'nodejs';
 export const revalidate = 3600;
@@ -16,12 +17,14 @@ export const revalidate = 3600;
  * the explicitly public fields below may ever be read here.
  */
 export async function GET() {
-  const [settings, offers, hotels, articles, faqs] = await Promise.all([
+  const [settings, offers, hotels, articles, faqs, guides, glossary] = await Promise.all([
     getSettings(),
     getPublishedOffers(),
     getHotels(),
     getArticles(20),
     getFaqs(),
+    getGuidePages(),
+    getGlossaryTerms(),
   ]);
 
   const L = FALLBACK_LOCALE;
@@ -98,12 +101,40 @@ export async function GET() {
     }
   }
 
-  if (articles.length) {
-    out.push('## Guide & conseils', '');
-    for (const a of articles) {
-      out.push(`- [${pickLang(a, 'title', L) ?? a.slug}](${url(`/blog/${a.slug}`)})`);
+  // Guide chapters — same noindex-until-filled guard as the pages themselves:
+  // a chapter appears here only when it is indexable on-site.
+  const guideRows = [GUIDE_PILLAR_SLUG, ...GUIDE_CHILD_SLUGS]
+    .map((slug) => guides.get(slug))
+    .filter((row) => row && guideIndexable(row));
+  if (guideRows.length) {
+    out.push(`## Guide Omra — préparer son départ (${guideRows.length} chapitres)`, '');
+    for (const g of guideRows) {
+      const path = g.slug === GUIDE_PILLAR_SLUG ? '/guide-omra' : `/guide-omra/${g.slug}`;
+      const summary = pickLang(g, 'summary', L);
+      out.push(`### [${pickLang(g, 'title', L) ?? g.slug}](${url(path)})`, '');
+      if (summary) out.push(summary, '');
+    }
+  }
+
+  // Glossary — the reference definitions (emitted only once the on-site page
+  // is itself indexable, i.e. a real glossary exists behind it).
+  if (glossary.length >= GLOSSARY_MIN_TERMS) {
+    out.push(`## Glossaire de l'Omra (${glossary.length} termes)`, '');
+    for (const g of glossary) {
+      const term = pickLang(g, 'term', L);
+      const def = pickLang(g, 'definition', L);
+      if (term && def) out.push(`- **${term}** — ${def}`);
     }
     out.push('');
+  }
+
+  if (articles.length) {
+    out.push(`## Blog & conseils (${articles.length} articles)`, '');
+    for (const a of articles) {
+      const excerpt = pickLang(a, 'excerpt', L);
+      out.push(`### [${pickLang(a, 'title', L) ?? a.slug}](${url(`/blog/${a.slug}`)})`, '');
+      if (excerpt) out.push(excerpt, '');
+    }
   }
 
   out.push(
