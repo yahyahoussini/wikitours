@@ -29,6 +29,8 @@ States audited 2026-07-23. "live" = published, indexable, passing `seo:audit`.
 | agence omra agréée · vérifier agrément | `/blog/comment-verifier-agence-omra-agreee-maroc` | informational E-E-A-T | [ADMIN DATA] |
 | différence omra hajj · omra ou hajj | `/blog/difference-omra-hajj` | informational | [ADMIN DATA] |
 | comment choisir agence omra (critères) | `/blog/comment-choisir-agence-omra` | informational (comparison) | [ADMIN DATA] |
+| train al‑haramain · mecque médine train | `/blog/train-al-haramain-mecque-medine` | informational | [ADMIN DATA] |
+| que visiter à médine · ziyara médine | `/blog/que-visiter-medine-ziyara` | informational | [ADMIN DATA] |
 | {nom d'hôtel} distance haram (FAQ auto) | `/hotel/{slug}` (computed from DB fields) | informational long-tail | [ADMIN DATA] |
 | omra rajab · omra chaâbane · omra chawal | `/omra-{occasion}` (hubs hijri, gated) | seasonal commercial | [ADMIN DATA] |
 | omra 5 étoiles · omra de luxe · عمرة فاخرة · luxury umrah | `/omra-5-etoiles` (premium hub) + `/omra/omra-5-etoiles-sur-mesure` (offre à la carte, sans date) | commercial (premium) | [ADMIN DATA] |
