@@ -198,7 +198,7 @@ export default async function OfferPage({ params }) {
   const keyFacts = [
     offer.date_start && offer.date_end
       ? ['calendar', `${fmtDate(offer.date_start, locale)} → ${fmtDate(offer.date_end, locale)}`]
-      : null,
+      : ['calendar', t.offer.alacarte],
     offer.duration_days && offer.duration_nights
       ? ['clock', t.offer.duration.replace('{days}', offer.duration_days).replace('{nights}', offer.duration_nights)]
       : null,
@@ -302,7 +302,9 @@ export default async function OfferPage({ params }) {
             ...(offer.created_at ? { validFrom: offer.created_at.slice(0, 10) } : {}),
             ...(offer.date_start
               ? { validThrough: offer.date_start, priceValidUntil: offer.date_start, availabilityEnds: offer.date_start }
-              : {}),
+              // À la carte (no fixed departure): a rolling price-validity horizon
+              // — keeps the price fresh for engines and never reads as "stale".
+              : { priceValidUntil: `${new Date().getUTCFullYear() + 1}-12-31` }),
           },
         }
       : {}),

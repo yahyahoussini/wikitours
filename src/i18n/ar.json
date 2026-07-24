@@ -94,6 +94,7 @@
       "full": "مكتمل"
     },
     "duration": "{days} يوماً / {nights} ليلة",
+    "alacarte": "حسب الطلب — تواريخ حسب اختياركم",
     "distanceToHaram": "على بعد {m} متر من الحرم",
     "hotelFaqDistanceQ": "كم يبعد فندق {name} عن الحرم؟",
     "hotelFaqDistanceBase": "يقع فندق {name} على بعد نحو {m} متر من الحرم في {city}.",

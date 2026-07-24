@@ -94,6 +94,7 @@
       "full": "Complet"
     },
     "duration": "{days} jours / {nights} nuits",
+    "alacarte": "À la carte — dates au choix",
     "distanceToHaram": "à {m} m du Haram",
     "hotelFaqDistanceQ": "À quelle distance du Haram se trouve {name} ?",
     "hotelFaqDistanceBase": "{name} se situe à environ {m} mètres du Haram, à {city}.",

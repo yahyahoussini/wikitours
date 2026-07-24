@@ -131,7 +131,14 @@ export function OfferCard({ offer, locale, t, whatsappHref, compact = false }) {
             </svg>
             <span className="tabular-nums">{formatDateRange(offer.date_start, offer.date_end, locale)}</span>
           </p>
-        ) : null}
+        ) : (
+          <p className="inline-flex w-fit items-center gap-2 rounded-full border border-bm-gold/40 bg-bm-gold/10 px-3.5 py-1.5 text-sm font-bold text-bm-gold">
+            <svg viewBox="0 0 16 16" aria-hidden="true" className="size-3.5 fill-current">
+              <path d="M4 0v2H2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-2V0h-2v2H6V0H4Zm10 6v8H2V6h12Z" />
+            </svg>
+            <span>{t.alacarte}</span>
+          </p>
+        )}
 
         <h2 className="flex flex-wrap items-center gap-2 text-lg font-bold leading-snug">
           {title}

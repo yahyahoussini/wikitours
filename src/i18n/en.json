@@ -94,6 +94,7 @@
       "full": "Fully booked"
     },
     "duration": "{days} days / {nights} nights",
+    "alacarte": "À la carte — dates of your choice",
     "distanceToHaram": "{m} m from the Haram",
     "hotelFaqDistanceQ": "How far is {name} from the Haram?",
     "hotelFaqDistanceBase": "{name} sits about {m} metres from the Haram, in {city}.",
