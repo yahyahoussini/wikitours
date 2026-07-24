@@ -31,6 +31,7 @@ States audited 2026-07-23. "live" = published, indexable, passing `seo:audit`.
 | comment choisir agence omra (critères) | `/blog/comment-choisir-agence-omra` | informational (comparison) | [ADMIN DATA] |
 | {nom d'hôtel} distance haram (FAQ auto) | `/hotel/{slug}` (computed from DB fields) | informational long-tail | [ADMIN DATA] |
 | omra rajab · omra chaâbane · omra chawal | `/omra-{occasion}` (hubs hijri, gated) | seasonal commercial | [ADMIN DATA] |
+| omra 5 étoiles · omra de luxe · عمرة فاخرة · luxury umrah | `/omra-5-etoiles` (premium hub, evergreen) | commercial (premium) | [ADMIN DATA] |
 | hôtel proche du haram · hôtels omra | `/hotels-omra` | comparison | [ADMIN DATA] |
 | {nom d'hôtel} la mecque/médine | `/hotel/{slug}` | informational | [ADMIN DATA] |
 | avis wiki tours · avis bab makka | `/avis` | trust | [ADMIN DATA] |

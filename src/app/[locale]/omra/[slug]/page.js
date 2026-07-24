@@ -108,7 +108,7 @@ function computedIntro(offer, t, locale, tiers) {
     );
   }
 
-  const minPrice = computeMinPrice(tiers);
+  const minPrice = computeMinPrice(tiers) ?? offer.starting_price ?? null;
   const priceStr = minPrice != null
     ? t.offer.introPrice
         .replace('{price}', nf.format(minPrice))
@@ -128,7 +128,7 @@ export async function generateMetadata({ params }) {
   if (!offer) notFound();
   const t = getDictionary(locale);
   const occasionName = offer.occasion ? pickLang(offer.occasion, 'name', locale) : '';
-  const minPrice = computeMinPrice(offer.tiers);
+  const minPrice = computeMinPrice(offer.tiers) ?? offer.starting_price ?? null;
   const priceFmt = minPrice != null ? nf.format(minPrice) : nf.format(0);
   const templated = routeTitle('offer', locale, { occasion: occasionName, tier: '', price: priceFmt });
   const year = offer.date_start ? new Date(offer.date_start).getUTCFullYear() : '';
@@ -172,7 +172,10 @@ export default async function OfferPage({ params }) {
   const whatsappHref = waLink(settings?.whatsapp_number, title ? `${t.cta.reserve} — ${title}` : undefined);
 
   const tiers = offer.tiers ?? [];
-  const { tierLabel: defaultTier, roomKey: defaultRoom, minPrice } = defaults(tiers);
+  const { tierLabel: defaultTier, roomKey: defaultRoom, minPrice: tierMinPrice } = defaults(tiers);
+  // Single-tier offers (priced by starting_price, no gammes) still advertise a
+  // price — in the visible UI and the Offer JSON-LD (audit needs Offer + price).
+  const minPrice = tierMinPrice ?? offer.starting_price ?? null;
   const intro = computedIntro(offer, t, locale, tiers);
   // Highlight one gamme when there's a choice: prefer "confort", else the middle.
   const recommendedLabel = tiers.length > 1
