@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { SITE_URL, hreflangAlternates, clampDesc } from '@/lib/seo';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
-import { getPublishedOffers, getTestimonials } from '@/lib/data/content';
+import { getPublishedOffers, getTestimonials, getFaqs } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { waLink } from '@/lib/whatsapp';
 import { SETTINGS_OFFICE_ENTITY_ID } from '@/lib/entities';
@@ -89,9 +89,25 @@ export default async function AgencyCasablancaPage({ params }) {
     ...(socials.length ? { sameAs: socials } : {}),
   };
 
+  // Local/process Q&A owning the "agence omra casablanca" family (criteria live
+  // in the choisir-agence article, per-city logistics in the ville-* pages).
+  const agencyFaqs = await getFaqs('agence');
+  const faqJsonLd = agencyFaqs.length
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: agencyFaqs.map((f) => ({
+          '@type': 'Question',
+          name: pickLang(f, 'question', locale),
+          acceptedAnswer: { '@type': 'Answer', text: pickLang(f, 'answer', locale) },
+        })),
+      }
+    : null;
+
   return (
     <>
       <JsonLd data={jsonLd} />
+      {faqJsonLd ? <JsonLd data={faqJsonLd} /> : null}
       <main>
         {/* Identity answer-first block */}
         <div className="mx-auto max-w-5xl px-6 pt-10">
@@ -232,6 +248,29 @@ export default async function AgencyCasablancaPage({ params }) {
                     {item.author_city ? ` · ${item.author_city}` : ''}
                   </figcaption>
                 </figure>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {/* Agency Q&A — mirrors faqJsonLd above (same rows, same order) */}
+        {agencyFaqs.length ? (
+          <section className="mx-auto max-w-5xl px-6 py-8">
+            <h2 className="text-2xl font-bold text-bm-black">{t.offer.faqTitle}</h2>
+            <div className="mt-4 flex max-w-prose flex-col gap-3">
+              {agencyFaqs.map((faq, i) => (
+                <details
+                  key={faq.id}
+                  open={i === 0}
+                  className="group rounded-card border border-bm-black/10 bg-white px-5 py-4 shadow-hairline"
+                >
+                  <summary className="cursor-pointer list-none font-semibold marker:content-none">
+                    {pickLang(faq, 'question', locale)}
+                  </summary>
+                  <p className="mt-3 text-sm leading-relaxed text-bm-black/70">
+                    {pickLang(faq, 'answer', locale)}
+                  </p>
+                </details>
               ))}
             </div>
           </section>

@@ -24,7 +24,7 @@ export async function GET() {
     getHotels(),
     getArticles(20),
     // General corpus only — city FAQs are emitted inside their city entries.
-    Promise.all([getFaqs('confiance'), getFaqs('omra')]).then((r) => r.flat()),
+    Promise.all([getFaqs('confiance'), getFaqs('omra'), getFaqs('agence')]).then((r) => r.flat()),
     getGuidePages(),
     getGlossaryTerms(),
     getCityPages(),

@@ -10,7 +10,7 @@ States audited 2026-07-23. "live" = published, indexable, passing `seo:audit`.
 | Query family (fr) | Owner page | Intent | Volume |
 |---|---|---|---|
 | omra depuis le maroc · agence omra | `/` (home) | commercial | [ADMIN DATA] |
-| agence omra casablanca | `/agence-omra-casablanca` | local | [ADMIN DATA] |
+| agence omra casablanca · وكالة عمرة · umrah agency | `/agence-omra-casablanca` (+ FAQ `agence`) | local | [ADMIN DATA] |
 | omra pas cher · prix omra maroc | `/omra-pas-cher` | commercial | [ADMIN DATA] |
 | prix moyen omra par mois · statistiques prix | `/barometre-prix-omra` | informational (data) | [ADMIN DATA] |
 | omra ramadan {année} (commercial) | `/omra-ramadan` | seasonal commercial | [ADMIN DATA] |
@@ -87,6 +87,9 @@ Every question below is answered verbatim in `/llms.txt` (single source: the
 | Comment vérifier une agence agréée ? | `/blog/comment-verifier-agence-omra-agreee-maroc` | live |
 | Que veut dire ihram / tawaf / miqat ? | `/glossaire-omra` | live (30 termes) |
 | Omra ou Hajj — quelle différence ? | `/blog/difference-omra-hajj` | live |
+| Pourquoi une agence agréée ? | FAQ `agence` (`/agence-omra-casablanca`) | live |
+| Faut-il venir à l'agence pour réserver ? | FAQ `agence` | live |
+| Que se passe-t-il après ma demande ? | FAQ `agence` | live |
 | Où se trouve l'agence ? | `/contact` (direct-answer block) | live |
 | Omra depuis {ville} ? | `/omra-depuis-{ville}` FAQ (catégorie `ville-{slug}`) | live (8 villes × 3 FAQ) |
 
