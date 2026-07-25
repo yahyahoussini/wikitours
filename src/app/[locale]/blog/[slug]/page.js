@@ -11,7 +11,7 @@ import JsonLd from '@/components/site/JsonLd';
 import SmartGallery from '@/components/SmartGallery';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
-export const revalidate = 60;
+export const revalidate = false;
 
 /** Prebuild every article × locale (see the offer page for the rationale). */
 export async function generateStaticParams() {

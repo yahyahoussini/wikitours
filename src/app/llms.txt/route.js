@@ -7,7 +7,7 @@ import { GUIDE_PILLAR_SLUG, GUIDE_CHILD_SLUGS, guideIndexable, GLOSSARY_MIN_TERM
 import { CITY_SLUGS, cityPageIndexable } from '@/lib/months';
 
 export const runtime = 'nodejs';
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 /**
  * /llms.txt — the emerging convention for handing AI answer engines a curated,
@@ -221,7 +221,7 @@ export async function GET() {
   return new Response(out.join('\n'), {
     headers: {
       'content-type': 'text/plain; charset=utf-8',
-      'cache-control': 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400',
+      'cache-control': 'public, max-age=0, s-maxage=86400, stale-while-revalidate=86400',
     },
   });
 }

@@ -9,7 +9,7 @@ import { BLUR_DATA_URL } from '@/lib/blur';
 import JsonLd from '@/components/site/JsonLd';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
-export const revalidate = 60;
+export const revalidate = false;
 
 const nf = new Intl.NumberFormat('fr-MA');
 

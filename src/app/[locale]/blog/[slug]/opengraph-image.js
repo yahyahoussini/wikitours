@@ -5,7 +5,7 @@ import { publicMediaRenderUrl } from '@/lib/media';
 import { OgCard, ogSize, ogContentType, ogAlt } from '@/lib/og';
 
 /** Per-article OG card: real cover, real title, category as the badge. */
-export const revalidate = 3600; // Satori render is CPU-heavy; cache it, don't re-render per scrape
+export const revalidate = false;
 export const size = ogSize;
 export const contentType = ogContentType;
 export const alt = ogAlt;

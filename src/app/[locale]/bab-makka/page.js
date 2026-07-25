@@ -15,7 +15,7 @@ import { StepsSection, FaqSection, MonthsLinks } from '@/components/site/HomeSec
 import LeadForm from '@/components/LeadForm';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
-export const revalidate = 60;
+export const revalidate = false;
 
 const nf = new Intl.NumberFormat('fr-MA');
 

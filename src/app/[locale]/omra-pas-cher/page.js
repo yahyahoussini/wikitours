@@ -6,7 +6,7 @@ import { getSettings } from '@/lib/data/settings';
 import { waLink } from '@/lib/whatsapp';
 import SeasonalHub from '@/components/site/SeasonalHub';
 
-export const revalidate = 60;
+export const revalidate = false;
 
 const nf = new Intl.NumberFormat('fr-MA');
 

@@ -16,7 +16,7 @@ import { OMRA_YEAR, MONTH_SLUGS, CITY_SLUGS, cityPageIndexable } from '@/lib/mon
 import { GUIDE_PILLAR_SLUG, GUIDE_CHILD_SLUGS, guideIndexable, GLOSSARY_MIN_TERMS } from '@/lib/guides';
 import { computePeriods } from '@/lib/barometer';
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 /**
  * Dynamic sitemap: every public, indexable route × 3 locales, each entry

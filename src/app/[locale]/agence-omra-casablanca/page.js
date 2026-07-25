@@ -14,7 +14,7 @@ import SmartGallery from '@/components/SmartGallery';
 import { GuaranteesStrip, MonthsLinks } from '@/components/site/HomeSections';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
-export const revalidate = 60;
+export const revalidate = false;
 
 const nf = new Intl.NumberFormat('fr-MA');
 

@@ -10,7 +10,7 @@ import LeadForm from '@/components/LeadForm';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import HeroSlideshow from '@/components/site/HeroSlideshow';
 
-export const revalidate = 3600;
+export const revalidate = false;
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;

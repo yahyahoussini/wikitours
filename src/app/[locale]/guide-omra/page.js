@@ -8,7 +8,7 @@ import { waLink } from '@/lib/whatsapp';
 import { GUIDE_PILLAR_SLUG, GUIDE_CHILD_SLUGS, guideIndexable } from '@/lib/guides';
 import GuideSection from '@/components/site/GuideSection';
 
-export const revalidate = 60;
+export const revalidate = false;
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }));

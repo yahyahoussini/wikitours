@@ -9,7 +9,7 @@ import Breadcrumbs from '@/components/site/Breadcrumbs';
 import JsonLd from '@/components/site/JsonLd';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
-export const revalidate = 60;
+export const revalidate = false;
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;

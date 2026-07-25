@@ -34,7 +34,7 @@ import LeadForm from '@/components/LeadForm';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import WhatsAppIcon from '@/components/WhatsAppIcon';
 
-export const revalidate = 60;
+export const revalidate = false;
 
 /** Prebuild every published offer × locale — the first crawl of a new offer
  *  would otherwise block on a full cold render. Empty when the DB is not

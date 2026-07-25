@@ -11,7 +11,7 @@ import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
 import JsonLd from '@/components/site/JsonLd';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
-export const revalidate = 60;
+export const revalidate = false;
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }));

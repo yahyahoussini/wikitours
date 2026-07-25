@@ -17,7 +17,7 @@ import PackagesSection from '@/components/site/PackagesSection';
 import LeadForm from '@/components/LeadForm';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
-export const revalidate = 60;
+export const revalidate = false;
 
 /** Prebuild the whole programmatic surface (12 months + DB occasions + 8
  *  cities) × locale. Unknown slugs still resolve on-demand and 404. */

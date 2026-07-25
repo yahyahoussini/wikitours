@@ -11,7 +11,7 @@ import ReelsRow from '@/components/site/ReelsRow';
 import ScreenshotWall from '@/components/site/ScreenshotWall';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
-export const revalidate = 60;
+export const revalidate = false;
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;

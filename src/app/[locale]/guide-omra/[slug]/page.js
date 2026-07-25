@@ -8,7 +8,7 @@ import { waLink } from '@/lib/whatsapp';
 import { GUIDE_CHILD_SLUGS, guideIndexable } from '@/lib/guides';
 import GuideSection from '@/components/site/GuideSection';
 
-export const revalidate = 60;
+export const revalidate = false;
 
 /** Fixed chapter whitelist — anything else 404s (no open-ended surface). */
 export function generateStaticParams() {

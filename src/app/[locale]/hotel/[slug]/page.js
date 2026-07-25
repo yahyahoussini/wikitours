@@ -15,7 +15,7 @@ import SmartGallery from '@/components/SmartGallery';
 import CtaBlock from '@/components/CtaBlock';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
-export const revalidate = 60;
+export const revalidate = false;
 
 export async function generateMetadata({ params }) {
   const { locale, slug } = await params;

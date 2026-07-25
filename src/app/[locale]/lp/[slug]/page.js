@@ -9,7 +9,7 @@ import SmartGallery from '@/components/SmartGallery';
 import LeadForm from '@/components/LeadForm';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
-export const revalidate = 60;
+export const revalidate = false;
 
 /** Prebuild every public LP × locale so campaign traffic hits the ISR cache
  *  instead of a per-request render. Unknown slugs still resolve on demand. */

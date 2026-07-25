@@ -6,7 +6,7 @@ import { publicMediaUrl } from '@/lib/media';
 import BlogGrid from '@/components/site/BlogGrid';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
-export const revalidate = 60;
+export const revalidate = false;
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;

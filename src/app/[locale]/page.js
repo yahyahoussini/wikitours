@@ -38,7 +38,7 @@ import {
 } from '@/components/site/HomeSections';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
-export const revalidate = 60;
+export const revalidate = false;
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;
