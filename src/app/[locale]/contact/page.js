@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { SITE_URL, absoluteUrl, hreflangAlternates } from '@/lib/seo';
 import { getSettings } from '@/lib/data/settings';
@@ -154,7 +155,9 @@ export default async function ContactPage({ params }) {
             <h2 className="text-xl font-bold text-bm-black">{t.pages.findUs}</h2>
             <div className="mt-4 overflow-hidden rounded-panel shadow-hairline">
               <iframe
-                src={`https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`}
+                // Business name + address → resolves to OUR listing (4.8★), never
+                // a wrong/duplicate place at the same address (rating contradiction).
+                src={`https://www.google.com/maps?q=${encodeURIComponent(`${BRAND.lockup}, ${address}`)}&output=embed`}
                 title={t.pages.findUs}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

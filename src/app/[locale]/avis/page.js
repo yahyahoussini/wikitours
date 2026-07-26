@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { SITE_URL, hreflangAlternates } from '@/lib/seo';
 import { getTestimonials } from '@/lib/data/content';
@@ -61,7 +62,12 @@ export default async function AvisPage({ params }) {
       '@context': 'https://schema.org',
       '@type': 'VideoObject',
       name: r.caption ? `${t.pages.avisTitle} — ${r.caption}` : t.pages.avisTitle,
+      description: r.caption
+        ? `Témoignage vidéo de ${r.caption}, pèlerin parti en Omra avec ${BRAND.lockup}.`
+        : `Témoignage vidéo d'un pèlerin parti en Omra avec ${BRAND.lockup}.`,
       contentUrl: r.src,
+      // uploadDate + thumbnailUrl are the fields Google requires to index a video.
+      ...(r.date ? { uploadDate: String(r.date).slice(0, 10) } : {}),
       ...(r.poster ? { thumbnailUrl: r.poster } : {}),
       publisher: { '@id': `${SITE_URL}/#organization` },
     }));

@@ -139,7 +139,7 @@ export default async function VoyagePage({ params }) {
               entityType="voyages"
               entityId={voyage.id}
               locale={locale}
-              aspect="16 / 9"
+              aspect="1 / 1"
               sizes="(min-width: 1024px) 720px, 100vw"
             />
           </div>

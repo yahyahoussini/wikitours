@@ -59,7 +59,8 @@ export async function getTestimonialMedia(testimonials, locale) {
     const slides = await getGallerySlides('testimonials', item.id, locale);
     const video = slides.find((s) => s.kind === 'video');
     if (video) {
-      reels.push({ id: item.id, src: video.src, poster: video.poster ?? null, caption: item.author_name });
+      // date feeds VideoObject.uploadDate (required by Google to index the video).
+      reels.push({ id: item.id, src: video.src, poster: video.poster ?? null, caption: item.author_name, date: item.created_at ?? item.published_at ?? null });
     }
   }
   const shots = [];

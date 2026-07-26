@@ -285,7 +285,10 @@ export default async function AgencyCasablancaPage({ params }) {
             <h2 className="text-xl font-bold text-bm-black">{t.pages.findUs}</h2>
             <div className="mt-4 overflow-hidden rounded-panel shadow-hairline">
               <iframe
-                src={`https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`}
+                // Query by business NAME + address so the embed resolves to OUR
+                // listing (4.8★) — a raw-address query can match a wrong/duplicate
+                // place at the same address and surface its rating (contradiction).
+                src={`https://www.google.com/maps?q=${encodeURIComponent(`${BRAND.lockup}, ${address}`)}&output=embed`}
                 title={t.pages.findUs}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
