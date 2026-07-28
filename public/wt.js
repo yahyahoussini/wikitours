@@ -5,6 +5,11 @@
   if (window.wt) return;
   var D = document, N = navigator;
 
+  // Staff opt-out: any browser that has opened the admin app carries wt_notrack
+  // (set cross-subdomain by the middleware). Its visits to the public site are
+  // never counted. A no-op wt is exposed so callers (LeadForm, pixels) don't break.
+  if (/(?:^|; )wt_notrack=1/.test(D.cookie)) { window.wt = { track: function () {}, flush: function () {} }; return; }
+
   function get(k) {
     var m = D.cookie.match('(?:^|; )' + k + '=([^;]*)');
     return m ? m[1] : null;

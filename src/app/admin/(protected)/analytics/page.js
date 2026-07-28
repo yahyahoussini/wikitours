@@ -193,7 +193,7 @@ export default async function AdminAnalyticsPage({ searchParams }) {
   const [data, bots, vitals] = sb
     ? await Promise.all([getAnalytics(sb, from, to), getBotReport(sb), getWebVitals(sb, from, to)])
     : [
-        { cards: { visitors: 0, sessions: 0, pageviews: 0, leads: 0, leadRate: 0, whatsappClicks: 0 }, trafficByDay: [], topSources: [], cities: [], topPaths: [], entryPages: [], funnel: [], deviceSplit: [], aiReferrals: [], conversionsByPage: [] },
+        { cards: { visitors: 0, newVisitors: 0, returningVisitors: 0, returnRate: 0, sessions: 0, pageviews: 0, leads: 0, leadRate: 0, whatsappClicks: 0 }, trafficByDay: [], topSources: [], cities: [], topPaths: [], entryPages: [], funnel: [], deviceSplit: [], aiReferrals: [], conversionsByPage: [] },
         { perWeek: [], topPaths: [], total: 0 },
         { total: 0, metrics: [] },
       ];
@@ -205,8 +205,10 @@ export default async function AdminAnalyticsPage({ searchParams }) {
   ];
 
   const cards = [
-    ['Visiteurs', nf.format(data.cards.visitors)],
-    ['Sessions', nf.format(data.cards.sessions)],
+    ['Visiteurs uniques', nf.format(data.cards.visitors)],
+    ['Nouveaux visiteurs', nf.format(data.cards.newVisitors ?? 0)],
+    ['Visiteurs de retour', `${nf.format(data.cards.returningVisitors ?? 0)} · ${pct(data.cards.returnRate ?? 0)}`],
+    ['Sessions (visites)', nf.format(data.cards.sessions)],
     ['Pages vues', nf.format(data.cards.pageviews)],
     ['Leads', nf.format(data.cards.leads)],
     ['Taux de lead', pct(data.cards.leadRate)],

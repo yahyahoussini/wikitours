@@ -67,12 +67,25 @@ export async function middleware(request, event) {
 
   // 1) admin.wikitours.ma serves the admin app at its root.
   if (isAdminHost) {
+    // Stamp the browser so the public first-party tracker (wt.js on the apex)
+    // never counts staff visits — set on the ROOT domain so it spans subdomains
+    // (admin.wikitours.ma → wikitours.ma). Survives IP changes, unlike IP filters.
+    const rootDomain = ADMIN_HOST.replace(/^admin\./, '');
+    const stamp = (res) => {
+      res.cookies.set('wt_notrack', '1', {
+        domain: rootDomain.includes('.') ? `.${rootDomain}` : undefined,
+        path: '/',
+        maxAge: 34128000,
+        sameSite: 'lax',
+      });
+      return res;
+    };
     if (pathname === '/admin' || pathname.startsWith('/admin/')) {
-      return NextResponse.next();
+      return stamp(NextResponse.next());
     }
     const url = request.nextUrl.clone();
     url.pathname = `/admin${pathname === '/' ? '' : pathname}`;
-    return NextResponse.rewrite(url);
+    return stamp(NextResponse.rewrite(url));
   }
 
   // Main-domain /admin: served in dev (no separate host to test against).

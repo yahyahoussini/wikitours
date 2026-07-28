@@ -80,9 +80,24 @@ export async function getAnalytics(sb, from, to) {
   const whatsappClicks =
     rollups.reduce((a, r) => a + r.whatsapp_clicks, 0) + (tailByType.get('whatsapp_click') ?? 0);
   const visitors = new Set(sessions.map((s) => s.visitor_id).filter(Boolean)).size;
+  // New vs returning: a visitor is "new" when their first_seen falls inside the
+  // window; everyone else active in the window was already known → returning.
+  // (Staff visits are excluded upstream via the wt_notrack opt-out, so these
+  // are real users, and a returning browser keeps its wt_vid for 13 months.)
+  const newVisitorsRes = await sb
+    .from('visitors')
+    .select('id')
+    .gte('first_seen', `${from}T00:00:00Z`)
+    .lte('first_seen', `${to}T23:59:59Z`)
+    .limit(50000);
+  const newVisitors = newVisitorsRes.data?.length ?? 0;
+  const returningVisitors = Math.max(0, visitors - newVisitors);
 
   const cards = {
     visitors,
+    newVisitors,
+    returningVisitors,
+    returnRate: visitors ? returningVisitors / visitors : 0,
     sessions: sessions.length,
     pageviews,
     leads: leads.length,
