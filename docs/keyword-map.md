@@ -15,6 +15,7 @@ States audited 2026-07-23. "live" = published, indexable, passing `seo:audit`.
 | prix moyen omra par mois · statistiques prix | `/barometre-prix-omra` | informational (data) | [ADMIN DATA] |
 | omra ramadan {année} (commercial) | `/omra-ramadan` | seasonal commercial | [ADMIN DATA] |
 | quand réserver omra ramadan (info) | `/blog/omra-ramadan-2027-quand-reserver` | informational seasonal | [ADMIN DATA] |
+| omra 10 derniers jours ramadan · laylat al-qadr | `/blog/omra-10-derniers-jours-ramadan-2027` | informational seasonal | [ADMIN DATA] |
 | omra {mois} {année} | `/omra-{mois}` (12 hubs) | seasonal commercial | [ADMIN DATA] |
 | omra depuis {ville} | `/omra-depuis-{ville}` (8 villes, live) | local commercial | [ADMIN DATA] |
 | guide omra · préparer sa omra | `/guide-omra` | informational pillar | [ADMIN DATA] |
