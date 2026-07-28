@@ -116,9 +116,23 @@ export default async function HomePage({ params }) {
       }
     : null;
 
+  // WebPage + speakable: names the H1 and the answer-first hero lede as the
+  // spoken answer, matching every other page's pattern (AEO / voice).
+  const webPageJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': `${absoluteUrl(locale, '')}#webpage`,
+    url: absoluteUrl(locale, ''),
+    inLanguage: locale,
+    isPartOf: { '@id': `${SITE_URL}/#website` },
+    about: { '@id': `${SITE_URL}/#organization` },
+    speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '[data-answer]'] },
+  };
+
   return (
     <main>
       <JsonLd data={siteJsonLd} />
+      <JsonLd data={webPageJsonLd} />
       {faqJsonLd ? <JsonLd data={faqJsonLd} /> : null}
 
       {/* 1 — hero */}

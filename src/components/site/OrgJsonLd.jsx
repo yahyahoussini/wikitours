@@ -1,5 +1,5 @@
 import { BRAND } from '@/lib/brand';
-import { SITE_URL, absoluteUrl } from '@/lib/seo';
+import { SITE_URL, absoluteUrl, parseOpeningHours } from '@/lib/seo';
 import { pickLang, getDictionary } from '@/lib/i18n';
 import { getSettings } from '@/lib/data/settings';
 import { getPublishedOffers, computeMinPrice } from '@/lib/data/content';
@@ -23,6 +23,9 @@ export default async function OrgJsonLd({ locale }) {
   const phones = [s?.phone_1, s?.phone_2, s?.phone_3].filter(Boolean);
   const address = pickLang(s, 'address', locale);
   const hours = pickLang(s, 'opening_hours', locale);
+  // Structured hours (from the FR source, locale-neutral) when parseable; the
+  // raw prose is kept as a fallback so this can only improve the markup.
+  const hoursSpec = parseOpeningHours(s?.opening_hours_fr);
 
   // priceRange from the REAL published offers (never typed by hand): the span
   // of per-offer minimum prices. Omitted when no priced offer exists.
@@ -78,7 +81,7 @@ export default async function OrgJsonLd({ locale }) {
     ...(s?.latitude != null && s?.longitude != null
       ? { geo: { '@type': 'GeoCoordinates', latitude: s.latitude, longitude: s.longitude } }
       : {}),
-    ...(hours ? { openingHours: hours } : {}),
+    ...(hoursSpec ? { openingHoursSpecification: hoursSpec } : hours ? { openingHours: hours } : {}),
     ...(socials.length ? { sameAs: socials } : {}),
     ...(s?.gbp_url ? { hasMap: s.gbp_url } : {}),
     ...(priceRange ? { priceRange } : {}),

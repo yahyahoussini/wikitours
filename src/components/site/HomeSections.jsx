@@ -48,7 +48,7 @@ export async function Hero({ locale }) {
               {t.home.heroLine2}
             </span>
           </h1>
-          <p className="max-w-xl text-white/85 text-shadow-photo">{t.home.intro}</p>
+          <p data-answer className="max-w-xl text-white/85 text-shadow-photo">{t.home.intro}</p>
           <Link
             href={`/${locale}/bab-makka`}
             data-wt="cta_click"

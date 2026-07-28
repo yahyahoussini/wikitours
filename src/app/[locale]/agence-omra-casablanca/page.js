@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
-import { SITE_URL, hreflangAlternates, clampDesc } from '@/lib/seo';
+import { SITE_URL, hreflangAlternates, clampDesc, parseOpeningHours } from '@/lib/seo';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { getPublishedOffers, getTestimonials, getFaqs } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
@@ -44,6 +44,7 @@ export default async function AgencyCasablancaPage({ params }) {
   const phones = [settings?.phone_1, settings?.phone_2, settings?.phone_3].filter(Boolean);
   const address = pickLang(settings, 'address', locale);
   const hours = pickLang(settings, 'opening_hours', locale);
+  const hoursSpec = parseOpeningHours(settings?.opening_hours_fr);
 
   const dateFmt = new Intl.DateTimeFormat(locale === 'ar' ? 'ar-MA' : `${locale}-MA`, {
     day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
@@ -76,7 +77,7 @@ export default async function AgencyCasablancaPage({ params }) {
       : {}),
     ...(phones[0] ? { telephone: phones[0] } : {}),
     ...(settings?.email ? { email: settings.email } : {}),
-    ...(hours ? { openingHours: hours } : {}),
+    ...(hoursSpec ? { openingHoursSpecification: hoursSpec } : hours ? { openingHours: hours } : {}),
     ...(settings?.gbp_rating && settings?.gbp_review_count > 0
       ? {
           aggregateRating: {
