@@ -9,6 +9,7 @@ import JsonLd from '@/components/site/JsonLd';
 import OffersPriceTable from '@/components/site/OffersPriceTable';
 import PackagesSection from '@/components/site/PackagesSection';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
+import HubBody from '@/components/site/HubBody';
 
 /**
  * Evergreen seasonal SEO hub (pas-cher, ramadan, …). Permanent URL; any year
@@ -16,7 +17,8 @@ import WhatsAppFloat from '@/components/WhatsAppFloat';
  * REAL DB offers and generically-true FAQ; nothing factual is invented. Empty
  * hubs are set noindex by the calling page until they have departures.
  */
-export default function SeasonalHub({ locale, path, heading, lede, intro, offers, covers, faq = [], whatsappHref, updated }) {
+
+export default function SeasonalHub({ locale, path, heading, lede, intro, offers, covers, faq = [], body = [], whatsappHref, updated }) {
   const t = getDictionary(locale);
   const url = absoluteUrl(locale, path);
   const cardT = {
@@ -91,6 +93,7 @@ export default function SeasonalHub({ locale, path, heading, lede, intro, offers
       <h1 className="mt-3 text-3xl font-bold leading-tight text-bm-black sm:text-4xl">{heading}</h1>
       <p data-answer className="mt-4 max-w-2xl text-lg leading-relaxed text-bm-black/70">{lede}</p>
       {intro ? <p className="mt-2 max-w-2xl text-sm leading-relaxed text-bm-black/50">{intro}</p> : null}
+      {body.length ? <HubBody sections={body} className="mt-8 px-0" /> : null}
       {updated ? (
         <p className="mt-3 text-xs text-bm-black/40">
           {t.pages.seasonalUpdated} <time dateTime={updated}>{dateFmt.format(new Date(updated))}</time>

@@ -168,7 +168,7 @@
     "priceColumn": "Price"
   },
   "archive": {
-    "title": "Umrah programmes — Bab Makka",
+    "title": "Bab Makka — Umrah programs from Morocco",
     "answerLine": "{n} open Umrah programmes · from {min} MAD · hotels {dmin}–{dmax} m from the Haram · next departure {date}",
     "lastUpdated": "Last updated",
     "filterAll": "All",
@@ -178,7 +178,8 @@
     "howToTitle": "How to book",
     "linksTitle": "Explore",
     "surMesureTitle": "Tailor-made Umrah",
-    "surMesureBody": "Your dates, your hotel, your group — let's build your programme."
+    "surMesureBody": "Your dates, your hotel, your group — let's build your programme.",
+    "brandLine": "Bab Makka is the premium Umrah & Hajj service of Wiki Tours International, a licensed Moroccan travel agency based in Casablanca since 2016. Every program below is organised and guided by our own team, departing from Mohammed V airport."
   },
   "months": {
     "pageTitle": "Umrah {month} {year} from Morocco",
@@ -290,7 +291,62 @@
     "whereQuestion": "Where is the agency located?",
     "whereAnswer": "Our agency welcomes you at the following address: {address}.",
     "avisDesc": "Reviews and testimonials from pilgrims who travelled with Bab Makka by Wiki Tours International: videos, screenshots and verified feedback.",
-    "blogDesc": "Omra & Hajj guides and tips from the Bab Makka team: documents, budget, hotels and departure preparation from Morocco."
+    "blogDesc": "Omra & Hajj guides and tips from the Bab Makka team: documents, budget, hotels and departure preparation from Morocco.",
+    "pasCherBody": [
+      {
+        "h2": "What actually lowers the price of an Umrah",
+        "p": [
+          "Three factors drive the price far more than anything else: the room type, the hotel's distance from the Haram, and the departure period. The most powerful lever, and the most often overlooked, is the room type: because the rate is set per person, a quad or quint room mechanically cuts the cost per head compared with a double.",
+          "Next comes location. Every metre gained toward the Grand Mosque has a price, because the allotments near the Haram reserved for Moroccan agencies are limited. A hotel 900 metres away costs considerably less than one at 50 metres — identical rites, a different daily life.",
+          "Finally the period: travelling outside Ramadan and outside school holidays substantially changes the bill, for equivalent services."
+        ]
+      },
+      {
+        "h2": "The most affordable windows of the year",
+        "p": [
+          "Winter outside Ramadan and autumn are the gentlest windows for a budget: demand is lower, so nearby hotels stay available longer. Conversely, Ramadan — especially its last ten nights — and school holidays concentrate the whole country's demand into a few weeks, which tightens prices and makes family rooms scarce.",
+          "Booking early for an in-demand period doesn't only save money: above all it preserves your choice of tier, distance and room type."
+        ]
+      },
+      {
+        "h2": "What you should never sacrifice for price",
+        "p": [
+          "An economical Umrah is still a guided Umrah. Three things are non-negotiable whatever the budget: the agency must be licensed, the booking must be confirmed by a written contract with an official receipt, and the hotel's real distance to the Haram must be stated in metres, verifiable on a map.",
+          "Be wary of a rate far below market with no explanation, of pressure to pay immediately, or of payment requested to a personal account. A low price is always explained by a deliberate trade-off — distance, tier or period — never by vagueness in the contract."
+        ]
+      },
+      {
+        "h2": "Comparing two offers honestly",
+        "p": [
+          "For a comparison to mean anything, line up the same elements: same duration, same room type, same distance to the Haram, and above all the same list of inclusions. Check whether the visa, transfers, breakfast and guidance are included, and read the exclusions section — that is often where the price gap hides.",
+          "Our offers display the real price per tier and room type, with each hotel's distance, precisely to make that comparison possible."
+        ]
+      }
+    ],
+    "hotelsCompareBody": [
+      {
+        "h2": "Why distance to the Haram is the first criterion",
+        "p": [
+          "During an Umrah you will walk to the Grand Mosque several times a day, often five. Over a one- to two-week stay, the difference between 100 metres and a kilometre adds up to hours of walking, in a demanding climate. It is the criterion that transforms daily life the most — more than the star rating.",
+          "It weighs even heavier for families with children and for elderly or reduced-mobility pilgrims, for whom fatigue determines how many prayers are performed on site."
+        ]
+      },
+      {
+        "h2": "What each distance band changes in practice",
+        "p": [
+          "Up to 200 metres, you are at the Haram's doorstep: returning between prayers stays easy, and a rest between two prayers is possible. Between 300 and 700 metres, expect a five- to ten-minute walk, very manageable for someone in good health, heavier with young children.",
+          "Beyond 800 metres to a kilometre, the walk becomes a decision: you go out less often, you chain prayers on site, and a shuttle or taxi enters the budget. That is not a bad choice — it is a deliberate trade-off in favour of price."
+        ]
+      },
+      {
+        "h2": "Hotel category or location: which to favour",
+        "p": [
+          "At equal budget, the choice is often between a higher-rated hotel farther away and a simpler property close to the Haram. For a first stay, for a family, or for elders, proximity almost always wins: you come to pray at the Haram, not to enjoy the room.",
+          "Category regains importance when the stay is long, when the comfort of a family room matters, or when on-site meals simplify the logistics. Distances shown in this comparison are measured on foot, not as the crow flies."
+        ]
+      }
+    ],
+    "babmakkah": "Bab Makka — Umrah from Morocco: programs & prices"
   },
   "agency": {
     "title": "Umrah agency in Casablanca",
@@ -330,7 +386,7 @@
   },
   "seoTitles": {
     "home": "Umrah 2026 from Morocco | Bab Makka",
-    "babmakkah": "Umrah from Morocco: programmes & prices | Bab Makka",
+    "babmakkah": "Bab Makka — Umrah from Morocco: programs & prices",
     "offer": "Umrah {occasion} {year} from {price} MAD | Bab Makka",
     "month": "Umrah {month} {year} from Morocco | Bab Makka"
   },

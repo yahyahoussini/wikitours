@@ -12,6 +12,7 @@ import JsonLd from '@/components/site/JsonLd';
 import SmartGallery from '@/components/SmartGallery';
 import LeadForm from '@/components/LeadForm';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
+import { todayISO } from '@/lib/offers';
 
 export const revalidate = false;
 
@@ -98,7 +99,13 @@ export default async function VoyagePage({ params }) {
             '@type': 'Offer',
             price: voyage.starting_price,
             priceCurrency: 'MAD',
-            availability: 'https://schema.org/InStock',
+            // Computed, never hardcoded. A trip stops being bookable the day
+            // it leaves, so availability flips at date_start — which is also
+            // what validThrough below advertises (no stale bookable Offer).
+            availability:
+              voyage.date_start < todayISO()
+                ? 'https://schema.org/SoldOut'
+                : 'https://schema.org/InStock',
             url: absoluteUrl(locale, `/voyage/${voyage.slug}`),
             ...(voyage.created_at ? { validFrom: voyage.created_at.slice(0, 10) } : {}),
             validThrough: voyage.date_start,

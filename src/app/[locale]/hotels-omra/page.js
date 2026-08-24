@@ -8,6 +8,7 @@ import BrandLockup from '@/components/site/BrandLockup';
 import Breadcrumbs from '@/components/site/Breadcrumbs';
 import JsonLd from '@/components/site/JsonLd';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
+import HubBody from '@/components/site/HubBody';
 
 export const revalidate = false;
 
@@ -124,6 +125,7 @@ export default async function HotelsComparePage({ params }) {
       <p className="mt-2 max-w-2xl text-sm leading-relaxed text-bm-black/50">
         {t.pages.hotelsCompareIntro}
       </p>
+      <HubBody sections={t.pages.hotelsCompareBody} className="px-0" />
 
       <div className="mt-8 overflow-x-auto rounded-panel border border-bm-black/10 shadow-hairline">
         <table className="w-full min-w-[36rem] border-collapse text-start text-sm">

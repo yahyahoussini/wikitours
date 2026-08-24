@@ -53,6 +53,7 @@ export default async function OmraPasCherPage({ params }) {
       offers={offers}
       covers={covers}
       faq={t.pages.pasCherFaq}
+      body={t.pages.pasCherBody}
       whatsappHref={waLink(settings?.whatsapp_number)}
       updated={updated || null}
     />

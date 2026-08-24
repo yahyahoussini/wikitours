@@ -168,7 +168,7 @@
     "priceColumn": "Prix"
   },
   "archive": {
-    "title": "Programmes Omra — Bab Makka",
+    "title": "Bab Makka — Programmes Omra depuis le Maroc",
     "answerLine": "{n} programmes Omra ouverts · dès {min} MAD · hôtels de {dmin} à {dmax} m du Haram · prochain départ le {date}",
     "lastUpdated": "Dernière mise à jour",
     "filterAll": "Tous",
@@ -178,7 +178,8 @@
     "howToTitle": "Comment réserver",
     "linksTitle": "Explorer",
     "surMesureTitle": "Omra sur mesure",
-    "surMesureBody": "Vos dates, votre hôtel, votre groupe — construisons votre programme."
+    "surMesureBody": "Vos dates, votre hôtel, votre groupe — construisons votre programme.",
+    "brandLine": "Bab Makka est le service premium Omra & Hajj de Wiki Tours International, agence de voyages marocaine agréée basée à Casablanca depuis 2016. Tous les programmes ci-dessous sont organisés et encadrés par notre équipe, au départ de l'aéroport Mohammed V."
   },
   "months": {
     "pageTitle": "Omra {month} {year} depuis le Maroc",
@@ -290,7 +291,62 @@
     "whereQuestion": "Où se trouve l'agence ?",
     "whereAnswer": "Notre agence vous accueille à l’adresse suivante : {address}.",
     "avisDesc": "Avis et témoignages de pèlerins partis en Omra avec Bab Makka by Wiki Tours International : vidéos, captures et retours vérifiés.",
-    "blogDesc": "Guides et conseils Omra & Hajj par l'équipe Bab Makka : documents, budget, hôtels et préparation du départ depuis le Maroc."
+    "blogDesc": "Guides et conseils Omra & Hajj par l'équipe Bab Makka : documents, budget, hôtels et préparation du départ depuis le Maroc.",
+    "pasCherBody": [
+      {
+        "h2": "Ce qui fait vraiment baisser le prix d'une Omra",
+        "p": [
+          "Trois facteurs déterminent le prix bien plus que tout le reste : le type de chambre, la distance de l'hôtel au Haram et la période de départ. Le levier le plus puissant, et le plus souvent ignoré, est le type de chambre : le tarif étant fixé par personne, une chambre quadruple ou quintuple fait mécaniquement chuter le coût par tête par rapport à une chambre double.",
+          "Vient ensuite l'emplacement. Chaque mètre gagné vers la Grande Mosquée se paie, car les allotements proches du Haram réservés aux agences marocaines sont limités. Un hôtel à 900 mètres coûte nettement moins qu'un hôtel à 50 mètres — pour des rites identiques, mais un quotidien différent.",
+          "Enfin la période : partir hors Ramadan et hors vacances scolaires change substantiellement la facture, à prestations équivalentes."
+        ]
+      },
+      {
+        "h2": "Les périodes les plus accessibles de l'année",
+        "p": [
+          "L'hiver hors Ramadan et l'automne sont les fenêtres les plus douces pour le budget : la demande y est plus faible, donc les hôtels proches restent accessibles plus longtemps. À l'inverse, le Ramadan — en particulier ses dix dernières nuits — et les vacances scolaires concentrent la demande de tout le pays sur quelques semaines, ce qui tend les prix et raréfie les chambres familiales.",
+          "Réserver tôt sur une période demandée ne fait pas seulement économiser : cela préserve surtout le choix de la gamme, de la distance et du type de chambre."
+        ]
+      },
+      {
+        "h2": "Ce qu'il ne faut jamais sacrifier au prix",
+        "p": [
+          "Une Omra économique reste une Omra encadrée. Trois éléments ne se négocient pas, quel que soit le budget : l'agence doit être agréée, la réservation doit être confirmée par un contrat écrit avec reçu officiel, et la distance réelle de l'hôtel au Haram doit être annoncée en mètres, vérifiable sur une carte.",
+          "Méfiez-vous d'un tarif très inférieur au marché sans explication, d'une pression à payer immédiatement, ou d'un paiement demandé vers un compte personnel. Un prix bas s'explique toujours par un choix assumé — distance, gamme ou période — jamais par un flou sur le contrat."
+        ]
+      },
+      {
+        "h2": "Comparer deux offres honnêtement",
+        "p": [
+          "Pour qu'une comparaison ait un sens, mettez en face les mêmes éléments : même durée, même type de chambre, même distance au Haram, et surtout la même liste d'inclusions. Vérifiez si le visa, les transferts, le petit-déjeuner et l'accompagnement sont compris, et lisez la rubrique des exclusions — c'est souvent là que se cache l'écart de prix.",
+          "Nos offres affichent le prix réel par gamme et par type de chambre, avec la distance de chaque hôtel, précisément pour rendre cette comparaison possible."
+        ]
+      }
+    ],
+    "hotelsCompareBody": [
+      {
+        "h2": "Pourquoi la distance au Haram est le premier critère",
+        "p": [
+          "Pendant une Omra, vous ferez le trajet vers la Grande Mosquée plusieurs fois par jour, souvent cinq. Sur un séjour d'une à deux semaines, la différence entre 100 mètres et un kilomètre représente des heures de marche cumulées, sous un climat exigeant. C'est le critère qui transforme le plus le quotidien — davantage que le nombre d'étoiles.",
+          "Il pèse encore plus lourd pour les familles avec enfants et pour les personnes âgées ou à mobilité réduite, pour qui la fatigue conditionne le nombre de prières accomplies sur place."
+        ]
+      },
+      {
+        "h2": "Ce que change concrètement chaque tranche de distance",
+        "p": [
+          "Jusqu'à 200 mètres, vous êtes aux portes du Haram : les retours entre les prières restent simples, et une sieste entre deux offices est possible. Entre 300 et 700 mètres, comptez une marche de cinq à dix minutes, très gérable pour une personne en forme, plus lourde avec de jeunes enfants.",
+          "Au-delà de 800 mètres à un kilomètre, le trajet devient une décision : on sort moins souvent, on enchaîne les prières sur place, et la navette ou le taxi entrent dans le budget. Ce n'est pas un mauvais choix — c'est un arbitrage assumé en faveur du prix."
+        ]
+      },
+      {
+        "h2": "Catégorie de l'hôtel ou emplacement : lequel privilégier",
+        "p": [
+          "À budget égal, on choisit souvent entre un hôtel mieux classé mais éloigné, et un établissement plus simple mais proche du Haram. Pour un premier séjour, pour une famille ou pour des aînés, la proximité l'emporte presque toujours : vous venez pour prier au Haram, pas pour profiter de la chambre.",
+          "La catégorie reprend de l'importance lorsque le séjour est long, lorsque le confort de la chambre familiale compte, ou lorsque les repas sur place simplifient l'organisation. Les distances indiquées dans ce comparatif sont mesurées à pied, et non à vol d'oiseau."
+        ]
+      }
+    ],
+    "babmakkah": "Bab Makka — Omra depuis le Maroc : programmes & prix"
   },
   "agency": {
     "title": "Agence Omra à Casablanca",
@@ -330,7 +386,7 @@
   },
   "seoTitles": {
     "home": "Omra 2026 depuis le Maroc | Bab Makka",
-    "babmakkah": "Omra depuis le Maroc : programmes & prix | Bab Makka",
+    "babmakkah": "Bab Makka — Omra depuis le Maroc : programmes & prix",
     "offer": "Omra {occasion} {year} dès {price} MAD | Bab Makka",
     "month": "Omra {month} {year} depuis le Maroc | Bab Makka"
   },

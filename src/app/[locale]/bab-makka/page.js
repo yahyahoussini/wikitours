@@ -47,9 +47,12 @@ export default async function BabMakkahPage({ params }) {
   // Computed answer-first block — every figure straight from the DB.
   const open = offers.filter((o) => o.status !== 'full');
   const minPrice = Math.min(...open.map((o) => o.starting_price).filter((p) => p != null));
+  // Every tier, not just tiers[0]: the first tier is the cheapest (farthest)
+  // hotel, so reading only it produced a nonsense range like "900 to 900 m"
+  // while VIP tiers sit at 50 m from the Haram.
   const distances = open
-    .flatMap((o) => [o.tiers?.[0]?.distance_to_haram_m ?? o.tiers?.[0]?.hotel_makkah?.distance_to_haram_m])
-    .filter((d) => d != null);
+    .flatMap((o) => (o.tiers ?? []).map((tier) => tier.distance_to_haram_m ?? tier.hotel_makkah?.distance_to_haram_m))
+    .filter((d) => typeof d === 'number' && d > 0);
   const nextDeparture = open
     .map((o) => o.date_start)
     .filter(Boolean)
@@ -127,9 +130,16 @@ export default async function BabMakkahPage({ params }) {
           <h1 className="mt-4 max-w-2xl text-3xl font-bold leading-tight sm:text-4xl">
             {t.archive.title}
           </h1>
+          {/* Brand definition = the answer for the "Bab Makka" brand query,
+              and the speakable sentence. The stats strip follows it. */}
+          <p
+            data-answer
+            className="mt-4 max-w-2xl text-lg leading-relaxed text-white/80"
+          >
+            {t.archive.brandLine}
+          </p>
           {answer ? (
             <p
-              data-answer
               className="mt-4 max-w-2xl rounded-card border border-bm-gold/30 bg-bm-gold/5 px-5 py-4 text-lg leading-relaxed text-bm-black/80"
             >
               {answer}

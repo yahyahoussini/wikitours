@@ -16,6 +16,10 @@ States audited 2026-07-23. "live" = published, indexable, passing `seo:audit`.
 | omra ramadan {année} (commercial) | `/omra-ramadan` | seasonal commercial | [ADMIN DATA] |
 | quand réserver omra ramadan (info) | `/blog/omra-ramadan-2027-quand-reserver` | informational seasonal | [ADMIN DATA] |
 | omra 10 derniers jours ramadan · laylat al-qadr | `/blog/omra-10-derniers-jours-ramadan-2027` | informational seasonal | [ADMIN DATA] |
+| ramadan 2027 dates · calendrier ramadan | `/blog/ramadan-2027-dates-calendrier` (DRIP 1 oct) | informational seasonal | [ADMIN DATA] |
+| quelle période du ramadan · début vs fin | `/blog/quelle-periode-ramadan-choisir-omra` (DRIP 8 oct) | informational seasonal | [ADMIN DATA] |
+| ramadan à la mecque · journée type | `/blog/journee-ramadan-la-mecque` (DRIP 15 oct) | informational | [ADMIN DATA] |
+| omra en jeûnant · tawaf en jeûne | `/blog/jeuner-pendant-omra-ramadan` (DRIP 22 oct) | informational | [ADMIN DATA] |
 | omra {mois} {année} | `/omra-{mois}` (12 hubs) | seasonal commercial | [ADMIN DATA] |
 | omra depuis {ville} | `/omra-depuis-{ville}` (8 villes, live) | local commercial | [ADMIN DATA] |
 | guide omra · préparer sa omra | `/guide-omra` | informational pillar | [ADMIN DATA] |
@@ -32,6 +36,22 @@ States audited 2026-07-23. "live" = published, indexable, passing `seo:audit`.
 | comment choisir agence omra (critères) | `/blog/comment-choisir-agence-omra` | informational (comparison) | [ADMIN DATA] |
 | train al‑haramain · mecque médine train | `/blog/train-al-haramain-mecque-medine` | informational | [ADMIN DATA] |
 | que visiter à médine · ziyara médine | `/blog/que-visiter-medine-ziyara` | informational | [ADMIN DATA] |
+| omra en famille · omra avec enfants · omra parents âgés | `/blog/omra-en-famille-enfants-parents-ages` | informational | [ADMIN DATA] |
+| dua omra · invocations tawaf sa'i | `/blog/invocations-dua-omra` (DRAFT → publish post-Aug22) | informational | [ADMIN DATA] |
+| vaccin omra · méningite ACWY · santé omra | `/blog/vaccins-sante-omra` (DRAFT) | informational | [ADMIN DATA] |
+| gammes omra · omra économique vs vip | `/blog/gammes-omra-economique-vip` (DRAFT) | commercial (comparison) | [ADMIN DATA] |
+| que visiter à la mecque · hira thawr | `/blog/que-visiter-la-mecque` (DRAFT) | informational | [ADMIN DATA] |
+| hajj maroc inscription · quota hajj | `/blog/hajj-maroc-inscription-quota` (drip 27/08) | informational | [ADMIN DATA] |
+| loterie hajj maroc · قرعة الحج | `/blog/loterie-hajj-maroc` (drip 03/09) | informational | [ADMIN DATA] |
+| cout hajj maroc · prix hajj | `/blog/cout-hajj-maroc` (drip 10/09) | informational | [ADMIN DATA] |
+| hajj ministere ou agence | `/blog/hajj-ministere-ou-agence` (drip 17/09) | comparison | [ADMIN DATA] |
+| pas tire au sort hajj (PONT → Omra) | `/blog/pas-tire-au-sort-hajj-omra` (drip 24/09) | conversion bridge | [ADMIN DATA] |
+| omra vacances scolaires | `/blog/omra-vacances-scolaires` (drip 25/08) | seasonal commercial | [ADMIN DATA] |
+| omra octobre · meteo affluence | `/blog/omra-octobre-meteo-affluence` (drip 26/08) | seasonal | [ADMIN DATA] |
+| quand reserver omra (calendrier) | `/blog/quand-reserver-omra-calendrier` (drip 28/08) | informational pillar | [ADMIN DATA] |
+| argent a emporter omra · budget sur place | `/blog/budget-argent-poche-omra` (drip 29/08) | informational | [ADMIN DATA] |
+| application nusuk · reserver rawda | `/blog/application-nusuk-guide` (drip 31/08) | informational | [ADMIN DATA] |
+| omra groupe ou individuel | `/blog/omra-groupe-ou-individuel` (drip 01/09) | commercial comparison | [ADMIN DATA] |
 | {nom d'hôtel} distance haram (FAQ auto) | `/hotel/{slug}` (computed from DB fields) | informational long-tail | [ADMIN DATA] |
 | omra rajab · omra chaâbane · omra chawal | `/omra-{occasion}` (hubs hijri, gated) | seasonal commercial | [ADMIN DATA] |
 | omra 5 étoiles · omra de luxe · عمرة فاخرة · luxury umrah | `/omra-5-etoiles` (premium hub) + `/omra/omra-5-etoiles-sur-mesure` (offre à la carte, sans date) | commercial (premium) | [ADMIN DATA] |
