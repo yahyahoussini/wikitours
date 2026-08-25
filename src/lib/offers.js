@@ -15,6 +15,17 @@ export function isOfferPast(offer, today = todayISO()) {
   return Boolean(offer?.date_end && offer.date_end < today);
 }
 
+
+/**
+ * True once the DEPARTURE date has passed. Bookability ends at departure — you
+ * cannot join a flight that already left — which is also what `validThrough`
+ * advertises on the Offer node. Distinct from isOfferPast(), which asks whether
+ * the whole trip (incl. the return) is over.
+ */
+export function hasDeparted(offer, today = todayISO()) {
+  return Boolean(offer?.date_start && offer.date_start < today);
+}
+
 /**
  * schema.org availability, computed from data (never the raw status alone):
  *   SoldOut               → status=full OR seats_remaining=0 OR departed
@@ -24,7 +35,7 @@ export function isOfferPast(offer, today = todayISO()) {
  */
 export function offerAvailability(offer, today = todayISO()) {
   const seats = offer?.seats_remaining;
-  if (offer?.status === 'full' || seats === 0 || isOfferPast(offer, today)) {
+  if (offer?.status === 'full' || seats === 0 || hasDeparted(offer, today)) {
     return 'https://schema.org/SoldOut';
   }
   if (offer?.status === 'few_left' || (typeof seats === 'number' && seats <= LOW_SEATS)) {

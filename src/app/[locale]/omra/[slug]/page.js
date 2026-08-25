@@ -20,7 +20,7 @@ import { publicMediaUrl } from '@/lib/media';
 import { toOfferCard } from '@/lib/offer-card';
 import { waLink } from '@/lib/whatsapp';
 import { OMRA_YEAR, monthPagePath, monthName } from '@/lib/months';
-import { offerAvailability, isOfferPast, seatsLabel } from '@/lib/offers';
+import { offerAvailability, hasDeparted, seatsLabel } from '@/lib/offers';
 import BrandLockup from '@/components/site/BrandLockup';
 import Breadcrumbs from '@/components/site/Breadcrumbs';
 import OfferSubnav from '@/components/site/OfferSubnav';
@@ -380,7 +380,7 @@ export default async function OfferPage({ params }) {
 
         {/* Departed-state (60-day grace before the cron 301s to the month hub).
             Still 200/indexable; schema availability is already SoldOut. */}
-        {isOfferPast(offer) ? (
+        {hasDeparted(offer) ? (
           <div className="mt-4 flex flex-wrap items-center gap-3 rounded-panel border border-bm-gold/40 bg-bm-gold/10 px-5 py-3 text-sm font-semibold text-bm-black">
             <span>⏳ {t.offer.departed}</span>
             {hubLinks.map((hub) => (
@@ -669,7 +669,7 @@ export default async function OfferPage({ params }) {
               <h2 className="text-lg font-bold">{t.offer.bookingTitle}</h2>
               {/* Real scarcity — shown ONLY when a seat count is set, bound to
                   the DB. No countdowns / urgency copy not backed by data. */}
-              {seatsLabel(offer) != null && !isOfferPast(offer) ? (
+              {seatsLabel(offer) != null && !hasDeparted(offer) ? (
                 <p className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800">
                   {t.offer.seatsLeft.replace('{n}', seatsLabel(offer))}
                 </p>
