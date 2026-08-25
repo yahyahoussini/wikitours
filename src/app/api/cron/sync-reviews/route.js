@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 
 export const runtime = 'nodejs';
@@ -60,8 +61,33 @@ export async function GET(request) {
     return NextResponse.json({ ok: false, error: 'no usable values returned' }, { status: 502 });
   }
 
+  // Only write + revalidate when the figure actually MOVED. The rating shows in
+  // the sitewide Organization node, so a refresh means a layout revalidation —
+  // cheap a few times a month, wasteful every single day for an unchanged value.
+  const { data: current } = await admin
+    .from('settings')
+    .select('gbp_rating, gbp_review_count')
+    .eq('id', 1)
+    .maybeSingle();
+
+  const changed =
+    (patch.gbp_rating != null && patch.gbp_rating !== current?.gbp_rating) ||
+    (patch.gbp_review_count != null && patch.gbp_review_count !== current?.gbp_review_count);
+
+  if (!changed) {
+    return NextResponse.json({ ok: true, unchanged: true, ...patch });
+  }
+
   const { error } = await admin.from('settings').update(patch).eq('id', 1);
   if (error) return NextResponse.json({ ok: false, error: 'db update failed' }, { status: 500 });
 
-  return NextResponse.json({ ok: true, ...patch });
+  // Same spec the admin uses for a settings save (revalidate.js: settings -> 'layout').
+  revalidatePath('/', 'layout');
+
+  return NextResponse.json({
+    ok: true,
+    changed: true,
+    from: { rating: current?.gbp_rating ?? null, count: current?.gbp_review_count ?? null },
+    to: patch,
+  });
 }
