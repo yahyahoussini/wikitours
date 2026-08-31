@@ -82,6 +82,30 @@ export default async function OrgJsonLd({ locale }) {
       ? { geo: { '@type': 'GeoCoordinates', latitude: s.latitude, longitude: s.longitude } }
       : {}),
     ...(hoursSpec ? { openingHoursSpecification: hoursSpec } : hours ? { openingHours: hours } : {}),
+    // The premises close in the evening and all day Sunday, but the WhatsApp
+    // line is staffed 24/7 — a real differentiator in this market, and the
+    // thing a searcher (or an answer engine) actually wants to know at 22h.
+    // Modelled as its own ContactPoint so it never widens the opening hours of
+    // the physical agency above.
+    ...(s?.whatsapp_number
+      ? {
+          contactPoint: [
+            {
+              '@type': 'ContactPoint',
+              contactType: 'customer service',
+              telephone: s.whatsapp_number,
+              url: 'https://wa.me/' + String(s.whatsapp_number).replace(/[^0-9]/g, ''),
+              availableLanguage: ['fr', 'ar', 'en'],
+              hoursAvailable: {
+                '@type': 'OpeningHoursSpecification',
+                dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                opens: '00:00',
+                closes: '23:59',
+              },
+            },
+          ],
+        }
+      : {}),
     ...(socials.length ? { sameAs: socials } : {}),
     ...(s?.gbp_url ? { hasMap: s.gbp_url } : {}),
     ...(priceRange ? { priceRange } : {}),
