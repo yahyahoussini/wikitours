@@ -46,6 +46,8 @@ States audited 2026-07-23. "live" = published, indexable, passing `seo:audit`.
 | cout hajj maroc · prix hajj | `/blog/cout-hajj-maroc` (drip 10/09) | informational | [ADMIN DATA] |
 | hajj ministere ou agence | `/blog/hajj-ministere-ou-agence` (drip 17/09) | comparison | [ADMIN DATA] |
 | pas tire au sort hajj (PONT → Omra) | `/blog/pas-tire-au-sort-hajj-omra` (drip 24/09) | conversion bridge | [ADMIN DATA] |
+| prix omra maroc {année} par gamme et par mois (bilan chiffré, offer prices only) | `/blog/prix-omra-maroc-par-gamme-et-mois` (supports `/omra-pas-cher`; `/barometre-prix-omra` keeps the stats query) | informational (data, seasonal) | [ADMIN DATA] |
+| omra 10 jours ou 15 jours · omra une semaine · durée omra | `/blog/omra-8-jours-ou-15-jours` (supports `/bab-makka`) | informational (comparison) | [ADMIN DATA] |
 | omra vacances scolaires | `/blog/omra-vacances-scolaires` (drip 25/08) | seasonal commercial | [ADMIN DATA] |
 | omra octobre · meteo affluence | `/blog/omra-octobre-meteo-affluence` (drip 26/08) | seasonal | [ADMIN DATA] |
 | quand reserver omra (calendrier) | `/blog/quand-reserver-omra-calendrier` (drip 28/08) | informational pillar | [ADMIN DATA] |
@@ -142,7 +144,6 @@ Adding a topic = a row in **Plan éditorial** in the admin **and** a line here.
 | passeport omra validité · renouvellement | `/guide-omra/documents-visa` | guide |
 | arrivée à jeddah · première omra jour 1 | `/guide-omra/rituels` | guide |
 | prière du vendredi au haram | `/guide-omra/rituels` | guide |
-| omra 10 jours ou 15 jours | `/bab-makka` | omra |
 | hôtel à 100 m ou à 1 km du haram | `/hotels-omra` | hotels |
 | omra en couple · jeunes mariés | `/bab-makka` | omra |
 | vol casablanca jeddah · compagnies · escales | `/omra-depuis-casablanca` | omra |
@@ -152,7 +153,6 @@ Adding a topic = a row in **Plan éditorial** in the admin **and** a line here.
 | après l'omra · retour | `/guide-omra` | guide |
 | omra maladie chronique (sans conseil médical) | `/guide-omra/checklist` | guide |
 | omra {mois} — informational half of each month hub (janv, fév, mars, avr, mai, juin, août, sept, nov, déc) | `/omra-{mois}` | omra |
-| prix omra depuis le maroc {année} — bilan chiffré (offer prices only) | `/barometre-prix-omra` | omra |
 | première omra seul(e) · sans groupe familial | `/bab-makka` | omra |
 | omra étudiants · vacances universitaires | `/omra-pas-cher` | omra |
 | offrir l'omra à ses parents | `/agence-omra-casablanca` | confiance |
