@@ -2,24 +2,30 @@ import Anthropic from '@anthropic-ai/sdk';
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import { z } from 'zod';
 import { BRAND } from '@/lib/brand';
-import { clampDesc } from '@/lib/seo';
-import { withBrand } from '@/lib/titles';
 import { CITY_SLUGS, MONTH_SLUGS } from '@/lib/months';
 import { GUIDE_PILLAR_SLUG, GUIDE_CHILD_SLUGS } from '@/lib/guides';
 import { computeMinPrice } from '@/lib/data/content';
+import { words, qualityGate, nextMorningSlot, publishDecision, toArticleRow, uniqueSlug } from './article-gate.mjs';
+
+// The gate lives in article-gate.mjs (dependency-free) so the $0 build-time
+// ingest can run it too; re-exported here so the cron route keeps one import.
+export { qualityGate, nextMorningSlot, publishDecision, sampleDrafts } from './article-gate.mjs';
 
 /**
- * Strategy-driven blog drafter — writes ONE trilingual article from the next
- * row of `article_plan`, grounded EXCLUSIVELY in facts pulled from the DB, and
- * saves it as an UNPUBLISHED draft dated for the next free 08:00 slot.
+ * API drafter — writes ONE trilingual article from the next row of
+ * `article_plan`, grounded EXCLUSIVELY in facts pulled from the DB, then runs
+ * the shared gate + publish decision and inserts the row.
  *
- * Why a human stays in the loop (CLAUDE.md, LAW §10, and Google's scaled-
- * content policy): an LLM will invent prices, dates and rules for a religious-
- * travel site if allowed to. So the model only ever sees a FACT SHEET built
- * from published rows, is told to write around any missing fact and list it in
- * `needs_review`, and a code-side gate re-checks slug, length, structure, the
- * owner link, the FAQ block and every MAD amount against the fact sheet. The
- * reviewer gets the draft + the flags by e-mail; nothing goes live untouched.
+ * COST: this path calls the Anthropic API and is billed per token. It is
+ * dormant unless ANTHROPIC_API_KEY is set. The owner's $0 alternative is the
+ * weekly cloud routine (content/ARTICLE-BRIEF.md → content/articles/*.json →
+ * scripts/ingest-articles.mjs at build), which uses the same gate.
+ *
+ * Why the gate exists (CLAUDE.md, LAW §10, Google's scaled-content policy): an
+ * LLM will invent prices, dates and rules for a religious-travel site if
+ * allowed to. The model only ever sees a FACT SHEET built from published rows,
+ * must write around any missing fact, and the gate re-checks structure, links
+ * and every MAD amount against that sheet before anything can publish itself.
  *
  * Never import this module client-side.
  */
@@ -27,11 +33,6 @@ import { computeMinPrice } from '@/lib/data/content';
 export const DRAFT_MODEL = process.env.ARTICLE_DRAFT_MODEL ?? 'claude-opus-5';
 /** Stop drafting while this many AI drafts sit unreviewed — bounds cost. */
 export const MAX_PENDING_AI_DRAFTS = 7;
-
-const nf = new Intl.NumberFormat('fr-MA');
-const words = (s) => String(s ?? '').trim().split(/\s+/).filter(Boolean).length;
-const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const CATEGORIES = new Set(['confiance', 'omra', 'hajj', 'hotels', 'guide']);
 
 const DraftSchema = z.object({
   slug: z.string(),
@@ -62,7 +63,8 @@ const DraftSchema = z.object({
  * Everything the model is allowed to state as fact. Published rows only —
  * exactly what the public already sees — read with the service client so the
  * cron does not depend on anon RLS. Also returns the price set the gate uses
- * and the slugs/links the prompt needs.
+ * and the slugs/links the prompt needs. The public facts endpoint
+ * (api/content/facts) serves this same object to the $0 cloud routine.
  */
 export async function buildFactSheet(admin, { today }) {
   const [settingsRes, offersRes, hotelsRes, faqsRes, articlesRes, teamRes] = await Promise.all([
@@ -174,122 +176,6 @@ export async function buildFactSheet(admin, { today }) {
   return { facts, priceSet, existingSlugs, publishedArticles, allowedLinks };
 }
 
-/* ----------------------------------------------------------------- slot --- */
-
-/** Next free 08:00 Casablanca (07:00 UTC) morning after the last scheduled post. */
-export function nextMorningSlot(lastScheduledAt, now = new Date()) {
-  const last = lastScheduledAt ? new Date(lastScheduledAt) : null;
-  const base = last && last > now ? last : now;
-  return new Date(Date.UTC(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate() + 1, 7, 0, 0)).toISOString();
-}
-
-/* ----------------------------------------------------------------- gate --- */
-
-/**
- * Code-side quality gate. `problems` block a save until one retry; `flags`
- * always reach the reviewer. Both are honest about what was NOT checked: the
- * accuracy of prose is the human's job.
- */
-export function qualityGate(draft, { ownerPath, existingSlugs, priceSet }) {
-  const problems = [];
-  const flags = [];
-
-  if (!SLUG_RE.test(draft.slug) || draft.slug.length > 80) problems.push(`slug invalide : « ${draft.slug} »`);
-  if (existingSlugs.has(draft.slug)) problems.push(`slug déjà utilisé : « ${draft.slug} »`);
-
-  const n = words(draft.body_fr);
-  if (n < 600) problems.push(`body_fr trop court : ${n} mots (minimum 800)`);
-  else if (n < 800) flags.push(`body_fr un peu court : ${n} mots`);
-
-  const h2 = (draft.body_fr.match(/^## /gm) ?? []).length;
-  if (h2 < 3) problems.push(`seulement ${h2} section(s) « ## » (minimum 4)`);
-
-  if (ownerPath && !draft.body_fr.includes(`](/fr${ownerPath}`)) {
-    problems.push(`lien vers la page propriétaire ${ownerPath} manquant dans body_fr`);
-  }
-  for (const [lang, body] of [['ar', draft.body_ar], ['en', draft.body_en]]) {
-    if (ownerPath && !body.includes(`](/${lang}${ownerPath}`)) flags.push(`lien propriétaire manquant dans body_${lang}`);
-  }
-
-  const faqIdx = draft.body_fr.search(/^##+ .*(questions fréquentes|faq)/im);
-  const faqQs = faqIdx >= 0 ? (draft.body_fr.slice(faqIdx).match(/^### /gm) ?? []).length : 0;
-  if (faqQs < 2) problems.push(`bloc « Questions fréquentes » absent ou avec ${faqQs} question(s) (minimum 3)`);
-
-  for (const lang of ['fr', 'ar', 'en']) {
-    const t = withBrand(draft[`seo_title_${lang}`]);
-    if (t.length > 60) problems.push(`seo_title_${lang} trop long une fois la marque ajoutée : ${t.length} > 60`);
-    const d = draft[`seo_description_${lang}`] ?? '';
-    if (d.length > 155) flags.push(`seo_description_${lang} sera tronquée (${d.length} > 155)`);
-  }
-
-  if (/bab makkah/i.test(draft.body_fr + draft.body_en)) problems.push('graphie « Bab Makkah » interdite dans le texte');
-  if (/\[À VÉRIFIER\]/i.test(draft.body_fr + draft.body_ar + draft.body_en)) {
-    problems.push('marqueur [À VÉRIFIER] dans le corps — il doit rester dans needs_review');
-  }
-  if (/https?:\/\//i.test(draft.body_fr + draft.body_ar + draft.body_en)) flags.push('lien externe présent — à vérifier par le relecteur');
-
-  // Every MAD amount must exist in the fact sheet. Unsourced ⇒ flagged, never
-  // silently accepted (LAW §10).
-  const amounts = [...draft.body_fr.matchAll(/(\d[\d\s. ]{2,})\s?(?:MAD|dirhams?|DH)\b/gi)]
-    .map((m) => Number(m[1].replace(/[\s. ]/g, '')))
-    .filter((v) => Number.isFinite(v) && v >= 100);
-  const unsourced = [...new Set(amounts.filter((v) => !priceSet.has(v)))];
-  if (unsourced.length) flags.push(`prix NON sourcés dans body_fr : ${unsourced.map((v) => `${nf.format(v)} MAD`).join(', ')}`);
-
-  return { ok: problems.length === 0, problems, flags };
-}
-
-/* -------------------------------------------------------------- publish --- */
-
-/**
- * The mechanical publish decision — owner decision 2026-09-04: no daily human
- * action. Publish ONLY when every condition holds; otherwise the article is
- * saved as a draft and the e-mail names the condition that failed. Never
- * loosen this to raise the publish rate: it is what stands in for the human.
- */
-export function publishDecision({ settings, gate }) {
-  const reasons = [];
-  if (!settings?.blog_autopublish) reasons.push('publication automatique désactivée (Réglages → Blog automatique)');
-  if (!settings?.blog_author_name?.trim()) reasons.push('aucun auteur configuré (Réglages → Blog automatique)');
-  if (!gate.ok) reasons.push(`contrôle qualité : ${gate.problems.length} problème(s) bloquant(s)`);
-  const hard = (gate.flags ?? []).filter((f) => /prix NON sourcés|lien externe|lien propriétaire manquant/i.test(f));
-  if (hard.length) reasons.push(`signalements bloquants : ${hard.join(' ; ')}`);
-  return { publish: reasons.length === 0, reasons };
-}
-
-/* --------------------------------------------------------------- sample --- */
-
-/**
- * Two synthetic drafts for the dry-run mode (?dry=1&sample=1): one built to
- * PASS the gate and one built to FAIL it (unsourced price, banned spelling,
- * one section, no FAQ). Verifies the gate, the slot maths and the publish
- * decision with no API key and no DB write. Content is deliberately
- * meaningless — it never reaches the database.
- */
-export function sampleDrafts({ ownerPath = '/bab-makka', sourcedPrice = 12900 } = {}) {
-  const para = 'Cette phrase de démonstration sert uniquement à vérifier le contrôle qualité automatique du blog et ne contient aucune information réelle. ';
-  const filler = (n) => Array.from({ length: n }, () => para).join('');
-  const body = (lang) =>
-    `${filler(4)}\n\n## Comment cela fonctionne\n\n${filler(8)}Voir [la page propriétaire](/${lang}${ownerPath}).\n\n## Ce qu'il faut prévoir\n\n${filler(8)}\n\n## Combien cela coûte\n\n${filler(6)}à partir de ${nf.format(sourcedPrice)} MAD.\n\n## Le déroulé\n\n${filler(8)}\n\n## Questions fréquentes\n\n### Première question ?\n\n${filler(3)}\n\n### Deuxième question ?\n\n${filler(3)}\n\n### Troisième question ?\n\n${filler(3)}\n`;
-  const common = {
-    title_fr: 'Titre de démonstration', title_ar: 'عنوان تجريبي', title_en: 'Sample title',
-    excerpt_fr: 'Extrait de démonstration.', excerpt_ar: 'مقتطف تجريبي.', excerpt_en: 'Sample excerpt.',
-    seo_title_fr: 'Titre SEO de démonstration', seo_title_ar: 'عنوان سيو تجريبي', seo_title_en: 'Sample SEO title',
-    seo_description_fr: 'Description de démonstration servant à vérifier le contrôle automatique du blog, sans valeur éditoriale, entre cent vingt et cent cinquante caractères.',
-    seo_description_ar: 'وصف تجريبي.', seo_description_en: 'Sample description.',
-    category: 'omra', internal_links: [ownerPath], facts_used: ['prix minimal d’une offre en cours'], needs_review: [],
-  };
-  const pass = { ...common, slug: 'dry-run-pass', body_fr: body('fr'), body_ar: body('ar'), body_en: body('en') };
-  const fail = {
-    ...common,
-    slug: 'Dry Run FAIL',
-    body_fr: `${filler(3)}\n\n## Une seule section\n\n${filler(4)}Bab Makkah propose cela pour 9 999 MAD.\n`,
-    body_ar: filler(2),
-    body_en: filler(2),
-  };
-  return { pass, fail };
-}
-
 /* --------------------------------------------------------------- prompt --- */
 
 function systemPrompt() {
@@ -352,8 +238,8 @@ function userPrompt({ plan, facts, existingSlugs, publishedArticles, allowedLink
 /* ----------------------------------------------------------------- main --- */
 
 /**
- * Draft one article for `plan`. Returns { ok, article, gate, usage } or
- * { ok: false, error, detail }. Inserts the draft (is_published = false).
+ * Draft one article for `plan`. Returns { ok, article, gate, decision, usage }
+ * or { ok: false, error, detail }. Inserts the row unless dryRun.
  */
 export async function draftArticle({ admin, plan, settings = null, now = new Date(), dryRun = false }) {
   if (!process.env.ANTHROPIC_API_KEY) return { ok: false, error: 'no-api-key' };
@@ -366,7 +252,7 @@ export async function draftArticle({ admin, plan, settings = null, now = new Dat
 
   let draft = null;
   let gate = null;
-  let usage = { input: 0, output: 0 };
+  const usage = { input: 0, output: 0 };
 
   // One generation, one correction pass on gate problems, then save with flags.
   for (let attempt = 0; attempt < 2; attempt++) {
@@ -401,12 +287,7 @@ export async function draftArticle({ admin, plan, settings = null, now = new Dat
 
   // A draft that still fails after the retry is saved anyway — unpublished,
   // with the problems listed for the reviewer — rather than losing the day.
-  let slug = draft.slug;
-  if (sheet.existingSlugs.has(slug) || !SLUG_RE.test(slug)) {
-    const base = (slug || plan.query_family).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 70) || 'article';
-    slug = base;
-    for (let i = 2; sheet.existingSlugs.has(slug); i++) slug = `${base}-${i}`;
-  }
+  const slug = uniqueSlug(draft.slug, sheet.existingSlugs, plan.query_family);
 
   const { data: last } = await admin
     .from('articles')
@@ -417,36 +298,7 @@ export async function draftArticle({ admin, plan, settings = null, now = new Dat
     .maybeSingle();
   const slot = nextMorningSlot(last?.published_at ?? null, now);
 
-  const row = {
-    slug,
-    title_fr: draft.title_fr,
-    title_ar: draft.title_ar,
-    title_en: draft.title_en,
-    excerpt_fr: draft.excerpt_fr,
-    excerpt_ar: draft.excerpt_ar,
-    excerpt_en: draft.excerpt_en,
-    body_fr: draft.body_fr,
-    body_ar: draft.body_ar,
-    body_en: draft.body_en,
-    seo_title_fr: draft.seo_title_fr,
-    seo_title_ar: draft.seo_title_ar,
-    seo_title_en: draft.seo_title_en,
-    seo_description_fr: clampDesc(draft.seo_description_fr),
-    seo_description_ar: clampDesc(draft.seo_description_ar),
-    seo_description_en: clampDesc(draft.seo_description_en),
-    // zod 4 → JSON-schema conversion in the SDK emits enums as a description,
-    // not a constraint, so the model is only softly held to these five values —
-    // and articles.category carries a DB check. Validate here, fall back to
-    // the plan's category, never let a stray value fail the insert.
-    category: CATEGORIES.has(draft.category) ? draft.category : CATEGORIES.has(plan.category) ? plan.category : 'omra',
-    // Reverse internal link: the owner page lists this article (RelatedArticles).
-    supports_path: plan.owner_path ?? null,
-    // E-E-A-T: a real, admin-configured person. Set on drafts too, so the
-    // reviewer only has to change it, never remember it.
-    author_name: settings?.blog_author_name?.trim() || null,
-    reviewed_by: settings?.blog_reviewer_name?.trim() || null,
-    published_at: slot,
-  };
+  const row = { ...toArticleRow(draft, { plan, settings, slug }), published_at: slot };
   const decision = publishDecision({ settings, gate });
   row.is_published = decision.publish;
   const fullGate = { ...gate, needs_review: draft.needs_review ?? [], facts_used: draft.facts_used ?? [] };

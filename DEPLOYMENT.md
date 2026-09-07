@@ -109,6 +109,22 @@ model call on the next topic, nothing inserted, returns gate + decision +
 preview. `GET /api/cron/publish-articles` is read-only apart from
 revalidation, so it is safe to call by hand.
 
+### The $0 content path (default) — weekly cloud routine
+Owner decision 2026-09-07: no API spend. A Claude Code **routine** on the
+owner's subscription runs every Sunday 21:00 UTC (22:00 Casablanca) with a
+checkout of this repo. It reads `content/ARTICLE-BRIEF.md`, grounds itself on
+the public `GET /api/content/facts` (facts, live prices, FAQ, existing slugs,
+allowed links, the queued plan — no secrets), writes up to 7 articles as
+`content/articles/YYYY-MM-DD-<slug>.json`, and pushes to `master`. The Vercel
+build then runs `scripts/ingest-articles.mjs` (`prebuild`): the SAME quality
+gate as the API drafter, the publish decision from Réglages → Blog
+automatique, one 08:00 slot per article after the last scheduled post, plan
+rows marked drafted. The 07:00 release cron does the rest. One deploy a week,
+zero secrets outside Vercel, zero per-token cost. Manage the routine at
+https://claude.ai/code/routines. The API drafter (`/api/cron/draft-article`)
+stays in `vercel.json` but is a no-op without `ANTHROPIC_API_KEY` — leave the
+key unset unless you explicitly want to pay for a daily model call.
+
 ## 5. Supabase production state
 
 - Migrations `001` → `013` applied (`011`–`013` verified applied on

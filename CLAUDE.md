@@ -60,6 +60,14 @@ records the later decisions.
   runs both ways — article → hub (gate-enforced) and hub → article.
 - Every new topic is declared in `docs/keyword-map.md` (AI-drafted backlog)
   before it is added to the plan.
+- **Cost rule (owner, 2026-09-07): $0.** The default content engine is the
+  weekly cloud routine on the owner's subscription: `content/ARTICLE-BRIEF.md`
+  → `content/articles/*.json` → `scripts/ingest-articles.mjs` at build
+  (`prebuild`), grounded on the public `/api/content/facts`. The API drafter is
+  dormant without `ANTHROPIC_API_KEY`; do not set that key or add any paid
+  service without an explicit decision. Both engines share ONE gate:
+  `src/lib/server/article-gate.mjs`, which must stay free of `@/` imports so
+  plain Node can run it at build time.
 
 ## Admin access — a session is NOT authorization
 - `ADMIN_EMAILS` (env, comma-separated) is the allowlist. `src/lib/admin/authz.js`
