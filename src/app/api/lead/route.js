@@ -185,16 +185,29 @@ export async function POST(request) {
 
     // Fire-and-forget: server events (dedup vs pixels) + instant alert email.
     const settings = await getSettings();
-    sendLeadEvents(settings, {
-      eventId: eventId ?? crypto.randomUUID(),
-      phoneE164: toE164(lead.phone),
-      ip: ip === 'unknown' ? null : ip,
-      userAgent,
-      sourceUrl: request.headers.get('referer') ?? SITE_URL,
-      fbp: request.cookies.get('_fbp')?.value ?? null,
-      fbc: request.cookies.get('_fbc')?.value ?? null,
-      ttp: request.cookies.get('_ttp')?.value ?? null,
-    });
+
+    // Consent parity with the browser pixels. TrackingScripts.jsx loads them on
+    // `!gate || wt_consent=1`, with gate = !!settings.consent_banner_enabled —
+    // this mirrors that rule exactly. Without it, a visitor who chose
+    // "Continuer sans accepter" still had their SHA-256 phone, raw IP and
+    // user-agent sent to Meta CAPI and TikTok Events, making the banner
+    // decorative for precisely the third-party transfers it exists to gate.
+    // The lead row, the alert email and our own first-party analytics are
+    // unaffected — they are not third-party transfers.
+    const consentGate = !!settings?.consent_banner_enabled;
+    const consented = request.cookies.get('wt_consent')?.value === '1';
+    if (!consentGate || consented) {
+      sendLeadEvents(settings, {
+        eventId: eventId ?? crypto.randomUUID(),
+        phoneE164: toE164(lead.phone),
+        ip: ip === 'unknown' ? null : ip,
+        userAgent,
+        sourceUrl: request.headers.get('referer') ?? SITE_URL,
+        fbp: request.cookies.get('_fbp')?.value ?? null,
+        fbc: request.cookies.get('_fbc')?.value ?? null,
+        ttp: request.cookies.get('_ttp')?.value ?? null,
+      });
+    }
     sendLeadAlertEmail(settings, { ...lead, id: inserted.id });
 
     return NextResponse.json({ ok: true });

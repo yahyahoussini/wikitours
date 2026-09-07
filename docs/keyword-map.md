@@ -52,6 +52,12 @@ States audited 2026-07-23. "live" = published, indexable, passing `seo:audit`.
 | argent a emporter omra · budget sur place | `/blog/budget-argent-poche-omra` (drip 29/08) | informational | [ADMIN DATA] |
 | application nusuk · reserver rawda | `/blog/application-nusuk-guide` (drip 31/08) | informational | [ADMIN DATA] |
 | omra groupe ou individuel | `/blog/omra-groupe-ou-individuel` (drip 01/09) | commercial comparison | [ADMIN DATA] |
+| assurance voyage omra · couverture santé | `/blog/assurance-voyage-omra` (drip 08/09) | informational | [ADMIN DATA] |
+| bagages omra · ramener zamzam · poids valise | `/blog/bagages-omra-restrictions` (drip 12/09) | informational | [ADMIN DATA] |
+| internet arabie saoudite · esim · sim omra | `/blog/telephone-internet-arabie-saoudite` (drip 16/09) | informational | [ADMIN DATA] |
+| omra badal · omra pour un défunt · عمرة البدل | `/blog/omra-badal-pour-un-proche` (drip 20/09) | informational | [ADMIN DATA] |
+| combien de fois omra · deuxième omra · tan'im | `/blog/combien-de-fois-omra` (drip 24/09) | informational | [ADMIN DATA] |
+| perte passeport omra · imprévu · urgence | `/blog/imprevus-pendant-omra` (drip 28/09) | informational | [ADMIN DATA] |
 | {nom d'hôtel} distance haram (FAQ auto) | `/hotel/{slug}` (computed from DB fields) | informational long-tail | [ADMIN DATA] |
 | omra rajab · omra chaâbane · omra chawal | `/omra-{occasion}` (hubs hijri, gated) | seasonal commercial | [ADMIN DATA] |
 | omra 5 étoiles · omra de luxe · عمرة فاخرة · luxury umrah | `/omra-5-etoiles` (premium hub) + `/omra/omra-5-etoiles-sur-mesure` (offre à la carte, sans date) | commercial (premium) | [ADMIN DATA] |
@@ -119,6 +125,40 @@ Every question below is answered verbatim in `/llms.txt` (single source: the
 
 Cannibalization rule: before adding content answering one of these questions on
 another page, move ownership here first — two owners for one query is a FAIL.
+
+## AI-drafted article backlog (owners declared here — `article_plan`, migration 019)
+
+Each row below is a future `/blog/…` article that OWNS its query family and
+SUPPORTS (links to, never competes with) the owner page named. Drafted one per
+day by `api/cron/draft-article`, always unpublished until a human reviews.
+Adding a topic = a row in **Plan éditorial** in the admin **and** a line here.
+
+| Query family (fr) | Supports | Category |
+|---|---|---|
+| omra depuis casablanca aéroport mohammed v | `/omra-depuis-casablanca` | omra |
+| réserver omra depuis la france / belgique / espagne (MRE) | `/agence-omra-casablanca` | confiance |
+| omra parents âgés · accessibilité · fauteuil | `/guide-omra/checklist` | guide |
+| congé omra · attestation employeur | `/guide-omra/checklist` | guide |
+| passeport omra validité · renouvellement | `/guide-omra/documents-visa` | guide |
+| arrivée à jeddah · première omra jour 1 | `/guide-omra/rituels` | guide |
+| prière du vendredi au haram | `/guide-omra/rituels` | guide |
+| omra 10 jours ou 15 jours | `/bab-makka` | omra |
+| hôtel à 100 m ou à 1 km du haram | `/hotels-omra` | hotels |
+| omra en couple · jeunes mariés | `/bab-makka` | omra |
+| vol casablanca jeddah · compagnies · escales | `/omra-depuis-casablanca` | omra |
+| journée type omra organisée | `/bab-makka` | omra |
+| agence omra casablanca quand on habite loin | `/agence-omra-casablanca` | confiance |
+| omra en groupe · accompagnateur | `/bab-makka` | confiance |
+| après l'omra · retour | `/guide-omra` | guide |
+| omra maladie chronique (sans conseil médical) | `/guide-omra/checklist` | guide |
+| omra {mois} — informational half of each month hub (janv, fév, mars, avr, mai, juin, août, sept, nov, déc) | `/omra-{mois}` | omra |
+| prix omra depuis le maroc {année} — bilan chiffré (offer prices only) | `/barometre-prix-omra` | omra |
+| première omra seul(e) · sans groupe familial | `/bab-makka` | omra |
+| omra étudiants · vacances universitaires | `/omra-pas-cher` | omra |
+| offrir l'omra à ses parents | `/agence-omra-casablanca` | confiance |
+| valise omra · que mettre | `/guide-omra/checklist` | guide |
+| omra hiver vs été · lequel choisir | `/guide-omra/meilleure-periode` | guide |
+| omra entre amis · groupe privé | `/bab-makka` | omra |
 
 ## Coverage gaps (declare an owner here BEFORE building)
 

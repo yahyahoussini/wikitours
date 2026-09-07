@@ -43,7 +43,8 @@ const TABLE_PATHS = {
   ],
   timeline_items: () => ['/', '/a-propos'],
   team_members: () => ['/', '/a-propos'],
-  articles: (row) => ['/', '/blog', row?.slug ? `/blog/${row.slug}` : null, 'raw:/llms.txt'],
+  // supports_path: the hub whose "Pour aller plus loin" block lists this article.
+  articles: (row) => ['/', '/blog', row?.slug ? `/blog/${row.slug}` : null, row?.supports_path ?? null, 'raw:/llms.txt'],
   landing_pages: (row) => [row?.slug ? `/lp/${row.slug}` : '/[locale]/lp/[slug]'],
   city_pages: (row) => [
     row?.slug ? `/omra-depuis-${row.slug}` : '/[locale]/[flat]',
@@ -94,10 +95,13 @@ export function revalidateForTable(table, row) {
       revalidatePath(`/${locale}${path === '/' ? '' : path}`);
     }
   }
-  // Fire-and-forget IndexNow ping for the changed URLs (Bing/Copilot instant;
-  // Google discovers via sitemap/ISR — see README). Segment invalidations have
-  // no concrete URL to ping. Never blocks the mutation.
-  void (async () => {
+  // IndexNow ping for the changed URLs (Bing/Copilot instant; Google discovers
+  // via sitemap/ISR — see README). Segment invalidations have no concrete URL
+  // to ping. RETURNED rather than merely fired so a caller with no latency
+  // budget — the daily publish cron — can await it (a serverless function may
+  // be frozen before a fire-and-forget fetch completes). Admin mutations keep
+  // ignoring the promise, so they are never blocked by it.
+  return (async () => {
     try {
       await pingIndexNow(await getSettings(), literalPaths);
     } catch {

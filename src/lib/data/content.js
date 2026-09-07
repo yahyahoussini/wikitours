@@ -240,6 +240,28 @@ export const getArticles = cache(async function getArticles(limit = 50) {
   }
 });
 
+/**
+ * Published articles that declare they SUPPORT `path` (articles.supports_path,
+ * migration 020) — the reverse internal link a hub shows to its cluster.
+ * Anon client ⇒ RLS: published AND published_at <= now() only. Safe before the
+ * migration is applied: an unknown column just yields an empty list.
+ */
+export const getRelatedArticles = cache(async function getRelatedArticles(path, limit = 4) {
+  try {
+    const supabase = supabasePublic();
+    if (!supabase || !path) return [];
+    const { data } = await supabase
+      .from('articles')
+      .select('slug, title_fr, title_ar, title_en, excerpt_fr, excerpt_ar, excerpt_en, published_at')
+      .eq('supports_path', path)
+      .order('published_at', { ascending: false })
+      .limit(limit);
+    return data ?? [];
+  } catch {
+    return [];
+  }
+});
+
 export const getArticleBySlug = cache(async function getArticleBySlug(slug) {
   try {
     const supabase = supabasePublic();

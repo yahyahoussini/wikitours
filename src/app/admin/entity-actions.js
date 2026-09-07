@@ -12,13 +12,16 @@ import {
   keywordCheckSchema,
 } from '@/lib/admin/schemas';
 import { revalidateForTable } from '@/lib/revalidate';
+import { assertAdminUser } from '@/lib/admin/authz';
 
 const GENERIC_ERROR = 'Une erreur est survenue.';
 const entityKeySchema = z.enum(Object.keys(ADMIN_ENTITIES));
 
 /**
- * All writes go through the AUTHENTICATED client — RLS's admin_full_access
- * policy applies, and getUser() is server-verified on every action.
+ * All writes go through the AUTHENTICATED client — RLS applies, and getUser() is
+ * server-verified on every action. Having a session is NOT enough: the email
+ * must be on the ADMIN_EMAILS allowlist (see lib/admin/authz.js), so a
+ * self-registered Supabase user cannot write.
  */
 async function requireAuthClient() {
   const sb = await supabaseServer();
@@ -27,6 +30,7 @@ async function requireAuthClient() {
     data: { user },
   } = await sb.auth.getUser();
   if (!user) throw new Error('unauthorized');
+  assertAdminUser(user);
   return sb;
 }
 

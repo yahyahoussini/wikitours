@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { supabaseServer } from '@/lib/supabase/server';
 import { supabasePublic } from '@/lib/supabase/public';
 import { LOCALES } from '@/lib/i18n';
+import { articleQueue, LOW_WATERMARK_DAYS } from '@/lib/server/article-queue';
 
 export const dynamic = 'force-dynamic';
 
@@ -37,6 +38,7 @@ export default async function AdminDashboard() {
   let settings = null;
   let featuredMissingSeo = 0;
   let publishedCounts = { offers: 0, hotels: 0, occasions: 0, articles: 0, landing_pages: 0 };
+  let blogQueue = null;
 
   if (sb) {
     const [t, w, s, d, st, f] = await Promise.all([
@@ -70,6 +72,10 @@ export default async function AdminDashboard() {
     publishedCounts = Object.fromEntries(
       Object.keys(publishedCounts).map((table, i) => [table, pubCounts[i].count ?? 0]),
     );
+
+    // Same definition the daily publish cron uses — the admin sees the runway
+    // here before the e-mail alert ever needs to fire.
+    blogQueue = await articleQueue(sb, { now });
   }
 
   // Site Health — run the past-offers check as ANON: it must be impossible
@@ -115,6 +121,17 @@ export default async function AdminDashboard() {
           title="Avis Google"
           value={settings?.gbp_review_count ?? '—'}
           subtitle={settings?.gbp_rating ? `${settings.gbp_rating} ★ · communauté ${settings.community_count ?? '—'}` : null}
+        />
+        <Card
+          title="Blog — articles programmés"
+          value={blogQueue ? blogQueue.queued : '—'}
+          subtitle={
+            blogQueue?.lastScheduledAt
+              ? `jusqu’au ${new Date(blogQueue.lastScheduledAt).toLocaleDateString('fr-MA', { timeZone: 'Africa/Casablanca', dateStyle: 'medium' })} · 1 par jour à 08:00`
+              : 'aucun article programmé — la sortie quotidienne s’arrête'
+          }
+          tone={blogQueue && blogQueue.runwayDays < LOW_WATERMARK_DAYS ? 'danger' : undefined}
+          href="/admin/e/articles"
         />
       </div>
 

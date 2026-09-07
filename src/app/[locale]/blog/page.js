@@ -6,7 +6,11 @@ import { publicMediaUrl } from '@/lib/media';
 import BlogGrid from '@/components/site/BlogGrid';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
-export const revalidate = false;
+// Hourly safety net under the daily publish cron: an article whose
+// published_at falls later in the day than the 08:00 release run still
+// surfaces here within the hour (the RLS date gate does the rest). Three
+// pages × one regeneration an hour at most — negligible ISR cost.
+export const revalidate = 3600;
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;

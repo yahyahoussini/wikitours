@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
-import { SITE_URL, hreflangAlternates, clampDesc, parseOpeningHours } from '@/lib/seo';
+import { SITE_URL, hreflangAlternates, clampDesc } from '@/lib/seo';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { getPublishedOffers, getTestimonials, getFaqs } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
@@ -12,6 +12,7 @@ import SectionBridge from '@/components/site/SectionBridge';
 import JsonLd from '@/components/site/JsonLd';
 import SmartGallery from '@/components/SmartGallery';
 import { GuaranteesStrip, MonthsLinks } from '@/components/site/HomeSections';
+import RelatedArticles from '@/components/site/RelatedArticles';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
 export const revalidate = false;
@@ -25,10 +26,11 @@ export async function generateMetadata({ params }) {
   return { title: t.agency.title, description: clampDesc(t.agency.metaDescription), alternates: hreflangAlternates(locale, '/agence-omra-casablanca') };
 }
 
-/* /agence-omra-casablanca — the LocalBusiness landing: identity answer-first,
-   office gallery, NAP + hours, 3 nearest real departures (dark band with the
-   lockup), Casablanca testimonials, trust stack, link hub, TravelAgency
-   JSON-LD. Every figure computed from the DB. */
+/* /agence-omra-casablanca — the local landing: identity answer-first, office
+   gallery, NAP + hours, 3 nearest real departures (dark band with the lockup),
+   Casablanca testimonials, trust stack, link hub. Its JSON-LD is a WebPage
+   whose mainEntity is the sitewide TravelAgency (#organization) — the ONE
+   business node. Every figure computed from the DB. */
 export default async function AgencyCasablancaPage({ params }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
@@ -44,7 +46,6 @@ export default async function AgencyCasablancaPage({ params }) {
   const phones = [settings?.phone_1, settings?.phone_2, settings?.phone_3].filter(Boolean);
   const address = pickLang(settings, 'address', locale);
   const hours = pickLang(settings, 'opening_hours', locale);
-  const hoursSpec = parseOpeningHours(settings?.opening_hours_fr);
 
   const dateFmt = new Intl.DateTimeFormat(locale === 'ar' ? 'ar-MA' : `${locale}-MA`, {
     day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
@@ -61,33 +62,24 @@ export default async function AgencyCasablancaPage({ params }) {
     (x) => x.kind === 'text' && /casa|البيضاء/i.test(x.author_city ?? ''),
   );
 
-  // LocalBusiness = the physical Casablanca office (distinct from the sitewide
-  // TravelAgency org). Geo + address stay out until the client sets them (LAW §10).
-  const socials = [settings?.facebook_url, settings?.instagram_url, settings?.tiktok_url, settings?.youtube_url].filter(Boolean);
+  // ONE business entity. This page is ABOUT the sitewide TravelAgency
+  // (#organization, mounted in the layout with address / geo / hours / hasMap /
+  // sameAs) — it is not a second business. A LocalBusiness node here used to
+  // repeat the whole NAP under a PER-LOCALE @id, so one office became four
+  // entities (org + fr/ar/en) for Google to reconcile, and the map-pack-typed
+  // node was the only one WITHOUT the GBP link. mainEntity points the page at
+  // the single stable node instead; speakable matches the answer-first lede.
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'LocalBusiness',
-    '@id': `${SITE_URL}/${locale}/agence-omra-casablanca#office`,
-    name: `${BRAND.parent} — Casablanca`,
-    parentOrganization: { '@id': `${SITE_URL}/#organization` },
+    '@type': 'WebPage',
+    '@id': `${SITE_URL}/${locale}/agence-omra-casablanca#webpage`,
     url: `${SITE_URL}/${locale}/agence-omra-casablanca`,
-    ...(address ? { address: { '@type': 'PostalAddress', streetAddress: address, addressLocality: 'Casablanca', addressCountry: 'MA' } } : {}),
-    ...(settings?.latitude != null && settings?.longitude != null
-      ? { geo: { '@type': 'GeoCoordinates', latitude: settings.latitude, longitude: settings.longitude } }
-      : {}),
-    ...(phones[0] ? { telephone: phones[0] } : {}),
-    ...(settings?.email ? { email: settings.email } : {}),
-    ...(hoursSpec ? { openingHoursSpecification: hoursSpec } : hours ? { openingHours: hours } : {}),
-    ...(settings?.gbp_rating && settings?.gbp_review_count > 0
-      ? {
-          aggregateRating: {
-            '@type': 'AggregateRating',
-            ratingValue: settings.gbp_rating,
-            reviewCount: settings.gbp_review_count,
-          },
-        }
-      : {}),
-    ...(socials.length ? { sameAs: socials } : {}),
+    name: t.agency.title,
+    inLanguage: locale,
+    isPartOf: { '@id': `${SITE_URL}/#website` },
+    about: { '@id': `${SITE_URL}/#organization` },
+    mainEntity: { '@id': `${SITE_URL}/#organization` },
+    speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '[data-answer]'] },
   };
 
   // Local/process Q&A owning the "agence omra casablanca" family (criteria live
@@ -115,7 +107,7 @@ export default async function AgencyCasablancaPage({ params }) {
           <h1 className="max-w-2xl text-3xl font-bold leading-tight text-bm-black sm:text-4xl">
             {t.agency.title}
           </h1>
-          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-bm-black/70">{t.agency.identity}</p>
+          <p data-answer="true" className="mt-4 max-w-2xl text-lg leading-relaxed text-bm-black/70">{t.agency.identity}</p>
           {settings?.license_number ? (
             <p className="mt-3 text-sm text-bm-black/50">
               {t.footer.licenseLabel} : <span className="font-semibold tabular-nums">{settings.license_number}</span>
@@ -301,6 +293,8 @@ export default async function AgencyCasablancaPage({ params }) {
 
         {/* Link hub */}
         <MonthsLinks locale={locale} />
+        {/* Reverse internal link: the blog cluster that supports this page. */}
+        <RelatedArticles path="/agence-omra-casablanca" locale={locale} />
       </main>
       <WhatsAppFloat locale={locale} />
     </>

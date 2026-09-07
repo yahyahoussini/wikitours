@@ -162,3 +162,129 @@ export function sendLeadAlertEmail(settings, lead) {
     'resend-alert',
   );
 }
+
+/**
+ * Blog-queue alert from the daily publish cron (api/cron/publish-articles):
+ * fires when a day passed with no release, or when the scheduled runway hits
+ * 7 / 3 / 1 / 0 days. RETURNS the send promise so the cron can await it —
+ * a serverless function may be frozen before a fire-and-forget fetch lands.
+ */
+export function sendArticleQueueEmail(settings, status) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey || !settings?.email) return Promise.resolve();
+
+  const fmt = (iso) =>
+    iso ? new Date(iso).toLocaleDateString('fr-MA', { timeZone: 'Africa/Casablanca', dateStyle: 'long' }) : '—';
+  const headline = status.missedDay
+    ? 'Aucun article publié aujourd’hui'
+    : status.runwayDays === 0
+      ? 'File d’articles vide'
+      : `Plus que ${status.runwayDays} jour${status.runwayDays > 1 ? 's' : ''} d’articles programmés`;
+
+  const rows = [
+    ['Publiés aujourd’hui', esc(status.released?.length ? status.released.map((a) => a.title_fr ?? a.slug).join(' · ') : 'aucun')],
+    ['Articles programmés', esc(String(status.queued ?? 0))],
+    ['Dernier programmé pour le', esc(fmt(status.lastScheduledAt))],
+    ['Dernière publication', esc(fmt(status.lastReleasedAt))],
+  ]
+    .map(
+      ([k, v]) =>
+        `<tr><td style="padding:6px 12px 6px 0;color:#666;white-space:nowrap">${k}</td><td style="padding:6px 0"><strong>${v}</strong></td></tr>`,
+    )
+    .join('');
+
+  const html = `
+    <div style="font-family:Arial,sans-serif;font-size:15px;color:#0d0d0d">
+      <p style="font-size:17px"><strong>${esc(headline)}</strong></p>
+      <table style="border-collapse:collapse">${rows}</table>
+      <p style="margin-top:12px">Pour garder un article par jour, programmez de nouveaux articles (Articles → « Date de publication ») — chacun sort seul à la date choisie, le matin à 08:00.</p>
+      <p style="margin-top:16px">
+        <a href="${SITE_URL}/admin/e/articles" style="background:#1398c9;color:#fff;padding:10px 18px;border-radius:10px;text-decoration:none">
+          Ouvrir les articles
+        </a>
+      </p>
+      <p style="color:#999;font-size:12px">${esc(BRAND.parent)} — alerte automatique.</p>
+    </div>`;
+
+  return post(
+    RESEND_API_URL,
+    {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({ from: RESEND_FROM, to: [settings.email], subject: `Blog — ${headline}`, html }),
+    },
+    'resend-article-queue',
+  );
+}
+
+/**
+ * Review request from the daily AI drafter (api/cron/draft-article). One mail
+ * per run: a new draft to review (with the gate's problems, flags and the
+ * model's own needs_review list), or why nothing was drafted. Returns the send
+ * promise so the cron can await it.
+ */
+export function sendDraftReviewEmail(settings, info) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey || !settings?.email) return Promise.resolve();
+
+  const li = (items) => (items?.length ? `<ul>${items.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : '<p style="color:#666">—</p>');
+  let subject;
+  let body;
+
+  if (info.kind === 'draft') {
+    const slot = new Date(info.article.published_at).toLocaleString('fr-MA', { timeZone: 'Africa/Casablanca', dateStyle: 'long', timeStyle: 'short' });
+    const published = !!info.published;
+    subject = published
+      ? `Publié automatiquement — ${info.article.title_fr}`
+      : `Brouillon à relire — ${info.article.title_fr}`;
+    body = `
+      <p style="font-size:17px"><strong>${published ? 'Article IA publié automatiquement' : 'Nouveau brouillon (IA) à relire'}</strong></p>
+      <p><strong>${esc(info.article.title_fr)}</strong><br>
+         <span style="color:#666">/blog/${esc(info.article.slug)} · famille : ${esc(info.plan.query_family)} · soutient ${esc(info.plan.owner_path ?? '—')}</span><br>
+         ${
+           published
+             ? `Sortie programmée : <strong>${esc(slot)}</strong> — le contrôle automatique n’a rien signalé. Vous pouvez le relire ou le dépublier à tout moment.`
+             : `Créneau proposé : <strong>${esc(slot)}</strong> (il ne sortira que si vous cochez « Publié »).`
+         }</p>
+      ${!published && info.reasons?.length ? `<p><strong>Pourquoi pas publié automatiquement</strong>${li(info.reasons)}</p>` : ''}
+      <p><strong>Bloquant (à corriger avant de publier)</strong>${li(info.gate.problems)}</p>
+      <p><strong>À vérifier (signalé par le contrôle automatique)</strong>${li(info.gate.flags)}</p>
+      <p><strong>À vérifier (signalé par le rédacteur IA)</strong>${li(info.gate.needs_review)}</p>
+      <p><strong>Faits utilisés</strong>${li(info.gate.facts_used)}</p>
+      <p style="margin-top:8px;color:#666">Check-list avant « Publié » : exactitude de chaque chiffre · auteur et relecteur renseignés · image de couverture ajoutée · arabe relu · liens internes cliqués.</p>
+      <p style="margin-top:16px">
+        <a href="${SITE_URL}/admin/e/articles/${esc(info.article.id)}" style="background:#1398c9;color:#fff;padding:10px 18px;border-radius:10px;text-decoration:none">Relire le brouillon</a>
+      </p>`;
+  } else if (info.kind === 'backlog') {
+    subject = `Blog — ${info.pending} brouillons IA en attente, rédaction en pause`;
+    body = `<p style="font-size:17px"><strong>${info.pending} brouillons attendent une relecture</strong></p>
+      <p>Le rédacteur IA ne produit plus rien tant que la file n’est pas relue (plafond : ${info.pending}). Relisez et cochez « Publié » — ou supprimez — pour reprendre.</p>
+      <p style="margin-top:16px"><a href="${SITE_URL}/admin/e/articles" style="background:#1398c9;color:#fff;padding:10px 18px;border-radius:10px;text-decoration:none">Ouvrir les articles</a></p>`;
+  } else if (info.kind === 'empty-plan') {
+    subject = 'Blog — plan éditorial vide, aucun brouillon produit';
+    body = `<p style="font-size:17px"><strong>Le plan éditorial est vide</strong></p>
+      <p>Aucun sujet actif et en attente (ou tous les sujets saisonniers sont à plus de 3 mois). Ajoutez des lignes au plan pour que la rédaction quotidienne reprenne.</p>
+      <p style="margin-top:16px"><a href="${SITE_URL}/admin/e/plan-articles" style="background:#1398c9;color:#fff;padding:10px 18px;border-radius:10px;text-decoration:none">Ouvrir le plan éditorial</a></p>`;
+  } else {
+    subject = `Blog — échec du brouillon du jour (${info.error})`;
+    body = `<p style="font-size:17px"><strong>Le brouillon du jour n’a pas pu être produit</strong></p>
+      <p>Sujet : ${esc(info.plan?.query_family ?? '—')}<br>Erreur : <code>${esc(info.error)}</code>${info.detail ? `<br>${esc(info.detail)}` : ''}</p>
+      <p>Le sujet reste en file ; nouvel essai demain. Si l’erreur persiste, vérifiez la clé API et le plan.</p>`;
+  }
+
+  const html = `
+    <div style="font-family:Arial,sans-serif;font-size:15px;color:#0d0d0d">
+      ${body}
+      <p style="color:#999;font-size:12px">${esc(BRAND.parent)} — alerte automatique.</p>
+    </div>`;
+
+  return post(
+    RESEND_API_URL,
+    {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({ from: RESEND_FROM, to: [settings.email], subject, html }),
+    },
+    'resend-draft-review',
+  );
+}

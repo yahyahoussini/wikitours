@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { supabaseServer } from '@/lib/supabase/server';
+import { isAdminUser } from '@/lib/admin/authz';
 import { toCsv, buildLeadsExport } from '@/lib/admin/export-utils';
 
 export const runtime = 'nodejs';
@@ -22,7 +23,9 @@ export async function GET(request) {
     const {
       data: { user },
     } = await auth.auth.getUser();
-    if (!user) return NextResponse.json({ error: 'Non autorisé.' }, { status: 401 });
+    // This endpoint streams the entire lead table (names, phones, IPs) as a
+    // file — a session alone must never be enough to pull it.
+    if (!user || !isAdminUser(user)) return NextResponse.json({ error: 'Non autorisé.' }, { status: 401 });
 
     const { searchParams } = new URL(request.url);
     const parsed = querySchema.safeParse(Object.fromEntries(searchParams));

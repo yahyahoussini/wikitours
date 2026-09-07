@@ -1,8 +1,10 @@
 # CLAUDE.md — project rules (read before any SEO / content / schema change)
 
 Wiki Tours International — Omra/Hajj agency, Casablanca. Next.js 15 App Router,
-Supabase, plain JS. Public site is fr / ar / en. See also `memory/` (the 10
-project laws) and `AUDIT-REPORT.md` / `FIX-PLAN.md`.
+Supabase, plain JS. Public site is fr / ar / en. See also `docs/PROJECT-LAWS.md`
+(the 10 project laws that `LAW §n` comments cite) and `AUDIT-REPORT.md` /
+`FIX-PLAN.md`. Where a law and this file disagree, **this file wins** — it
+records the later decisions.
 
 ## Brand & naming
 - Canonical name: **"Bab Makka"** (no h) — matches the domain, Google Business
@@ -26,6 +28,49 @@ project laws) and `AUDIT-REPORT.md` / `FIX-PLAN.md`.
   page `noindex` (or omit the block) until the real value exists.
 - `criticalSettingsHealth()` (`src/lib/seo/health.js`) surfaces empty critical
   settings: admin banner, a prod log, and `GET /api/health/seo`.
+- **One business entity.** `OrgJsonLd` (`TravelAgency` `#organization`) is the
+  only node carrying NAP / geo / hours / `hasMap`; its `url` is locale-invariant.
+  Never add a second `LocalBusiness` for the office — it split one premises
+  into per-locale entities. Pages about the office use `WebPage.mainEntity →
+  #organization`. `Product.brand` references the stable `#brand` node by `@id`.
+  Schema `PostalAddress` comes from `postalAddress()` (FR source, locale-neutral)
+  and `telephone` from `toE164()` — never the raw admin string.
+- **`gbp_rating` / `gbp_review_count` are for VISIBLE content and llms.txt only.**
+  Never re-attach `aggregateRating` to the Organization / TravelAgency /
+  LocalBusiness node: Google treats a rating a business publishes about itself as
+  self-serving, which is ineligible for star snippets AND a documented
+  "spammy structured markup" manual-action trigger that can strip rich results
+  site-wide. `Product` / `TouristTrip` is the sanctioned exception — the per-offer
+  `aggregateRating` in `omra/[slug]/page.js` is legitimate and stays.
+
+## Blog automation — the AI drafts, the GATE publishes
+- `api/cron/draft-article` (04:00 UTC) writes ONE trilingual article a day from
+  the admin's `article_plan` (Plan éditorial), grounded only in a fact sheet of
+  published DB rows; `api/cron/publish-articles` (07:00 UTC) releases whatever
+  is due that morning. **Owner decision (2026-09-04): no daily human action.**
+  The drafter publishes ITSELF only when ALL hold — `settings.blog_autopublish`
+  on, `settings.blog_author_name` set (E-E-A-T needs a real person), the gate
+  reports zero problems, and no unsourced-price / external-link / missing-
+  owner-link flag (`publishDecision()` in `lib/server/article-drafter.js`).
+  Anything less ⇒ unpublished draft + review e-mail. **Never loosen the gate to
+  raise the publish rate** — LAW §10 and Google's scaled-content policy are why
+  it exists; the gate is what stands in for the human.
+- Every article carries `supports_path` (its owner page) so that page lists it
+  under « Pour aller plus loin » (`RelatedArticles`): the internal-linking loop
+  runs both ways — article → hub (gate-enforced) and hub → article.
+- Every new topic is declared in `docs/keyword-map.md` (AI-drafted backlog)
+  before it is added to the plan.
+
+## Admin access — a session is NOT authorization
+- `ADMIN_EMAILS` (env, comma-separated) is the allowlist. `src/lib/admin/authz.js`
+  is the single authority; every server action, `/api/admin/*` route and the
+  `(protected)` layout checks it against the **server-verified** session email.
+  It **fails closed** — unset ⇒ nobody gets in.
+- The same list must exist in the DB as `public.admin_allowlist` (migration 017),
+  because RLS is what stops a self-registered account calling PostgREST directly
+  with its own token. `authenticated` alone must never mean admin again.
+- Keep env and table in sync. Seed the table BEFORE applying 017 — the migration
+  aborts on an empty allowlist rather than locking every admin write.
 
 ## URLs, redirects, offers lifecycle
 - **Offer dates are data, never URLs; expired offers are updated or redirected,

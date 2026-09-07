@@ -44,6 +44,25 @@ export function offerAvailability(offer, today = todayISO()) {
   return 'https://schema.org/InStock';
 }
 
+/**
+ * The status the PAGE should show, derived from the same inputs as
+ * offerAvailability() — so the visible badge and the JSON-LD can never disagree,
+ * which is the invariant this module exists to hold. Rendering the raw
+ * `offer.status` enum instead is what breaks it: a row with status='open' and
+ * seats_remaining=0 reads "Places disponibles" while the markup says SoldOut.
+ *
+ * Returns a key of t.offer.status ('open' | 'few_left' | 'full'), or 'departed'
+ * for a departure that has already left — callers give that its own treatment
+ * (t.offer.departed), because "Complet" would misdescribe it.
+ */
+export function visibleStatusKey(offer, today = todayISO()) {
+  if (hasDeparted(offer, today)) return 'departed';
+  const seats = offer?.seats_remaining;
+  if (offer?.status === 'full' || seats === 0) return 'full';
+  if (offer?.status === 'few_left' || (typeof seats === 'number' && seats <= LOW_SEATS)) return 'few_left';
+  return 'open';
+}
+
 /** Show a real remaining-seats line ONLY when a number exists (LAWS §6). */
 export function seatsLabel(offer) {
   return typeof offer?.seats_remaining === 'number' ? offer.seats_remaining : null;

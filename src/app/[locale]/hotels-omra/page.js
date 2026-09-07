@@ -7,6 +7,7 @@ import { getHotels } from '@/lib/data/content';
 import BrandLockup from '@/components/site/BrandLockup';
 import Breadcrumbs from '@/components/site/Breadcrumbs';
 import JsonLd from '@/components/site/JsonLd';
+import RelatedArticles from '@/components/site/RelatedArticles';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import HubBody from '@/components/site/HubBody';
 
@@ -171,6 +172,8 @@ export default async function HotelsComparePage({ params }) {
         </Link>
       </div>
 
+      {/* Reverse internal link: the blog cluster that supports this comparison. */}
+      <RelatedArticles path="/hotels-omra" locale={locale} className="px-0!" />
       <WhatsAppFloat locale={locale} />
     </main>
   );

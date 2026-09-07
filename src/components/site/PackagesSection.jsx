@@ -7,6 +7,7 @@ import WhatsAppIcon from '@/components/WhatsAppIcon';
 import Icon from '@/components/site/Icon';
 import { publicMediaUrl } from '@/lib/media';
 import { BLUR_DATA_URL } from '@/lib/blur';
+import { visibleStatusKey } from '@/lib/offers';
 
 const nf = new Intl.NumberFormat('fr-MA');
 
@@ -108,18 +109,27 @@ export function OfferCard({ offer, locale, t, whatsappHref, compact = false }) {
             {occasionName}
           </span>
         ) : null}
-        {/* Honest status straight from the DB (LAWS §6) */}
-        <span
-          className={`absolute end-3 top-3 rounded-full px-3 py-1 text-[11px] font-bold ${
-            offer.status === 'open'
-              ? 'bg-white/90 text-bm-black'
-              : offer.status === 'few_left'
-                ? 'bg-amber-400 text-bm-black'
-                : 'bg-bm-black/80 text-white'
-          }`}
-        >
-          {t.status[offer.status]}
-        </span>
+        {/* Honest status DERIVED from the DB (LAWS §6) — seats_remaining and the
+            departure date, not the raw enum, so the badge can never contradict
+            the availability in the offer page's JSON-LD. A departed offer (still
+            readable during its 60-day grace) reads "Complet": it is not bookable. */}
+        {(() => {
+          const key = visibleStatusKey(offer);
+          const badgeKey = key === 'departed' ? 'full' : key;
+          return (
+            <span
+              className={`absolute end-3 top-3 rounded-full px-3 py-1 text-[11px] font-bold ${
+                badgeKey === 'open'
+                  ? 'bg-white/90 text-bm-black'
+                  : badgeKey === 'few_left'
+                    ? 'bg-amber-400 text-bm-black'
+                    : 'bg-bm-black/80 text-white'
+              }`}
+            >
+              {t.status[badgeKey]}
+            </span>
+          );
+        })()}
       </div>
 
       <div className="flex flex-1 flex-col gap-3 p-5 text-bm-black">

@@ -1,4 +1,4 @@
-import { LOCALES } from '@/lib/i18n';
+import { LOCALES, FALLBACK_LOCALE } from '@/lib/i18n';
 
 /**
  * Static 301 map for legacy / renamed URLs — applied by the middleware BEFORE
@@ -9,8 +9,10 @@ import { LOCALES } from '@/lib/i18n';
  * here (or in the DB table). Keys are LOCALE-RELATIVE paths, no trailing slash.
  *
  * [URL INVENTORY NEEDED] — add the legacy bab-makka.com / m.bab-makka.com paths
- * from the client's export. bab-makka.com → wikitours.ma itself is host-level
- * (handled at the DNS/hosting layer, out of this repo).
+ * from the client's export. The host hop itself (bab-makka.com → wikitours.ma)
+ * is done by the middleware's legacy-domain block in the SAME 301 as this map,
+ * once the domains are attached to the project as served domains (see
+ * DEPLOYMENT.md §3).
  */
 const MAP = new Map([
   // Canonical entity rename: "Bab Makkah" → "Bab Makka" (decision, 2026-07).
@@ -39,7 +41,15 @@ const PATTERNS = [
 
 /**
  * Resolve a 301 for `pathname` (with or without a leading /<locale> segment).
- * Returns { to, status: 301 } or null. Locale is preserved on the target.
+ * Returns { to, status: 301 } or null.
+ *
+ * The target is ALWAYS locale-prefixed. Legacy bab-makka.com URLs arrive bare
+ * (no locale), and a bare target would bounce once more through the locale
+ * router: bab-makka.com/omra/1104/… → 301 → /bab-makka → 307 → /fr/bab-makka.
+ * Ending a permanent domain migration on a TEMPORARY hop is the wrong signal
+ * for consolidating link equity, and every extra hop leaks some. The old site
+ * was French, so FALLBACK_LOCALE (fr — also the hreflang x-default) is the
+ * right landing; a locale that IS present is preserved.
  */
 export function resolveLegacyRedirect(pathname) {
   const seg = pathname.match(/^\/([a-z]{2})(?:\/(.*))?$/);
@@ -52,5 +62,5 @@ export function resolveLegacyRedirect(pathname) {
     }
   }
   if (!to) return null;
-  return { to: locale ? `/${locale}${to === '/' ? '' : to}` : to, status: 301 };
+  return { to: `/${locale ?? FALLBACK_LOCALE}${to === '/' ? '' : to}`, status: 301 };
 }

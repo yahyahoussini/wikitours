@@ -11,6 +11,14 @@
     {
       "path": "/api/cron/sync-reviews",
       "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/cron/draft-article",
+      "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/cron/publish-articles",
+      "schedule": "0 7 * * *"
     }
   ]
 }

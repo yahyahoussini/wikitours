@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { LOCALES } from '@/lib/i18n';
+import { LOCALES, FALLBACK_LOCALE } from '@/lib/i18n';
 import { getRedirectsMap } from '@/lib/edge-data';
 import { resolveLegacyRedirect } from '@/lib/redirects/legacy-map';
 import { MONTH_SLUGS } from '@/lib/months';
@@ -8,6 +8,11 @@ import { MONTH_SLUGS } from '@/lib/months';
 const LOCALE_SHAPE = /^[a-z]{2}(-[a-zA-Z]{2})?$/;
 
 const ADMIN_HOST = process.env.ADMIN_HOST ?? 'admin.wikitours.ma';
+
+// Canonical origin every legacy-brand-domain request is sent to.
+const SITE_ORIGIN = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wikitours.ma').replace(/\/$/, '');
+// The old brand domain — apex, www and the former mobile subdomain `m.`.
+const LEGACY_HOST = /(^|\.)bab-makka\.com$/i;
 
 /** Locale from the browser's Accept-Language: the visitor's first preference
  *  among fr/ar/en wins (browsers list tags in preference order); any other
@@ -40,7 +45,9 @@ function logBotHit(bot, path, ua) {
       'content-type': 'application/json',
       prefer: 'return=minimal',
     },
-    body: JSON.stringify({ bot, path, ua: ua.slice(0, 300) }),
+    // Both fields capped: a spoofed crawler UA on an arbitrary path must not be
+    // able to write unbounded strings (the weekly rollup keys on path).
+    body: JSON.stringify({ bot, path: path.slice(0, 200), ua: ua.slice(0, 300) }),
   }).catch(() => {});
 }
 
@@ -55,6 +62,36 @@ export async function middleware(request, event) {
     const ua = request.headers.get('user-agent') ?? '';
     const m = ua.match(BOT_UA);
     if (m) event.waitUntil(logBotHit(m[1], pathname, ua));
+  }
+
+  // 0a) Legacy brand domain → canonical site in ONE permanent hop.
+  // bab-makka.com (+ www, m) used to be a Vercel domain-level "Redirect to",
+  // which can only target another DOMAIN with the path preserved — so every
+  // old URL chained: bab-makka.com/x → 301 → wikitours.ma/x → 307 → /fr/x,
+  // and deep links took a third hop through the legacy map. A permanent
+  // migration ending on a temporary hop is the wrong consolidation signal, and
+  // each hop leaks some equity. Here the legacy map AND the locale prefix are
+  // resolved in the same 301, so every old URL lands directly on its final page.
+  // Bare paths get FALLBACK_LOCALE (the old site was French; it is also the
+  // hreflang x-default) rather than Accept-Language: browsers cache a 301
+  // regardless of Vary, so it must not depend on the visitor.
+  // INERT until the three domains are attached to this project as SERVED
+  // domains (no "Redirect to") — a Vercel-level redirect answers before the
+  // middleware ever runs. Deploy this first, THEN flip the domain setting
+  // (DEPLOYMENT.md §3), or the site would briefly serve under the old host.
+  // Must sit above the www→apex block so www.bab-makka.com does not pay an
+  // extra 308 into bab-makka.com first.
+  if (LEGACY_HOST.test(host.replace(/:\d+$/, ''))) {
+    const legacy = resolveLegacyRedirect(pathname);
+    const seg = pathname.split('/')[1] ?? '';
+    const path = legacy
+      ? legacy.to
+      : LOCALES.includes(seg)
+        ? pathname
+        : `/${FALLBACK_LOCALE}${pathname === '/' ? '' : pathname}`;
+    const target = new URL(path, SITE_ORIGIN);
+    target.search = request.nextUrl.search;
+    return NextResponse.redirect(target, 301);
   }
 
   // 0) Canonical host: www → apex (SEO consistency, LAWS §5). Trailing-slash

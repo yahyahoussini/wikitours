@@ -1,4 +1,5 @@
 import { LOCALES, FALLBACK_LOCALE } from '@/lib/i18n';
+import { BRAND } from '@/lib/brand';
 
 /**
  * Absolute-URL + hreflang helpers shared by the sitemap, robots and every
@@ -98,4 +99,58 @@ export function parseVerificationMetas(raw) {
     if (bare) out.push({ name: bare[1], content: bare[2].replace(/^["']|["']$/g, '').trim() });
   }
   return out;
+}
+
+/**
+ * ONE locale-neutral PostalAddress for the business entity. Always built from
+ * the FR source — exactly as parseOpeningHours uses opening_hours_fr — so the
+ * schema address is byte-identical on fr/ar/en and matches the Latin-script
+ * Google Business Profile address component-by-component. (Before this, the
+ * same @id carried a Latin street string on fr/en and an Arabic one on ar:
+ * three conflicting literals for one property on one entity.) The VISIBLE
+ * address stays localised through pickLang; this is markup only.
+ * Null when no FR address exists (LAW §10); postalCode only when set.
+ */
+export function postalAddress(settings) {
+  const raw = String(settings?.address_fr ?? '').trim();
+  if (!raw) return null;
+  // The prose address ends ", Casablanca." — the locality is its own field and
+  // a trailing period is not part of a street address.
+  const street = raw.replace(/[,\s]*Casablanca\s*\.?\s*$/i, '').replace(/[.\s]+$/, '').trim();
+  return {
+    '@type': 'PostalAddress',
+    streetAddress: street || raw,
+    addressLocality: 'Casablanca',
+    addressRegion: 'Casablanca-Settat',
+    ...(settings?.postal_code ? { postalCode: String(settings.postal_code).trim() } : {}),
+    addressCountry: 'MA',
+  };
+}
+
+export const BRAND_ID = `${SITE_URL}/#brand`;
+
+/**
+ * The Bab Makka Brand as a STABLE node (#brand), so Organization.brand and
+ * every Product.brand resolve to the same entity. This is the edge that
+ * reconciles the GBP-facing name ("Bab Makka") with the legal entity ("Wiki
+ * Tours International") for Google and AI engines — previously each offer page
+ * minted an anonymous Brand blob that vanished when the offer 301'd after
+ * expiry, and the org never declared a brand at all. Bab Makka's own social
+ * profiles hang here (LAW §10: only when set). The full node ships on every
+ * page via OrgJsonLd; other nodes reference it by @id only.
+ */
+export function brandNode(settings) {
+  const socials = [
+    settings?.babmakka_facebook_url,
+    settings?.babmakka_instagram_url,
+    settings?.babmakka_tiktok_url,
+    settings?.babmakka_youtube_url,
+  ].filter(Boolean);
+  return {
+    '@type': 'Brand',
+    '@id': BRAND_ID,
+    name: BRAND.lockup,
+    alternateName: BRAND.alternates,
+    ...(socials.length ? { sameAs: socials } : {}),
+  };
 }

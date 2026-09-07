@@ -10,11 +10,12 @@
     "seo:audit": "node scripts/seo-audit.js"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.124.0",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.110.2",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.0",
-    "next": "15.5.20",
+    "next": "15.5.25",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "zod": "^4.4.3"

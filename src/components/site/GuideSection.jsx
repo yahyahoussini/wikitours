@@ -6,6 +6,7 @@ import { renderMarkdown, markdownClass } from '@/lib/markdown';
 import BrandLockup from '@/components/site/BrandLockup';
 import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
 import JsonLd from '@/components/site/JsonLd';
+import RelatedArticles from '@/components/site/RelatedArticles';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
 /**
@@ -180,6 +181,8 @@ export default function GuideSection({
       </section>
 
       <WhatsAppFloat locale={locale} />
+      {/* Reverse internal link: the blog cluster that supports this chapter. */}
+      <RelatedArticles path={path} locale={locale} className="px-0!" />
     </main>
   );
 }

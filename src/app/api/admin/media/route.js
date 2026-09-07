@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { supabaseServer } from '@/lib/supabase/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
+import { isAdminUser } from '@/lib/admin/authz';
 
 export const runtime = 'nodejs';
 
@@ -20,7 +21,9 @@ export async function GET(request) {
     const {
       data: { user },
     } = await auth.auth.getUser();
-    if (!user) {
+    // Session + allowlist: below this line the SERVICE-ROLE client is used,
+    // which bypasses RLS entirely.
+    if (!user || !isAdminUser(user)) {
       return NextResponse.json({ error: 'Non autorisé.' }, { status: 401 });
     }
 

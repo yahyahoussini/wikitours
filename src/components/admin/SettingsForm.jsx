@@ -25,6 +25,7 @@ const SECTIONS = [
       { name: 'address_fr', label: 'Adresse (FR)', type: 'textarea' },
       { name: 'address_ar', label: 'Adresse (AR)', type: 'textarea', dir: 'rtl' },
       { name: 'address_en', label: 'Adresse (EN)', type: 'textarea' },
+      { name: 'postal_code', label: 'Code postal (ex. 20000)', hint: 'Alimente PostalAddress.postalCode dans le schema (SEO local, correspondance avec la fiche Google) — jamais affiché sur le site.' },
       { name: 'opening_hours_fr', label: 'Horaires (FR)', type: 'textarea' },
       { name: 'opening_hours_ar', label: 'Horaires (AR)', type: 'textarea', dir: 'rtl' },
       { name: 'opening_hours_en', label: 'Horaires (EN)', type: 'textarea' },
@@ -90,6 +91,14 @@ const SECTIONS = [
       { name: 'consent_banner_enabled', label: 'Bannière de consentement activée', type: 'bool' },
     ],
   },
+  {
+    title: 'Blog automatique (IA)',
+    fields: [
+      { name: 'blog_autopublish', label: 'Publier automatiquement les brouillons IA qui passent le contrôle qualité', type: 'bool', hint: 'Désactivé : chaque article reste un brouillon jusqu’à votre clic « Publié ». Activé : l’article sort seul à 08:00 si le contrôle automatique ne signale rien (prix non sourcé, lien manquant…) ET si l’auteur ci-dessous est renseigné.' },
+      { name: 'blog_author_name', label: 'Auteur des articles IA (personne réelle — obligatoire pour la publication automatique)' },
+      { name: 'blog_reviewer_name', label: 'Relecteur affiché (facultatif)' },
+    ],
+  },
 ];
 
 const ALL_FIELDS = SECTIONS.flatMap((s) => s.fields);
@@ -102,8 +111,8 @@ const ALL_FIELDS = SECTIONS.flatMap((s) => s.fields);
 const CRITICAL = [
   { name: 'license_number', label: 'N° de licence', why: 'la page /agrément reste vide et le schema Organization perd sa crédibilité' },
   { name: 'address_fr', label: 'Adresse (FR)', why: 'le schema LocalBusiness / Organization sort sans adresse (SEO local)' },
-  { name: 'gbp_rating', label: 'Note Google', why: 'aucune étoile ne peut apparaître dans les résultats de recherche' },
-  { name: 'gbp_review_count', label: 'Nombre d’avis Google', why: 'aucune étoile ne peut apparaître dans les résultats de recherche' },
+  { name: 'gbp_rating', label: 'Note Google', why: 'la note disparaît des blocs de confiance (accueil, à propos, avis) et de llms.txt — signal de crédibilité et de citation IA' },
+  { name: 'gbp_review_count', label: 'Nombre d’avis Google', why: 'le nombre d’avis disparaît des blocs de confiance et de llms.txt' },
   { name: 'verification_metas', label: 'Balises de vérification', why: 'Search Console / Bing ne peuvent pas valider le site' },
 ];
 

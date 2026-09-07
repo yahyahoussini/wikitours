@@ -12,9 +12,21 @@ export function sha256(value) {
   return createHash('sha256').update(value).digest('hex');
 }
 
+// CSV injection: Excel/Sheets evaluate any cell whose text starts with = + - @
+// (or a leading tab/CR) as a formula, and full_name / city / utm_* / gclid reach
+// this file verbatim from the UNAUTHENTICATED public lead form. Quoting does not
+// help — the parser strips the quotes and the formula still runs on open. Prefix
+// a single quote so the spreadsheet imports the value as literal text. Pure
+// numbers are exempt so value_mad keeps its numeric type.
+const RISKY_PREFIX = /^[=+\-@\t\r]/;
+const NUMERIC = /^-?\d+(\.\d+)?$/;
+
 function csvCell(value) {
-  const s = value == null ? '' : String(value);
-  return /[",\n]/.test(s) ? `"${s.replaceAll('"', '""')}"` : s;
+  const raw = value == null ? '' : String(value);
+  const s = RISKY_PREFIX.test(raw) && !NUMERIC.test(raw) ? `'${raw}` : raw;
+  // \r included: toCsv joins rows with \r\n, so an unquoted bare \r inside a
+  // value silently splits the row.
+  return /[",\r\n]/.test(s) ? `"${s.replaceAll('"', '""')}"` : s;
 }
 
 export function toCsv(rows) {

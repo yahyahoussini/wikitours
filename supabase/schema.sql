@@ -50,6 +50,7 @@ create table if not exists public.settings (
   address_fr text,
   address_ar text,
   address_en text,
+  postal_code text, -- schema PostalAddress.postalCode only (migration 018)
   opening_hours_fr text,
   opening_hours_ar text,
   opening_hours_en text,
@@ -76,6 +77,11 @@ create table if not exists public.settings (
   verification_metas text,
   consent_banner_enabled boolean not null default true,
   indexnow_key text,
+  -- Autonomous blog (migration 020): publish AI drafts without review when the
+  -- gate is clean and an author is configured. Owner decision 2026-09-04.
+  blog_autopublish boolean not null default true,
+  blog_author_name text,
+  blog_reviewer_name text,
   story_fr text,
   story_ar text,
   story_en text,
@@ -343,6 +349,7 @@ create table if not exists public.articles (
   author_name text,
   reviewed_by text,
   published_at timestamptz,
+  supports_path text, -- owner page this article supports → RelatedArticles (migration 020)
   seo_title_fr text,
   seo_title_ar text,
   seo_title_en text,
@@ -357,6 +364,30 @@ create table if not exists public.articles (
 create index if not exists articles_published_idx
   on public.articles (is_published, published_at desc);
 create index if not exists articles_category_idx on public.articles (category);
+
+-- ARTICLE PLAN — the admin-controlled editorial backlog the daily AI drafter
+-- works through (migration 019, api/cron/draft-article). One row = one future
+-- article: the query family it will own, its angle, the page it supports and
+-- links to, an optional month for seasonal timing. Internal: no anon policy.
+create table if not exists public.article_plan (
+  id            uuid primary key default gen_random_uuid(),
+  sort_order    int not null default 0,
+  is_active     boolean not null default true,
+  query_family  text not null,
+  angle         text,
+  category      text check (category in ('confiance', 'omra', 'hajj', 'hotels', 'guide')),
+  owner_path    text,
+  season_month  int check (season_month is null or season_month between 1 and 12),
+  status        text not null default 'queued' check (status in ('queued', 'drafted', 'skipped')),
+  article_id    uuid references public.articles (id) on delete set null,
+  drafted_at    timestamptz,
+  notes         text,
+  created_at    timestamptz not null default now(),
+  updated_at    timestamptz not null default now()
+);
+create index if not exists article_plan_queue_idx
+  on public.article_plan (is_active, status, sort_order);
+alter table public.article_plan enable row level security;
 
 create table if not exists public.landing_pages (
   id uuid primary key default gen_random_uuid(),
@@ -757,9 +788,39 @@ begin
 end;
 $$;
 
--- Admin (authenticated) full access on every table.
--- NOTE: public sign-ups must remain DISABLED in Supabase Auth; admin accounts
--- are provisioned manually. Tighten to a role claim later if needed.
+-- Admin access, restricted to the allowlist (migration 017). `authenticated` is
+-- NOT the same as admin: the anon key is public, so if sign-ups were ever
+-- enabled any account could otherwise read leads (names, phones, IPs) and
+-- settings (meta_capi_token, tiktok_events_token, indexnow_key) straight from
+-- PostgREST. Keep this table in sync with the ADMIN_EMAILS env var, which
+-- enforces the same rule on the Next.js side (src/lib/admin/authz.js).
+create table if not exists public.admin_allowlist (
+  email      text primary key,
+  note       text,
+  created_at timestamptz not null default now()
+);
+alter table public.admin_allowlist enable row level security;
+-- No anon/authenticated policy: only the service-role client and the SECURITY
+-- DEFINER predicate below ever read it. Seed it before applying the policies —
+-- an empty allowlist denies every admin write.
+
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.admin_allowlist a
+    where lower(a.email) = lower(coalesce(auth.jwt() ->> 'email', ''))
+  );
+$$;
+
+revoke all on function public.is_admin() from public;
+grant execute on function public.is_admin() to authenticated;
+
 do $$
 declare
   t record;
@@ -767,12 +828,15 @@ begin
   for t in
     select table_name
     from information_schema.tables
-    where table_schema = 'public' and table_type = 'BASE TABLE'
+    where table_schema = 'public'
+      and table_type = 'BASE TABLE'
+      and table_name <> 'admin_allowlist'
   loop
     execute format('drop policy if exists admin_full_access on public.%I', t.table_name);
     execute format(
       'create policy admin_full_access on public.%I
-         for all to authenticated using (true) with check (true)',
+         for all to authenticated
+         using (public.is_admin()) with check (public.is_admin())',
       t.table_name
     );
   end loop;
@@ -800,12 +864,23 @@ drop policy if exists anon_read on public.hotels;
 create policy anon_read on public.hotels
   for select to anon using (is_published);
 
--- Past offers auto-hidden at the DB layer (LAWS §6): once date_end passes,
--- anon can no longer read the row — no code change, no cron needed.
+-- Tiers inherit the PARENT offer's visibility (migration 016). is_published on
+-- the tier defaults to true, so checking it alone exposed draft-offer pricing
+-- (price_*, hotel ids, nights) to anyone holding the public anon key, and kept
+-- serving tiers for offers already past the 60-day grace window.
 drop policy if exists anon_read on public.offer_tiers;
 create policy anon_read on public.offer_tiers
   for select to anon
-  using (is_published);
+  using (
+    is_published
+    and exists (
+      select 1
+      from public.offers o
+      where o.id = offer_tiers.offer_id
+        and o.is_published
+        and (o.date_end is null or o.date_end >= current_date - interval '60 days')
+    )
+  );
 
 -- 60-day grace after date_end (migration 008): the departed page stays
 -- readable for its "Départ effectué" state until the cron 301s it.
@@ -916,6 +991,8 @@ as $$
     hits = public.bot_hits_weekly.hits + excluded.hits,
     updated_at = now();
   delete from public.bot_hits where ts < now() - interval '7 days';
+  -- Retention (migration 021): the weekly table used to grow forever.
+  delete from public.bot_hits_weekly where week < (now() - interval '26 weeks')::date;
 $$;
 
 -- Materialize one day of per-path rollups (idempotent upsert). Run monthly

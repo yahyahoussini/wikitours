@@ -7,6 +7,7 @@ import { supabaseServer } from '@/lib/supabase/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { MEDIA_BUCKET } from '@/lib/media';
 import { ENTITY_TYPES, GALLERY_ENTITIES, localizedPaths } from '@/lib/entities';
+import { assertAdminUser } from '@/lib/admin/authz';
 
 const GENERIC_ERROR = 'Une erreur est survenue.';
 
@@ -17,6 +18,10 @@ async function requireAdmin() {
     data: { user },
   } = await auth.auth.getUser();
   if (!user) throw new Error('unauthorized');
+  // A session alone is not authorization — this hands back the SERVICE-ROLE
+  // client, which bypasses RLS entirely, so the allowlist check must happen
+  // before it is ever constructed.
+  assertAdminUser(user);
   const admin = supabaseAdmin();
   if (!admin) throw new Error('no-admin-client');
   return admin;

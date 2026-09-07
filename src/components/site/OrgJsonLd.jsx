@@ -1,18 +1,39 @@
 import { BRAND } from '@/lib/brand';
-import { SITE_URL, absoluteUrl, parseOpeningHours } from '@/lib/seo';
-import { pickLang, getDictionary } from '@/lib/i18n';
+import { SITE_URL, absoluteUrl, parseOpeningHours, postalAddress, brandNode } from '@/lib/seo';
+import { pickLang, getDictionary, FALLBACK_LOCALE } from '@/lib/i18n';
+import { toE164 } from '@/lib/pixels';
 import { getSettings } from '@/lib/data/settings';
 import { getPublishedOffers, computeMinPrice } from '@/lib/data/content';
 import { CITY_SLUGS } from '@/lib/months';
 import { warnCriticalSettingsOnce } from '@/lib/seo/health';
 import JsonLd from '@/components/site/JsonLd';
 
+/** French Wikipedia entries for the departure cities — schema `sameAs`. */
+const CITY_SAMEAS = {
+  casablanca: 'https://fr.wikipedia.org/wiki/Casablanca',
+  rabat: 'https://fr.wikipedia.org/wiki/Rabat',
+  marrakech: 'https://fr.wikipedia.org/wiki/Marrakech',
+  fes: 'https://fr.wikipedia.org/wiki/F%C3%A8s',
+  tanger: 'https://fr.wikipedia.org/wiki/Tanger',
+  agadir: 'https://fr.wikipedia.org/wiki/Agadir',
+  meknes: 'https://fr.wikipedia.org/wiki/Mekn%C3%A8s',
+  oujda: 'https://fr.wikipedia.org/wiki/Oujda',
+};
+
 /**
  * Sitewide organization entity (LAWS §1/§5): the parent company modeled as a
  * TravelAgency, with a stable @id other nodes reference. Everything factual
- * comes from settings and only renders when present (LAW §10) — address stays
- * out until the client designates THE one. aggregateRating is emitted only
- * from real Google values. Mounted once in the public layout.
+ * comes from settings and only renders when present (LAW §10).
+ *
+ * THIS IS THE ONLY BUSINESS NODE. TravelAgency is a LocalBusiness subtype, and
+ * Wiki Tours is a single-location agency, so address / geo / hours / hasMap
+ * live here and nowhere else. Do not add a second LocalBusiness for the office:
+ * that duplicated the NAP under a per-locale @id and split one premises into
+ * four entities Google had to reconcile. Pages ABOUT the office (the Casablanca
+ * page) point at this node with WebPage.mainEntity instead.
+ *
+ * No aggregateRating is emitted here — see the note at the bottom. Mounted once
+ * in the public layout.
  */
 export default async function OrgJsonLd({ locale }) {
   const s = await getSettings();
@@ -21,7 +42,8 @@ export default async function OrgJsonLd({ locale }) {
   // GBP listing joins the social profiles: engines resolve them to ONE entity.
   const socials = [s?.facebook_url, s?.instagram_url, s?.tiktok_url, s?.youtube_url, s?.gbp_url].filter(Boolean);
   const phones = [s?.phone_1, s?.phone_2, s?.phone_3].filter(Boolean);
-  const address = pickLang(s, 'address', locale);
+  // Locale-neutral, FR-sourced — see postalAddress(). Never pickLang here.
+  const address = postalAddress(s);
   const hours = pickLang(s, 'opening_hours', locale);
   // Structured hours (from the FR source, locale-neutral) when parseable; the
   // raw prose is kept as a fallback so this can only improve the markup.
@@ -55,7 +77,13 @@ export default async function OrgJsonLd({ locale }) {
     // WHAT this entity is expert in, not just who it is.
     knowsAbout: ['Omra', 'Hajj', 'La Mecque', 'Médine', 'Pèlerinage islamique', 'Agence de voyages'],
     foundingDate: '2016',
-    url: absoluteUrl(locale, ''),
+    // ONE url for ONE @id. This used to follow the page locale, so the same
+    // #organization advertised three different urls across fr/ar/en.
+    url: absoluteUrl(FALLBACK_LOCALE, ''),
+    // Stable Brand node — Product pages reference it by @id (see lib/seo.js).
+    brand: brandNode(s),
+    currenciesAccepted: 'MAD',
+    knowsLanguage: ['fr', 'ar', 'en'],
     logo: `${SITE_URL}/brand/wikitours-logo.png`,
     image: `${SITE_URL}/brand/wikitours-logo.png`,
     ...(s?.license_number
@@ -75,9 +103,13 @@ export default async function OrgJsonLd({ locale }) {
           },
         }
       : {}),
-    ...(phones.length ? { telephone: phones[0] } : {}),
+    // E.164 (+212…): Google's LocalBusiness guidance wants an internationally
+    // dialable number, and it must string-match the GBP listing. The admin's
+    // display format (0634…) stays on the visible surfaces; the raw value is the
+    // fallback only when toE164 cannot parse it.
+    ...(phones.length ? { telephone: toE164(phones[0]) ?? phones[0] } : {}),
     ...(s?.email ? { email: s.email } : {}),
-    ...(address ? { address: { '@type': 'PostalAddress', streetAddress: address, addressLocality: 'Casablanca', addressCountry: 'MA' } } : {}),
+    ...(address ? { address } : {}),
     ...(s?.latitude != null && s?.longitude != null
       ? { geo: { '@type': 'GeoCoordinates', latitude: s.latitude, longitude: s.longitude } }
       : {}),
@@ -93,7 +125,7 @@ export default async function OrgJsonLd({ locale }) {
             {
               '@type': 'ContactPoint',
               contactType: 'customer service',
-              telephone: s.whatsapp_number,
+              telephone: toE164(s.whatsapp_number) ?? s.whatsapp_number,
               url: 'https://wa.me/' + String(s.whatsapp_number).replace(/[^0-9]/g, ''),
               availableLanguage: ['fr', 'ar', 'en'],
               hoursAvailable: {
@@ -111,13 +143,24 @@ export default async function OrgJsonLd({ locale }) {
     ...(priceRange ? { priceRange } : {}),
     // Country + the whitelisted departure cities (the same 8 the /omra-depuis
     // pages serve — a stated, admin-approved service area, never invented).
+    // sameAs disambiguates the accented names ("Fès", "Meknès") for engines,
+    // so "omra depuis fès" resolves to the city entity, not a string.
     areaServed: [
-      { '@type': 'Country', name: 'Maroc' },
-      ...Object.values(CITY_SLUGS).map((name) => ({ '@type': 'City', name })),
+      { '@type': 'Country', name: 'Maroc', sameAs: 'https://fr.wikipedia.org/wiki/Maroc' },
+      ...Object.entries(CITY_SLUGS).map(([slug, name]) => ({
+        '@type': 'City',
+        name,
+        ...(CITY_SAMEAS[slug] ? { sameAs: CITY_SAMEAS[slug] } : {}),
+      })),
     ],
-    ...(s?.gbp_rating && s?.gbp_review_count > 0
-      ? { aggregateRating: { '@type': 'AggregateRating', ratingValue: s.gbp_rating, reviewCount: s.gbp_review_count } }
-      : {}),
+    // NO aggregateRating here, deliberately. Google treats a rating a business
+    // publishes about ITSELF as self-serving: pages using LocalBusiness or any
+    // Organization type are ineligible for the star review snippet, and the
+    // markup is a documented "spammy structured markup" manual-action trigger
+    // that can strip rich results across the whole domain. The Google score
+    // stays VISIBLE on-page and in llms.txt (real, useful, safe) — it just must
+    // not be marked up on this node. Product/TouristTrip is the sanctioned
+    // exception: the per-offer aggregateRating in omra/[slug]/page.js stays.
   };
 
   return <JsonLd data={data} />;

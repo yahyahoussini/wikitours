@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { supabaseServer } from '@/lib/supabase/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
+import { isAdminUser } from '@/lib/admin/authz';
 import { MEDIA_BUCKET, MEDIA_LIMITS } from '@/lib/media';
 import { sniffMedia, imageDimensions } from '@/lib/server/media-validation';
 
@@ -35,7 +36,9 @@ export async function POST(request) {
     const {
       data: { user },
     } = await auth.auth.getUser();
-    if (!user) {
+    // Session + allowlist: this writes to storage with the SERVICE-ROLE client,
+    // so an unlisted account must not reach it.
+    if (!user || !isAdminUser(user)) {
       return NextResponse.json({ error: 'Non autorisé.' }, { status: 401 });
     }
 

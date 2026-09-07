@@ -6,6 +6,7 @@ import { getMenu, getCityPages } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { supabasePublic } from '@/lib/supabase/public';
 import { legalIsFilled } from '@/lib/legal-page';
+import { toE164 } from '@/lib/pixels';
 import { MONTH_SLUGS, monthPagePath, monthName, CITY_SLUGS, cityPageIndexable } from '@/lib/months';
 import BrandLockup from '@/components/site/BrandLockup';
 
@@ -162,7 +163,9 @@ export default async function SiteFooter({ locale }) {
         <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-4 text-xs text-white/60">
           <span>© {new Date().getFullYear()} {BRAND.parent}. {t.footer.rights}</span>
           {phones.map((p) => (
-            <a key={p} href={`tel:${p}`} className="tabular-nums hover:text-white/70">{p}</a>
+            // href is E.164 so click-to-call works from the diaspora and
+            // survives an admin typing spaces; the VISIBLE text stays as typed.
+            <a key={p} href={`tel:${toE164(p) ?? String(p).replace(/[^+\d]/g, '')}`} className="tabular-nums hover:text-white/70">{p}</a>
           ))}
           {pickLang(settings, 'address', locale) ? <span>{pickLang(settings, 'address', locale)}</span> : null}
           {legalLinks.map((l) => (

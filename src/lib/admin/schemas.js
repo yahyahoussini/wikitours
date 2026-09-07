@@ -128,6 +128,7 @@ export const settingsSchema = z
     address_fr: nullableText(500),
     address_ar: nullableText(500),
     address_en: nullableText(500),
+    postal_code: nullableText(12),
     opening_hours_fr: nullableText(500),
     opening_hours_ar: nullableText(500),
     opening_hours_en: nullableText(500),
@@ -157,6 +158,9 @@ export const settingsSchema = z
     verification_metas: nullableText(4000),
     consent_banner_enabled: z.boolean().optional(),
     indexnow_key: nullableText(120),
+    blog_autopublish: z.boolean().optional(),
+    blog_author_name: nullableText(120),
+    blog_reviewer_name: nullableText(120),
     // "Notre histoire" written story (per locale) + team block controls.
     story_fr: nullableText(5000),
     story_ar: nullableText(5000),

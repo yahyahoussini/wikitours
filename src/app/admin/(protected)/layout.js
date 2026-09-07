@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { supabaseServer } from '@/lib/supabase/server';
+import { isAdminUser } from '@/lib/admin/authz';
 import { signOut } from '@/app/admin/actions';
 
 const NAV = [
@@ -13,6 +14,7 @@ const NAV = [
   { href: '/admin/e/temoignages', label: 'Témoignages' },
   { href: '/admin/e/faqs', label: 'FAQs' },
   { href: '/admin/e/articles', label: 'Articles' },
+  { href: '/admin/e/plan-articles', label: 'Plan éditorial' },
   { href: '/admin/e/guides', label: 'Guide Omra' },
   { href: '/admin/e/glossaire', label: 'Glossaire' },
   { href: '/admin/e/pages-villes', label: 'Pages villes' },
@@ -37,7 +39,9 @@ export default async function AdminProtectedLayout({ children }) {
   const {
     data: { user },
   } = await auth.auth.getUser();
-  if (!user) redirect('/admin/login');
+  // Session + allowlist. A Supabase account that is not on ADMIN_EMAILS is
+  // treated exactly like a logged-out visitor.
+  if (!user || !isAdminUser(user)) redirect('/admin/login');
 
   return (
     <div className="flex min-h-dvh">

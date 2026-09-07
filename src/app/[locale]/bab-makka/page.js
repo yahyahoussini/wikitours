@@ -11,11 +11,19 @@ import { routeTitle } from '@/lib/titles';
 import BrandLockup from '@/components/site/BrandLockup';
 import PackagesSection from '@/components/site/PackagesSection';
 import JsonLd from '@/components/site/JsonLd';
+import RelatedArticles from '@/components/site/RelatedArticles';
 import { StepsSection, FaqSection, MonthsLinks } from '@/components/site/HomeSections';
 import LeadForm from '@/components/LeadForm';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
-export const revalidate = false;
+// Date-sensitive surface. Availability, validThrough and the "has this departed?"
+// branch are all computed from today's date AT RENDER TIME, so revalidate=false
+// froze them: a departure could pass and the cached HTML would keep advertising
+// InStock with a validThrough already in the past, until an admin happened to
+// edit something. Hourly ISR lets the passage of time correct itself. On-demand
+// invalidation from admin writes (revalidateForTable) still applies on top, and
+// regeneration only costs an ISR write when the page is actually requested.
+export const revalidate = 3600;
 
 const nf = new Intl.NumberFormat('fr-MA');
 
@@ -202,6 +210,8 @@ export default async function BabMakkahPage({ params }) {
             {t.hajjPage.interestCta} →
           </Link>
         </section>
+        {/* Reverse internal link: the blog cluster that supports this hub. */}
+        <RelatedArticles path="/bab-makka" locale={locale} />
       </main>
 
       <div className="bg-wiki-white text-bm-black">

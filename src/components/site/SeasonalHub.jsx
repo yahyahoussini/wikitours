@@ -10,6 +10,7 @@ import OffersPriceTable from '@/components/site/OffersPriceTable';
 import PackagesSection from '@/components/site/PackagesSection';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import HubBody from '@/components/site/HubBody';
+import RelatedArticles from '@/components/site/RelatedArticles';
 
 /**
  * Evergreen seasonal SEO hub (pas-cher, ramadan, …). Permanent URL; any year
@@ -137,6 +138,8 @@ export default function SeasonalHub({ locale, path, heading, lede, intro, offers
       ) : null}
 
       <WhatsAppFloat locale={locale} />
+      {/* Reverse internal link: the blog cluster that supports this hub. */}
+      <RelatedArticles path={path} locale={locale} className="px-0!" />
     </main>
   );
 }

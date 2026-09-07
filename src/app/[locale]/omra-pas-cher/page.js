@@ -6,7 +6,14 @@ import { getSettings } from '@/lib/data/settings';
 import { waLink } from '@/lib/whatsapp';
 import SeasonalHub from '@/components/site/SeasonalHub';
 
-export const revalidate = false;
+// Date-sensitive surface. Availability, validThrough and the "has this departed?"
+// branch are all computed from today's date AT RENDER TIME, so revalidate=false
+// froze them: a departure could pass and the cached HTML would keep advertising
+// InStock with a validThrough already in the past, until an admin happened to
+// edit something. Hourly ISR lets the passage of time correct itself. On-demand
+// invalidation from admin writes (revalidateForTable) still applies on top, and
+// regeneration only costs an ISR write when the page is actually requested.
+export const revalidate = 3600;
 
 const nf = new Intl.NumberFormat('fr-MA');
 

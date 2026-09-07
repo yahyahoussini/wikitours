@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
-import { hreflangAlternates, clampDesc } from '@/lib/seo';
+import { hreflangAlternates, clampDesc, BRAND_ID } from '@/lib/seo';
 import { routeTitle } from '@/lib/titles';
 import {
   getOfferBySlug,
@@ -20,7 +20,7 @@ import { publicMediaUrl } from '@/lib/media';
 import { toOfferCard } from '@/lib/offer-card';
 import { waLink } from '@/lib/whatsapp';
 import { OMRA_YEAR, monthPagePath, monthName } from '@/lib/months';
-import { offerAvailability, hasDeparted, seatsLabel } from '@/lib/offers';
+import { offerAvailability, hasDeparted, seatsLabel, visibleStatusKey } from '@/lib/offers';
 import BrandLockup from '@/components/site/BrandLockup';
 import Breadcrumbs from '@/components/site/Breadcrumbs';
 import OfferSubnav from '@/components/site/OfferSubnav';
@@ -34,7 +34,14 @@ import LeadForm from '@/components/LeadForm';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import WhatsAppIcon from '@/components/WhatsAppIcon';
 
-export const revalidate = false;
+// Date-sensitive surface. Availability, validThrough and the "has this departed?"
+// branch are all computed from today's date AT RENDER TIME, so revalidate=false
+// froze them: a departure could pass and the cached HTML would keep advertising
+// InStock with a validThrough already in the past, until an admin happened to
+// edit something. Hourly ISR lets the passage of time correct itself. On-demand
+// invalidation from admin writes (revalidateForTable) still applies on top, and
+// regeneration only costs an ISR write when the page is actually requested.
+export const revalidate = 3600;
 
 /** Prebuild every published offer × locale — the first crawl of a new offer
  *  would otherwise block on a full cold render. Empty when the DB is not
@@ -203,7 +210,10 @@ export default async function OfferPage({ params }) {
       ? ['clock', t.offer.duration.replace('{days}', offer.duration_days).replace('{nights}', offer.duration_nights)]
       : null,
     offer.land_only ? ['plane', t.offer.landOnly] : offer.airline ? ['plane', offer.airline] : null,
-    ['dot', t.offer.status[offer.status]],
+    // Derived, not the raw enum: seats_remaining=0 must read "Complet" even when
+    // status is still 'open', or the chip contradicts the SoldOut in the JSON-LD.
+    // A departed offer drops the chip entirely — the banner below already says so.
+    hasDeparted(offer) ? null : ['dot', t.offer.status[visibleStatusKey(offer)]],
   ].filter(Boolean);
 
   // Hubs this offer belongs to. The month hub is only linked when the offer's
@@ -262,15 +272,6 @@ export default async function OfferPage({ params }) {
         ? { '@type': 'Offer', price: minPrice }
         : null;
 
-  // Bab Makka's own social profiles join the Brand node (LAW §10: only when
-  // set) so engines resolve the brand accounts to this entity too.
-  const babSocials = [
-    settings?.babmakka_facebook_url,
-    settings?.babmakka_instagram_url,
-    settings?.babmakka_tiktok_url,
-    settings?.babmakka_youtube_url,
-  ].filter(Boolean);
-
   const productJsonLd = {
     '@context': 'https://schema.org',
     // Product drives the price rich result; TouristTrip is the accurate entity.
@@ -278,12 +279,10 @@ export default async function OfferPage({ params }) {
     name: title ?? offer.slug,
     ...(intro || summary ? { description: intro ?? summary } : {}),
     ...(coverUrl ? { image: coverUrl } : {}),
-    brand: {
-      '@type': 'Brand',
-      name: BRAND.lockup,
-      alternateName: BRAND.alternates,
-      ...(babSocials.length ? { sameAs: babSocials } : {}),
-    },
+    // By reference: the full Brand node (#brand, with Bab Makka's socials) ships
+    // on every page from OrgJsonLd. An inline copy here used to re-mint an
+    // anonymous Brand per offer that vanished when the offer 301'd after expiry.
+    brand: { '@id': BRAND_ID },
     provider: { '@id': `${SITE_URL}/#organization` },
     // Freshness: AI search + Google favour recently-updated entities.
     ...(offer.updated_at ? { dateModified: offer.updated_at } : {}),
@@ -302,9 +301,15 @@ export default async function OfferPage({ params }) {
             ...(offer.created_at ? { validFrom: offer.created_at.slice(0, 10) } : {}),
             ...(offer.date_start
               ? { validThrough: offer.date_start, priceValidUntil: offer.date_start, availabilityEnds: offer.date_start }
-              // À la carte (no fixed departure): a rolling price-validity horizon
-              // — keeps the price fresh for engines and never reads as "stale".
-              : { priceValidUntil: `${new Date().getUTCFullYear() + 1}-12-31` }),
+              // À la carte (no fixed departure): a rolling horizon — keeps the
+              // price fresh for engines and never reads as "stale". validThrough
+              // rides the same date because CLAUDE.md requires it on EVERY Offer
+              // (and the seo:audit gate exits 1 on an Offer that omits it); an
+              // unbounded, never-expiring Offer is exactly what that rule forbids.
+              : (() => {
+                  const horizon = `${new Date().getUTCFullYear() + 1}-12-31`;
+                  return { validThrough: horizon, priceValidUntil: horizon };
+                })()),
           },
         }
       : {}),

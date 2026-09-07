@@ -9,6 +9,7 @@ import { waLink } from '@/lib/whatsapp';
 import { OMRA_YEAR, MONTH_SLUGS, parseMonthSlug, monthPagePath, monthName, CITY_SLUGS, cityPageIndexable } from '@/lib/months';
 import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc } from '@/lib/seo';
 import { routeTitle, withBrand } from '@/lib/titles';
+import RelatedArticles from '@/components/site/RelatedArticles';
 import BrandLockup from '@/components/site/BrandLockup';
 import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
 import JsonLd from '@/components/site/JsonLd';
@@ -17,7 +18,14 @@ import PackagesSection from '@/components/site/PackagesSection';
 import LeadForm from '@/components/LeadForm';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
-export const revalidate = false;
+// Date-sensitive surface. Availability, validThrough and the "has this departed?"
+// branch are all computed from today's date AT RENDER TIME, so revalidate=false
+// froze them: a departure could pass and the cached HTML would keep advertising
+// InStock with a validThrough already in the past, until an admin happened to
+// edit something. Hourly ISR lets the passage of time correct itself. On-demand
+// invalidation from admin writes (revalidateForTable) still applies on top, and
+// regeneration only costs an ISR write when the page is actually requested.
+export const revalidate = 3600;
 
 /** Prebuild the whole programmatic surface (12 months + DB occasions + 8
  *  cities) × locale. Unknown slugs still resolve on-demand and 404. */
@@ -332,6 +340,8 @@ export default async function FlatLandingPage({ params }) {
             </div>
           </section>
         ) : null}
+        {/* Reverse internal link: the blog cluster that supports this hub. */}
+        <RelatedArticles path={`/${flat}`} locale={locale} />
       </main>
       <WhatsAppFloat locale={locale} />
     </div>

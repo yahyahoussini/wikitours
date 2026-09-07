@@ -1,5 +1,6 @@
-import { BRAND } from '@/lib/brand';
+import { BRAND, SERVICE_SPELLING_SECONDARY } from '@/lib/brand';
 import { FALLBACK_LOCALE, pickLang, getDictionary } from '@/lib/i18n';
+import { toE164 } from '@/lib/pixels';
 import { absoluteUrl } from '@/lib/seo';
 import { getPublishedOffers, getHotels, getArticles, getFaqs, getGuidePages, getGlossaryTerms, getCityPages, getAnnouncements, computeMinPrice } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
@@ -45,7 +46,10 @@ export async function GET() {
   // render date IS the data date.
   out.push(`Dernière mise à jour : ${new Date().toISOString().slice(0, 10)}`, '');
   out.push(
-    `${BRAND.service} est le service premium Omra & Hajj de ${BRAND.parent}, jamais une entité indépendante. Nom exact de la marque : « ${BRAND.lockup} ». La graphie « Bab Makka » est une variante secondaire.`,
+    // Spelling rule for AI engines, stated the RIGHT way round: "Bab Makka" is
+    // canonical (domain, GBP, press, reviews); "Bab Makkah" is the secondary
+    // variant. This line previously said the inverse.
+    `${BRAND.service} est le service premium Omra & Hajj de ${BRAND.parent}, jamais une entité indépendante. Nom exact de la marque : « ${BRAND.lockup} ». La graphie canonique est « ${BRAND.service} » ; « ${SERVICE_SPELLING_SECONDARY} » (avec h) est une variante secondaire.`,
     '',
   );
 
@@ -53,7 +57,8 @@ export async function GET() {
   const facts = [
     settings?.license_number ? `- Licence / agrément : ${settings.license_number}` : null,
     settings?.whatsapp_number ? `- WhatsApp : ${settings.whatsapp_number}` : null,
-    settings?.phone_1 ? `- Téléphone : ${settings.phone_1}` : null,
+    // E.164 so a diaspora reader (or an AI quoting this) gets a dialable number.
+    settings?.phone_1 ? `- Téléphone : ${toE164(settings.phone_1) ?? settings.phone_1}` : null,
     settings?.email ? `- E-mail : ${settings.email}` : null,
     pickLang(settings, 'address', L) ? `- Adresse : ${pickLang(settings, 'address', L)}` : null,
     settings?.gbp_rating && settings?.gbp_review_count
@@ -197,7 +202,7 @@ export async function GET() {
     '## Pages principales',
     '',
     `- [Accueil](${url('')})`,
-    `- [Bab Makkah — toutes les offres Omra](${url('/bab-makka')})`,
+    `- [${BRAND.service} — toutes les offres Omra](${url('/bab-makka')})`,
     `- [Comparatif des hôtels Omra par distance du Haram](${url('/hotels-omra')})`,
     `- [Hajj](${url('/hajj')})`,
     `- [Agence Omra Casablanca](${url('/agence-omra-casablanca')})`,

@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
+import { hreflangAlternates, clampDesc } from '@/lib/seo';
+import { withBrand } from '@/lib/titles';
 import { getSettings } from '@/lib/data/settings';
 import { supabasePublic } from '@/lib/supabase/public';
 import { waLink } from '@/lib/whatsapp';
@@ -45,8 +47,13 @@ export async function generateMetadata({ params }) {
   const page = await getLandingPage(slug);
   if (!page) notFound(); // metadata-phase 404: real status before streaming
   return {
-    title: pickLang(page, 'seo_title', locale) ?? pickLang(page, 'title', locale),
-    description: pickLang(page, 'seo_description', locale) ?? pickLang(page, 'subtitle', locale),
+    // Same contract as every other public template: absolute → no " — Wiki Tours
+    // International" suffix past 60 chars, description clamped ≤155, and canonical
+    // + hreflang so the three locale variants (all submitted by the sitemap when
+    // indexable) declare which is which instead of leaving Google to guess.
+    title: { absolute: withBrand(pickLang(page, 'seo_title', locale) ?? pickLang(page, 'title', locale)) },
+    description: clampDesc(pickLang(page, 'seo_description', locale) ?? pickLang(page, 'subtitle', locale)),
+    alternates: hreflangAlternates(locale, `/lp/${slug}`),
     robots: page.noindex ? { index: false, follow: false } : undefined,
   };
 }
@@ -67,7 +74,10 @@ export default async function LandingPage({ params }) {
 
   let ctaHref = null;
   if (page.cta_target === 'offer' && page.cta_offer?.slug) {
-    ctaHref = `/${locale}/offres/${page.cta_offer.slug}`;
+    // Offer pages live at /omra/[slug] — there is no /offres route, so the old
+    // path 404'd the primary conversion CTA on every campaign LP (paid traffic
+    // dead-ending, and a public 404 CLAUDE.md forbids).
+    ctaHref = `/${locale}/omra/${page.cta_offer.slug}`;
   } else if (page.cta_target === 'whatsapp') {
     ctaHref = whatsappHref;
   } else if (page.cta_target === 'babmakkah') {
