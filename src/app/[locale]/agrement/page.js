@@ -45,6 +45,11 @@ export default async function AgrementPage({ params }) {
         ) : null}
 
         <div className="mt-10 flex flex-wrap gap-4 text-sm font-semibold">
+          {/* The licence belongs to the agency entity — link the page that
+              carries its address, hours and reviews. */}
+          <Link href={`/${locale}/agence-omra-casablanca`} className="text-wiki-blue underline-offset-4 hover:underline">
+            {t.agency.footerLink} →
+          </Link>
           <Link href={`/${locale}/contact`} className="text-wiki-blue underline-offset-4 hover:underline">
             {t.pages.contactTitle} →
           </Link>

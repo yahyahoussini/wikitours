@@ -130,6 +130,11 @@ export default async function SiteFooter({ locale }) {
       <div className="border-t border-white/10">
         <div className="mx-auto max-w-5xl px-6 py-8">
           <nav className="flex flex-wrap gap-x-4 gap-y-2 text-xs font-semibold text-white/75">
+            {/* The agency entity page leads this row: it owns the highest
+                commercial-intent local query ("agence omra casablanca") and had
+                ZERO internal links, reachable only from the sitemap. The footer
+                is the only surface that makes it 1 click from every page. */}
+            <Link href={`/${locale}/agence-omra-casablanca`} className="hover:text-bm-gold-light">{t.agency.footerLink}</Link>
             <Link href={`/${locale}/bab-makka`} className="hover:text-bm-gold-light">{t.nav.offers}</Link>
             <Link href={`/${locale}/omra-ramadan`} className="hover:text-bm-gold-light">Omra Ramadan</Link>
             <Link href={`/${locale}/omra-pas-cher`} className="hover:text-bm-gold-light">{t.pages.pasCherTitle}</Link>

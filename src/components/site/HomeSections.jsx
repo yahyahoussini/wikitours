@@ -339,7 +339,7 @@ export function MonthsLinks({ locale, compact = true }) {
 
 /* 11 — Notre histoire: admin-written story + team (individual members or one
    full-team photo). All content is admin-controlled (LAWS §3/§10). */
-export async function StorySection({ locale, team, settings, fallbackStory = null }) {
+export async function StorySection({ locale, team, settings, fallbackStory = null, showAgencyLink = false }) {
   const t = getDictionary(locale);
 
   // The written story — blank-line-separated paragraphs, admin-editable. Falls
@@ -418,6 +418,19 @@ export async function StorySection({ locale, team, settings, fallbackStory = nul
           </div>
         ) : null}
       </div>
+      {/* Contextual link to the agency entity page. Opt-in per caller so the
+          page that also links it elsewhere never ends up with two. */}
+      {showAgencyLink ? (
+        <p className="mt-8 text-sm leading-relaxed text-bm-black/70">
+          {t.agency.contextLead}{' '}
+          <Link
+            href={`/${locale}/agence-omra-casablanca`}
+            className="font-semibold text-wiki-blue underline-offset-4 hover:underline"
+          >
+            {t.agency.contextLink}
+          </Link>
+        </p>
+      ) : null}
     </section>
   );
 }

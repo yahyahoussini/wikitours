@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
@@ -61,6 +62,18 @@ export default async function ContactPage({ params }) {
             </p>
           </section>
         ) : null}
+
+        {/* Contextual link to the agency entity page (address, hours, licence,
+            reviews, map). Outside the address guard so it always renders. */}
+        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-bm-black/70">
+          {t.agency.contextLead}{' '}
+          <Link
+            href={`/${locale}/agence-omra-casablanca`}
+            className="font-semibold text-wiki-blue underline-offset-4 hover:underline"
+          >
+            {t.agency.contextLink}
+          </Link>
+        </p>
 
         <div className="mt-10 grid gap-10 lg:grid-cols-2">
           {/* Channels — WhatsApp is the primary action (blue per LAWS §7) */}

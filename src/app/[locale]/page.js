@@ -214,7 +214,7 @@ export default async function HomePage({ params }) {
       <DestinationsSection locale={locale} destinations={destinations} />
 
       {/* 11 — story + team */}
-      <StorySection locale={locale} team={team} settings={settings} fallbackStory={t.home.intro} />
+      <StorySection locale={locale} team={team} settings={settings} fallbackStory={t.home.intro} showAgencyLink />
 
       {/* 12 — guarantees + trust-marks marquee (Saudia + hotel names) */}
       <GuaranteesStrip

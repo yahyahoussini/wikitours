@@ -196,7 +196,9 @@
     "title": "Omra depuis {city}",
     "answer": "Bab Makka by Wiki Tours organise votre Omra au départ du Maroc — demande en ligne, confirmation humaine, contrat écrit à l'agence de Casablanca.",
     "logisticsTitle": "Départ depuis {city}",
-    "faqTitle": "Questions fréquentes — {city}"
+    "faqTitle": "Questions fréquentes — {city}",
+    "agencyLead": "Le contrat se signe à",
+    "agencyLink": "notre agence de Casablanca"
   },
   "voyages": {
     "title": "Nos voyages",
@@ -354,7 +356,11 @@
     "metaDescription": "Wiki Tours International, agence de voyages agréée à Casablanca. Bab Makka, son service premium Omra & Hajj : programmes, hôtels proches du Haram, contrat écrit.",
     "identity": "Wiki Tours International est une agence de voyages agréée installée à Casablanca depuis 2016. Bab Makka, son service premium Omra & Hajj, organise vos départs vers La Mecque et Médine — demande en ligne, confirmation humaine et contrat écrit à l'agence.",
     "officeTitle": "Notre agence",
-    "testimonialsTitle": "Ils sont partis de Casablanca"
+    "testimonialsTitle": "Ils sont partis de Casablanca",
+    "footerLink": "Agence Omra à Casablanca",
+    "contextLead": "Nous vous recevons à",
+    "contextLink": "notre agence Omra à Casablanca",
+    "departureLink": "Départ depuis Casablanca : aéroport, horaires et trajet"
   },
   "form": {
     "fullName": "Nom complet",

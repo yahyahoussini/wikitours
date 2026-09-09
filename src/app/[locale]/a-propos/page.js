@@ -61,6 +61,18 @@ export default async function AProposPage({ params }) {
               string as Organization.description + llms.txt — consistency law). */}
           <p data-answer className="mt-4 max-w-2xl text-lg leading-relaxed text-bm-black/70">{t.brand.description}</p>
           <p className="mt-3 max-w-2xl leading-relaxed text-bm-black/60">{t.home.intro}</p>
+          {/* Contextual link to the agency entity page. Lives here rather than
+              in StorySection because that section renders only once the admin
+              has written a story — this block always renders. */}
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-bm-black/70">
+            {t.agency.contextLead}{' '}
+            <Link
+              href={`/${locale}/agence-omra-casablanca`}
+              className="font-semibold text-wiki-blue underline-offset-4 hover:underline"
+            >
+              {t.agency.contextLink}
+            </Link>
+          </p>
 
           {stats.length ? (
             <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-6 sm:grid-cols-4">

@@ -275,6 +275,20 @@ export default async function FlatLandingPage({ params }) {
             {answer ? (
               <p data-answer className="mt-3 max-w-2xl text-lg leading-relaxed text-white/80">{answer}</p>
             ) : null}
+            {/* Reciprocal link to the agency entity page. Distinct intent — this
+                page is departure logistics, that one is who/where/licence — so
+                they link to each other instead of competing. */}
+            {resolved.kind === 'city' && resolved.citySlug === 'casablanca' ? (
+              <p className="mt-3 max-w-2xl text-sm text-white/60">
+                {t.cityPage.agencyLead}{' '}
+                <Link
+                  href={`/${locale}/agence-omra-casablanca`}
+                  className="font-semibold text-bm-gold underline-offset-4 hover:underline"
+                >
+                  {t.cityPage.agencyLink}
+                </Link>
+              </p>
+            ) : null}
             {updated ? (
               <p className="mt-2 text-sm text-white/50">
                 {t.pages.seasonalUpdated} <time dateTime={updated}>{dateFmt.format(new Date(updated))}</time>

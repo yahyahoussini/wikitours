@@ -9,6 +9,7 @@ import { waLink } from '@/lib/whatsapp';
 import { SETTINGS_OFFICE_ENTITY_ID } from '@/lib/entities';
 import BrandLockup from '@/components/site/BrandLockup';
 import SectionBridge from '@/components/site/SectionBridge';
+import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
 import JsonLd from '@/components/site/JsonLd';
 import SmartGallery from '@/components/SmartGallery';
 import { GuaranteesStrip, MonthsLinks } from '@/components/site/HomeSections';
@@ -104,6 +105,16 @@ export default async function AgencyCasablancaPage({ params }) {
       <main>
         {/* Identity answer-first block */}
         <div className="mx-auto max-w-5xl px-6 pt-10">
+          {/* Same trail + BreadcrumbList markup as the month, city and offer
+              pages — this route was the only local surface without one. */}
+          <BreadcrumbTrail
+            className="mb-4"
+            items={[
+              { label: t.nav.home, href: `/${locale}` },
+              { label: BRAND.service, href: `/${locale}/bab-makka` },
+              { label: t.agency.title },
+            ]}
+          />
           <h1 className="max-w-2xl text-3xl font-bold leading-tight text-bm-black sm:text-4xl">
             {t.agency.title}
           </h1>
@@ -211,12 +222,24 @@ export default async function AgencyCasablancaPage({ params }) {
                     </li>
                   ))}
                 </ul>
-                <Link
-                  href={`/${locale}/bab-makka`}
-                  className="mt-5 inline-block text-sm font-semibold text-bm-gold underline-offset-4 hover:underline"
-                >
-                  {t.cta.seeAllOffers} →
-                </Link>
+                <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2">
+                  <Link
+                    href={`/${locale}/bab-makka`}
+                    className="inline-block text-sm font-semibold text-bm-gold underline-offset-4 hover:underline"
+                  >
+                    {t.cta.seeAllOffers} →
+                  </Link>
+                  {/* Reciprocal link to the sibling Casablanca page. The two
+                      have distinct intent and must NOT be merged: this page is
+                      the agency entity (who/where/licence/hours), that one is
+                      departure logistics (airport, transfer, timing). */}
+                  <Link
+                    href={`/${locale}/omra-depuis-casablanca`}
+                    className="inline-block text-sm font-semibold text-white/70 underline-offset-4 hover:text-bm-gold hover:underline"
+                  >
+                    {t.agency.departureLink} →
+                  </Link>
+                </div>
               </div>
             </section>
             <SectionBridge from="dark" to="light" />

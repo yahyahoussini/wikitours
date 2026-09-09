@@ -196,7 +196,9 @@
     "title": "Umrah from {city}",
     "answer": "Bab Makka by Wiki Tours organises your Umrah from Morocco — online request, human confirmation, written contract at the Casablanca agency.",
     "logisticsTitle": "Departure from {city}",
-    "faqTitle": "FAQ — {city}"
+    "faqTitle": "FAQ — {city}",
+    "agencyLead": "The contract is signed at",
+    "agencyLink": "our Casablanca agency"
   },
   "voyages": {
     "title": "Our travel services",
@@ -354,7 +356,11 @@
     "metaDescription": "Wiki Tours International, a licensed travel agency in Casablanca. Bab Makka, its premium Umrah & Hajj service: programmes, hotels near the Haram, written contract.",
     "identity": "Wiki Tours International is a licensed travel agency based in Casablanca since 2016. Bab Makka, its premium Umrah & Hajj service, organises your departures to Makkah and Madinah — online request, human confirmation and a written contract at the agency.",
     "officeTitle": "Our agency",
-    "testimonialsTitle": "They departed from Casablanca"
+    "testimonialsTitle": "They departed from Casablanca",
+    "footerLink": "Omra Agency in Casablanca",
+    "contextLead": "You are welcome at",
+    "contextLink": "our Omra agency in Casablanca",
+    "departureLink": "Departing from Casablanca: airport, timing and transfer"
   },
   "form": {
     "fullName": "Full name",
