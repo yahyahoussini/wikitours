@@ -64,6 +64,11 @@ export default async function ArticlePage({ params }) {
     ...(article.published_at ? { datePublished: article.published_at } : {}),
     ...(article.updated_at ? { dateModified: article.updated_at } : {}),
     publisher: { '@id': `${SITE_URL}/#organization` },
+    // Names the H1 and the answer-first lede as THE answer, like every other
+    // page type here (hubs, guide, glossary, home). Without it the blog — the
+    // site's largest surface — was the only content type answer engines had to
+    // guess at.
+    speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '[data-answer]'] },
   };
   const breadcrumbJsonLd = {
     '@context': 'https://schema.org',
@@ -115,9 +120,10 @@ export default async function ArticlePage({ params }) {
           ) : null}
         </p>
 
-        {/* Answer-first excerpt as the lede */}
+        {/* Answer-first excerpt as the lede — data-answer is what the
+            speakable cssSelector above points at (LAWS: AEO answer-first). */}
         {pickLang(article, 'excerpt', locale) ? (
-          <p className="mt-5 border-s-4 border-bm-gold ps-4 text-lg font-medium leading-relaxed text-bm-black/85">
+          <p data-answer className="mt-5 border-s-4 border-bm-gold ps-4 text-lg font-medium leading-relaxed text-bm-black/85">
             {pickLang(article, 'excerpt', locale)}
           </p>
         ) : null}
