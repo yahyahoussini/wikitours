@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
 import { absoluteUrl, hreflangAlternates, clampDesc } from '@/lib/seo';
+import { pageDescription, trustClauses, authoredOr } from '@/lib/page-seo';
 import { withBrand } from '@/lib/titles';
 import { getHotelBySlug, getHotels, getCovers } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
@@ -22,10 +23,24 @@ export async function generateMetadata({ params }) {
   if (!isLocale(locale)) return {};
   const hotel = await getHotelBySlug(slug);
   if (!hotel) notFound(); // metadata-phase 404: real status before streaming
+  const hotelTrust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
     // absolute → no template suffix (keeps titles ≤60); description clamped ≤155.
     title: { absolute: withBrand(pickLang(hotel, 'seo_title', locale) ?? hotel.name) },
-    description: clampDesc(pickLang(hotel, 'seo_description', locale) ?? pickLang(hotel, 'description', locale)),
+    // Admin seo_description wins; otherwise an authored template, NOT a slice
+    // of the body paragraph (which truncated mid-sentence).
+    description: authoredOr(
+      pickLang(hotel, 'seo_description', locale),
+      pageDescription(locale, hotel.distance_to_haram_m ? 'hotel' : 'hotelNoDistance', {
+        vars: {
+          name: hotel.name,
+          city: hotel.city === 'madinah' ? getDictionary(locale).offer.madinah : getDictionary(locale).offer.makkah,
+          distance: hotel.distance_to_haram_m,
+        },
+        extra: [hotelTrust.noPayment, hotelTrust.whatsapp],
+      }),
+      { extra: [hotelTrust.noPayment, hotelTrust.whatsapp] },
+    ),
     alternates: hreflangAlternates(locale, `/hotel/${slug}`),
   };
 }

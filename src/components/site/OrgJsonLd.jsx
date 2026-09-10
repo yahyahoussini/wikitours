@@ -39,8 +39,27 @@ export default async function OrgJsonLd({ locale }) {
   const s = await getSettings();
   warnCriticalSettingsOnce(s);
   const t = getDictionary(locale);
-  // GBP listing joins the social profiles: engines resolve them to ONE entity.
-  const socials = [s?.facebook_url, s?.instagram_url, s?.tiktok_url, s?.youtube_url, s?.gbp_url].filter(Boolean);
+  // BOTH social footprints, plus the GBP listing, on the ONE entity.
+  //
+  // This is the whole dual-brand problem in one array. The Bab Makka profiles
+  // (web.facebook.com/babmakka.ma, instagram.com/babmakka.ma,
+  // tiktok.com/@babmakka1) were absent, so the service line's entire social
+  // presence hung off nothing: an engine crawling those accounts had no signal
+  // tying them back to Wiki Tours International, and the two footprints stayed
+  // separate entities. They are the SAME company — Bab Makka is alternateName,
+  // never a second Organization — so every profile belongs on this node's
+  // sameAs. Nothing is invented: unset fields simply drop out (LAW §10).
+  const socials = [
+    s?.facebook_url,
+    s?.instagram_url,
+    s?.tiktok_url,
+    s?.youtube_url,
+    s?.babmakka_facebook_url,
+    s?.babmakka_instagram_url,
+    s?.babmakka_tiktok_url,
+    s?.babmakka_youtube_url,
+    s?.gbp_url,
+  ].filter(Boolean);
   const phones = [s?.phone_1, s?.phone_2, s?.phone_3].filter(Boolean);
   // Locale-neutral, FR-sourced — see postalAddress(). Never pickLang here.
   const address = postalAddress(s);
@@ -67,7 +86,7 @@ export default async function OrgJsonLd({ locale }) {
     legalName: BRAND.parent,
     // Canonical service lockup + the "Makkah"/short variants, so an engine
     // resolves every spelling to this one entity (decision: Makka is canonical).
-    alternateName: [BRAND.lockup, ...BRAND.alternates],
+    alternateName: [BRAND.lockup, ...BRAND.alternates, ...BRAND.alternatesAr],
     // ONE canonical description (i18n brand.description), reused verbatim by
     // llms.txt. AI engines cross-reference the description they find on the
     // site, GBP, directories and socials — every divergent wording lowers
@@ -107,7 +126,12 @@ export default async function OrgJsonLd({ locale }) {
     // dialable number, and it must string-match the GBP listing. The admin's
     // display format (0634…) stays on the visible surfaces; the raw value is the
     // fallback only when toE164 cannot parse it.
-    ...(phones.length ? { telephone: toE164(phones[0]) ?? phones[0] } : {}),
+    // ALL published numbers, not just the first — schema.org allows an array and
+    // the agency publishes three. Emitting one left the other two unattached to
+    // the entity, so a searcher who found them elsewhere had nothing to match.
+    ...(phones.length
+      ? { telephone: phones.length === 1 ? (toE164(phones[0]) ?? phones[0]) : phones.map((p) => toE164(p) ?? p) }
+      : {}),
     ...(s?.email ? { email: s.email } : {}),
     ...(address ? { address } : {}),
     ...(s?.latitude != null && s?.longitude != null

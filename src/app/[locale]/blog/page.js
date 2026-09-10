@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { hreflangAlternates } from '@/lib/seo';
+import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { getArticles, getCovers } from '@/lib/data/content';
+import { getSettings } from '@/lib/data/settings';
 import { publicMediaUrl } from '@/lib/media';
 import BlogGrid from '@/components/site/BlogGrid';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
@@ -16,7 +18,12 @@ export async function generateMetadata({ params }) {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = getDictionary(locale);
-  return { title: t.pages.blogTitle, description: t.pages.blogDesc, alternates: hreflangAlternates(locale, '/blog') };
+  const trust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
+  return {
+    title: t.pages.blogTitle,
+    description: pageDescription(locale, 'blogIndex', { extra: [trust.licence, trust.noPayment] }),
+    alternates: hreflangAlternates(locale, '/blog'),
+  };
 }
 
 export default async function BlogPage({ params }) {

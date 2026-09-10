@@ -1,6 +1,7 @@
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { BRAND } from '@/lib/brand';
 import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc } from '@/lib/seo';
+import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { routeTitle } from '@/lib/titles';
 import { getSettings } from '@/lib/data/settings';
 import {
@@ -50,9 +51,10 @@ export const revalidate = 3600;
 export async function generateMetadata({ params }) {
   const { locale } = await params;
   const t = getDictionary(locale);
+  const homeTrust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
     title: { absolute: routeTitle('home', locale) },
-    description: clampDesc(t.home.intro),
+    description: pageDescription(locale, 'home', { extra: [homeTrust.licence, homeTrust.noPayment] }),
     alternates: hreflangAlternates(locale, ''),
   };
 }

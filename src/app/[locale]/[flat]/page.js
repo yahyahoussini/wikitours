@@ -9,6 +9,7 @@ import { waLink } from '@/lib/whatsapp';
 import { OMRA_YEAR, MONTH_SLUGS, parseMonthSlug, monthPagePath, monthName, monthsWithOffers, CITY_SLUGS, cityName, cityPageIndexable } from '@/lib/months';
 import { cityTitle, cityDescription, cityYear, cityMinPrice } from '@/lib/city-seo';
 import { lastModifiedOf } from '@/lib/freshness';
+import { pageDescription, trustClauses, authoredOr } from '@/lib/page-seo';
 import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc } from '@/lib/seo';
 import { routeTitle, withBrand } from '@/lib/titles';
 import RelatedArticles from '@/components/site/RelatedArticles';
@@ -95,9 +96,23 @@ export async function generateMetadata({ params }) {
     // so a month is noindex, absent from the sitemap and unlinked together, or
     // indexable, listed and linked together. Never a mix.
     const hasOffers = monthsWithOffers(await getPublishedOffers()).has(resolved.monthIndex);
+    // Authored per locale. The old string was a hardcoded FRENCH template on
+    // every locale — /ar rendered "Omra أكتوبر 2026 depuis le Maroc — dates,
+    // hôtels et prix." with French spliced into an Arabic sentence, on all 36
+    // month URLs.
+    const trust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
+    const description = hasOffers
+      ? pageDescription(locale, 'month', {
+          vars: { month, year: OMRA_YEAR },
+          extra: [trust.licence, trust.noPayment],
+        })
+      : pageDescription(locale, 'monthEmpty', {
+          vars: { month, year: OMRA_YEAR },
+          extra: [trust.licence, trust.whatsapp],
+        });
     return {
       title: { absolute: routeTitle('month', locale, { month }) },
-      description: clampDesc(`Omra ${month} ${OMRA_YEAR} depuis le Maroc — dates, hôtels et prix. ${t.brand.premiumService}`),
+      description,
       alternates,
       ...(hasOffers ? {} : { robots: { index: false, follow: true } }),
     };
@@ -142,14 +157,23 @@ export async function generateMetadata({ params }) {
   const occOffers = (await getPublishedOffers()).filter((o) => o.occasion?.slug === resolved.occasion.slug);
   const occYear = occasionYearOf(occOffers);
   const occName = pickLang(resolved.occasion, 'name', locale);
+  const occTrust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
     title: {
       absolute: withBrand(
         pickLang(resolved.occasion, 'seo_title', locale) ?? `Omra ${occName}${occYear ? ` ${occYear}` : ''}`,
       ),
     },
-    description: clampDesc(
-      pickLang(resolved.occasion, 'seo_description', locale) ?? pickLang(resolved.occasion, 'description', locale),
+    // An admin-authored seo_description always wins (LAWS §4 — admin controls
+    // everything). The template is the FALLBACK, replacing what used to be a
+    // clampDesc() slice of the body paragraph.
+    description: authoredOr(
+      pickLang(resolved.occasion, 'seo_description', locale),
+      pageDescription(locale, 'occasion', {
+        vars: { name: occName },
+        extra: [occTrust.licence, occTrust.noPayment],
+      }),
+      { extra: [occTrust.noPayment] },
     ),
     alternates,
   };

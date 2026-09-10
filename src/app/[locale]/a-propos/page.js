@@ -2,8 +2,9 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { SITE_URL, hreflangAlternates, clampDesc } from '@/lib/seo';
+import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { getSettings } from '@/lib/data/settings';
-import { getTeam } from '@/lib/data/content';
+import { getTeam, getFaqs } from '@/lib/data/content';
 import JsonLd from '@/components/site/JsonLd';
 import BrandLockup from '@/components/site/BrandLockup';
 import SectionBridge from '@/components/site/SectionBridge';
@@ -16,7 +17,15 @@ export async function generateMetadata({ params }) {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = getDictionary(locale);
-  return { title: t.pages.aproposTitle, description: clampDesc(t.brand.description), alternates: hreflangAlternates(locale, '/a-propos') };
+  const trust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
+  return {
+    title: t.pages.aproposTitle,
+    // Authored, NOT t.brand.description — the legal pages inherit that string as
+    // the layout default, which made /a-propos and /politique-de-confidentialite
+    // byte-identical and failed the audit's duplicate check.
+    description: pageDescription(locale, 'aPropos', { extra: [trust.licence, trust.noPayment] }),
+    alternates: hreflangAlternates(locale, '/a-propos'),
+  };
 }
 
 /* /a-propos — parent-brand identity: answer-first paragraph, real stats,
@@ -26,7 +35,7 @@ export default async function AProposPage({ params }) {
   if (!isLocale(locale)) notFound();
 
   const t = getDictionary(locale);
-  const [settings, team] = await Promise.all([getSettings(), getTeam()]);
+  const [settings, team, trustFaqs] = await Promise.all([getSettings(), getTeam(), getFaqs('confiance')]);
 
   const stats = [
     settings?.community_count ? [settings.community_count, t.home.statCommunity] : null,
@@ -85,6 +94,34 @@ export default async function AProposPage({ params }) {
             </dl>
           ) : null}
         </div>
+
+        {/* Entity disambiguation. The `confiance` set answers "Bab Makka and
+            Wiki Tours — same company?" in all three locales, and that answer is
+            doing entity-resolution work for Google and for LLM retrieval. It
+            belongs on the page ABOUT the entity, not only on the home page.
+            VISIBLE only: the FAQPage node stays on the home page alone, so this
+            never becomes a second FAQPage competing with it (CLAUDE.md). */}
+        {trustFaqs.length ? (
+          <section className="mx-auto max-w-5xl px-6 pt-4">
+            <h2 className="text-2xl font-bold text-bm-black">{t.home.faqTitle}</h2>
+            <div className="mt-4 flex max-w-prose flex-col gap-3">
+              {trustFaqs.map((faq, i) => (
+                <details
+                  key={faq.id}
+                  open={i === 0}
+                  className="group rounded-card border border-bm-black/10 bg-white px-5 py-4 shadow-hairline"
+                >
+                  <summary className="cursor-pointer list-none font-semibold marker:content-none">
+                    {pickLang(faq, 'question', locale)}
+                  </summary>
+                  <p className="mt-3 text-sm leading-relaxed text-bm-black/70">
+                    {pickLang(faq, 'answer', locale)}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         {/* Histoire + équipe (real faces = the conversion lever) */}
         <StorySection locale={locale} team={team} settings={settings} />

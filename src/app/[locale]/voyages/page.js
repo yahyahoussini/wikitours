@@ -3,7 +3,9 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { absoluteUrl, hreflangAlternates, clampDesc } from '@/lib/seo';
+import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { getVoyages, getCovers } from '@/lib/data/content';
+import { getSettings } from '@/lib/data/settings';
 import { publicMediaUrl } from '@/lib/media';
 import { BLUR_DATA_URL } from '@/lib/blur';
 import JsonLd from '@/components/site/JsonLd';
@@ -31,9 +33,10 @@ export async function generateMetadata({ params }) {
   if (!isLocale(locale)) return {};
   const t = getDictionary(locale);
   const voyages = await getVoyages();
+  const trust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
     title: t.voyages.title,
-    description: clampDesc(t.voyages.intro),
+    description: pageDescription(locale, 'voyages', { extra: [trust.licence, trust.noPayment] }),
     alternates: hreflangAlternates(locale, '/voyages'),
     // Scaffold law: an empty catalog is thin content — stay out of the index
     // (follow) until the client publishes real voyages.

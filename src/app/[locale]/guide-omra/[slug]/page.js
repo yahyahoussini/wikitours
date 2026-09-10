@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
 import { hreflangAlternates, clampDesc } from '@/lib/seo';
+import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { withBrand } from '@/lib/titles';
 import { getGuidePages, getFaqs } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
@@ -21,9 +22,13 @@ export async function generateMetadata({ params }) {
   if (!GUIDE_CHILD_SLUGS.includes(slug)) notFound(); // metadata-phase 404
   const t = getDictionary(locale);
   const row = (await getGuidePages()).get(slug) ?? null;
+  const guideTrust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
     title: { absolute: withBrand(pickLang(row, 'title', locale) ?? t.guide.chapterTitles[slug]) },
-    description: clampDesc(pickLang(row, 'summary', locale) ?? t.guide.pillarDesc),
+    description: pageDescription(locale, 'guide', {
+      vars: { title: pickLang(row, 'title', locale) ?? t.guide.chapterTitles[slug] },
+      extra: [guideTrust.licence, guideTrust.noPayment],
+    }),
     alternates: hreflangAlternates(locale, `/guide-omra/${slug}`),
     ...(guideIndexable(row) ? {} : { robots: { index: false, follow: true } }),
   };

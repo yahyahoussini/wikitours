@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale } from '@/lib/i18n';
 import { hreflangAlternates } from '@/lib/seo';
+import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { getPublishedOffers, getCovers, computeMinPrice } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { waLink } from '@/lib/whatsapp';
@@ -28,9 +29,10 @@ export async function generateMetadata({ params }) {
   if (!isLocale(locale)) return {};
   const t = getDictionary(locale);
   const offers = await getPublishedOffers();
+  const pasCherTrust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
     title: { absolute: t.pages.pasCherTitle },
-    description: t.pages.pasCherIntro,
+    description: pageDescription(locale, 'pasCher', { extra: [pasCherTrust.licence, pasCherTrust.noPayment] }),
     alternates: hreflangAlternates(locale, '/omra-pas-cher'),
     // Nothing to rank on with zero offers — noindex until departures exist.
     ...(offers.length ? {} : { robots: { index: false, follow: true } }),

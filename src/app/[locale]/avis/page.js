@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { SITE_URL, hreflangAlternates } from '@/lib/seo';
+import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { getTestimonials } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { getTestimonialMedia } from '@/lib/data/gallery';
@@ -18,7 +19,12 @@ export async function generateMetadata({ params }) {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = getDictionary(locale);
-  return { title: t.pages.avisTitle, description: t.pages.avisDesc, alternates: hreflangAlternates(locale, '/avis') };
+  const trust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
+  return {
+    title: t.pages.avisTitle,
+    description: pageDescription(locale, 'avis', { extra: [trust.licence, trust.noPayment] }),
+    alternates: hreflangAlternates(locale, '/avis'),
+  };
 }
 
 /* /avis — every proof kind on one page: reels (dark band), text cards,

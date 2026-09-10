@@ -3,7 +3,9 @@ import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc } from '@/lib/seo';
+import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { getHotels } from '@/lib/data/content';
+import { getSettings } from '@/lib/data/settings';
 import BrandLockup from '@/components/site/BrandLockup';
 import Breadcrumbs from '@/components/site/Breadcrumbs';
 import JsonLd from '@/components/site/JsonLd';
@@ -17,9 +19,10 @@ export async function generateMetadata({ params }) {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = getDictionary(locale);
+  const trust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
     title: { absolute: t.pages.hotelsCompareTitle },
-    description: clampDesc(t.pages.hotelsCompareIntro),
+    description: pageDescription(locale, 'hotelsOmra', { extra: [trust.noPayment, trust.whatsapp] }),
     alternates: hreflangAlternates(locale, '/hotels-omra'),
   };
 }

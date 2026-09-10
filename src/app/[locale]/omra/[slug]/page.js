@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
 import { hreflangAlternates, clampDesc, BRAND_ID } from '@/lib/seo';
+import { pageDescription, trustClauses, authoredOr } from '@/lib/page-seo';
 import { routeTitle } from '@/lib/titles';
 import {
   getOfferBySlug,
@@ -139,12 +140,25 @@ export async function generateMetadata({ params }) {
   const priceFmt = minPrice != null ? nf.format(minPrice) : nf.format(0);
   const templated = routeTitle('offer', locale, { occasion: occasionName, tier: '', price: priceFmt });
   const year = offer.date_start ? new Date(offer.date_start).getUTCFullYear() : '';
-  const fallbackDesc = `Omra ${occasionName} ${year} dès ${priceFmt} MAD/pers.${
-    offer.duration_days ? `, ${offer.duration_days} jours` : ''
-  } depuis le Maroc — ${BRAND.lockup}.`.replace(/\s+/g, ' ').trim();
+  // Admin seo_description wins. Otherwise an AUTHORED template — the old
+  // fallback chain used `summary` (body copy, clamped mid-sentence) and then a
+  // hardcoded FRENCH string that rendered on /ar and /en too.
+  const offerTrust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
+  const dateFmt = new Intl.DateTimeFormat(locale === 'ar' ? 'ar-MA' : `${locale}-MA`, {
+    day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
+  });
+  const dates = offer.date_start ? dateFmt.format(new Date(offer.date_start)) : String(year);
+  const nights = offer.duration_nights ?? (offer.duration_days ? offer.duration_days - 1 : null);
   return {
     title: { absolute: pickLang(offer, 'seo_title', locale) ?? templated },
-    description: clampDesc(pickLang(offer, 'seo_description', locale) ?? pickLang(offer, 'summary', locale) ?? fallbackDesc),
+    description: authoredOr(
+      pickLang(offer, 'seo_description', locale),
+      pageDescription(locale, minPrice != null ? 'offer' : 'offerNoPrice', {
+        vars: { dates, nights: nights ?? '', airline: offer.airline ?? '', price: priceFmt },
+        extra: [offerTrust.noPayment, offerTrust.whatsapp],
+      }),
+      { extra: [offerTrust.noPayment, offerTrust.whatsapp] },
+    ),
     alternates: hreflangAlternates(locale, `/omra/${slug}`),
   };
 }

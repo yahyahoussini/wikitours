@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { SITE_URL, absoluteUrl, hreflangAlternates } from '@/lib/seo';
+import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { getSettings } from '@/lib/data/settings';
 import { waLink } from '@/lib/whatsapp';
 import JsonLd from '@/components/site/JsonLd';
@@ -16,7 +17,12 @@ export async function generateMetadata({ params }) {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = getDictionary(locale);
-  return { title: t.pages.contactTitle, description: t.pages.contactIntro, alternates: hreflangAlternates(locale, '/contact') };
+  const trust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
+  return {
+    title: t.pages.contactTitle,
+    description: pageDescription(locale, 'contact', { extra: [trust.whatsapp, trust.noPayment] }),
+    alternates: hreflangAlternates(locale, '/contact'),
+  };
 }
 
 /* /contact — NAP + hours as crawlable text, WhatsApp-first channels on one

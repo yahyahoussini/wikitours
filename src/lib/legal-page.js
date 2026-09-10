@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { supabasePublic } from '@/lib/supabase/public';
 import { hreflangAlternates } from '@/lib/seo';
+import { pageDescription } from '@/lib/page-seo';
 import { renderMarkdown, markdownClass } from '@/lib/markdown';
 
 /**
@@ -33,6 +34,11 @@ export function createLegalPage(slug) {
     if (!row) notFound(); // metadata-phase 404 (real status for crawlers)
     return {
       title: pickLang(row, 'title', locale),
+      // Authored, and interpolating the page's own title so the three legal
+      // slugs never collide. Setting NO description used to fall through to the
+      // layout default (t.brand.description) — byte-identical to /a-propos, which
+      // the audit flags as a duplicate the moment the page enters the sitemap.
+      description: pageDescription(locale, 'legal', { vars: { title: pickLang(row, 'title', locale) } }),
       alternates: hreflangAlternates(locale, `/${slug}`),
       ...(legalIsFilled(row) ? {} : { robots: { index: false, follow: true } }),
     };

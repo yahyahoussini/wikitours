@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { hreflangAlternates, clampDesc } from '@/lib/seo';
+import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { getSettings } from '@/lib/data/settings';
 import { GuaranteesStrip } from '@/components/site/HomeSections';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
@@ -12,7 +13,17 @@ export async function generateMetadata({ params }) {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = getDictionary(locale);
-  return { title: t.pages.agrementTitle, description: clampDesc(t.pages.agrementBody), alternates: hreflangAlternates(locale, '/agrement') };
+  const license = (await getSettings())?.license_number ?? null;
+  const trust = trustClauses(locale, { license });
+  return {
+    title: t.pages.agrementTitle,
+    // Licence number IS the page — when it is unset the template would render a
+    // hole, so fall back to the generic licensed-agency clause instead.
+    description: license
+      ? pageDescription(locale, 'agrement', { vars: { license }, extra: [trust.noPayment] })
+      : pageDescription(locale, 'aPropos', { extra: [trust.licence, trust.noPayment] }),
+    alternates: hreflangAlternates(locale, '/agrement'),
+  };
 }
 
 /* /agrement — deliberately spare and official: the real license number in a

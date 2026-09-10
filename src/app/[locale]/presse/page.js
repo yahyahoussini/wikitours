@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale } from '@/lib/i18n';
 import { SITE_URL, absoluteUrl, hreflangAlternates } from '@/lib/seo';
+import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { getSettings } from '@/lib/data/settings';
 import BrandLockup from '@/components/site/BrandLockup';
 import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
@@ -15,9 +16,10 @@ export async function generateMetadata({ params }) {
   if (!isLocale(locale)) return {};
   const t = getDictionary(locale);
   const settings = await getSettings();
+  const pressTrust = trustClauses(locale, { license: settings?.license_number ?? null });
   return {
     title: t.pages.pressTitle,
-    description: t.pages.pressLede,
+    description: pageDescription(locale, 'presse', { extra: [pressTrust.licence, pressTrust.noPayment] }),
     alternates: hreflangAlternates(locale, '/presse'),
     // Nothing to show until a press link exists — noindex the empty shell.
     ...(settings?.press_url ? {} : { robots: { index: false, follow: true } }),

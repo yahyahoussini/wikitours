@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { SITE_URL, hreflangAlternates, clampDesc } from '@/lib/seo';
+import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { getPublishedOffers, getTestimonials, getFaqs } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
@@ -24,7 +25,12 @@ export async function generateMetadata({ params }) {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = getDictionary(locale);
-  return { title: t.agency.title, description: clampDesc(t.agency.metaDescription), alternates: hreflangAlternates(locale, '/agence-omra-casablanca') };
+  const trust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
+  return {
+    title: t.agency.title,
+    description: pageDescription(locale, 'agency', { extra: [trust.licence, trust.whatsapp] }),
+    alternates: hreflangAlternates(locale, '/agence-omra-casablanca'),
+  };
 }
 
 /* /agence-omra-casablanca — the local landing: identity answer-first, office

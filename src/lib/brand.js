@@ -16,6 +16,12 @@ export const BRAND = Object.freeze({
   // Alternate spellings/forms emitted as schema `alternateName` so engines still
   // resolve the "Makkah" and shorter variants to this one entity.
   alternates: ['Bab Makkah by Wiki Tours International', 'Bab Makkah', 'Bab Makka by Wiki Tours'],
+  // ARABIC forms, schema `alternateName` only. Kept out of `alternates` on
+  // purpose: that array also feeds withBrand()'s brand-token detection in
+  // lib/titles.js, and widening it changes title behaviour. An Arabic searcher
+  // types "باب مكة", not "Bab Makka" — without these the entity had no Arabic
+  // name to resolve against at all.
+  alternatesAr: ['باب مكة', 'ويكي تورز إنترناشيونال', 'باب مكة من ويكي تورز'],
 });
 
 /** Secondary Latin spelling kept for redirects / keyword coverage only. */

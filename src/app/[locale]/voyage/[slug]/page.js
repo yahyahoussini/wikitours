@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
 import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc } from '@/lib/seo';
+import { pageDescription, trustClauses, authoredOr } from '@/lib/page-seo';
 import { getVoyages, getVoyageBySlug } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { waLink } from '@/lib/whatsapp';
@@ -44,12 +45,21 @@ export async function generateMetadata({ params }) {
   const voyage = await getVoyageBySlug(slug);
   if (!voyage) notFound(); // metadata-phase 404: real status before streaming
   const title = pickLang(voyage, 'seo_title', locale) ?? pickLang(voyage, 'title', locale) ?? voyage.slug;
+  const voyagePrice = typeof voyage.starting_price === 'number' && voyage.starting_price > 0 ? voyage.starting_price : null;
+  const voyageTrust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
     // Template title — voyages are Wiki Tours parent surfaces ("— Wiki Tours
     // International" appended), never Bab Makka (BRAND LAW).
     title,
-    description: clampDesc(
-      pickLang(voyage, 'seo_description', locale) ?? pickLang(voyage, 'summary', locale) ?? '',
+    // Admin seo_description wins; the template replaces what was a clamped
+    // slice of `summary` (body copy) ending mid-sentence.
+    description: authoredOr(
+      pickLang(voyage, 'seo_description', locale),
+      pageDescription(locale, voyagePrice != null ? 'voyage' : 'voyageNoPrice', {
+        vars: { title, days: voyage.duration_days ?? '', price: nf.format(voyagePrice ?? 0) },
+        extra: [voyageTrust.noPayment, voyageTrust.whatsapp],
+      }),
+      { extra: [voyageTrust.noPayment, voyageTrust.whatsapp] },
     ),
     alternates: hreflangAlternates(locale, `/voyage/${slug}`),
   };

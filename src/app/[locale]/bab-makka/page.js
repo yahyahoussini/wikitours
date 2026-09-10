@@ -7,6 +7,7 @@ import { toOfferCard } from '@/lib/offer-card';
 import { waLink } from '@/lib/whatsapp';
 import { OMRA_YEAR, MONTH_SLUGS, monthName } from '@/lib/months';
 import { SITE_URL, absoluteUrl, hreflangAlternates } from '@/lib/seo';
+import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { routeTitle } from '@/lib/titles';
 import BrandLockup from '@/components/site/BrandLockup';
 import PackagesSection from '@/components/site/PackagesSection';
@@ -31,9 +32,10 @@ export async function generateMetadata({ params }) {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = getDictionary(locale);
+  const hubTrust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
     title: { absolute: routeTitle('babmakkah', locale) },
-    description: t.brand.premiumService,
+    description: pageDescription(locale, 'babMakka', { extra: [hubTrust.licence, hubTrust.noPayment] }),
     alternates: hreflangAlternates(locale, '/bab-makka'),
   };
 }
