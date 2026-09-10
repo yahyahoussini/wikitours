@@ -49,8 +49,9 @@ const nextConfig = {
   // returns a real 404 to every engine that matters, while human browsers
   // keep streaming (and the branded loaders). curl + the audit UA are
   // included so the seo:audit 404 probes and manual checks see real statuses.
+  // Keep in step with `aiBots` in src/app/robots.js and BOT_UA in middleware.
   htmlLimitedBots:
-    /Googlebot|Google-Extended|Bingbot|GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|Claude-Web|PerplexityBot|CCBot|DuckDuckBot|YandexBot|Applebot|facebookexternalhit|Twitterbot|LinkedInBot|WhatsApp|wt-seo-audit|curl/i,
+    /Googlebot|Google-Extended|Bingbot|GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|Claude-SearchBot|Claude-User|Claude-Web|PerplexityBot|Perplexity-User|CCBot|DuckDuckBot|YandexBot|Applebot|facebookexternalhit|Twitterbot|LinkedInBot|WhatsApp|wt-seo-audit|curl/i,
   experimental: {
     // The whole stylesheet is only ~9KB gzipped — inline it into the HTML so
     // it never becomes a render-blocking request. Lighthouse measured ~600ms

@@ -28,8 +28,10 @@ function detectLocale(request) {
 
 // AI/search crawlers we log (GEO observability). Human analytics live in
 // wt.js//api/t, which drops these UAs — the two datasets never overlap.
+// Keep in step with `aiBots` in src/app/robots.js — an agent we welcome but do
+// not log is an agent whose GEO impact we cannot measure.
 const BOT_UA =
-  /(GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|Claude-Web|PerplexityBot|Google-Extended|Bingbot|CCBot)/i;
+  /(GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|Claude-SearchBot|Claude-User|Claude-Web|PerplexityBot|Perplexity-User|Google-Extended|Bingbot|CCBot)/i;
 
 /** Fire-and-forget insert into bot_hits (service role; RLS keeps it private).
  *  Never throws, never blocks the response. */
