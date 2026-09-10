@@ -8,6 +8,7 @@ import { toOfferCard } from '@/lib/offer-card';
 import { waLink } from '@/lib/whatsapp';
 import { OMRA_YEAR, MONTH_SLUGS, parseMonthSlug, monthPagePath, monthName, CITY_SLUGS, cityName, cityPageIndexable } from '@/lib/months';
 import { cityTitle, cityDescription, cityYear, cityMinPrice } from '@/lib/city-seo';
+import { lastModifiedOf } from '@/lib/freshness';
 import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc } from '@/lib/seo';
 import { routeTitle, withBrand } from '@/lib/titles';
 import RelatedArticles from '@/components/site/RelatedArticles';
@@ -225,11 +226,11 @@ export default async function FlatLandingPage({ params }) {
 
   const cityLogistics = resolved.kind === 'city' ? pickLang(cityRow, 'logistics', locale) : null;
 
-  // Freshness (visible + schema): latest change among the offers shown.
-  const updated = matching.reduce(
-    (max, o) => (o.updated_at && (!max || o.updated_at > max) ? o.updated_at : max),
-    null,
-  );
+  // Freshness (visible + schema): latest change among the offers shown. Shared
+  // with app/sitemap.js so the "Mis à jour le" line on this page and the
+  // <lastmod> for this URL are literally the same expression — they used to be
+  // computed here and simply omitted there.
+  const updated = lastModifiedOf(matching);
   const dateFmt = new Intl.DateTimeFormat(locale === 'ar' ? 'ar-MA' : `${locale}-MA`, { dateStyle: 'long' });
 
   const covers = await getCovers('offers', matching.map((o) => o.id));

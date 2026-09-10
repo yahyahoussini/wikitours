@@ -70,10 +70,20 @@ export function hreflangAlternates(locale, path = '') {
   };
 }
 
-/** Per-URL locale alternates for a sitemap entry (Google's xhtml:link form). */
+/**
+ * Per-URL locale alternates for a sitemap entry (Google's xhtml:link form).
+ * Mirrors hreflangAlternates(), x-default included: without it a searcher whose
+ * language matches none of fr/ar/en — the Moroccan diaspora in Germany, the
+ * Netherlands, Italy, the Gulf — is served an arbitrary locale. x-default names
+ * the French page as the fallback for everyone else. Bare language codes only,
+ * never region-coded.
+ */
 export function sitemapAlternates(path = '') {
   return {
-    languages: Object.fromEntries(LOCALES.map((l) => [l, absoluteUrl(l, path)])),
+    languages: {
+      ...Object.fromEntries(LOCALES.map((l) => [l, absoluteUrl(l, path)])),
+      'x-default': absoluteUrl(FALLBACK_LOCALE, path),
+    },
   };
 }
 

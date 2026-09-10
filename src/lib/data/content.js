@@ -439,6 +439,23 @@ export const getGuidePages = cache(async function getGuidePages() {
   }
 });
 
+/**
+ * Legal pages (CGV, mentions légales, politique de confidentialité). Returned
+ * unfiltered — callers apply legalIsFilled(), the ONE predicate that decides
+ * whether a legal page is linked, indexable and listed in the sitemap.
+ */
+export const getLegalPages = cache(async function getLegalPages() {
+  try {
+    const supabase = supabasePublic();
+    if (!supabase) return [];
+    const { data, error } = await supabase.from('legal_pages').select('*');
+    if (error) return [];
+    return data ?? [];
+  } catch {
+    return [];
+  }
+});
+
 /** Published glossary terms, ordered. */
 export const getGlossaryTerms = cache(async function getGlossaryTerms() {
   try {
