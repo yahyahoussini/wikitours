@@ -2,12 +2,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, pickLang } from '@/lib/i18n';
-import { getMenu, getCityPages } from '@/lib/data/content';
+import { getMenu, getCityPages, getPublishedOffers } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { supabasePublic } from '@/lib/supabase/public';
 import { legalIsFilled } from '@/lib/legal-page';
 import { toE164 } from '@/lib/pixels';
-import { MONTH_SLUGS, monthPagePath, monthName, CITY_SLUGS, cityName, cityPageIndexable } from '@/lib/months';
+import { MONTH_SLUGS, monthPagePath, monthName, monthsWithOffers, CITY_SLUGS, cityName, cityPageIndexable } from '@/lib/months';
 import BrandLockup from '@/components/site/BrandLockup';
 
 async function column(location, locale, fallback) {
@@ -26,6 +26,9 @@ export default async function SiteFooter({ locale }) {
   // must always be internally linked (orphan rule in scripts/seo-audit.js).
   const cityPages = await getCityPages();
   const liveCities = Object.keys(CITY_SLUGS).filter((slug) => cityPageIndexable(cityPages.get(slug)));
+  // Same rule for months (getPublishedOffers is request-cached — no extra query).
+  const monthSet = monthsWithOffers(await getPublishedOffers());
+  const liveMonths = MONTH_SLUGS.map((slug, i) => [slug, i]).filter(([, i]) => monthSet.has(i));
 
   // Legal pages: only link the ones the admin has actually filled (fr+ar+
   // published) — never a dead/empty link (LAW §10, parity gate). Titles come
@@ -144,14 +147,22 @@ export default async function SiteFooter({ locale }) {
             <Link href={`/${locale}/barometre-prix-omra`} className="hover:text-bm-gold-light">{t.barometer.title}</Link>
             <Link href={`/${locale}/presse`} className="hover:text-bm-gold-light">{t.pages.pressTitle}</Link>
           </nav>
-          <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-white/60">{t.home.monthsTitle}</p>
-          <nav className="mt-2 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-white/55">
-            {MONTH_SLUGS.map((slug, i) => (
-              <Link key={slug} href={`/${locale}${monthPagePath(i)}`} className="inline-flex min-h-6 items-center py-0.5 capitalize hover:text-bm-gold-light">
-                {monthName(i, locale)}
-              </Link>
-            ))}
-          </nav>
+          {/* Only months with a real departure. The other hubs are noindex
+              (same predicate drives their robots meta and the sitemap), so
+              linking all 12 from every page pointed the whole site at up to 9
+              dead ends. They reappear by themselves once a month has an offer. */}
+          {liveMonths.length ? (
+            <>
+              <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-white/60">{t.home.monthsTitle}</p>
+              <nav className="mt-2 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-white/55">
+                {liveMonths.map(([slug, i]) => (
+                  <Link key={slug} href={`/${locale}${monthPagePath(i)}`} className="inline-flex min-h-6 items-center py-0.5 capitalize hover:text-bm-gold-light">
+                    {monthName(i, locale)}
+                  </Link>
+                ))}
+              </nav>
+            </>
+          ) : null}
           {liveCities.length ? (
             <nav className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-white/55">
               {liveCities.map((slug) => (

@@ -1,5 +1,6 @@
 import { supabasePublic } from '@/lib/supabase/public';
 import { getDictionary, pickLang } from '@/lib/i18n';
+import { localizeInternalHref } from '@/lib/seo';
 import AnnouncementBarClient from '@/components/AnnouncementBarClient';
 
 /**
@@ -21,7 +22,15 @@ export default async function AnnouncementBar({ locale }) {
     const text = pickLang(data, 'text', locale);
     if (!text) return null;
     return (
-      <AnnouncementBarClient id={data.id} text={text} link={data.link} variant={data.variant} closeLabel={getDictionary(locale).a11y.close} />
+      <AnnouncementBarClient
+        id={data.id}
+        text={text}
+        // Keep the reader in their own locale — the stored link has no locale
+        // segment, so a bare /bab-makka 307'd on the visitor's browser language.
+        link={localizeInternalHref(data.link, locale)}
+        variant={data.variant}
+        closeLabel={getDictionary(locale).a11y.close}
+      />
     );
   } catch {
     return null;

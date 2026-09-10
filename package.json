@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "eslint",
     "seo:audit": "node scripts/seo-audit.js",
-    "i18n:audit": "node scripts/i18n-audit.mjs"
+    "i18n:audit": "node scripts/i18n-audit.mjs",
+    "links:audit": "node scripts/link-audit.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.124.0",

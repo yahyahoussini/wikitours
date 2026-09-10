@@ -6,7 +6,7 @@ import { getPublishedOffers, getOccasions, getCovers, getCityPage, getFaqs } fro
 import { getSettings } from '@/lib/data/settings';
 import { toOfferCard } from '@/lib/offer-card';
 import { waLink } from '@/lib/whatsapp';
-import { OMRA_YEAR, MONTH_SLUGS, parseMonthSlug, monthPagePath, monthName, CITY_SLUGS, cityName, cityPageIndexable } from '@/lib/months';
+import { OMRA_YEAR, MONTH_SLUGS, parseMonthSlug, monthPagePath, monthName, monthsWithOffers, CITY_SLUGS, cityName, cityPageIndexable } from '@/lib/months';
 import { cityTitle, cityDescription, cityYear, cityMinPrice } from '@/lib/city-seo';
 import { lastModifiedOf } from '@/lib/freshness';
 import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc } from '@/lib/seo';
@@ -91,13 +91,10 @@ export async function generateMetadata({ params }) {
     // whole programmatic surface down. It re-enters the index by itself the
     // moment an offer lands in that month (and the sitemap agrees — see
     // app/sitemap.js). getPublishedOffers is request-cached.
-    const offers = await getPublishedOffers();
-    const hasOffers = offers.some(
-      (o) =>
-        o.date_start &&
-        new Date(o.date_start).getUTCMonth() === resolved.monthIndex &&
-        new Date(o.date_start).getUTCFullYear() === OMRA_YEAR,
-    );
+    // ONE predicate, shared with app/sitemap.js, the footer and MonthsLinks —
+    // so a month is noindex, absent from the sitemap and unlinked together, or
+    // indexable, listed and linked together. Never a mix.
+    const hasOffers = monthsWithOffers(await getPublishedOffers()).has(resolved.monthIndex);
     return {
       title: { absolute: routeTitle('month', locale, { month }) },
       description: clampDesc(`Omra ${month} ${OMRA_YEAR} depuis le Maroc — dates, hôtels et prix. ${t.brand.premiumService}`),

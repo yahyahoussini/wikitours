@@ -71,6 +71,43 @@ export function hreflangAlternates(locale, path = '') {
 }
 
 /**
+ * Send an admin-entered internal link to the locale the reader is already in.
+ *
+ * Admins type "/bab-makka" in the announcement bar, with no locale segment. A
+ * bare path leaves the middleware to guess from Accept-Language, so it answers
+ * 307 and keys off the BROWSER's language rather than the page's: an English
+ * reader on a French-language browser clicked the banner on /en/… and landed on
+ * /fr/bab-makka — plus a redirect hop on every single click.
+ *
+ * Rewriting the href here fixes both, and does it for whatever the admin stored
+ * (the live rows point at /bab-makka AND /omra-ramadan) instead of hardcoding
+ * one destination. External links, mailto:, tel: and bare anchors pass through
+ * untouched; an already-localized path is left alone.
+ */
+export function localizeInternalHref(href, locale) {
+  const raw = String(href ?? '').trim();
+  if (!raw || /^(mailto:|tel:|sms:|#)/i.test(raw)) return href;
+
+  let path;
+  if (raw.startsWith('/')) {
+    path = raw;
+  } else if (/^https?:\/\//i.test(raw)) {
+    try {
+      const url = new URL(raw);
+      if (url.host !== new URL(SITE_URL).host) return href; // genuinely external
+      path = `${url.pathname}${url.search}${url.hash}`;
+    } catch {
+      return href;
+    }
+  } else {
+    return href; // relative or protocol-less — not ours to rewrite
+  }
+
+  if (new RegExp(`^/(${LOCALES.join('|')})(/|$)`).test(path)) return path; // already localized
+  return `/${locale}${path === '/' ? '' : path}`;
+}
+
+/**
  * Per-URL locale alternates for a sitemap entry (Google's xhtml:link form).
  * Mirrors hreflangAlternates(), x-default included: without it a searcher whose
  * language matches none of fr/ar/en — the Moroccan diaspora in Germany, the

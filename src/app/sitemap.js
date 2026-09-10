@@ -16,7 +16,7 @@ import {
   getLegalPages,
 } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
-import { OMRA_YEAR, MONTH_SLUGS, CITY_SLUGS, cityPageIndexable } from '@/lib/months';
+import { OMRA_YEAR, MONTH_SLUGS, CITY_SLUGS, cityPageIndexable, monthsWithOffers } from '@/lib/months';
 import { GUIDE_PILLAR_SLUG, GUIDE_CHILD_SLUGS, guideIndexable, GLOSSARY_MIN_TERMS } from '@/lib/guides';
 import { legalIsFilled } from '@/lib/legal-page';
 import { computePeriods } from '@/lib/barometer';
@@ -81,11 +81,7 @@ export default async function sitemap() {
   // Google contradictory signals. They appear here automatically once filled.
   const offersInMonth = (i) =>
     offers.filter((o) => o.date_start && new Date(o.date_start).getUTCFullYear() === OMRA_YEAR && new Date(o.date_start).getUTCMonth() === i);
-  const monthsWithOffers = new Set(
-    offers
-      .filter((o) => o.date_start && new Date(o.date_start).getUTCFullYear() === OMRA_YEAR)
-      .map((o) => new Date(o.date_start).getUTCMonth()),
-  );
+  const liveMonths = monthsWithOffers(offers);
 
   const barometer = computePeriods(offers);
   const offersForOccasion = (slug) => offers.filter((o) => o.occasion?.slug === slug);
@@ -103,7 +99,7 @@ export default async function sitemap() {
     // "Mis à jour le" ([flat]/page.js) — they used to disagree.
     ...MONTH_SLUGS
       .map((slug, i) => [slug, i])
-      .filter(([, i]) => monthsWithOffers.has(i))
+      .filter(([, i]) => liveMonths.has(i))
       .map(([slug, i]) => [`/omra-${slug}`, 0.7, 'weekly', lastModifiedOf(offersInMonth(i))]),
     ...occasions.map((o) => [`/omra-${o.slug}`, 0.6, 'weekly', lastModifiedOf(o, offersForOccasion(o.slug))]),
     // City pages: only once their anti-doorway guard passes (unique content

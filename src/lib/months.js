@@ -39,6 +39,23 @@ export function monthPagePath(monthIndex) {
   return `/omra-${MONTH_SLUGS[monthIndex]}`;
 }
 
+/**
+ * Which month hubs have a real departure — the ONE predicate behind the month
+ * page's robots meta, its presence in the sitemap, and whether anything links
+ * to it. A month with no offer is noindex, so linking it from every page sent
+ * crawlers (and users) into a dead end while the sitemap correctly omitted it.
+ * Returns a Set of month indices (0 = January).
+ */
+export function monthsWithOffers(offers, year = OMRA_YEAR) {
+  const set = new Set();
+  for (const o of offers ?? []) {
+    if (!o?.date_start) continue;
+    const d = new Date(o.date_start);
+    if (d.getUTCFullYear() === year) set.add(d.getUTCMonth());
+  }
+  return set;
+}
+
 /** Localized month name (standalone). */
 export function monthName(monthIndex, locale) {
   return new Intl.DateTimeFormat(locale === 'ar' ? 'ar-MA' : `${locale}-MA`, {
