@@ -80,7 +80,19 @@
     "goToSlide": "الانتقال إلى الشريحة",
     "openMenu": "فتح القائمة",
     "closeMenu": "إغلاق القائمة",
-    "close": "إغلاق"
+    "close": "إغلاق",
+    "breadcrumb": "مسار التنقل",
+    "languages": "اللغات",
+    "sections": "الأقسام",
+    "playVideo": "تشغيل الفيديو",
+    "loading": "جارٍ التحميل"
+  },
+  "articleCategory": {
+    "confiance": "الثقة",
+    "omra": "العمرة",
+    "hajj": "الحج",
+    "hotels": "الفنادق",
+    "guide": "الدليل"
   },
   "offer": {
     "from": "ابتداءً من",
@@ -198,7 +210,26 @@
     "logisticsTitle": "الانطلاق من {city}",
     "faqTitle": "أسئلة شائعة — {city}",
     "agencyLead": "يُوقَّع العقد في",
-    "agencyLink": "وكالتنا بالدار البيضاء"
+    "agencyLink": "وكالتنا بالدار البيضاء",
+    "seoTitleLead": "عمرة من {city} {year}",
+    "seoTitleQualifier": "انطلاق من مطار محمد الخامس",
+    "seoTitleQualifierShort": "مطار محمد الخامس",
+    "seoTitleBrand": "باب مكة",
+    "seoDescPrice": "عمرة من {city} ابتداءً من {minPrice} درهم.",
+    "seoDescNoPrice": "عمرة من {city}، انطلاقاً من مطار محمد الخامس.",
+    "seoDescTrust": "وكالة مرخصة {license}، عقد موقّع بالوكالة، دون أي أداء عبر الإنترنت.",
+    "seoDescTrustNoLicense": "وكالة أسفار مرخصة، عقد موقّع بالوكالة، دون أي أداء عبر الإنترنت.",
+    "seoDescTail": "رد على واتساب في أقل من 5 دقائق."
+  },
+  "cities": {
+    "casablanca": "الدار البيضاء",
+    "rabat": "الرباط",
+    "marrakech": "مراكش",
+    "fes": "فاس",
+    "tanger": "طنجة",
+    "agadir": "أكادير",
+    "meknes": "مكناس",
+    "oujda": "وجدة"
   },
   "voyages": {
     "title": "رحلاتنا",
@@ -291,6 +322,9 @@
     "contactIntro": "سؤال حول العمرة أو الحج أو سفر آخر؟ فريقنا يجيبكم بسرعة، بالعربية أو الفرنسية.",
     "contactFormTitle": "أرسلوا لنا طلبكم",
     "findUs": "موقعنا",
+    "ramadanShort": "عمرة رمضان",
+    "countryName": "المغرب",
+    "emailTitle": "البريد الإلكتروني",
     "whereQuestion": "أين يوجد مقر الوكالة؟",
     "whereAnswer": "تستقبلكم وكالتنا في العنوان التالي: {address}.",
     "avisDesc": "آراء وشهادات معتمرين سافروا مع باب مكة من ويكي تورز الدولية: فيديوهات ولقطات وتقييمات موثوقة.",

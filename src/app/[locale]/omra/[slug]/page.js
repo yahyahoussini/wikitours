@@ -374,7 +374,7 @@ export default async function OfferPage({ params }) {
         <BrandLockup locale={locale} size="sm" />
 
         {/* Visible counterpart of the BreadcrumbList JSON-LD above. */}
-        <Breadcrumbs
+        <Breadcrumbs locale={locale}
           className="mt-3"
           items={[
             { label: t.nav.home, href: `/${locale}` },
@@ -396,7 +396,7 @@ export default async function OfferPage({ params }) {
           </div>
         ) : null}
 
-        <OfferSubnav items={subnavItems} />
+        <OfferSubnav items={subnavItems} navLabel={t.a11y.sections} />
 
         {/* Phone: flex column ordered [aperçu…gammes] → booking card → [conditions…]
             (the form must come before the conditions). lg: 2-col grid, booking

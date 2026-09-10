@@ -106,7 +106,7 @@ export default async function HotelsComparePage({ params }) {
       <JsonLd data={webPageJsonLd} />
 
       <BrandLockup locale={locale} size="sm" />
-      <Breadcrumbs
+      <Breadcrumbs locale={locale}
         className="mt-3"
         items={[
           { label: t.nav.home, href: `/${locale}` },

@@ -80,7 +80,19 @@
     "goToSlide": "Aller à la diapositive",
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
-    "close": "Fermer"
+    "close": "Fermer",
+    "breadcrumb": "Fil d'Ariane",
+    "languages": "Langues",
+    "sections": "Sections",
+    "playVideo": "Lire la vidéo",
+    "loading": "Chargement"
+  },
+  "articleCategory": {
+    "confiance": "Confiance",
+    "omra": "Omra",
+    "hajj": "Hajj",
+    "hotels": "Hôtels",
+    "guide": "Guide"
   },
   "offer": {
     "from": "À partir de",
@@ -198,7 +210,26 @@
     "logisticsTitle": "Départ depuis {city}",
     "faqTitle": "Questions fréquentes — {city}",
     "agencyLead": "Le contrat se signe à",
-    "agencyLink": "notre agence de Casablanca"
+    "agencyLink": "notre agence de Casablanca",
+    "seoTitleLead": "Omra depuis {city} {year}",
+    "seoTitleQualifier": "Départ Mohammed V",
+    "seoTitleQualifierShort": "Mohammed V",
+    "seoTitleBrand": "Bab Makka",
+    "seoDescPrice": "Omra depuis {city} dès {minPrice} MAD.",
+    "seoDescNoPrice": "Omra depuis {city}, départ de l'aéroport Mohammed V.",
+    "seoDescTrust": "Agence agréée {license}, contrat signé à l'agence, aucun paiement en ligne.",
+    "seoDescTrustNoLicense": "Agence de voyages agréée, contrat signé à l'agence, aucun paiement en ligne.",
+    "seoDescTail": "Réponse WhatsApp en moins de 5 min."
+  },
+  "cities": {
+    "casablanca": "Casablanca",
+    "rabat": "Rabat",
+    "marrakech": "Marrakech",
+    "fes": "Fès",
+    "tanger": "Tanger",
+    "agadir": "Agadir",
+    "meknes": "Meknès",
+    "oujda": "Oujda"
   },
   "voyages": {
     "title": "Nos voyages",
@@ -291,6 +322,9 @@
     "contactIntro": "Une question sur une Omra, le Hajj ou un voyage ? Notre équipe vous répond rapidement, en français ou en arabe.",
     "contactFormTitle": "Envoyez-nous votre demande",
     "findUs": "Nous trouver",
+    "ramadanShort": "Omra Ramadan",
+    "countryName": "Maroc",
+    "emailTitle": "E-mail",
     "whereQuestion": "Où se trouve l'agence ?",
     "whereAnswer": "Notre agence vous accueille à l’adresse suivante : {address}.",
     "avisDesc": "Avis et témoignages de pèlerins partis en Omra avec Bab Makka by Wiki Tours International : vidéos, captures et retours vérifiés.",

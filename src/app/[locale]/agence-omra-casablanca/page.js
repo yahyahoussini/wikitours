@@ -107,7 +107,7 @@ export default async function AgencyCasablancaPage({ params }) {
         <div className="mx-auto max-w-5xl px-6 pt-10">
           {/* Same trail + BreadcrumbList markup as the month, city and offer
               pages — this route was the only local surface without one. */}
-          <BreadcrumbTrail
+          <BreadcrumbTrail locale={locale}
             className="mb-4"
             items={[
               { label: t.nav.home, href: `/${locale}` },

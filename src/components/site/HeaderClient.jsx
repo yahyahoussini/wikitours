@@ -122,7 +122,7 @@ export default function HeaderClient({ locale, items, reserveLabel, reserveHref,
         <div className="ms-auto flex items-center gap-2">
           {/* Segmented locale control */}
           <nav
-            aria-label="Languages"
+            aria-label={a11y.languages}
             className="hidden items-center rounded-full border border-bm-black/10 bg-white/70 p-0.5 text-[11px] font-bold sm:flex"
           >
             {['fr', 'ar', 'en'].map((l) => (

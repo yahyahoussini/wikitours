@@ -80,7 +80,19 @@
     "goToSlide": "Go to slide",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
-    "close": "Close"
+    "close": "Close",
+    "breadcrumb": "Breadcrumb",
+    "languages": "Languages",
+    "sections": "Sections",
+    "playVideo": "Play video",
+    "loading": "Loading"
+  },
+  "articleCategory": {
+    "confiance": "Trust",
+    "omra": "Omra",
+    "hajj": "Hajj",
+    "hotels": "Hotels",
+    "guide": "Guide"
   },
   "offer": {
     "from": "From",
@@ -198,7 +210,26 @@
     "logisticsTitle": "Departure from {city}",
     "faqTitle": "FAQ — {city}",
     "agencyLead": "The contract is signed at",
-    "agencyLink": "our Casablanca agency"
+    "agencyLink": "our Casablanca agency",
+    "seoTitleLead": "Omra from {city} {year}",
+    "seoTitleQualifier": "Mohammed V Departure",
+    "seoTitleQualifierShort": "Mohammed V",
+    "seoTitleBrand": "Bab Makka",
+    "seoDescPrice": "Omra from {city} from {minPrice} MAD.",
+    "seoDescNoPrice": "Omra from {city}, departing from Mohammed V airport.",
+    "seoDescTrust": "Licensed agency {license}, contract signed in person, no online payment.",
+    "seoDescTrustNoLicense": "Licensed travel agency, contract signed in person, no online payment.",
+    "seoDescTail": "WhatsApp reply in under 5 minutes."
+  },
+  "cities": {
+    "casablanca": "Casablanca",
+    "rabat": "Rabat",
+    "marrakech": "Marrakesh",
+    "fes": "Fez",
+    "tanger": "Tangier",
+    "agadir": "Agadir",
+    "meknes": "Meknes",
+    "oujda": "Oujda"
   },
   "voyages": {
     "title": "Our travel services",
@@ -291,6 +322,9 @@
     "contactIntro": "A question about Umrah, Hajj or another trip? Our team replies quickly, in French or Arabic.",
     "contactFormTitle": "Send us your request",
     "findUs": "Find us",
+    "ramadanShort": "Omra Ramadan",
+    "countryName": "Morocco",
+    "emailTitle": "Email",
     "whereQuestion": "Where is the agency located?",
     "whereAnswer": "Our agency welcomes you at the following address: {address}.",
     "avisDesc": "Reviews and testimonials from pilgrims who travelled with Bab Makka by Wiki Tours International: videos, screenshots and verified feedback.",

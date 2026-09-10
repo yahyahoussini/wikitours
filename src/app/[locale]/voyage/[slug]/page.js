@@ -128,7 +128,7 @@ export default async function VoyagePage({ params }) {
       <JsonLd data={tripJsonLd} />
       <JsonLd data={breadcrumbJsonLd} />
 
-      <Breadcrumbs
+      <Breadcrumbs locale={locale}
         items={[
           { label: t.nav.home, href: `/${locale}` },
           { label: t.voyages.title, href: `/${locale}/voyages` },

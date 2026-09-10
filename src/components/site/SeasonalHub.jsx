@@ -82,7 +82,7 @@ export default function SeasonalHub({ locale, path, heading, lede, intro, offers
       {faqJsonLd ? <JsonLd data={faqJsonLd} /> : null}
 
       <BrandLockup locale={locale} size="sm" />
-      <BreadcrumbTrail
+      <BreadcrumbTrail locale={locale}
         className="mt-3"
         items={[
           { label: t.nav.home, href: `/${locale}` },
@@ -125,7 +125,7 @@ export default function SeasonalHub({ locale, path, heading, lede, intro, offers
 
       {realFaq.length ? (
         <section className="mt-12 max-w-3xl">
-          <h2 className="text-2xl font-bold text-bm-black">FAQ</h2>
+          <h2 className="text-2xl font-bold text-bm-black">{t.home.faqTitle}</h2>
           <div className="mt-4 flex flex-col gap-3">
             {realFaq.map((f) => (
               <details key={f.q} className="group rounded-card border border-bm-black/5 bg-white px-5 py-4 shadow-hairline">

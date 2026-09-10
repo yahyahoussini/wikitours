@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 /** Dismissible bar; the dismissal persists per-announcement via cookie. */
-export default function AnnouncementBarClient({ id, text, link, variant }) {
+export default function AnnouncementBarClient({ id, text, link, variant, closeLabel = 'Close' }) {
   const cookieName = `wt_ann_${id}`;
   const [visible, setVisible] = useState(true);
 
@@ -31,7 +31,7 @@ export default function AnnouncementBarClient({ id, text, link, variant }) {
       {content}
       <button
         type="button"
-        aria-label="✕"
+        aria-label={closeLabel}
         onClick={() => {
           document.cookie = `${cookieName}=1; path=/; max-age=${60 * 60 * 24 * 30}`;
           setVisible(false);

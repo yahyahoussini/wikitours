@@ -121,7 +121,7 @@ export default async function AvisPage({ params }) {
               <div className="mx-auto max-w-5xl px-6 py-14">
                 <h2 className="text-2xl font-bold">{t.home.reelsTitle}</h2>
                 <div className="mt-6">
-                  <ReelsRow reels={reels} />
+                  <ReelsRow reels={reels} playLabel={t.a11y.playVideo} />
                 </div>
               </div>
             </section>

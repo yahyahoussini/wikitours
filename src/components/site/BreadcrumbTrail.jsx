@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { SITE_URL } from '@/lib/seo';
+import { getDictionary } from '@/lib/i18n';
 import JsonLd from '@/components/site/JsonLd';
 
 /**
@@ -9,7 +10,7 @@ import JsonLd from '@/components/site/JsonLd';
  * `items`: [{ label, href }] — href is the locale-relative path (`/fr/...`);
  * the last item is the current page and never links.
  */
-export default function BreadcrumbTrail({ items, className = '', dark = false }) {
+export default function BreadcrumbTrail({ items, className = '', dark = false, locale }) {
   const muted = dark ? 'text-white/50' : 'text-bm-black/50';
   const current = dark ? 'text-white/80' : 'text-bm-black/70';
   const hover = dark ? 'hover:text-white' : 'hover:text-bm-black';
@@ -29,7 +30,7 @@ export default function BreadcrumbTrail({ items, className = '', dark = false })
   return (
     <>
       <JsonLd data={jsonLd} />
-      <nav aria-label="Breadcrumb" className={className}>
+      <nav aria-label={getDictionary(locale).a11y.breadcrumb} className={className}>
         <ol className={`flex flex-wrap items-center gap-1.5 text-xs ${muted}`}>
           {items.map((item, i) => {
             const last = i === items.length - 1;

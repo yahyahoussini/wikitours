@@ -7,7 +7,7 @@ import { getSettings } from '@/lib/data/settings';
 import { supabasePublic } from '@/lib/supabase/public';
 import { legalIsFilled } from '@/lib/legal-page';
 import { toE164 } from '@/lib/pixels';
-import { MONTH_SLUGS, monthPagePath, monthName, CITY_SLUGS, cityPageIndexable } from '@/lib/months';
+import { MONTH_SLUGS, monthPagePath, monthName, CITY_SLUGS, cityName, cityPageIndexable } from '@/lib/months';
 import BrandLockup from '@/components/site/BrandLockup';
 
 async function column(location, locale, fallback) {
@@ -136,7 +136,7 @@ export default async function SiteFooter({ locale }) {
                 is the only surface that makes it 1 click from every page. */}
             <Link href={`/${locale}/agence-omra-casablanca`} className="hover:text-bm-gold-light">{t.agency.footerLink}</Link>
             <Link href={`/${locale}/bab-makka`} className="hover:text-bm-gold-light">{t.nav.offers}</Link>
-            <Link href={`/${locale}/omra-ramadan`} className="hover:text-bm-gold-light">Omra Ramadan</Link>
+            <Link href={`/${locale}/omra-ramadan`} className="hover:text-bm-gold-light">{t.pages.ramadanShort}</Link>
             <Link href={`/${locale}/omra-pas-cher`} className="hover:text-bm-gold-light">{t.pages.pasCherTitle}</Link>
             <Link href={`/${locale}/hotels-omra`} className="hover:text-bm-gold-light">{t.home.hotelsTitle}</Link>
             <Link href={`/${locale}/guide-omra`} className="hover:text-bm-gold-light">{t.guide.backToPillar}</Link>
@@ -156,7 +156,7 @@ export default async function SiteFooter({ locale }) {
             <nav className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-white/55">
               {liveCities.map((slug) => (
                 <Link key={slug} href={`/${locale}/omra-depuis-${slug}`} className="hover:text-bm-gold-light">
-                  {t.cityPage.title.replace('{city}', CITY_SLUGS[slug])}
+                  {t.cityPage.title.replace('{city}', cityName(slug, locale))}
                 </Link>
               ))}
             </nav>

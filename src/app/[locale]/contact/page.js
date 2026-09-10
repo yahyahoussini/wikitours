@@ -115,7 +115,7 @@ export default async function ContactPage({ params }) {
 
             {settings?.email ? (
               <div>
-                <h2 className="text-sm font-semibold uppercase tracking-wide text-bm-black/50">Email</h2>
+                <h2 className="text-sm font-semibold uppercase tracking-wide text-bm-black/50">{t.pages.emailTitle}</h2>
                 <a href={`mailto:${settings.email}`} className="mt-1 inline-block font-medium text-wiki-blue hover:underline">
                   {settings.email}
                 </a>

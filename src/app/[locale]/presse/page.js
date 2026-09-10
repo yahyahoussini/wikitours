@@ -51,7 +51,7 @@ export default async function PressPage({ params }) {
     <main className="mx-auto max-w-3xl px-6 pb-24 pt-10">
       <JsonLd data={webPageJsonLd} />
       <BrandLockup locale={locale} size="sm" />
-      <BreadcrumbTrail
+      <BreadcrumbTrail locale={locale}
         className="mt-3"
         items={[
           { label: t.nav.home, href: `/${locale}` },

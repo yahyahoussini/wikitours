@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { getDictionary } from '@/lib/i18n';
 
 /**
  * Visible breadcrumb trail. Each page emits its own BreadcrumbList JSON-LD;
@@ -6,9 +7,9 @@ import Link from 'next/link';
  * no visible equivalent is a common reason breadcrumb rich results are dropped).
  * `items`: [{ label, href }] — the last item is the current page and never links.
  */
-export default function Breadcrumbs({ items, className = '' }) {
+export default function Breadcrumbs({ items, className = '', locale }) {
   return (
-    <nav aria-label="Breadcrumb" className={className}>
+    <nav aria-label={getDictionary(locale).a11y.breadcrumb} className={className}>
       <ol className="flex flex-wrap items-center gap-1.5 text-xs text-bm-black/50">
         {items.map((item, i) => {
           const last = i === items.length - 1;

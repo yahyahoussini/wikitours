@@ -4,7 +4,7 @@ import { pickLang, getDictionary, FALLBACK_LOCALE } from '@/lib/i18n';
 import { toE164 } from '@/lib/pixels';
 import { getSettings } from '@/lib/data/settings';
 import { getPublishedOffers, computeMinPrice } from '@/lib/data/content';
-import { CITY_SLUGS } from '@/lib/months';
+import { CITY_SLUGS, cityName } from '@/lib/months';
 import { warnCriticalSettingsOnce } from '@/lib/seo/health';
 import JsonLd from '@/components/site/JsonLd';
 
@@ -145,11 +145,15 @@ export default async function OrgJsonLd({ locale }) {
     // pages serve — a stated, admin-approved service area, never invented).
     // sameAs disambiguates the accented names ("Fès", "Meknès") for engines,
     // so "omra depuis fès" resolves to the city entity, not a string.
+    // Names follow the page language (an Arabic page saying "Casablanca" in
+    // Latin missed the query Arabic speakers actually type); `sameAs` stays the
+    // French Wikipedia entry, which is what anchors the entity regardless of
+    // the label, so the node still resolves to ONE city per locale.
     areaServed: [
-      { '@type': 'Country', name: 'Maroc', sameAs: 'https://fr.wikipedia.org/wiki/Maroc' },
-      ...Object.entries(CITY_SLUGS).map(([slug, name]) => ({
+      { '@type': 'Country', name: t.pages.countryName, sameAs: 'https://fr.wikipedia.org/wiki/Maroc' },
+      ...Object.keys(CITY_SLUGS).map((slug) => ({
         '@type': 'City',
-        name,
+        name: cityName(slug, locale),
         ...(CITY_SAMEAS[slug] ? { sameAs: CITY_SAMEAS[slug] } : {}),
       })),
     ],

@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
  * served HTML; the scrollspy (IntersectionObserver) only moves the gold
  * active indicator. Mobile: horizontal snap chips.
  */
-export default function OfferSubnav({ items }) {
+export default function OfferSubnav({ items, navLabel = 'Sections' }) {
   const [active, setActive] = useState(items[0]?.id ?? null);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function OfferSubnav({ items }) {
 
   return (
     <nav
-      aria-label="Sections"
+      aria-label={navLabel}
       className="sticky top-16 z-30 mt-4 py-2 backdrop-blur md:top-20"
     >
       {/* Chips share the row equally, so the bar always fits the viewport —

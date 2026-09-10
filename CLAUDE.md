@@ -217,11 +217,15 @@ There is no `tailwind.config.js` (Tailwind v4) and no RTL plugin.
 
 - **`pickLang()` silently falls back to French.** An unfilled `_ar` column renders French text on the
   Arabic page, and nothing in the code shows it. This is the largest source of untranslated output.
-- **City names are one French string on all three locales.** `CITY_SLUGS` maps slug → a French label that
-  fills a translated `{city}` template, so `/ar/omra-depuis-fes` renders `عمرة انطلاقاً من Fès` and the
-  English page says `Fès`, not `Fez`. There is no `name_*` column in `city_pages` and no locale-keyed
-  table anywhere. The correct model already exists next door: `hotels.city` is a `makkah|madinah` enum
-  mapped through `t.offer.makkah` / `t.offer.madinah`.
+- **City names are localized — read them with `cityName(slug, locale)`, never `CITY_SLUGS` directly.**
+  Display names live in `src/i18n/*.json` under `cities` (ar `الدار البيضاء`, en `Marrakesh`/`Fez`/
+  `Tangier`); `CITY_SLUGS` in `src/lib/months.js` now holds only the slug whitelist and the French
+  fallback. Using the map directly is what made the Arabic footer read `عمرة انطلاقاً من Casablanca`.
+  URL slugs stay Latin (`omra-depuis-casablanca`) — slug migration is a separate, higher-risk task.
+- **Run `npm run i18n:audit` after touching copy.** It flags Latin script inside `ar` values, `en`
+  values identical to `fr`, keys missing from a locale (silent French fallback) and user-visible
+  literals hardcoded in JSX. `docs/i18n-audit.md` is the checked-in report; regenerate with
+  `npm run i18n:audit -- --write`. It is a report, not a gate — it always exits 0.
 - **The month-hub meta description is hardcoded French** (`src/app/[locale]/[flat]/page.js:99`) while the
   title beside it is localized — the head is half-translated.
 - **`withBrand()` only guards `{absolute:…}` titles.** Plain-string titles get the template suffix
@@ -395,6 +399,20 @@ canonical full schema and must be kept in sync with each migration.
 Observed against **production** (`https://wikitours.ma`), read-only. Head tags and
 robots.txt are the *rendered* bytes, not the source template. Structured-data rows
 are from source. Re-verify before trusting after any deploy.
+
+> **Superseded on 2026-09-09, after this snapshot was taken.** Four rows below
+> record defects that have since been fixed in the same session:
+> - The 24 city titles/descriptions were rewritten from authored templates
+>   (`src/lib/city-seo.js`). `/fr/omra-depuis-casablanca` is now
+>   `Omra depuis Casablanca 2026 — Départ Mohammed V | Bab Makka` (59), and no
+>   city description ends in an ellipsis — all 24 previously did.
+> - `/ar/omra-depuis-casablanca` is now `عمرة من الدار البيضاء 2026 — مطار محمد الخامس | باب مكة`.
+> - The Arabic footer no longer renders Latin city names, and `Omra Ramadan`
+>   is now `عمرة رمضان` (`pages.ramadanShort`).
+> - `/fr/agence-omra-casablanca` is now in the footer on every page.
+>
+> Everything else in this section — robots.txt, the structured-data inventory,
+> the hreflang and canonical findings — still holds.
 
 ### Structured data — how it is built
 

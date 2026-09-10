@@ -18,7 +18,7 @@ const BABMAKKA_HREF = /\/(bab-makka|omra\/|omra-|hotel\/|hotels-omra)/;
  * and it fires faster too (on click, not once the fallback mounts).
  * Mounted once in the root layout.
  */
-export default function NavigationOverlay() {
+export default function NavigationOverlay({ loadingLabel = 'Loading' }) {
   const pathname = usePathname();
   const [target, setTarget] = useState(null); // href of the in-flight navigation, or null
 
@@ -59,7 +59,7 @@ export default function NavigationOverlay() {
       aria-hidden="true"
       className="brand-loader-overlay fixed inset-0 z-[70] flex items-center justify-center bg-wiki-white"
     >
-      <BrandLoader variant={BABMAKKA_HREF.test(target) ? 'babmakka' : 'wikitours'} />
+      <BrandLoader variant={BABMAKKA_HREF.test(target) ? 'babmakka' : 'wikitours'} loadingLabel={loadingLabel} />
     </div>
   );
 }

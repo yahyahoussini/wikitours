@@ -6,7 +6,8 @@ import { getPublishedOffers, getOccasions, getCovers, getCityPage, getFaqs } fro
 import { getSettings } from '@/lib/data/settings';
 import { toOfferCard } from '@/lib/offer-card';
 import { waLink } from '@/lib/whatsapp';
-import { OMRA_YEAR, MONTH_SLUGS, parseMonthSlug, monthPagePath, monthName, CITY_SLUGS, cityPageIndexable } from '@/lib/months';
+import { OMRA_YEAR, MONTH_SLUGS, parseMonthSlug, monthPagePath, monthName, CITY_SLUGS, cityName, cityPageIndexable } from '@/lib/months';
+import { cityTitle, cityDescription, cityYear, cityMinPrice } from '@/lib/city-seo';
 import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc } from '@/lib/seo';
 import { routeTitle, withBrand } from '@/lib/titles';
 import RelatedArticles from '@/components/site/RelatedArticles';
@@ -60,7 +61,9 @@ async function resolveFlat(flat) {
 
   const cityMatch = flat.match(/^omra-depuis-([a-z]+)$/);
   if (cityMatch && CITY_SLUGS[cityMatch[1]]) {
-    return { kind: 'city', citySlug: cityMatch[1], cityName: CITY_SLUGS[cityMatch[1]] };
+    // Only the slug travels — the display name is locale-dependent and is
+    // resolved with cityName(slug, locale) at each use site.
+    return { kind: 'city', citySlug: cityMatch[1] };
   }
 
   const occMatch = flat.match(/^omra-([a-z0-9-]+)$/);
@@ -102,13 +105,36 @@ export async function generateMetadata({ params }) {
     };
   }
   if (resolved.kind === 'city') {
-    // absolute → no " — Wiki Tours International" template suffix (keeps ≤60).
+    // Authored templates (src/lib/city-seo.js) — NOT sliced from body copy, so
+    // nothing truncates mid-sentence with an ellipsis. The year comes from the
+    // next real departure and the price floor from live offers (both omitted or
+    // rolled forward rather than printed stale); the licence comes from
+    // settings, never a hardcoded number. absolute → no template suffix.
     // Anti-doorway guard: noindex until the admin fills the unique local
     // content AND flips the city_pages toggle (Phase 4 A2 §12).
-    const cityRow = await getCityPage(resolved.citySlug);
+    const [cityRow, offers, settings] = await Promise.all([
+      getCityPage(resolved.citySlug),
+      getPublishedOffers(),
+      getSettings(),
+    ]);
+    const title = cityTitle(resolved.citySlug, locale, cityYear(offers));
+    const description = cityDescription(resolved.citySlug, locale, {
+      minPrice: cityMinPrice(offers),
+      license: settings?.license_number ?? null,
+    });
     return {
-      title: { absolute: t.cityPage.title.replace('{city}', resolved.cityName) },
-      description: clampDesc(pickLang(cityRow, 'intro', locale) ?? t.cityPage.answer),
+      title: { absolute: title },
+      description,
+      // Same treatment for the social card, absolute so the layout's
+      // "%s — Wiki Tours International" template never re-wraps it.
+      openGraph: {
+        title: { absolute: title },
+        description,
+        url: absoluteUrl(locale, `/${flat}`),
+        siteName: BRAND.lockup,
+        locale,
+        type: 'website',
+      },
       alternates,
       ...(cityPageIndexable(cityRow) ? {} : { robots: { index: false, follow: true } }),
     };
@@ -190,7 +216,7 @@ export default async function FlatLandingPage({ params }) {
             .replace('{occasion}', occasionName)
             .replace('{min}', Number.isFinite(minPrice) ? nf.format(minPrice) : '—'));
   } else {
-    heading = t.cityPage.title.replace('{city}', resolved.cityName);
+    heading = t.cityPage.title.replace('{city}', cityName(resolved.citySlug, locale));
     // Unique local intro when the admin wrote it; the generic line otherwise
     // (and the page stays noindex — see generateMetadata).
     answer = pickLang(cityRow, 'intro', locale) ?? t.cityPage.answer;
@@ -262,7 +288,7 @@ export default async function FlatLandingPage({ params }) {
           <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-bm-gold/10 blur-3xl" />
           <div className="relative">
             <BrandLockup locale={locale} size="sm" />
-            <BreadcrumbTrail
+            <BreadcrumbTrail locale={locale}
               dark
               className="mt-3"
               items={[
@@ -305,7 +331,7 @@ export default async function FlatLandingPage({ params }) {
 
         {cityLogistics ? (
           <section className="mt-8 max-w-2xl rounded-panel border border-white/10 bg-bm-black-soft p-6">
-            <h2 className="text-xl font-bold">{t.cityPage.logisticsTitle.replace('{city}', resolved.cityName)}</h2>
+            <h2 className="text-xl font-bold">{t.cityPage.logisticsTitle.replace('{city}', cityName(resolved.citySlug, locale))}</h2>
             <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-white/75">{cityLogistics}</p>
           </section>
         ) : null}
@@ -343,7 +369,7 @@ export default async function FlatLandingPage({ params }) {
 
         {faq ? (
           <section className="mt-14 max-w-3xl">
-            <h2 className="text-2xl font-bold">FAQ</h2>
+            <h2 className="text-2xl font-bold">{t.home.faqTitle}</h2>
             <div className="mt-4 flex flex-col gap-3">
               {faq.map((f) => (
                 <details key={f.q} className="group rounded-card border border-white/10 bg-bm-black-soft px-5 py-4">

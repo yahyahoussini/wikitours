@@ -54,7 +54,7 @@ export default async function BlogPage({ params }) {
       <BlogGrid
         locale={locale}
         articles={cards}
-        labels={{ search: t.pages.blogSearch, noResults: t.pages.blogNoResults }}
+        labels={{ search: t.pages.blogSearch, noResults: t.pages.blogNoResults, categories: t.articleCategory }}
       />
       <WhatsAppFloat locale={locale} />
     </main>

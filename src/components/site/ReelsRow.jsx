@@ -11,7 +11,7 @@ import { useEffect, useRef, useState } from 'react';
  * mounts the <video>, plays WITH sound and shows native controls; only one
  * reel plays at a time.
  */
-export default function ReelsRow({ reels }) {
+export default function ReelsRow({ reels, playLabel = 'Play video' }) {
   const [activeId, setActiveId] = useState(null);
   const videoRef = useRef(null);
 
@@ -50,7 +50,7 @@ export default function ReelsRow({ reels }) {
               // affordance so it reads as "tap to watch", never a black box.
               <button
                 type="button"
-                aria-label="Lire la vidéo"
+                aria-label={playLabel}
                 onClick={() => setActiveId(reel.id)}
                 style={reel.poster ? { backgroundImage: `url(${reel.poster})` } : undefined}
                 className="group flex aspect-9/16 w-full items-center justify-center rounded-card bg-linear-to-b from-bm-black-soft to-bm-black bg-cover bg-center shadow-lift"

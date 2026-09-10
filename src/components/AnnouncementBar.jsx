@@ -1,5 +1,5 @@
 import { supabasePublic } from '@/lib/supabase/public';
-import { pickLang } from '@/lib/i18n';
+import { getDictionary, pickLang } from '@/lib/i18n';
 import AnnouncementBarClient from '@/components/AnnouncementBarClient';
 
 /**
@@ -21,7 +21,7 @@ export default async function AnnouncementBar({ locale }) {
     const text = pickLang(data, 'text', locale);
     if (!text) return null;
     return (
-      <AnnouncementBarClient id={data.id} text={text} link={data.link} variant={data.variant} />
+      <AnnouncementBarClient id={data.id} text={text} link={data.link} variant={data.variant} closeLabel={getDictionary(locale).a11y.close} />
     );
   } catch {
     return null;

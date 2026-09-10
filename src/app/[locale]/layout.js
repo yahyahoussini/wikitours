@@ -116,7 +116,7 @@ export default async function LocaleLayout({ children, params }) {
         {/* Gates wt-motion's DOM writes behind hydration commit */}
         <HydrationSignal />
         {/* Branded transition overlay — click-based, not loading.js (see its own comment) */}
-        <NavigationOverlay />
+        <NavigationOverlay loadingLabel={t.a11y.loading} />
         {/* First-party beacon — deferred, ~1.6KB gzipped, public pages only */}
         <script src="/wt.js" defer />
         {/* Shared motion utility — reveal + scroll-progress + magnetic (no libs) */}

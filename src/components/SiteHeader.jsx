@@ -40,7 +40,7 @@ export default async function SiteHeader({ locale }) {
         items={items}
         reserveLabel={t.cta.reserveShort}
         reserveHref={`/${locale}/bab-makka`}
-        a11y={{ openMenu: t.a11y.openMenu, closeMenu: t.a11y.closeMenu }}
+        a11y={{ openMenu: t.a11y.openMenu, closeMenu: t.a11y.closeMenu, languages: t.a11y.languages }}
       />
       {/* Spacer under the fixed capsule */}
       <div aria-hidden="true" className="h-20" />

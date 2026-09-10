@@ -9,12 +9,12 @@ import Image from 'next/image';
  * flushes a 200 status before a deeper notFound() can run — see
  * NavigationOverlay's comment.)
  */
-export default function BrandLoader({ variant = 'wikitours' }) {
+export default function BrandLoader({ variant = 'wikitours', loadingLabel = 'Loading' }) {
   const babmakka = variant === 'babmakka';
   return (
     <div
       role="status"
-      aria-label="Chargement"
+      aria-label={loadingLabel}
       className="flex flex-col items-center justify-center gap-6 px-6"
     >
       <Image
@@ -26,7 +26,7 @@ export default function BrandLoader({ variant = 'wikitours' }) {
         className={`brand-loader-logo w-auto ${babmakka ? 'h-20' : 'h-14'}`}
       />
       <span aria-hidden="true" className="brand-loader-track h-0.5 w-40 rounded-full" />
-      <span className="sr-only">Chargement…</span>
+      <span className="sr-only">{loadingLabel}</span>
     </div>
   );
 }

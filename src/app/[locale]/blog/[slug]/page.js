@@ -86,7 +86,7 @@ export default async function ArticlePage({ params }) {
       <JsonLd data={articleJsonLd} />
       <JsonLd data={breadcrumbJsonLd} />
 
-      <Breadcrumbs
+      <Breadcrumbs locale={locale}
         items={[
           { label: t.nav.home, href: `/${locale}` },
           { label: t.nav.blog, href: `/${locale}/blog` },
@@ -95,7 +95,11 @@ export default async function ArticlePage({ params }) {
       />
 
       <article>
-        <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-wiki-blue">{article.category}</p>
+        {/* Localized label, not the raw enum — the Arabic cards used to read
+            "CONFIANCE" / "HOTELS" in Latin script. */}
+        <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-wiki-blue">
+          {t.articleCategory?.[article.category] ?? article.category}
+        </p>
         <h1 className="mt-2 text-3xl font-bold leading-tight text-bm-black sm:text-4xl">
           {pickLang(article, 'title', locale)}
         </h1>

@@ -70,7 +70,7 @@ export default async function GlossaryPage({ params }) {
       <JsonLd data={webPageJsonLd} />
       {definedTermSet ? <JsonLd data={definedTermSet} /> : null}
       <BrandLockup locale={locale} size="sm" />
-      <BreadcrumbTrail
+      <BreadcrumbTrail locale={locale}
         className="mt-3"
         items={[{ label: t.nav.home, href: `/${locale}` }, { label: t.glossary.title }]}
       />

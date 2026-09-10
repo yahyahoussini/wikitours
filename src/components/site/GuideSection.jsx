@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { BRAND } from '@/lib/brand';
 import { SITE_URL, absoluteUrl } from '@/lib/seo';
-import { pickLang } from '@/lib/i18n';
+import { getDictionary, pickLang } from '@/lib/i18n';
 import { renderMarkdown, markdownClass } from '@/lib/markdown';
 import BrandLockup from '@/components/site/BrandLockup';
 import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
@@ -88,7 +88,7 @@ export default function GuideSection({
       {articleJsonLd ? <JsonLd data={articleJsonLd} /> : null}
       {faqJsonLd ? <JsonLd data={faqJsonLd} /> : null}
       <BrandLockup locale={locale} size="sm" />
-      <BreadcrumbTrail className="mt-3" items={breadcrumbs} />
+      <BreadcrumbTrail locale={locale} className="mt-3" items={breadcrumbs} />
 
       <h1 className="mt-3 text-3xl font-bold text-bm-black sm:text-4xl">{heading}</h1>
       <p data-answer className="mt-4 max-w-2xl text-lg leading-relaxed text-bm-black/70">{lede}</p>
@@ -135,7 +135,7 @@ export default function GuideSection({
 
       {faqs.length ? (
         <section className="mt-12">
-          <h2 className="text-2xl font-bold text-bm-black">FAQ</h2>
+          <h2 className="text-2xl font-bold text-bm-black">{getDictionary(locale).home.faqTitle}</h2>
           <div className="mt-4 flex flex-col gap-3">
             {faqs.map((f) => (
               <details key={f.id} className="group rounded-card border border-bm-black/10 bg-white px-5 py-4 shadow-hairline">

@@ -78,7 +78,9 @@ export default function BlogGrid({ locale, articles, labels }) {
               ) : null}
             </div>
             <div className="flex flex-1 flex-col p-5">
-              <p className="text-xs font-semibold uppercase tracking-wide text-wiki-blue">{article.category}</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-wiki-blue">
+                {labels.categories?.[article.category] ?? article.category}
+              </p>
               <h2 className="mt-2 font-bold leading-snug text-bm-black group-hover:text-wiki-blue">
                 {article.title}
               </h2>

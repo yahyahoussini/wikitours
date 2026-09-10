@@ -262,7 +262,7 @@ export async function ProofSection({ locale, testimonials, settings, enterDark =
             <div className="mx-auto max-w-5xl px-6 py-[72px] lg:py-32">
               <h2 className="text-3xl font-bold">{t.home.reelsTitle}</h2>
               <div className="mt-6">
-                <ReelsRow reels={reels} />
+                <ReelsRow reels={reels} playLabel={t.a11y.playVideo} />
               </div>
             </div>
           </section>

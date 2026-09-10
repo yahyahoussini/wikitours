@@ -82,7 +82,7 @@ export default async function PriceBarometerPage({ params }) {
       <JsonLd data={webPageJsonLd} />
       {datasetJsonLd ? <JsonLd data={datasetJsonLd} /> : null}
       <BrandLockup locale={locale} size="sm" />
-      <BreadcrumbTrail
+      <BreadcrumbTrail locale={locale}
         className="mt-3"
         items={[{ label: t.nav.home, href: `/${locale}` }, { label: t.barometer.title }]}
       />
