@@ -2,11 +2,12 @@ import Link from 'next/link';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
-import { getPublishedOffers, getOccasions, getCovers, getCityPage, getFaqs } from '@/lib/data/content';
+import { getPublishedOffers, getOfferHistory, getOccasions, getCovers, getCityPage, getMonthPage, getFaqs } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { toOfferCard } from '@/lib/offer-card';
 import { waLink } from '@/lib/whatsapp';
-import { OMRA_YEAR, MONTH_SLUGS, parseMonthSlug, monthPagePath, monthName, monthsWithOffers, CITY_SLUGS, cityName, cityPageIndexable } from '@/lib/months';
+import { MONTH_SLUGS, parseMonthSlug, monthPagePath, monthName, targetYearFor, departuresInMonth, monthLanderIndexable, CITY_SLUGS, cityName, cityPageIndexable } from '@/lib/months';
+import { pastDeparturesInMonth, historicPriceRange, lastSeasonDepartures, hijriOverlap } from '@/lib/month-stats';
 import { cityTitle, cityDescription, cityYear, cityMinPrice } from '@/lib/city-seo';
 import { lastModifiedOf } from '@/lib/freshness';
 import { pageDescription, trustClauses, authoredOr } from '@/lib/page-seo';
@@ -86,35 +87,33 @@ export async function generateMetadata({ params }) {
   const alternates = hreflangAlternates(locale, `/${flat}`);
   if (resolved.kind === 'month') {
     const month = monthName(resolved.monthIndex, locale);
-    // A month with no departure has nothing to rank. Keep it crawlable
-    // (follow) but out of the index until it has offers — 12 near-empty
-    // templated hubs otherwise read as doorway/thin content and can drag the
-    // whole programmatic surface down. It re-enters the index by itself the
-    // moment an offer lands in that month (and the sitemap agrees — see
-    // app/sitemap.js). getPublishedOffers is request-cached.
-    // ONE predicate, shared with app/sitemap.js, the footer and MonthsLinks —
-    // so a month is noindex, absent from the sitemap and unlinked together, or
-    // indexable, listed and linked together. Never a mix.
-    const hasOffers = monthsWithOffers(await getPublishedOffers()).has(resolved.monthIndex);
-    // Authored per locale. The old string was a hardcoded FRENCH template on
-    // every locale — /ar rendered "Omra أكتوبر 2026 depuis le Maroc — dates,
-    // hôtels et prix." with French spliced into an Arabic sentence, on all 36
-    // month URLs.
-    const trust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
-    const description = hasOffers
-      ? pageDescription(locale, 'month', {
-          vars: { month, year: OMRA_YEAR },
-          extra: [trust.licence, trust.noPayment],
-        })
-      : pageDescription(locale, 'monthEmpty', {
-          vars: { month, year: OMRA_YEAR },
-          extra: [trust.licence, trust.whatsapp],
-        });
+    // The YEAR is the rollover/data year (targetYearFor, src/lib/months.js):
+    // rendering /omra-janvier in September says "janvier 2027". No constant.
+    // INDEXABILITY is the ONE predicate (monthLanderIndexable), shared with
+    // app/sitemap.js, the footer and MonthsLinks: a departure this cycle OR
+    // the authored evergreen blocks (fr+ar, toggle on) index the page; a
+    // never-sold month never does. Hard constraint 10 — content first,
+    // noindex removal second — is that function. Everything is request-cached.
+    const [offers, monthPage, settings] = await Promise.all([
+      getPublishedOffers(),
+      getMonthPage(MONTH_SLUGS[resolved.monthIndex]),
+      getSettings(),
+    ]);
+    const year = targetYearFor(resolved.monthIndex, { offers });
+    const hasDepartures = departuresInMonth(offers, resolved.monthIndex).length > 0;
+    const indexable = monthLanderIndexable(resolved.monthIndex, { offers, monthPage });
+    // Authored per locale (the old string was a hardcoded FRENCH template on
+    // every locale). Three states: departures open, evergreen, empty.
+    const trust = trustClauses(locale, { license: settings?.license_number ?? null });
+    const description = pageDescription(locale, hasDepartures ? 'month' : indexable ? 'monthEvergreen' : 'monthEmpty', {
+      vars: { month, year },
+      extra: hasDepartures ? [trust.licence, trust.noPayment] : [trust.licence, trust.whatsapp],
+    });
     return {
-      title: { absolute: routeTitle('month', locale, { month }) },
+      title: { absolute: routeTitle('month', locale, { month, year }) },
       description,
       alternates,
-      ...(hasOffers ? {} : { robots: { index: false, follow: true } }),
+      ...(indexable ? {} : { robots: { index: false, follow: true } }),
     };
   }
   if (resolved.kind === 'city') {
@@ -179,6 +178,118 @@ export async function generateMetadata({ params }) {
   };
 }
 
+/**
+ * The evergreen body of a month lander — what makes /omra-{mois} worth
+ * indexing when no departure is open. Order (owner spec): prices observed →
+ * last season's departures → Hijri calendar → weather & crowds → who it suits
+ * → when to book → the month FAQ (rendered by the page) → the notification
+ * form. The first three derive from real departures (src/lib/month-stats.js)
+ * or the Umm al-Qura calendar; the next three are authored per month in the
+ * admin (month_pages) and read through pickLang. A block with no data is
+ * omitted — never a placeholder (LAW §10).
+ */
+function MonthEvergreen({ ctx, t, locale }) {
+  const { month, year, monthPage, historic, lastSeason, hijri } = ctx;
+  const fill = (s) => s.replace('{month}', month).replace('{year}', String(year));
+  const shortDate = new Intl.DateTimeFormat(locale === 'ar' ? 'ar-MA' : `${locale}-MA`, { day: 'numeric', month: 'short', timeZone: 'UTC' });
+  const weather = pickLang(monthPage, 'weather', locale);
+  const crowds = pickLang(monthPage, 'crowds', locale);
+  const suits = pickLang(monthPage, 'suits', locale);
+  const leadTime = pickLang(monthPage, 'lead_time', locale);
+  const hijriLine = [
+    (hijri.sameMonth ? t.months.hijriSame : t.months.hijriSpan).replace('{hijriA}', hijri.first).replace('{hijriB}', hijri.last),
+    hijri.ramadan ? t.months.hijriRamadan : null,
+    hijri.hajj ? t.months.hijriHajj : null,
+    hijri.mawlid ? t.months.hijriMawlid : null,
+    hijri.muharram ? t.months.hijriMuharram : null,
+  ]
+    .filter(Boolean)
+    .map(fill)
+    .join(' ');
+  const h2 = 'text-2xl font-bold';
+  const body = 'mt-3 max-w-prose whitespace-pre-line leading-relaxed text-white/75';
+  const th = 'px-4 py-3 text-start';
+  return (
+    <div data-month-evergreen className="max-w-3xl">
+      {historic ? (
+        <section className="mt-12">
+          <h2 className={h2}>{fill(t.months.historicTitle)}</h2>
+          <p className={body}>
+            {fill(t.months.historicLine)
+              .replace('{n}', historic.count)
+              .replace('{years}', historic.years.join(', '))
+              .replace('{min}', nf.format(historic.min))
+              .replace('{max}', nf.format(historic.max))}
+          </p>
+        </section>
+      ) : null}
+
+      {lastSeason ? (
+        <section className="mt-12">
+          <h2 className={h2}>{t.months.lastSeasonTitle.replace('{month}', month).replace('{year}', String(lastSeason.year))}</h2>
+          <p className={body}>{t.months.lastSeasonIntro.replace('{month}', month).replace('{year}', String(lastSeason.year))}</p>
+          <div className="mt-4 overflow-x-auto rounded-panel border border-white/10">
+            <table className="w-full min-w-[36rem] border-collapse text-start text-sm">
+              <thead>
+                <tr className="border-b border-white/10 text-xs font-bold uppercase tracking-wide text-white/50">
+                  <th scope="col" className={th}>{t.offer.datesLabel}</th>
+                  <th scope="col" className={th}>{t.months.colDuration}</th>
+                  <th scope="col" className={th}>{t.offer.airlineLabel}</th>
+                  <th scope="col" className={th}>{t.pages.colHotel}</th>
+                  <th scope="col" className={th}>{t.offer.from}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {lastSeason.departures.map((d) => (
+                  <tr key={d.slug} className="border-b border-white/5 last:border-0">
+                    <td className="whitespace-nowrap px-4 py-3">
+                      {shortDate.format(new Date(d.date_start))}
+                      {d.date_end ? ` → ${shortDate.format(new Date(d.date_end))}` : ''}
+                    </td>
+                    <td className="px-4 py-3">
+                      {d.duration_days
+                        ? t.offer.duration.replace('{days}', d.duration_days).replace('{nights}', d.duration_nights ?? d.duration_days - 1)
+                        : '—'}
+                    </td>
+                    <td className="px-4 py-3">{d.airline ?? '—'}</td>
+                    <td className="px-4 py-3">{d.hotels.join(', ') || '—'}</td>
+                    <td className="whitespace-nowrap px-4 py-3 tabular-nums">{d.from != null ? `${nf.format(d.from)} ${t.offer.currency}` : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      ) : null}
+
+      <section className="mt-12">
+        <h2 className={h2}>{t.months.hijriTitle}</h2>
+        <p className={body}>{hijriLine}</p>
+      </section>
+
+      {weather || crowds ? (
+        <section className="mt-12">
+          <h2 className={h2}>{fill(t.months.weatherTitle)}</h2>
+          {weather ? <p className={body}>{weather}</p> : null}
+          {crowds ? <p className={body}>{crowds}</p> : null}
+        </section>
+      ) : null}
+      {suits ? (
+        <section className="mt-12">
+          <h2 className={h2}>{fill(t.months.suitsTitle)}</h2>
+          <p className={body}>{suits}</p>
+        </section>
+      ) : null}
+      {leadTime ? (
+        <section className="mt-12">
+          <h2 className={h2}>{fill(t.months.leadTimeTitle)}</h2>
+          <p className={body}>{leadTime}</p>
+        </section>
+      ) : null}
+    </div>
+  );
+}
+
 export default async function FlatLandingPage({ params }) {
   const { locale, flat } = await params;
   if (!isLocale(locale)) notFound();
@@ -204,27 +315,49 @@ export default async function FlatLandingPage({ params }) {
   let heading;
   let answer = null;
   let alertSource = `landing_${flat}`;
+  let monthCtx = null;
 
   if (resolved.kind === 'month') {
-    const month = monthName(resolved.monthIndex, locale);
-    matching = offers.filter(
-      (o) => o.date_start && new Date(o.date_start).getUTCMonth() === resolved.monthIndex &&
-        new Date(o.date_start).getUTCFullYear() === OMRA_YEAR,
-    );
-    heading = t.months.pageTitle.replace('{month}', month).replace('{year}', String(OMRA_YEAR));
+    const m = resolved.monthIndex;
+    const [history, monthPage, monthFaqs] = await Promise.all([
+      getOfferHistory(),
+      getMonthPage(MONTH_SLUGS[m]),
+      getFaqs(`mois-${MONTH_SLUGS[m]}`),
+    ]);
+    // Year = rollover + published departures (never a constant); the listed
+    // departures are that year's; indexability is the shared predicate.
+    const year = targetYearFor(m, { offers });
+    const month = monthName(m, locale);
+    const fill = (s) => s.replace('{month}', month).replace('{year}', String(year));
+    matching = departuresInMonth(offers, m);
+    const indexable = monthLanderIndexable(m, { offers, monthPage });
+    heading = fill(t.months.pageTitle);
     const minPrice = Math.min(...matching.map((o) => o.starting_price).filter((p) => p != null));
     answer = matching.length
-      ? t.months.answerWithOffers
+      ? fill(t.months.answerWithOffers)
           .replace('{n}', matching.length)
-          .replace('{month}', month)
-          .replace('{year}', String(OMRA_YEAR))
           .replace('{min}', Number.isFinite(minPrice) ? nf.format(minPrice) : '—')
-      : t.months.emptyTitle.replace('{month}', month).replace('{year}', String(OMRA_YEAR));
+      : indexable
+        ? fill(t.months.evergreenLede)
+        : fill(t.months.emptyTitle);
+    // The evergreen blocks (MonthEvergreen): derived from real departures —
+    // prices observed, last season — and the computed Hijri overlap; the rest
+    // authored per month in the admin. Nothing here is a placeholder.
+    monthCtx = {
+      month,
+      year,
+      monthPage,
+      indexable,
+      historic: historicPriceRange(pastDeparturesInMonth(history, m)),
+      lastSeason: lastSeasonDepartures(history, m, year),
+      hijri: hijriOverlap(m, year, locale),
+      faqs: monthFaqs.map((f) => ({ q: pickLang(f, 'question', locale), a: pickLang(f, 'answer', locale) })),
+    };
   } else if (resolved.kind === 'occasion') {
     matching = offers.filter((o) => o.occasion?.slug === resolved.occasion.slug);
     const occasionName = pickLang(resolved.occasion, 'name', locale);
-    // Year comes from the real departures (Ramadan 2027 ≠ OMRA_YEAR), so the
-    // H1/title carry the year while the URL stays evergreen (/omra-ramadan).
+    // Year comes from the real departures (Ramadan 2027 is not the calendar
+    // year), so the H1/title carry it while the URL stays evergreen.
     const occasionYear = occasionYearOf(matching);
     heading = occasionYear ? `Omra ${occasionName} ${occasionYear}` : `Omra ${occasionName}`;
     // Answer-first (LAWS §5): admin description if any, else a computed line
@@ -282,14 +415,16 @@ export default async function FlatLandingPage({ params }) {
   };
 
   // FAQ block: occasion hubs carry the generically-true Omra FAQ; city pages
-  // carry their own DB category (ville-{slug}, admin-authored, [ADMIN DATA]
-  // until seeded). Normalized to {q, a}.
+  // their own DB category (ville-{slug}); month landers theirs (mois-{slug},
+  // admin-authored, month-specific — never the home set). Normalized to {q, a}.
   const faq =
     resolved.kind === 'occasion'
       ? t.pages.pasCherFaq
-      : cityFaqs.length
-        ? cityFaqs.map((f) => ({ q: pickLang(f, 'question', locale), a: pickLang(f, 'answer', locale) }))
-        : null;
+      : monthCtx?.faqs.length
+        ? monthCtx.faqs
+        : cityFaqs.length
+          ? cityFaqs.map((f) => ({ q: pickLang(f, 'question', locale), a: pickLang(f, 'answer', locale) }))
+          : null;
   const faqJsonLd = faq
     ? {
         '@context': 'https://schema.org',
@@ -347,9 +482,12 @@ export default async function FlatLandingPage({ params }) {
       </section>
 
       <main className="mx-auto max-w-6xl px-6 pb-20 pt-10">
-        {/* Anti-doorway guard hook: present only while the city page lacks its
-            unique content — the audit fails if this coexists with indexability. */}
-        {resolved.kind === 'city' && !cityPageIndexable(cityRow) ? <span data-guard="empty" hidden /> : null}
+        {/* Anti-doorway guard hook: present while a city page lacks its unique
+            content or a month lander lacks a departure AND its authored blocks —
+            the audit fails if this coexists with indexability. */}
+        {(resolved.kind === 'city' && !cityPageIndexable(cityRow)) || (monthCtx && !monthCtx.indexable) ? (
+          <span data-guard="empty" hidden />
+        ) : null}
 
         {cityLogistics ? (
           <section className="mt-8 max-w-2xl rounded-panel border border-white/10 bg-bm-black-soft p-6">
@@ -368,8 +506,9 @@ export default async function FlatLandingPage({ params }) {
               whatsappHref={whatsappHref}
             />
           </div>
-        ) : (
-          /* Honest empty state + alert micro-form */
+        ) : monthCtx ? null : (
+          /* Honest empty state + alert micro-form (occasion hubs / city pages;
+             month landers render their evergreen body and the form last) */
           <section className="mt-8 max-w-md rounded-panel border border-bm-gold/25 bg-bm-black-soft p-6">
             <p className="text-sm leading-relaxed text-white/75">{t.months.alertPrompt}</p>
             <div className="mt-4">
@@ -384,6 +523,8 @@ export default async function FlatLandingPage({ params }) {
           </section>
         )}
 
+        {monthCtx ? <MonthEvergreen ctx={monthCtx} t={t} locale={locale} /> : null}
+
         {/* AEO: seasonal (occasion) hubs also carry an extractable price table. */}
         {resolved.kind === 'occasion' ? (
           <OffersPriceTable offers={matching} locale={locale} t={t} dark />
@@ -391,7 +532,7 @@ export default async function FlatLandingPage({ params }) {
 
         {faq ? (
           <section className="mt-14 max-w-3xl">
-            <h2 className="text-2xl font-bold">{t.home.faqTitle}</h2>
+            <h2 className="text-2xl font-bold">{monthCtx ? t.months.faqTitle.replace('{month}', monthCtx.month) : t.home.faqTitle}</h2>
             <div className="mt-4 flex flex-col gap-3">
               {faq.map((f) => (
                 <details key={f.q} className="group rounded-card border border-white/10 bg-bm-black-soft px-5 py-4">
@@ -402,6 +543,24 @@ export default async function FlatLandingPage({ params }) {
             </div>
           </section>
         ) : null}
+        {/* Month landers: the notification form comes LAST — after the
+            substance and the FAQ (owner spec), never instead of them. */}
+        {monthCtx ? (
+          <section className="mt-12 max-w-md rounded-panel border border-bm-gold/25 bg-bm-black-soft p-6">
+            <h2 className="text-lg font-bold">{t.months.alertTitle.replace('{month}', monthCtx.month).replace('{year}', String(monthCtx.year))}</h2>
+            <p className="mt-2 text-sm leading-relaxed text-white/75">{t.months.alertPrompt}</p>
+            <div className="mt-4">
+              <LeadForm locale={locale} labels={t.form} dark source={alertSource} whatsappNumber={settings?.whatsapp_number} />
+            </div>
+            <Link
+              href={`/${locale}/bab-makka`}
+              className="mt-4 inline-block text-sm font-semibold text-bm-gold underline-offset-4 hover:underline"
+            >
+              {t.months.browseAll} →
+            </Link>
+          </section>
+        ) : null}
+
         {/* Reverse internal link: the blog cluster that supports this hub. */}
         <RelatedArticles path={`/${flat}`} locale={locale} />
       </main>

@@ -2,12 +2,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, pickLang } from '@/lib/i18n';
-import { getMenu, getCityPages, getPublishedOffers } from '@/lib/data/content';
+import { getMenu, getCityPages, getMonthPages, getPublishedOffers } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { supabasePublic } from '@/lib/supabase/public';
 import { legalIsFilled } from '@/lib/legal-page';
 import { toE164 } from '@/lib/pixels';
-import { MONTH_SLUGS, monthPagePath, monthName, monthsWithOffers, CITY_SLUGS, cityName, cityPageIndexable } from '@/lib/months';
+import { MONTH_SLUGS, monthPagePath, monthName, indexableMonths, CITY_SLUGS, cityName, cityPageIndexable } from '@/lib/months';
 import BrandLockup from '@/components/site/BrandLockup';
 
 async function column(location, locale, fallback) {
@@ -26,8 +26,9 @@ export default async function SiteFooter({ locale }) {
   // must always be internally linked (orphan rule in scripts/seo-audit.js).
   const cityPages = await getCityPages();
   const liveCities = Object.keys(CITY_SLUGS).filter((slug) => cityPageIndexable(cityPages.get(slug)));
-  // Same rule for months (getPublishedOffers is request-cached — no extra query).
-  const monthSet = monthsWithOffers(await getPublishedOffers());
+  // Same rule for months: the ONE predicate (a departure this cycle, or the
+  // authored evergreen content) — getPublishedOffers/getMonthPages are request-cached.
+  const monthSet = indexableMonths(await getPublishedOffers(), await getMonthPages());
   const liveMonths = MONTH_SLUGS.map((slug, i) => [slug, i]).filter(([, i]) => monthSet.has(i));
 
   // Legal pages: only link the ones the admin has actually filled (fr+ar+

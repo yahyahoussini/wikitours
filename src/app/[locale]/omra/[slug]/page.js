@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
 import { hreflangAlternates, clampDesc, BRAND_ID, hotelNode, tripNodeId } from '@/lib/seo';
@@ -13,6 +13,7 @@ import {
   getTestimonials,
   getFaqs,
   getCovers,
+  getMonthPages,
   computeMinPrice,
 } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
@@ -20,8 +21,8 @@ import { getGallerySlides } from '@/lib/data/gallery';
 import { publicMediaUrl } from '@/lib/media';
 import { toOfferCard } from '@/lib/offer-card';
 import { waLink } from '@/lib/whatsapp';
-import { OMRA_YEAR, monthPagePath, monthName } from '@/lib/months';
-import { offerAvailability, hasDeparted, seatsLabel, visibleStatusKey } from '@/lib/offers';
+import { monthPagePath, monthName, targetYearFor, indexableMonths, retiredRedirectPath } from '@/lib/months';
+import { offerAvailability, hasDeparted, seatsLabel, visibleStatusKey, offerLifecycle } from '@/lib/offers';
 import BrandLockup from '@/components/site/BrandLockup';
 import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
 import OfferSubnav from '@/components/site/OfferSubnav';
@@ -164,6 +165,10 @@ export async function generateMetadata({ params }) {
       { extra: [offerTrust.noPayment, offerTrust.whatsapp] },
     ),
     alternates: hreflangAlternates(locale, `/omra/${slug}`),
+    // Lifecycle (src/lib/offers.js): only a LIVE departure is indexable. An
+    // archived one (returned ≤ 90 days ago) is noindex, follow, self-canonical;
+    // a retired one never renders — the middleware 301s it, the body 308s.
+    ...(offerLifecycle(offer) === 'live' ? {} : { robots: { index: false, follow: true } }),
   };
 }
 
@@ -182,6 +187,15 @@ export default async function OfferPage({ params }) {
     getTestimonials(),
   ]);
   if (!offer) notFound();
+
+  // Lifecycle from the return date. RETIRED (returned > 90 days ago) → 308
+  // backstop to the month lander, or the hub when that lander is noindex —
+  // the middleware already 301s on every request; this covers a stale memo.
+  const lifecycle = offerLifecycle(offer);
+  const publishedOffers = await getPublishedOffers();
+  if (lifecycle === 'retired') {
+    permanentRedirect(retiredRedirectPath(offer, locale, indexableMonths(publishedOffers, await getMonthPages())).path);
+  }
 
   // Cover feeds Product.image — Google needs an image for Product rich results.
   const offerCovers = await getCovers('offers', [offer.id]);
@@ -234,15 +248,17 @@ export default async function OfferPage({ params }) {
     hasDeparted(offer) ? null : ['dot', t.offer.status[visibleStatusKey(offer)]],
   ].filter(Boolean);
 
-  // Hubs this offer belongs to. The month hub is only linked when the offer's
-  // year matches OMRA_YEAR — monthPagePath always points at the current year,
-  // so a 2027 departure must not link to the 2026 hub.
+  // Hubs this offer belongs to. The month lander is evergreen (/omra-{mois});
+  // its label carries the year the lander is currently about (targetYearFor:
+  // rollover + published departures), which is this departure's own year for
+  // as long as it is upcoming.
   const offerMonth = offer.date_start ? new Date(offer.date_start) : null;
+  const monthYear = offerMonth ? targetYearFor(offerMonth.getUTCMonth(), { offers: publishedOffers }) : null;
   const hubLinks = [
-    offerMonth && offerMonth.getUTCFullYear() === OMRA_YEAR
+    offerMonth
       ? {
           href: `/${locale}${monthPagePath(offerMonth.getUTCMonth())}`,
-          label: `Omra ${monthName(offerMonth.getUTCMonth(), locale)} ${OMRA_YEAR}`,
+          label: `Omra ${monthName(offerMonth.getUTCMonth(), locale)} ${monthYear}`,
         }
       : null,
     offer.occasion?.slug
@@ -426,11 +442,20 @@ export default async function OfferPage({ params }) {
           ]}
         />
 
-        {/* Departed-state (60-day grace before the cron 301s to the month hub).
-            Still 200/indexable; schema availability is already SoldOut. */}
-        {hasDeparted(offer) ? (
+        {/* Lifecycle banner — ARCHIVED (returned ≤ 90 days ago: 200, noindex,
+            self-canonical, localised banner to the current month lander) or in
+            progress (departed, not yet returned: still live). Retired never
+            renders here — it 301s. Schema availability is SoldOut either way. */}
+        {lifecycle === 'archived' || hasDeparted(offer) ? (
           <div className="mt-4 flex flex-wrap items-center gap-3 rounded-panel border border-bm-gold/40 bg-bm-gold/10 px-5 py-3 text-sm font-semibold text-bm-black">
-            <span>⏳ {t.offer.departed}</span>
+            <span>
+              ⏳{' '}
+              {lifecycle === 'archived' && offerMonth
+                ? t.offer.archivedBanner
+                    .replace('{month}', monthName(offerMonth.getUTCMonth(), locale))
+                    .replace('{year}', String(monthYear))
+                : t.offer.departed}
+            </span>
             {hubLinks.map((hub) => (
               <Link key={hub.href} href={hub.href} className="text-bm-gold underline-offset-4 hover:underline">
                 {hub.label} →

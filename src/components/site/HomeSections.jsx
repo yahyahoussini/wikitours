@@ -5,8 +5,8 @@ import { getGallerySlides, getTestimonialMedia } from '@/lib/data/gallery';
 import { SETTINGS_HERO_ENTITY_ID, SETTINGS_TEAM_ENTITY_ID, SETTINGS_WHY_ENTITY_ID } from '@/lib/entities';
 import { publicMediaUrl } from '@/lib/media';
 import { BLUR_DATA_URL } from '@/lib/blur';
-import { OMRA_YEAR, MONTH_SLUGS, monthName, monthPagePath, monthsWithOffers } from '@/lib/months';
-import { getPublishedOffers } from '@/lib/data/content';
+import { MONTH_SLUGS, monthName, monthPagePath, indexableMonths, targetYearFor } from '@/lib/months';
+import { getPublishedOffers, getMonthPages } from '@/lib/data/content';
 import BrandLockup from '@/components/site/BrandLockup';
 import Icon from '@/components/site/Icon';
 import SectionBridge from '@/components/site/SectionBridge';
@@ -326,10 +326,13 @@ export async function MonthsLinks({ locale, compact = true }) {
   // alive in the middleware for external inbound links; we just stop minting
   // new internal ones. The YEAR stays in the label, never in the path.
   //
-  // Only months with a real departure are linked — same predicate as the page's
-  // robots meta and the sitemap, so we never link into a noindex dead end.
-  // getPublishedOffers is request-cached, so this costs no extra query.
-  const live = monthsWithOffers(await getPublishedOffers());
+  // Only INDEXABLE months are linked — a departure this cycle or the authored
+  // evergreen content — the same predicate as the page's robots meta and the
+  // sitemap, so we never link into a noindex dead end. The label carries the
+  // year the lander is about (rollover + data), never a constant.
+  // getPublishedOffers/getMonthPages are request-cached — no extra query.
+  const offers = await getPublishedOffers();
+  const live = indexableMonths(offers, await getMonthPages());
   const months = MONTH_SLUGS.map((slug, i) => [slug, i]).filter(([, i]) => live.has(i));
   if (!months.length) return null;
 
@@ -343,7 +346,7 @@ export async function MonthsLinks({ locale, compact = true }) {
             href={`/${locale}${monthPagePath(i)}`}
             className="rounded-full border border-bm-black/10 bg-white px-4 py-2 text-sm font-medium text-bm-black/75 shadow-hairline transition hover:border-bm-gold hover:text-bm-black"
           >
-            {monthName(i, locale)} {OMRA_YEAR}
+            {monthName(i, locale)} {targetYearFor(i, { offers })}
           </Link>
         ))}
       </nav>

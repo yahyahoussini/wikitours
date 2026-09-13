@@ -51,6 +51,9 @@ const TABLE_PATHS = {
     row?.slug ? `/omra-depuis-${row.slug}` : '/[locale]/[flat]',
     'raw:/llms.txt',
   ],
+  // A month's authored blocks / toggle flip its indexability, which the
+  // home, the footer (every page) and the sitemap all reflect.
+  month_pages: (row) => [row?.slug ? `/omra-${row.slug}` : '/[locale]/[flat]', '/', '/bab-makka', 'raw:/llms.txt'],
   guide_pages: (row) => [
     '/guide-omra',
     row?.slug ? `/guide-omra/${row.slug}` : '/[locale]/guide-omra/[slug]',

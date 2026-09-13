@@ -5,7 +5,7 @@ import { getPublishedOffers, getOccasions, getFaqs, getCovers } from '@/lib/data
 import { getSettings } from '@/lib/data/settings';
 import { toOfferCard } from '@/lib/offer-card';
 import { waLink } from '@/lib/whatsapp';
-import { OMRA_YEAR, MONTH_SLUGS, monthName } from '@/lib/months';
+import { MONTH_SLUGS, monthName, targetYearFor } from '@/lib/months';
 import { SITE_URL, absoluteUrl, hreflangAlternates, SPEAKABLE } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { routeTitle } from '@/lib/titles';
@@ -172,7 +172,7 @@ export default async function BabMakkahPage({ params }) {
               name_fr: o.name_fr,
               [`name_${locale}`]: pickLang(o, 'name', locale),
             }))}
-            months={MONTH_SLUGS.map((slug, i) => ({ value: String(i), label: `${monthName(i, locale)} ${OMRA_YEAR}` }))}
+            months={MONTH_SLUGS.map((slug, i) => ({ value: String(i), label: `${monthName(i, locale)} ${targetYearFor(i, { offers })}` }))}
             locale={locale}
             t={cardT}
             whatsappHref={whatsappHref}

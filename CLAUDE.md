@@ -116,7 +116,8 @@ per-entity overrides under `blog/[slug]/` and `omra/[slug]/`.
 | `/bab-makkah` (with h) | `/fr/bab-makka` | 301 | `src/lib/redirects/legacy-map.js:19` |
 | `www.` | apex | 308 | `src/middleware.js:99-103` |
 | `*.bab-makka.com` | `wikitours.ma/fr/…` | 301, one hop | `src/middleware.js:84-95` |
-| expired offer | `/{locale}/omra-{mois}` | 301 | `redirects` table, written by `src/app/api/cron/rollup/route.js:14-37` |
+| retired departure (returned > 90 days ago) or an unpublished departed one | `/{locale}/omra-{mois}` — or `/{locale}/bab-makka` when that lander is noindex (logged) | **301** | `src/middleware.js` § 2.5, from `date_end` via `offerLifecycle()` + `retiredRedirectPath()`; the page body 308s as backstop. No cron, no flag |
+| admin redirect whose target is a **noindex** month lander | `/{locale}/bab-makka` instead (logged) | 308/307 | `src/middleware.js` § 2 — a redirect never lands on a noindex page |
 
 `next.config.mjs` has **no** `redirects()` or `rewrites()`. All of it is middleware.
 
@@ -129,7 +130,10 @@ per-entity overrides under `blog/[slug]/` and `omra/[slug]/`.
 | All redirects, rewrites, locale detection, admin host, bot logging | `src/middleware.js` |
 | Static legacy renames | `src/lib/redirects/legacy-map.js` |
 | Content moves (admin-editable) | `redirects` DB table → `src/lib/edge-data.js:70` |
-| Month slugs, `OMRA_YEAR`, city whitelist, `cityPageIndexable()` | `src/lib/months.js` |
+| Month slugs, the year a month lander is about (`rolloverYear`/`targetYearFor` — **there is no year constant**), `monthLanderIndexable()` / `indexableMonths()` (the ONE month predicate), `retiredRedirectPath()`, city whitelist, `cityPageIndexable()` | `src/lib/months.js` |
+| Month landers' derived blocks (prices observed, last season, Hijri overlap via `Intl` islamic-umalqura) | `src/lib/month-stats.js` |
+| Departure lifecycle `live → archived → retired` from `date_end` (`offerLifecycle`, `ARCHIVE_DAYS = 90`) | `src/lib/offers.js` |
+| Unit tests (rollover boundaries, lifecycle transitions) — run by `postbuild` and `npm test` | `tests/*.test.mjs` (+ `tests/alias-loader.mjs` for `@/` and JSON imports) |
 | Guide child slugs, `guideIndexable()`, `GLOSSARY_MIN_TERMS` | `src/lib/guides.js` |
 | **Metadata** | |
 | `metadataBase`, title template, default description, verification metas | `src/app/[locale]/layout.js:45-74` |
@@ -160,7 +164,7 @@ per-entity overrides under `blog/[slug]/` and `omra/[slug]/`.
 | **Data** | |
 | Canonical DDL | `supabase/schema.sql` (**has drifted — see below**) |
 | Migrations | `supabase/migrations/003…021`, one-paste re-run in `supabase/APPLY-ALL-016-to-021.sql` |
-| Public read helpers (anon client, RLS applies) | `src/lib/data/content.js` |
+| Public read helpers (anon client, RLS applies) — `getPublishedOffers()` = the listings (not yet returned), `getOfferHistory()` = every published departure for the month landers' derived blocks, `getMonthPages()` = the authored month rows | `src/lib/data/content.js` |
 | Settings | `src/lib/data/settings.js` |
 | Offer availability + status (single source) | `src/lib/offers.js` |
 | Barometer aggregation, shared by page and sitemap | `src/lib/barometer.js` |
@@ -241,6 +245,12 @@ There is no `tailwind.config.js` (Tailwind v4) and no RTL plugin.
   `htmlLimitedBots` in `next.config.mjs:52-53`.
 - **`/lp/{slug}` is in the sitemap but linked from nowhere**, so it trips the orphan check the moment a
   `landing_pages` row goes indexable.
+- **`offers.created_at` is not a booking signal.** Every row was created 11–74 days before its
+  departure because the site was built in July 2026 — deriving "typical booking lead time" from it
+  would invent a fact. That block is authored (`month_pages.lead_time_*`).
+- **The `redirects` table holds six rows the old rollup cron wrote** (July 2026 departures →
+  `/omra-juillet`, which is noindex). The middleware now swaps a noindex month-lander target for
+  `/bab-makka`; the rows are harmless but can be deleted from the admin.
 
 ---
 
@@ -334,9 +344,33 @@ There is no `tailwind.config.js` (Tailwind v4) and no RTL plugin.
 - One offer = one departure (current model). Every offer page must link its
   month hub + relevant seasonal hub; hubs live in main nav + internal linking.
   A multi-departure packages model is a future phase (offer URLs 301 in then).
-- Expiry: RLS keeps offers readable for 60 days past `date_end` (grace state
-  "Départ effectué — prochains départs"); the cron 301s to the `/omra-{month}`
-  hub (fallback `/omra`) after that.
+- **Departure lifecycle (2026-09-13) derives from the RETURN date, never a flag
+  or a cron** — `offerLifecycle()` in `src/lib/offers.js`, tested in
+  `tests/offers.test.mjs`:
+  `live` (future or in progress) → index, follow, self-canonical, in the sitemap;
+  `archived` (returned 1–90 days ago) → 200, `noindex, follow`, self-canonical,
+  localised banner to the month lander; `retired` (> 90 days) → **301** to
+  `/{locale}/omra-{mois}` from the middleware (page body 308 backstop), or to
+  `/bab-makka` when that lander is noindex (logged). An unpublished departure
+  that has left 301s the same way, so no expired URL ever 404s. RLS no longer
+  hides the past (migration 023): a published departure stays readable forever,
+  and the month landers build their historic blocks from those rows. The
+  `redirects` table is for admin content moves only; the rollup cron no longer
+  writes expiry rows. **Never unpublish a departed offer to hide it** — that is
+  what used to 404; let it archive.
+- **Month landers are evergreen (2026-09-13).** The year in title/H1/copy/links
+  is `targetYearFor(monthIndex)` — calendar rollover (a month earlier than the
+  current one is next year's) unless a published departure names a later year —
+  so `/omra-janvier` in September 2026 says *janvier 2027*. `OMRA_YEAR` is gone;
+  `tests/months.test.mjs` proves the month and year boundaries. Indexability is
+  ONE predicate, `monthLanderIndexable()`: a departure this cycle, OR the
+  authored `month_pages` blocks (weather + suits, fr AND ar, toggle on) — never a
+  `never_sold` month. The page body: departures → prices observed (real past
+  departures) → last season's pattern → Hijri overlap (computed) → weather &
+  crowds, who it suits, when to book (authored) → month FAQ (`faqs` category
+  `mois-{slug}`) → the notification form LAST. A block with no data is omitted.
+  "Typical booking lead time" is **authored**, not derived: `offers.created_at`
+  reflects the July 2026 site build-out, not booking behaviour.
 
 ## Schema availability (compute from data, not the raw status)
 `SoldOut` if `status==='full'` OR `seats_remaining===0` OR `date_end < today`;
@@ -566,7 +600,7 @@ All titles ≤ 60, all descriptions ≤ 155.
 | Blog articles | 27 live | 36 rows; 9 scheduled ahead, runway to 2026-10-22 |
 | Hotels | 8 published | `city` is `'makkah'` on all 8 rows while Jayden Medina Hotel and Makarem Madinah are Madinah properties (their own `address_*` say Madinah; tiers reference them only as `hotel_madinah_id`). Corrected by the data section of migration 022 / the bundle — until applied, the admin's "Hôtel Médine" dropdown (`relFilter city='madinah'`) is empty and their schema locality reads Makkah |
 | City pages | 8, all indexable | |
-| Month hubs | 12 routes, 3 indexable | only September / October / November have a 2026 departure |
-| Offers | 5 live departures | Sept ×2, Oct ×2, Nov ×1 |
+| Month hubs | 12 routes, 3 indexable | September / October / November have a departure this cycle; the other nine index once their authored `month_pages` blocks exist in fr + ar (2026-09-13: none written yet, and no month has public history — every derived block is empty until departures accumulate) |
+| Offers | 4 live departures (2026-09-13) | Sept ×1 (23 → 7 Oct), Oct ×2, Nov ×1; `omra-9-au-23-septembre-2026` departed and was **unpublished** — it 301s via the lifecycle rule |
 | Guide pages | 7 rows | 1 pillar + **6** children |
 | Glossary terms | 42 | |

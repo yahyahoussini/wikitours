@@ -8,6 +8,7 @@ import {
   getOccasions,
   getIndexableLandingPages,
   getCityPages,
+  getMonthPages,
   getGuidePages,
   getGlossaryTerms,
   getVoyages,
@@ -16,7 +17,7 @@ import {
   getLegalPages,
 } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
-import { OMRA_YEAR, MONTH_SLUGS, CITY_SLUGS, cityPageIndexable, monthsWithOffers } from '@/lib/months';
+import { MONTH_SLUGS, CITY_SLUGS, cityPageIndexable, indexableMonths, departuresInMonth } from '@/lib/months';
 import { GUIDE_PILLAR_SLUG, GUIDE_CHILD_SLUGS, guideIndexable, GLOSSARY_MIN_TERMS } from '@/lib/guides';
 import { legalIsFilled } from '@/lib/legal-page';
 import { computePeriods } from '@/lib/barometer';
@@ -34,7 +35,9 @@ export const revalidate = 86400;
  *  - A noindex URL NEVER appears here (seo-audit.js:244). Every scaffold is
  *    gated on the SAME predicate its page uses to noindex itself, so the two
  *    can never disagree: cityPageIndexable, guideIndexable, legalIsFilled,
- *    GLOSSARY_MIN_TERMS, barometer.periods.length, monthsWithOffers.
+ *    GLOSSARY_MIN_TERMS, barometer.periods.length, indexableMonths. Offers are
+ *    the listings (getPublishedOffers) — the lifecycle's live state only; an
+ *    archived (noindex) or retired (301) departure is never here.
  *  - Every entry carries a <lastmod> derived from the rows that compose the
  *    page (lastModifiedOf), which is the same expression behind the visible
  *    "Mis à jour le" line. Never build time — that would re-date all 246 URLs
@@ -43,7 +46,7 @@ export const revalidate = 86400;
 export default async function sitemap() {
   const [
     offers, hotels, articles, occasions, landingPages, settings,
-    cityPages, guidePages, glossaryTerms, voyages, testimonials, team, legalPages,
+    cityPages, guidePages, glossaryTerms, voyages, testimonials, team, legalPages, monthPages,
   ] = await Promise.all([
     getPublishedOffers(),
     getHotels(),
@@ -58,6 +61,7 @@ export default async function sitemap() {
     getTestimonials(),
     getTeam(),
     getLegalPages(),
+    getMonthPages(),
   ]);
 
   // [locale-relative path, priority, changeFrequency, lastModified]
@@ -76,12 +80,11 @@ export default async function sitemap() {
     ['/contact', 0.5, 'yearly', lastModifiedOf(settings)],
   ];
 
-  // Only months that actually have a departure are listed: an empty month hub
-  // is noindex (see [locale]/[flat]/page.js) and listing a noindex URL sends
-  // Google contradictory signals. They appear here automatically once filled.
-  const offersInMonth = (i) =>
-    offers.filter((o) => o.date_start && new Date(o.date_start).getUTCFullYear() === OMRA_YEAR && new Date(o.date_start).getUTCMonth() === i);
-  const liveMonths = monthsWithOffers(offers);
+  // Month landers: the ONE predicate (a departure this cycle OR the authored
+  // evergreen content, never a never-sold month) — the page's robots meta, the
+  // footer and MonthsLinks use the same function, so a listed month is always
+  // indexable and a noindex one never appears here.
+  const liveMonths = indexableMonths(offers, monthPages);
 
   const barometer = computePeriods(offers);
   const offersForOccasion = (slug) => offers.filter((o) => o.occasion?.slug === slug);
@@ -100,7 +103,7 @@ export default async function sitemap() {
     ...MONTH_SLUGS
       .map((slug, i) => [slug, i])
       .filter(([, i]) => liveMonths.has(i))
-      .map(([slug, i]) => [`/omra-${slug}`, 0.7, 'weekly', lastModifiedOf(offersInMonth(i))]),
+      .map(([slug, i]) => [`/omra-${slug}`, 0.7, 'weekly', lastModifiedOf(departuresInMonth(offers, i), monthPages.get(slug))]),
     ...occasions.map((o) => [`/omra-${o.slug}`, 0.6, 'weekly', lastModifiedOf(o, offersForOccasion(o.slug))]),
     // City pages: only once their anti-doorway guard passes (unique content
     // filled + admin toggle) — a noindex URL never belongs in the sitemap.

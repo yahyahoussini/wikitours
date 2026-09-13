@@ -1,4 +1,5 @@
 import { LOCALES, FALLBACK_LOCALE } from '@/lib/i18n';
+import { indexableMonths } from '@/lib/months';
 
 /**
  * Edge-safe DB reads for the middleware — plain PostgREST fetches with a 60s
@@ -78,6 +79,44 @@ export function getRedirectsMap() {
       map.set(row.from_path, { to: row.to_path, permanent: row.permanent });
     }
     return map;
+  });
+}
+
+/**
+ * Departures that have LEFT (date_start < today), any publish state, keyed by
+ * slug → { date_start, date_end, is_published }. The middleware 301s a retired
+ * one (returned > 90 days ago, offerLifecycle) — or an unpublished one, which
+ * cannot render (RLS) and would 404 — to its month lander, so an expired
+ * departure URL never 404s. A published departure in progress or archived is
+ * in the map too but falls through to its page. Service key: RLS hides
+ * unpublished rows from anon, and those are exactly the ones that would 404.
+ */
+export function getDepartedOffersMap() {
+  return memoized('departed_offers', async () => {
+    const today = new Date().toISOString().slice(0, 10);
+    const rows = await restFetch(
+      `offers?select=slug,date_start,date_end,is_published&date_start=lt.${today}`,
+      process.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
+    return new Map((rows ?? []).map((r) => [r.slug, r]));
+  });
+}
+
+/**
+ * The month landers a retired departure may be sent to — the SAME predicate
+ * the pages, the sitemap and the footer use (indexableMonths), fed the same
+ * two inputs: published offers that have not returned, and the month_pages
+ * rows. A 301 must never land on a noindex page.
+ */
+export function getIndexableMonthSet() {
+  return memoized('indexable_months', async () => {
+    const today = new Date().toISOString().slice(0, 10);
+    const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const [offers, monthPages] = await Promise.all([
+      restFetch(`offers?select=date_start,date_end&is_published=eq.true&or=(date_end.gte.${today},date_end.is.null)`, anon),
+      restFetch('month_pages?select=slug,is_indexable,never_sold,weather_fr,weather_ar,suits_fr,suits_ar', anon),
+    ]);
+    return indexableMonths(offers ?? [], new Map((monthPages ?? []).map((r) => [r.slug, r])));
   });
 }
 

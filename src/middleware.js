@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { LOCALES, FALLBACK_LOCALE } from '@/lib/i18n';
-import { getRedirectsMap } from '@/lib/edge-data';
+import { getRedirectsMap, getDepartedOffersMap, getIndexableMonthSet } from '@/lib/edge-data';
 import { resolveLegacyRedirect } from '@/lib/redirects/legacy-map';
-import { MONTH_SLUGS } from '@/lib/months';
+import { MONTH_SLUGS, retiredRedirectPath } from '@/lib/months';
+import { offerLifecycle } from '@/lib/offers';
 
 // Looks like a locale segment (xx or xx-YY) — but not one we support.
 const LOCALE_SHAPE = /^[a-z]{2}(-[a-zA-Z]{2})?$/;
@@ -165,7 +166,35 @@ export async function middleware(request, event) {
     const target = hit.to.startsWith('http')
       ? new URL(hit.to)
       : new URL(hit.to, request.url);
+    // A redirect must never land on a noindex page: a month lander target is
+    // swapped for the Omra hub while that lander is noindex (and logged) — the
+    // same rule as the lifecycle 301 below, whichever source the row came from.
+    const tm = target.pathname.match(/^\/([a-z]{2})\/omra-([a-z]+)\/?$/);
+    if (tm && MONTH_SLUGS.includes(tm[2]) && !(await getIndexableMonthSet()).has(MONTH_SLUGS.indexOf(tm[2]))) {
+      console.warn(`[redirects] ${pathname} → ${target.pathname} is noindex; sending to /${tm[1]}/bab-makka`);
+      target.pathname = `/${tm[1]}/bab-makka`;
+    }
     return NextResponse.redirect(target, hit.permanent ? 308 : 307);
+  }
+
+  // 2.5) Departure lifecycle (src/lib/offers.js): a departure that returned
+  // more than 90 days ago is RETIRED and 301s to its month lander — where its
+  // accumulated signals consolidate instead of evaporating — or to the Omra hub
+  // when that lander is noindex (logged; a 301 must never land on a noindex
+  // page). An unpublished departure that has already returned goes the same
+  // way immediately, because its page cannot render (RLS) and would 404.
+  // Derived from date_end on every request (60s memo) — no cron, no flag. The
+  // page body carries a 308 backstop for a stale memo.
+  const dep = pathname.match(/^\/([a-z]{2})\/omra\/([^/]+)\/?$/);
+  if (dep && LOCALES.includes(dep[1])) {
+    const row = (await getDepartedOffersMap()).get(dep[2]);
+    if (row && (!row.is_published || offerLifecycle(row) === 'retired')) {
+      const { path, fallback } = retiredRedirectPath(row, dep[1], await getIndexableMonthSet());
+      if (fallback) console.warn(`[lifecycle] ${pathname} → ${path} (its month lander is noindex)`);
+      const url = request.nextUrl.clone();
+      url.pathname = path;
+      return NextResponse.redirect(url, 301);
+    }
   }
 
   // 3) Locale routing.

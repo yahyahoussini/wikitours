@@ -67,3 +67,35 @@ export function visibleStatusKey(offer, today = todayISO()) {
 export function seatsLabel(offer) {
   return typeof offer?.seats_remaining === 'number' ? offer.seats_remaining : null;
 }
+
+/** Whole UTC days from an ISO date to `today` (negative when in the future). */
+export function daysSince(dateISO, today = todayISO()) {
+  const [y1, m1, d1] = String(dateISO).slice(0, 10).split('-').map(Number);
+  const [y2, m2, d2] = String(today).slice(0, 10).split('-').map(Number);
+  return Math.round((Date.UTC(y2, m2 - 1, d2) - Date.UTC(y1, m1 - 1, d1)) / 86400000);
+}
+
+/** A departure is archived for this many days after its RETURN date, then retired. */
+export const ARCHIVE_DAYS = 90;
+
+/**
+ * Departure lifecycle, from the RETURN date (date_end) alone — never a flag:
+ *   live      future or in progress (date_end ≥ today, or no dates)
+ *             → index, follow · self-canonical · in the sitemap
+ *   archived  returned 1..90 days ago
+ *             → noindex, follow · self-canonical · "archived" banner
+ *   retired   returned > 90 days ago
+ *             → 301 to the month lander (middleware; page backstop) —
+ *               retiredRedirectPath() in src/lib/months.js picks the target
+ * The transitions are exact: the return day itself is still live; day 90 is
+ * still archived; day 91 is retired (tests/offers.test.mjs).
+ */
+export function offerLifecycle(offer, today = todayISO()) {
+  if (!offer?.date_end || offer.date_end >= today) return 'live';
+  return daysSince(offer.date_end, today) <= ARCHIVE_DAYS ? 'archived' : 'retired';
+}
+
+/** Only live departures are indexable — the sitemap and robots meta share this. */
+export function offerIndexable(offer, today = todayISO()) {
+  return offerLifecycle(offer, today) === 'live';
+}

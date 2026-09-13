@@ -104,49 +104,78 @@ export const getHotelBySlug = cache(async function getHotelBySlug(slug) {
   }
 });
 
-/** All published, future offers with occasion + tiers (RLS hides the past). */
+/** Attach each offer's published tiers (with hotels) and derive starting_price
+ *  from them — ONE tier path for the listings and the history. */
+async function attachTiers(supabase, offers) {
+  const offerIds = offers.map((o) => o.id);
+  if (!offerIds.length) return offers;
+  const { data: tiers } = await supabase
+    .from('offer_tiers')
+    .select('*, hotel_makkah:hotel_makkah_id (*), hotel_madinah:hotel_madinah_id (*)')
+    .in('offer_id', offerIds)
+    .eq('is_published', true)
+    .order('sort_order', { ascending: true });
+  const tierMap = {};
+  for (const t of tiers ?? []) {
+    if (!tierMap[t.offer_id]) tierMap[t.offer_id] = [];
+    tierMap[t.offer_id].push(t);
+  }
+  for (const offer of offers) {
+    offer.tiers = tierMap[offer.id] ?? [];
+    // Compute starting_price from tiers for backward compat
+    const prices = [];
+    for (const tier of offer.tiers) {
+      for (const key of ['price_double', 'price_triple', 'price_quad', 'price_quint']) {
+        if (typeof tier[key] === 'number' && tier[key] > 0) prices.push(tier[key]);
+      }
+    }
+    offer.starting_price = prices.length ? Math.min(...prices) : (offer.starting_price ?? null);
+  }
+  return offers;
+}
+
+const OFFER_SELECT = '*, occasion:occasion_id (id, slug, name_fr, name_ar, name_en, sort_order)';
+
+/**
+ * The LISTINGS: published offers that have not returned yet (future or in
+ * progress — the lifecycle's "live" state), with occasion + tiers. Departed
+ * offers stay readable for their own page (archived state) but never list.
+ */
 export const getPublishedOffers = cache(async function getPublishedOffers() {
   try {
     const supabase = supabasePublic();
     if (!supabase) return [];
-    // RLS keeps departed offers readable for 60 days (grace, for the detail
-    // page + cron). LISTINGS must stay future-only, so filter here explicitly.
     const today = new Date().toISOString().slice(0, 10);
     const { data, error } = await supabase
       .from('offers')
-      .select('*, occasion:occasion_id (id, slug, name_fr, name_ar, name_en, sort_order)')
+      .select(OFFER_SELECT)
       .or(`date_end.gte.${today},date_end.is.null`)
       .order('is_featured', { ascending: false })
       .order('date_start', { ascending: true });
     if (error) return [];
-    const offers = data ?? [];
-    // Fetch tiers for all offers
-    const offerIds = offers.map((o) => o.id);
-    if (offerIds.length) {
-      const { data: tiers } = await supabase
-        .from('offer_tiers')
-        .select('*, hotel_makkah:hotel_makkah_id (*), hotel_madinah:hotel_madinah_id (*)')
-        .in('offer_id', offerIds)
-        .eq('is_published', true)
-        .order('sort_order', { ascending: true });
-      const tierMap = {};
-      for (const t of tiers ?? []) {
-        if (!tierMap[t.offer_id]) tierMap[t.offer_id] = [];
-        tierMap[t.offer_id].push(t);
-      }
-      for (const offer of offers) {
-        offer.tiers = tierMap[offer.id] ?? [];
-        // Compute starting_price from tiers for backward compat
-        const prices = [];
-        for (const tier of offer.tiers) {
-          for (const key of ['price_double', 'price_triple', 'price_quad', 'price_quint']) {
-            if (typeof tier[key] === 'number' && tier[key] > 0) prices.push(tier[key]);
-          }
-        }
-        offer.starting_price = prices.length ? Math.min(...prices) : (offer.starting_price ?? null);
-      }
-    }
-    return offers;
+    return await attachTiers(supabase, data ?? []);
+  } catch {
+    return [];
+  }
+});
+
+/**
+ * The HISTORY: every published offer, past and future, with tiers — what the
+ * month landers' derived blocks read (prices observed, last season's
+ * departures). Never a listing. RLS exposes the past since migration 023;
+ * before it is applied this degrades to the old 60-day window.
+ */
+export const getOfferHistory = cache(async function getOfferHistory() {
+  try {
+    const supabase = supabasePublic();
+    if (!supabase) return [];
+    const { data, error } = await supabase
+      .from('offers')
+      .select(OFFER_SELECT)
+      .not('date_start', 'is', null)
+      .order('date_start', { ascending: true });
+    if (error) return [];
+    return await attachTiers(supabase, data ?? []);
   } catch {
     return [];
   }
@@ -424,6 +453,26 @@ export const getCityPage = cache(async function getCityPage(slug) {
   } catch {
     return null;
   }
+});
+
+/** Month landers' authored rows (migration 023) as Map(slug → row): the
+ *  evergreen blocks (weather, crowds, who it suits, booking lead time), the
+ *  index toggle and the never-sold flag. Same shape as getCityPages. */
+export const getMonthPages = cache(async function getMonthPages() {
+  try {
+    const supabase = supabasePublic();
+    if (!supabase) return new Map();
+    const { data, error } = await supabase.from('month_pages').select('*');
+    if (error) return new Map();
+    return new Map((data ?? []).map((row) => [row.slug, row]));
+  } catch {
+    return new Map();
+  }
+});
+
+/** One month lander's authored row — null until the admin creates/fills it. */
+export const getMonthPage = cache(async function getMonthPage(slug) {
+  return (await getMonthPages()).get(slug) ?? null;
 });
 
 /** Published guide-cluster rows keyed by slug (pillar + children). */

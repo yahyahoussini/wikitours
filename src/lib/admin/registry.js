@@ -392,6 +392,54 @@ export const ADMIN_ENTITIES = {
   },
 
   'pages-villes': {
+    table: 'month_pages',
+    title: 'Pages mois (Omra en …)',
+    // The publish toggle IS the index switch, on the city-page pattern: the
+    // public /omra-{mois} page indexes only when it is on AND « Météo et
+    // affluence » + « À qui convient ce mois » are filled in fr AND ar — or a
+    // departure is published that month. « Jamais vendu » keeps a month
+    // noindex for good: set it only for months the agency will never sell,
+    // after confirming with the client. Everything else on the page (prices
+    // observed, last season, Hijri calendar) is derived from the departures.
+    publishField: 'is_indexable',
+    orderBy: 'slug',
+    listColumns: ['slug', 'never_sold', 'updated_at'],
+    searchKeys: ['slug', 'weather_fr', 'suits_fr'],
+    hasSeo: false,
+    hasGallery: false,
+    labelField: 'slug',
+    duplicateDisabled: true,
+    publicPath: (row) => (row?.slug ? `/omra-${row.slug}` : null),
+    fields: [
+      {
+        name: 'slug',
+        type: 'select',
+        label: 'Mois',
+        required: true,
+        options: [
+          { value: 'janvier', label: 'Janvier' },
+          { value: 'fevrier', label: 'Février' },
+          { value: 'mars', label: 'Mars' },
+          { value: 'avril', label: 'Avril' },
+          { value: 'mai', label: 'Mai' },
+          { value: 'juin', label: 'Juin' },
+          { value: 'juillet', label: 'Juillet' },
+          { value: 'aout', label: 'Août' },
+          { value: 'septembre', label: 'Septembre' },
+          { value: 'octobre', label: 'Octobre' },
+          { value: 'novembre', label: 'Novembre' },
+          { value: 'decembre', label: 'Décembre' },
+        ],
+      },
+      { name: 'never_sold', type: 'bool', label: 'Jamais vendu — rester noindex (à confirmer avec le client)' },
+      { name: 'weather', type: 'textarea3', label: 'Météo et affluence (requis fr + ar pour indexer)' },
+      { name: 'crowds', type: 'textarea3', label: 'Affluence — complément optionnel' },
+      { name: 'suits', type: 'textarea3', label: 'À qui convient ce mois (requis fr + ar pour indexer)' },
+      { name: 'lead_time', type: 'textarea3', label: 'Quand réserver — délai conseillé' },
+    ],
+  },
+
+  city_pages: {
     table: 'city_pages',
     title: 'Pages villes (Omra depuis…)',
     // The publish toggle IS the index switch: off ⇒ the public page stays

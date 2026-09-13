@@ -1,5 +1,5 @@
 import { getDictionary } from '@/lib/i18n';
-import { OMRA_YEAR } from '@/lib/months';
+import { seasonYear } from '@/lib/months';
 import { BRAND } from '@/lib/brand';
 
 // Any brand token (all spellings/scripts) — if the stored title already carries
@@ -23,15 +23,16 @@ export function withBrand(title, service = BRAND.service, max = 60) {
 
 /**
  * SEO title templates (LAWS §5), per route × locale, from the dictionaries.
- * {year} defaults to OMRA_YEAR so titles roll over with one constant; callers
- * pass {occasion}/{tier}/{price}/{month} as needed. Pages prefer an admin
- * seo_title override and fall back to this — so titles stay admin-controllable
- * (LAW §4) without a developer.
+ * {year} defaults to the calendar year (seasonYear — no constant to bump);
+ * month landers pass their own rollover year (targetYearFor). Callers pass
+ * {occasion}/{tier}/{price}/{month} as needed. Pages prefer an admin seo_title
+ * override and fall back to this — so titles stay admin-controllable (LAW §4)
+ * without a developer.
  */
 export function routeTitle(route, locale, vars = {}) {
   const t = getDictionary(locale);
   let template = t.seoTitles?.[route] ?? '';
-  const all = { year: OMRA_YEAR, ...vars };
+  const all = { year: seasonYear(), ...vars };
   for (const [key, value] of Object.entries(all)) {
     template = template.replaceAll(`{${key}}`, String(value ?? ''));
   }

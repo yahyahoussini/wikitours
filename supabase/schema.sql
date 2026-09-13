@@ -717,6 +717,26 @@ create table if not exists public.city_pages (
   updated_at timestamptz not null default now()
 );
 
+-- Month landers (/omra-{mois}, migration 023): the authored evergreen blocks.
+-- is_indexable = admin switch (page self-noindexes until weather + suits are
+-- filled in fr AND ar, or a departure is published that month); never_sold
+-- keeps a month noindex for good. The rest of the page derives from offers.
+create table if not exists public.month_pages (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique check (slug in (
+    'janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin',
+    'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre'
+  )),
+  is_indexable boolean not null default false,
+  never_sold boolean not null default false,
+  weather_fr text, weather_ar text, weather_en text,
+  crowds_fr text, crowds_ar text, crowds_en text,
+  suits_fr text, suits_ar text, suits_en text,
+  lead_time_fr text, lead_time_ar text, lead_time_en text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 -- Guide cluster (/guide-omra + children). is_published = anon-visible;
 -- is_indexable = admin index switch (page also self-noindexes while empty).
 create table if not exists public.guide_pages (
@@ -868,8 +888,7 @@ create policy anon_read on public.hotels
 
 -- Tiers inherit the PARENT offer's visibility (migration 016). is_published on
 -- the tier defaults to true, so checking it alone exposed draft-offer pricing
--- (price_*, hotel ids, nights) to anyone holding the public anon key, and kept
--- serving tiers for offers already past the 60-day grace window.
+-- (price_*, hotel ids, nights) to anyone holding the public anon key.
 drop policy if exists anon_read on public.offer_tiers;
 create policy anon_read on public.offer_tiers
   for select to anon
@@ -880,16 +899,18 @@ create policy anon_read on public.offer_tiers
       from public.offers o
       where o.id = offer_tiers.offer_id
         and o.is_published
-        and (o.date_end is null or o.date_end >= current_date - interval '60 days')
     )
   );
 
--- 60-day grace after date_end (migration 008): the departed page stays
--- readable for its "Départ effectué" state until the cron 301s it.
+-- A published departure stays readable forever (migration 023): its lifecycle
+-- — live → archived (noindex, ≤ 90 days after return) → retired (301 to the
+-- month lander) — derives from date_end in code (src/lib/offers.js), and the
+-- month landers build "prices observed" / "last season" from the past rows.
+-- Listings filter to not-yet-returned departures in code (getPublishedOffers).
 drop policy if exists anon_read on public.offers;
 create policy anon_read on public.offers
   for select to anon
-  using (is_published and (date_end is null or date_end >= current_date - interval '60 days'));
+  using (is_published);
 
 drop policy if exists anon_read on public.destinations;
 create policy anon_read on public.destinations
@@ -947,6 +968,10 @@ create policy anon_read on public.services
 
 drop policy if exists anon_read on public.city_pages;
 create policy anon_read on public.city_pages
+  for select to anon using (true);
+
+drop policy if exists anon_read on public.month_pages;
+create policy anon_read on public.month_pages
   for select to anon using (true);
 
 drop policy if exists anon_read on public.guide_pages;

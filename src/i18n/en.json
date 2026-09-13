@@ -98,6 +98,7 @@
     "offerNoPrice": "Omra {dates}: {nights} nights departing Casablanca on {airline}.",
     "month": "Omra in {month} {year} from Morocco: departures, hotels near the Haram, real prices.",
     "monthEmpty": "Omra in {month} {year} from Morocco: no departure is open at the moment.",
+    "monthEvergreen": "Umrah in {month} {year} from Morocco: observed prices, Hijri calendar, weather, crowds and booking advice.",
     "occasion": "{name} Omra from Morocco: hotels near the Haram and real per-room prices.",
     "hotel": "{name} in {city}, {distance} m from the Haram, in our Omra programmes.",
     "hotelNoDistance": "{name} in {city}, a partner hotel in our Omra programmes from Morocco.",
@@ -130,6 +131,7 @@
     "currency": "MAD",
     "perPerson": "per person",
     "departed": "This departure has passed — see the next departures.",
+    "archivedBanner": "This departure has returned and is archived — see the next {month} {year} departures.",
     "seatsLeft": "Only {n} seats left on this departure",
     "status": {
       "open": "Places available",
@@ -234,7 +236,25 @@
     "answerWithOffers": "{n} Umrah programme(s) in {month} {year}, from {min} MAD per person.",
     "emptyTitle": "No published departures for {month} {year} — yet.",
     "alertPrompt": "Leave your details: we'll notify you as soon as registration opens.",
-    "browseAll": "See all open programmes"
+    "browseAll": "See all open programmes",
+    "historicTitle": "Observed prices in {month}",
+    "historicLine": "Across {n} past departure(s) in {month} ({years}), the per-person price ranged from {min} to {max} MAD depending on the tier and room type.",
+    "lastSeasonTitle": "Departures in {month} {year}",
+    "lastSeasonIntro": "What Bab Makka actually ran in {month} {year} — dates, duration, airline, Makkah hotel and starting price:",
+    "colDuration": "Duration",
+    "hijriTitle": "Hijri calendar",
+    "hijriSame": "{month} {year} falls within {hijriA}.",
+    "hijriSpan": "{month} {year} runs from {hijriA} into {hijriB}.",
+    "hijriRamadan": "Ramadan falls, at least in part, in {month} {year}.",
+    "hijriHajj": "Dhu al-Hijjah, the month of Hajj, falls, at least in part, in {month} {year}.",
+    "hijriMawlid": "Rabi' al-Awwal, the month of the Mawlid, falls, at least in part, in {month} {year}.",
+    "hijriMuharram": "Muharram, the first month of the Hijri year, falls, at least in part, in {month} {year}.",
+    "weatherTitle": "Weather and crowds in {month}",
+    "suitsTitle": "Who is an Umrah in {month} right for?",
+    "leadTimeTitle": "When to book for {month}?",
+    "faqTitle": "FAQ — Umrah in {month}",
+    "evergreenLede": "No departure is published for {month} {year} yet — here is what to know to plan an Umrah in {month}: observed prices, the Hijri calendar, weather, crowds and how far ahead to book.",
+    "alertTitle": "Get notified about {month} {year} departures"
   },
   "occasionPage": {
     "empty": "Programme in preparation — leave your details to be notified first.",
@@ -464,7 +484,7 @@
     "decline": "Continue without accepting"
   },
   "seoTitles": {
-    "home": "Umrah 2026 from Morocco | Bab Makka",
+    "home": "Umrah {year} from Morocco | Bab Makka",
     "babmakkah": "Bab Makka — Umrah from Morocco: programs & prices",
     "offer": "Umrah {occasion} {year} from {price} MAD | Bab Makka",
     "month": "Umrah {month} {year} from Morocco | Bab Makka"

@@ -98,6 +98,7 @@
     "offerNoPrice": "Omra {dates} : {nights} nuits au départ de Casablanca, vol {airline}.",
     "month": "Omra {month} {year} depuis le Maroc : départs, hôtels proches du Haram, prix réels.",
     "monthEmpty": "Omra {month} {year} depuis le Maroc : aucun départ ouvert pour l'instant.",
+    "monthEvergreen": "Omra {month} {year} depuis le Maroc : prix observés, calendrier hégirien, météo, affluence et conseils pour réserver.",
     "occasion": "Omra {name} depuis le Maroc : hôtels proches du Haram et prix réels par chambre.",
     "hotel": "{name} à {city}, à {distance} m du Haram, dans nos programmes Omra.",
     "hotelNoDistance": "{name} à {city}, hôtel partenaire de nos programmes Omra depuis le Maroc.",
@@ -130,6 +131,7 @@
     "currency": "MAD",
     "perPerson": "par personne",
     "departed": "Départ effectué — découvrez les prochains départs.",
+    "archivedBanner": "Ce départ est terminé et archivé — voir les prochains départs de {month} {year}.",
     "seatsLeft": "Plus que {n} places à ce départ",
     "status": {
       "open": "Places disponibles",
@@ -234,7 +236,25 @@
     "answerWithOffers": "{n} programme(s) Omra en {month} {year}, dès {min} MAD par personne.",
     "emptyTitle": "Aucun départ publié pour {month} {year} — pour l'instant.",
     "alertPrompt": "Laissez vos coordonnées : nous vous prévenons dès l'ouverture des inscriptions.",
-    "browseAll": "Voir tous les programmes ouverts"
+    "browseAll": "Voir tous les programmes ouverts",
+    "historicTitle": "Prix observés en {month}",
+    "historicLine": "Sur {n} départ(s) passé(s) en {month} ({years}), le prix par personne allait de {min} à {max} MAD selon la gamme et le type de chambre.",
+    "lastSeasonTitle": "Les départs de {month} {year}",
+    "lastSeasonIntro": "Ce que Bab Makka a réellement proposé en {month} {year} — dates, durée, compagnie, hôtel à La Mecque et prix d'appel :",
+    "colDuration": "Durée",
+    "hijriTitle": "Calendrier hégirien",
+    "hijriSame": "{month} {year} correspond au mois de {hijriA}.",
+    "hijriSpan": "{month} {year} s'étend de {hijriA} à {hijriB}.",
+    "hijriRamadan": "Le mois de Ramadan tombe, au moins en partie, en {month} {year}.",
+    "hijriHajj": "Dhou al-hijja, le mois du Hajj, tombe, au moins en partie, en {month} {year}.",
+    "hijriMawlid": "Rabi' al-awwal, le mois du Mawlid, tombe, au moins en partie, en {month} {year}.",
+    "hijriMuharram": "Mouharram, premier mois de l'année hégirienne, tombe, au moins en partie, en {month} {year}.",
+    "weatherTitle": "Météo et affluence en {month}",
+    "suitsTitle": "À qui convient une Omra en {month} ?",
+    "leadTimeTitle": "Quand réserver pour {month} ?",
+    "faqTitle": "Questions fréquentes — Omra en {month}",
+    "evergreenLede": "Aucun départ publié pour {month} {year} pour l'instant — voici ce qu'il faut savoir pour préparer une Omra en {month} : prix observés, calendrier hégirien, météo, affluence et délai de réservation.",
+    "alertTitle": "Être prévenu des départs de {month} {year}"
   },
   "occasionPage": {
     "empty": "Programme en préparation — laissez vos coordonnées pour être averti en premier.",
@@ -464,7 +484,7 @@
     "decline": "Continuer sans accepter"
   },
   "seoTitles": {
-    "home": "Omra 2026 depuis le Maroc | Bab Makka",
+    "home": "Omra {year} depuis le Maroc | Bab Makka",
     "babmakkah": "Bab Makka — Omra depuis le Maroc : programmes & prix",
     "offer": "Omra {occasion} {year} dès {price} MAD | Bab Makka",
     "month": "Omra {month} {year} depuis le Maroc | Bab Makka"
