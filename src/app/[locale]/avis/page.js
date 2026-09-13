@@ -60,21 +60,23 @@ export default async function AvisPage({ params }) {
       }
     : null;
 
-  // Uploaded testimonial videos as VideoObject nodes — only real fields
-  // (contentUrl from storage, poster when one exists); nothing invented.
+  // Uploaded testimonial videos as VideoObject nodes — ONLY when the fields
+  // Google requires (name, description, thumbnailUrl, uploadDate) all exist;
+  // a VideoObject without a thumbnail is a Rich Results error, not a partial
+  // win (LAW §10: omit, never emit a broken node). Name and description are
+  // dictionary strings — the old hardcoded French description shipped on /ar
+  // and /en too. The name is the visible caption, or the page's H1.
   const videosJsonLd = reels
-    .filter((r) => r.src)
+    .filter((r) => r.src && r.poster && r.date)
     .map((r) => ({
       '@context': 'https://schema.org',
       '@type': 'VideoObject',
-      name: r.caption ? `${t.pages.avisTitle} — ${r.caption}` : t.pages.avisTitle,
-      description: r.caption
-        ? `Témoignage vidéo de ${r.caption}, pèlerin parti en Omra avec ${BRAND.lockup}.`
-        : `Témoignage vidéo d'un pèlerin parti en Omra avec ${BRAND.lockup}.`,
+      name: r.caption || t.pages.avisTitle,
+      description: (r.caption ? t.pages.videoTestimonialOf.replace('{name}', r.caption) : t.pages.videoTestimonial)
+        .replace('{lockup}', locale === 'ar' ? BRAND.lockupAr : BRAND.lockup),
       contentUrl: r.src,
-      // uploadDate + thumbnailUrl are the fields Google requires to index a video.
-      ...(r.date ? { uploadDate: String(r.date).slice(0, 10) } : {}),
-      ...(r.poster ? { thumbnailUrl: r.poster } : {}),
+      uploadDate: String(r.date).slice(0, 10),
+      thumbnailUrl: r.poster,
       publisher: { '@id': `${SITE_URL}/#organization` },
     }));
 

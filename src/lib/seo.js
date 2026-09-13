@@ -263,9 +263,9 @@ export function hotelPostalAddress(hotel) {
  * compare. geo only when BOTH coordinates exist (migration 022 adds the
  * columns) — half a GeoCoordinates is worse than none.
  */
-export function hotelNode(hotel, locale) {
+export function hotelNode(hotel, locale, { amenities: withAmenities = true } = {}) {
   const t = getDictionary(locale);
-  const distance = hotel.distance_to_haram_m;
+  const distance = withAmenities ? hotel.distance_to_haram_m : null;
   const amenities = [
     distance != null
       ? {
@@ -275,7 +275,7 @@ export function hotelNode(hotel, locale) {
           unitCode: 'MTR',
         }
       : null,
-    hotel.breakfast_included
+    withAmenities && hotel.breakfast_included
       ? { '@type': 'LocationFeatureSpecification', name: t.offer.breakfastIncluded, value: true }
       : null,
   ].filter(Boolean);

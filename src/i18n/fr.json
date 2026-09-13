@@ -288,6 +288,8 @@
   },
   "pages": {
     "avisTitle": "Avis de nos pèlerins",
+    "videoTestimonial": "Témoignage vidéo d'un pèlerin parti en Omra avec {lockup}.",
+    "videoTestimonialOf": "Témoignage vidéo de {name}, pèlerin parti en Omra avec {lockup}.",
     "agrementTitle": "Notre agrément",
     "agrementBody": "Wiki Tours International est une agence de voyages marocaine agréée. Notre numéro de licence est affiché à l'agence et vérifiable auprès du Ministère du Tourisme.",
     "aproposTitle": "Qui sommes-nous",

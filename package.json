@@ -6,8 +6,10 @@
     "dev": "next dev --turbopack",
     "prebuild": "node scripts/ingest-articles.mjs",
     "build": "next build --turbopack",
+    "postbuild": "node scripts/schema-audit.mjs",
     "start": "next start",
     "lint": "eslint",
+    "schema:audit": "node scripts/schema-audit.mjs",
     "seo:audit": "node scripts/seo-audit.js",
     "i18n:audit": "node scripts/i18n-audit.mjs",
     "links:audit": "node scripts/link-audit.mjs"

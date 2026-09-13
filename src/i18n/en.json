@@ -288,6 +288,8 @@
   },
   "pages": {
     "avisTitle": "Pilgrims' reviews",
+    "videoTestimonial": "Video testimonial from a pilgrim who travelled for Umrah with {lockup}.",
+    "videoTestimonialOf": "Video testimonial from {name}, a pilgrim who travelled for Umrah with {lockup}.",
     "agrementTitle": "Our license",
     "agrementBody": "Wiki Tours International is a licensed Moroccan travel agency. Our license number is displayed at the agency and verifiable with the Ministry of Tourism.",
     "aproposTitle": "About us",

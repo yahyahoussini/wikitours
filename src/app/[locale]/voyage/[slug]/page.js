@@ -92,18 +92,24 @@ export default async function VoyagePage({ params }) {
     voyage.airline ? ['plane', voyage.airline] : null,
   ].filter(Boolean);
 
-  // TouristTrip + Product; the priced Offer node only when price AND departure
-  // date are both real (validThrough required on every Offer — LAW §10).
+  // The priced Offer node only when price AND departure date are both real
+  // (validThrough required on every Offer — LAW §10). Product ONLY alongside
+  // that Offer: a Product with no offers is a Rich Results Test error (Google
+  // requires offers, review or aggregateRating, and ratings are forbidden
+  // here), so an unpriced trip is a plain TouristTrip. Trip dates use the Trip
+  // properties — startDate/endDate belong to Event, dateModified to
+  // CreativeWork, and the schema gate rejects a property outside its type.
+  const bookable = voyage.starting_price != null && Boolean(voyage.date_start);
   const tripJsonLd = {
     '@context': 'https://schema.org',
-    '@type': ['Product', 'TouristTrip'],
+    '@type': bookable ? ['Product', 'TouristTrip'] : 'TouristTrip',
     name: title,
+    url: absoluteUrl(locale, `/voyage/${voyage.slug}`),
     ...(summary ? { description: summary } : {}),
     provider: { '@id': `${SITE_URL}/#organization` },
-    ...(voyage.updated_at ? { dateModified: voyage.updated_at } : {}),
-    ...(voyage.date_start ? { startDate: voyage.date_start } : {}),
-    ...(voyage.date_end ? { endDate: voyage.date_end } : {}),
-    ...(voyage.starting_price != null && voyage.date_start
+    ...(voyage.date_start ? { departureTime: voyage.date_start } : {}),
+    ...(voyage.date_end ? { arrivalTime: voyage.date_end } : {}),
+    ...(bookable
       ? {
           offers: {
             '@type': 'Offer',
@@ -117,6 +123,7 @@ export default async function VoyagePage({ params }) {
                 ? 'https://schema.org/SoldOut'
                 : 'https://schema.org/InStock',
             url: absoluteUrl(locale, `/voyage/${voyage.slug}`),
+            seller: { '@id': `${SITE_URL}/#organization` },
             ...(voyage.created_at ? { validFrom: voyage.created_at.slice(0, 10) } : {}),
             validThrough: voyage.date_start,
           },

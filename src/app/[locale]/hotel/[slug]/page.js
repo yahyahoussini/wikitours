@@ -104,7 +104,7 @@ export default async function HotelPage({ params }) {
     ? {
         '@context': 'https://schema.org',
         '@type': 'ItemList',
-        name: `${hotel.name} — ${t.offer.hotelDeparturesTitle}`,
+        name: t.offer.hotelDeparturesTitle, // the visible <h2>, verbatim — markup never says what the page does not
         numberOfItems: departures.length,
         itemListElement: departures.map((o, i) => ({
           '@type': 'ListItem',
@@ -114,8 +114,8 @@ export default async function HotelPage({ params }) {
             '@id': tripNodeId(o.slug),
             name: pickLang(o, 'title', locale) ?? o.slug,
             url: absoluteUrl(locale, `/omra/${o.slug}`),
-            ...(o.date_start ? { startDate: o.date_start } : {}),
-            ...(o.date_end ? { endDate: o.date_end } : {}),
+            ...(o.date_start ? { departureTime: o.date_start } : {}),
+            ...(o.date_end ? { arrivalTime: o.date_end } : {}),
             provider: { '@id': `${SITE_URL}/#organization` },
             itinerary: { '@id': hotelNodeId(hotel.slug) },
           },

@@ -178,6 +178,7 @@ per-entity overrides under `blog/[slug]/` and `omra/[slug]/`.
 | Entity/field registry | `src/lib/admin/registry.js` |
 | **Gate** | |
 | SEO audit (crawls the live sitemap) | `scripts/seo-audit.js` |
+| Structured-data gate (`postbuild`, reads the build output; `--self-test`) | `scripts/schema-audit.mjs` + `scripts/schema-vocab.json` |
 
 ## Known-good patterns to follow
 
@@ -387,6 +388,23 @@ Against production: `BASE_URL=https://wikitours.ma npm run seo:audit`
 (246/246 green on 2026-09-09). Locally, use the isolated build so a running dev
 server is never clobbered: `NEXT_DIST_DIR=.next-audit npm run build`.
 
+**Structured data is gated at build time.** `npm run build` ends with `postbuild →
+node scripts/schema-audit.mjs` (same on Vercel and in CI, both run `npm run build`).
+It reads the prerendered HTML — no server, no DB, ~2 s — for a representative page of
+every page type in every locale and exits 1 on: invalid JSON-LD or a non-schema.org
+`@context`; an `@type` or property unknown to schema.org, or a property outside its
+type (`scripts/schema-vocab.json`, refresh with `--update-vocab`); a missing required
+field per type (Offer bare-number price + `MAD` + availability enum + `validThrough` +
+`seller`, TravelAgency licence + address + `sameAs`, FAQPage ≥1 Question, BreadcrumbList
+positions 1..n, …); an `@id` referenced but not defined on the same page (or ≠1
+`#organization` / `#website`); copy in the wrong language for the page; **any**
+`aggregateRating`; markup content absent from the rendered page; a page type missing
+its node types. `npm run schema:audit` runs it on demand — `--all` (every prerendered
+page), `--only=/fr/hotel/anjum`, `--inventory`, and `--self-test`, which mutates real
+pages in memory (21 deliberate breakages) and proves each is caught with its specific
+message. Run `--self-test` after editing the gate. Legal pages that 404 (no admin row)
+are skipped, not audited.
+
 ## Migrations
 Numbered SQL in `supabase/migrations/`. Apply in order on staging, run
 `npm run seo:audit` green, then production. `supabase/schema.sql` is the
@@ -431,16 +449,16 @@ so the `TravelAgency` node ships on **every** public page.
 | `WebPage` + `SpeakableSpecification` | `/`, `/bab-makka`, `/omra-pas-cher`, `/hotels-omra`, `/contact`, `/agence-omra-casablanca`, `/presse`, `/glossaire-omra`, `/barometre-prix-omra`, `/guide-omra(/*)`, all `[flat]` hubs | `name`, `description`, `url`, `inLanguage`, `isPartOf` → `#website`, `speakable.cssSelector: ['h1','[data-answer]']` |
 | `FAQPage` | `/`, `/agence-omra-casablanca`, `/omra-depuis-{city}`, `/omra-{occasion}`, `/omra-pas-cher`, `/hotel/[slug]`, `/guide-omra(/*)` | `mainEntity[]` → `Question` + `acceptedAnswer` → `Answer` |
 | `BreadcrumbList` | `/omra/[slug]`, `/hotel/[slug]`, `/blog/[slug]`, all `[flat]` hubs, `/barometre-prix-omra`, `/glossaire-omra`, `/presse`, `/guide-omra(/*)`, `/omra-pas-cher`, `/hotels-omra`, `/voyage/[slug]` | `itemListElement[]` → `ListItem` (`position`, `name`, `item`) |
-| `['Product','TouristTrip']` | `/omra/[slug]` | `name`, `description`, `image`, `brand` → `#brand`, `offers` → `AggregateOffer` (`lowPrice`, `highPrice`, `offerCount`, `priceCurrency`) or `Offer` (`price`), each with `availability`, `validFrom`, `validThrough`, `priceValidUntil`, `availabilityEnds`, `seller` → `#organization`; `@id` (FR URL + `#trip`); `additionalProperty` → `PropertyValue` (duration DAY, nights, airline, distance to Haram as `value` or `minValue`/`maxValue` in MTR, room types); `itinerary` → full `Hotel` nodes via `hotelNode()`. **No `aggregateRating` / `review` (2026-09-13).** |
-| `['Product','TouristTrip']` | `/voyage/[slug]` | as above minus ratings; `Offer` emitted only when price **and** `date_start` both exist |
+| `['Product','TouristTrip']` | `/omra/[slug]` | `name`, `description`, `image`, `brand` → `#brand`, `offers` → `AggregateOffer` (`lowPrice`, `highPrice`, `offerCount`, `priceCurrency`) or `Offer` (`price`), each with `availability`, `validFrom`, `validThrough`, `priceValidUntil`, `availabilityEnds`, `seller` → `#organization`; `@id` (FR URL + `#trip`); `departureTime` / `arrivalTime` (the Trip properties — `startDate`/`endDate`/`dateModified` are not defined on Product or Trip and the gate rejects them); `additionalProperty` → `PropertyValue` (duration DAY, nights, airline, distance to Haram as `value` or `minValue`/`maxValue` in MTR, room types); `itinerary` → full `Hotel` nodes via `hotelNode()`. **No `aggregateRating` / `review` (2026-09-13).** |
+| `['Product','TouristTrip']`, or plain `TouristTrip` when nothing is bookable | `/voyage/[slug]` | `Offer` (with `seller`) only when price **and** `date_start` both exist; without it the node is a `TouristTrip` alone — a `Product` with no offers is a Rich Results error |
 | `Hotel` | `/hotel/[slug]`, nested in the `/hotels-omra` `ItemList`, and in each `/omra/[slug]` `itinerary` — all through `hotelNode()` | `@id` (FR URL + `#hotel`), `name`, `url`, `address` → `PostalAddress` (`streetAddress` / `postalCode` parsed from `address_en`, locality from `city`), `geo` only when both coordinates exist (migration 022), `starRating` → `Rating`, `amenityFeature` → `LocationFeatureSpecification` (distance as `value` + `unitCode: MTR`, breakfast). The hotel page also emits an `ItemList` of `TouristTrip` (the departure's `@id`, `itinerary` → this hotel's `@id`) — the reverse edge |
 | `ItemList` / `ListItem` | `/bab-makka`, `/hotels-omra`, `/voyages`, `/avis`, `/omra-pas-cher` | `itemListElement`, `itemListOrder`, `numberOfItems` |
 | `BlogPosting` | `/blog/[slug]` | `headline`, `description`, `image`, `inLanguage`, `mainEntityOfPage`, `author` → `Person`, `reviewedBy` → `Person`, `datePublished`, `dateModified`, `publisher` → `#organization`, `speakable` |
 | `Article` | `/guide-omra`, `/guide-omra/[slug]` | `headline`, `author` → `Person` (+`sameAs`), only when a body exists |
 | `DefinedTermSet` / `DefinedTerm` | `/glossaire-omra` | `name`, `description` per term |
 | `Dataset` | `/barometre-prix-omra` | the price-barometer periods |
-| `Review` / `Rating` / `Person` | `/avis` (`itemReviewed` → `#organization`), `/omra/[slug]` | `reviewRating`, `author`, `reviewBody` |
-| `VideoObject` | `/avis` | one per uploaded reel |
+| `Review` / `Rating` / `Person` | `/avis` (`itemReviewed` → `#organization`) | `reviewRating`, `author`, `reviewBody` |
+| `VideoObject` | `/avis` | one per uploaded reel that has a poster **and** a date — `thumbnailUrl` + `uploadDate` are Google-required, so an incomplete reel emits nothing (none qualifies today); `name` = caption or H1, `description` from the dictionary |
 | `Person` | `/a-propos` | one per published team member, `worksFor` → `#organization` |
 | *(none beyond the sitewide node)* | `/blog`, `/hajj`, `/agrement`, `/lp/[slug]`, the 3 legal routes, 404 | — |
 

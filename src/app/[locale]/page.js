@@ -127,6 +127,9 @@ export default async function HomePage({ params }) {
     '@type': 'WebPage',
     '@id': `${absoluteUrl(locale, '')}#webpage`,
     url: absoluteUrl(locale, ''),
+    // The H1 as rendered (both lines) — a WebPage without a name was the one
+    // gap the schema gate found on the home page.
+    name: `${t.home.heroLine1} ${t.home.heroLine2}`,
     inLanguage: locale,
     isPartOf: { '@id': `${SITE_URL}/#website` },
     about: { '@id': `${SITE_URL}/#organization` },

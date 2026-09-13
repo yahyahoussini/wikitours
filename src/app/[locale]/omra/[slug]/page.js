@@ -92,7 +92,11 @@ function computedIntro(offer, t, locale, tiers) {
 
   const occasionName = offer.occasion ? pickLang(offer.occasion, 'name', locale) : null;
   const year = new Date(offer.date_start).getUTCFullYear();
-  const name = occasionName ? `${occasionName} ${year}` : pickLang(offer, 'title', locale) ?? String(year);
+  // An occasion named "Spécial septembre 2026" already carries its year — don't
+  // append a second one ("… 2026 2026" was live in the intro and the markup).
+  const name = occasionName
+    ? occasionName.includes(String(year)) ? occasionName : `${occasionName} ${year}`
+    : pickLang(offer, 'title', locale) ?? String(year);
   const lockup = locale === 'ar' ? BRAND.lockupAr : BRAND.lockup;
 
   let lead = t.offer.introLead
@@ -342,11 +346,16 @@ export default async function OfferPage({ params }) {
     // Full Hotel nodes, not bare references — Google does not resolve an @id
     // across pages. Each hotel page lists this departure back (ItemList →
     // TouristTrip → itinerary → the same hotel @id), so the link is two-way.
-    ...(tripHotels.length ? { itinerary: tripHotels.map((h) => hotelNode(h, locale)) } : {}),
-    // Freshness: AI search + Google favour recently-updated entities.
-    ...(offer.updated_at ? { dateModified: offer.updated_at } : {}),
-    ...(offer.date_start ? { startDate: offer.date_start } : {}),
-    ...(offer.date_end ? { endDate: offer.date_end } : {}),
+    // Entity summaries only (no amenities): this page's distance facts are the
+    // gammes' (additionalProperty above, what the cards show); a hotel's own
+    // distance is stated on its page, and the two can legitimately differ.
+    ...(tripHotels.length ? { itinerary: tripHotels.map((h) => hotelNode(h, locale, { amenities: false })) } : {}),
+    // Trip dates on the Trip half of the node. startDate/endDate are Event
+    // properties and dateModified a CreativeWork one — none exists on Product
+    // or TouristTrip, and the schema gate rejects a property outside its type.
+    // Freshness lives in the sitemap <lastmod> and the visible "Mis à jour".
+    ...(offer.date_start ? { departureTime: offer.date_start } : {}),
+    ...(offer.date_end ? { arrivalTime: offer.date_end } : {}),
     ...(priceNode
       ? {
           offers: {
