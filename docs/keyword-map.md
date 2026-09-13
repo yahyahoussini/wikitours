@@ -78,6 +78,27 @@ Note the ramadan split: the **hub** owns the commercial query (offres, prix,
 réserver), the **article** owns the informational one (quand / pourquoi tôt).
 Same pattern for any future hub+article pair — declare both rows here.
 
+## Topical clusters A–G (internal linking — `src/lib/clusters.js`)
+
+The pillar `/bab-makka` links DOWN to every page below (`ClusterIndex`); every
+cluster page links UP to its pillar, to its mandatory targets and to three
+siblings (`ClusterLinks`); every hub lists the articles that support it
+(`RelatedArticles` → `supports_path`, else the cluster's pillar). An article
+joins a cluster by its explicit entry in the map, else its `supports_path`,
+else its `category` — new articles are wired automatically.
+
+| Cluster | Pillar | Pages | Articles |
+|---|---|---|---|
+| A — Départs et offres | `/bab-makka` | `/omra-pas-cher`, `/omra-5-etoiles`, `/omra-ramadan`, `/hotels-omra`, indexable `/omra-{mois}` and `/omra-depuis-{ville}` | — |
+| B — Agence et confiance | `/agence-omra-casablanca` | `/agrement`, `/avis`, `/presse`, `/a-propos`, `/equipe` | comment-verifier-agence-omra-agreee-maroc, comment-choisir-agence-omra, omra-groupe-ou-individuel |
+| C — Prix et budget | `/omra-pas-cher` | `/barometre-prix-omra`, `/guide-omra/budget` | prix-omra-maroc-par-gamme-et-mois, gammes-omra-economique-vip, budget-argent-poche-omra |
+| D — Quand partir | `/omra-ramadan` | `/guide-omra/meilleure-periode`, indexable `/omra-{mois}` | quand-reserver-omra-calendrier, omra-ramadan-2027-quand-reserver, omra-10-derniers-jours-ramadan-2027, ramadan-2027-dates-calendrier, quelle-periode-ramadan-choisir-omra, journee-ramadan-la-mecque, jeuner-pendant-omra-ramadan, omra-vacances-scolaires, omra-octobre-meteo-affluence, omra-8-jours-ou-15-jours |
+| E — Préparer sa Omra | `/guide-omra` | the 6 chapters, `/glossaire-omra` | premiere-omra-7-erreurs-a-eviter, invocations-dua-omra, vaccins-sante-omra, application-nusuk-guide, assurance-voyage-omra, bagages-omra-restrictions, telephone-internet-arabie-saoudite, omra-badal-pour-un-proche, combien-de-fois-omra, imprevus-pendant-omra, omra-en-famille-enfants-parents-ages |
+| F — La Mecque, Médine, hôtels | `/hotels-omra` | every `/hotel/{slug}` | que-visiter-la-mecque, que-visiter-medine-ziyara, train-al-haramain-mecque-medine |
+| G — Hajj | `/hajj` | — | difference-omra-hajj, hajj-maroc-inscription-quota, loterie-hajj-maroc, pas-tire-au-sort-hajj-omra, hajj-ministere-ou-agence, cout-hajj-maroc (the last four minus difference/cout carry the Hajj → Omra bridge) |
+
+Orphan report: `npm run links:graph` on a build (`docs/link-graph.md` is the checked-in snapshot).
+
 ## SERP battle map (incumbents observed 2026-07 — re-verify quarterly)
 
 Internal intelligence, never shipped as content. Source: manual SERP review

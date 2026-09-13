@@ -270,25 +270,18 @@ export const getArticles = cache(async function getArticles(limit = 50) {
 });
 
 /**
- * Published articles that declare they SUPPORT `path` (articles.supports_path,
- * migration 020) — the reverse internal link a hub shows to its cluster.
- * Anon client ⇒ RLS: published AND published_at <= now() only. Safe before the
- * migration is applied: an unknown column just yields an empty list.
+ * Published articles that SUPPORT `path` — the reverse internal link a hub
+ * shows to its cluster. The owner is `articles.supports_path` when the admin
+ * (or the drafter) set it, else the cluster map's pillar for that article
+ * (src/lib/clusters.js): 34 of the 36 live articles carry no supports_path,
+ * which is why every hub used to render nothing here. Anon client ⇒ RLS:
+ * published AND published_at <= now() only. Request-cached, so the hubs and
+ * the ClusterLinks blocks share one query.
  */
 export const getRelatedArticles = cache(async function getRelatedArticles(path, limit = 4) {
-  try {
-    const supabase = supabasePublic();
-    if (!supabase || !path) return [];
-    const { data } = await supabase
-      .from('articles')
-      .select('slug, title_fr, title_ar, title_en, excerpt_fr, excerpt_ar, excerpt_en, published_at')
-      .eq('supports_path', path)
-      .order('published_at', { ascending: false })
-      .limit(limit);
-    return data ?? [];
-  } catch {
-    return [];
-  }
+  if (!path) return [];
+  const { ownerPathOf } = await import('@/lib/clusters');
+  return (await getArticles(500)).filter((a) => ownerPathOf(a) === path).slice(0, limit);
 });
 
 export const getArticleBySlug = cache(async function getArticleBySlug(slug) {

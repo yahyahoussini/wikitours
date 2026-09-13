@@ -10,6 +10,7 @@ import Icon from '@/components/site/Icon';
 import LeadForm from '@/components/LeadForm';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import HeroSlideshow from '@/components/site/HeroSlideshow';
+import ClusterIndex from '@/components/site/ClusterIndex';
 
 export const revalidate = false;
 
@@ -97,6 +98,12 @@ export default async function HajjPage({ params }) {
             <LeadForm locale={locale} labels={t.form} dark source="hajj_interest" whatsappNumber={settings?.whatsapp_number} />
           </div>
         </section>
+
+        {/* The Hajj pillar links DOWN to its cluster (the Hajj articles) — from
+            the cluster map; each article links back UP through ClusterLinks. */}
+        <div className="mt-6 rounded-panel bg-wiki-white text-bm-black">
+          <ClusterIndex locale={locale} ids={['G']} title={t.clusters.hajjIndexTitle} />
+        </div>
       </main>
       <WhatsAppFloat locale={locale} />
     </div>

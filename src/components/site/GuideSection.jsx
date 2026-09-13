@@ -7,6 +7,7 @@ import BrandLockup from '@/components/site/BrandLockup';
 import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
 import JsonLd from '@/components/site/JsonLd';
 import RelatedArticles from '@/components/site/RelatedArticles';
+import ClusterLinks from '@/components/site/ClusterLinks';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
 /**
@@ -181,7 +182,10 @@ export default function GuideSection({
       </section>
 
       <WhatsAppFloat locale={locale} />
-      {/* Reverse internal link: the blog cluster that supports this chapter. */}
+      {/* Cluster wiring (src/lib/clusters.js): pillar, commercial door and the
+          sibling articles of the guide cluster; then the articles that support
+          THIS chapter. */}
+      <ClusterLinks path={path} locale={locale} />
       <RelatedArticles path={path} locale={locale} className="px-0!" />
     </main>
   );

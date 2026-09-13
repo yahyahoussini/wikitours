@@ -171,6 +171,9 @@ per-entity overrides under `blog/[slug]/` and `omra/[slug]/`.
 | The one Organization node | `src/components/site/OrgJsonLd.jsx` |
 | Hotel node + hotel/departure `@id`s — ONE builder for the hotel page, the hub `ItemList` and each departure's `itinerary` | `hotelNode()`, `hotelPostalAddress()`, `hotelNodeId()`, `tripNodeId()` — `src/lib/seo.js` |
 | JSON-LD renderer | `src/components/site/JsonLd.jsx` |
+| Topical clusters A–G — pillar ↔ hub ↔ article wiring, the mandatory link pairs, the Hajj → Omra bridge | `src/lib/clusters.js` → `ClusterIndex` (pillars link down), `ClusterLinks` (pages link up + siblings), `HajjBridge`, `RelatedArticles` (hub → its articles via `supports_path`, else the map) |
+| Internal link graph + orphan report (reads the build output) | `scripts/link-graph.mjs` — `npm run links:graph`, snapshot in `docs/link-graph.md` |
+| Authors (E-E-A-T): people = `team_members` rows (+ profile columns, migration 024), article `author_id` / `reviewer_id`; the intake the client fills | `docs/authors-intake.md`, `/equipe` page, `personNode()` in `src/lib/seo.js` |
 | **Blog automation** | |
 | Quality gate, shared by both engines (no `@/` imports) | `src/lib/server/article-gate.mjs` |
 | Weekly writing contract | `content/ARTICLE-BRIEF.md` |
@@ -214,6 +217,11 @@ when there are none, then overwrites `starting_price` with the true minimum.
 blog was the last holdout and was fixed on 2026-09-09.
 
 **Dictionary-first strings.** UI text belongs in `src/i18n/*.json`, DB text goes through `pickLang()`.
+
+**Internal links come from the cluster map, never from a template.** `src/lib/clusters.js` says which
+pillar, hubs and articles form clusters A–G and which contextual targets an article must carry; the
+components read it. An article joins a cluster by its explicit entry, else `supports_path`, else
+`category` — so a new article is wired the moment it is published. Add a link pair there, not in JSX.
 
 **Logical CSS properties, not RTL overrides.** `ms-*` / `me-*` / `ps-*` / `pe-*` / `text-start` / `text-end`.
 There is no `tailwind.config.js` (Tailwind v4) and no RTL plugin.

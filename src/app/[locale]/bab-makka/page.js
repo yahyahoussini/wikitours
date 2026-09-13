@@ -13,6 +13,7 @@ import BrandLockup from '@/components/site/BrandLockup';
 import PackagesSection from '@/components/site/PackagesSection';
 import JsonLd from '@/components/site/JsonLd';
 import RelatedArticles from '@/components/site/RelatedArticles';
+import ClusterIndex from '@/components/site/ClusterIndex';
 import { StepsSection, FaqSection, MonthsLinks } from '@/components/site/HomeSections';
 import LeadForm from '@/components/LeadForm';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
@@ -214,6 +215,12 @@ export default async function BabMakkahPage({ params }) {
         </section>
         {/* Reverse internal link: the blog cluster that supports this hub. */}
         <RelatedArticles path="/bab-makka" locale={locale} />
+
+        {/* The pillar links DOWN to every page of clusters A–G — hubs, occasion
+            hubs, indexable month/city landers, hotels and every published
+            article — from the cluster map, so new content is wired without
+            touching this page. Inside <main>: it is the pillar's own content. */}
+        <ClusterIndex locale={locale} className="mt-6 border-t border-bm-black/10 px-0" />
       </main>
 
       <div className="bg-wiki-white text-bm-black">

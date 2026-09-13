@@ -7,7 +7,10 @@ import { publicMediaUrl } from '@/lib/media';
 import { renderMarkdown, markdownClass } from '@/lib/markdown';
 import { withBrand } from '@/lib/titles';
 import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
+import ClusterLinks from '@/components/site/ClusterLinks';
+import HajjBridge from '@/components/site/HajjBridge';
 import JsonLd from '@/components/site/JsonLd';
+import { isHajjBridge } from '@/lib/clusters';
 import SmartGallery from '@/components/SmartGallery';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
@@ -132,6 +135,12 @@ export default async function ArticlePage({ params }) {
           />
         ) : null}
       </article>
+
+      {/* The Hajj → Omra bridge on the four lottery articles, then the
+          cluster's contextual links (mandatory targets, pillar, siblings) —
+          both driven by src/lib/clusters.js, never hand-placed per article. */}
+      {isHajjBridge(article.slug) ? <HajjBridge locale={locale} /> : null}
+      <ClusterLinks path={`/blog/${article.slug}`} locale={locale} article={article} />
       <WhatsAppFloat locale={locale} />
     </main>
   );
