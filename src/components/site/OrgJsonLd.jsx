@@ -191,5 +191,27 @@ export default async function OrgJsonLd({ locale }) {
     // exception: the per-offer aggregateRating in omra/[slug]/page.js stays.
   };
 
-  return <JsonLd data={data} />;
+  // The WebSite node lives here too, beside the organization it belongs to, so
+  // that EVERY page defines `#website`. It used to be emitted only by the home
+  // page, while eleven other page types referenced it through
+  // `WebPage.isPartOf` — a dangling @id on every one of them, because engines
+  // do not reliably resolve an @id across pages. One @id, one url: the fallback
+  // locale, for the same reason the organization's url is locale-invariant.
+  // `inLanguage` legitimately varies per page and is the only locale-bound field.
+  const site = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${SITE_URL}/#website`,
+    name: BRAND.parent,
+    url: absoluteUrl(FALLBACK_LOCALE, ''),
+    inLanguage: locale,
+    publisher: { '@id': `${SITE_URL}/#organization` },
+  };
+
+  return (
+    <>
+      <JsonLd data={data} />
+      <JsonLd data={site} />
+    </>
+  );
 }

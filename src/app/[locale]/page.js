@@ -99,16 +99,8 @@ export default async function HomePage({ params }) {
     monthAll: t.home.selectorAll,
   };
 
-  // WebSite entity — the organization is the sitewide TravelAgency in the layout.
-  const siteJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    '@id': `${SITE_URL}/#website`,
-    name: BRAND.parent,
-    url: absoluteUrl(locale, ''),
-    inLanguage: locale,
-    publisher: { '@id': `${SITE_URL}/#organization` },
-  };
+  // The WebSite node (#website) is emitted sitewide by OrgJsonLd in the layout,
+  // so every page's WebPage.isPartOf resolves on-page — not only this one.
 
   // FAQPage lives HERE and only here. The no-stacking rule is about repeating
   // the same block sitewide; the home renders the full FAQ set, so a single
@@ -140,7 +132,6 @@ export default async function HomePage({ params }) {
 
   return (
     <main>
-      <JsonLd data={siteJsonLd} />
       <JsonLd data={webPageJsonLd} />
       {faqJsonLd ? <JsonLd data={faqJsonLd} /> : null}
 
