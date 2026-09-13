@@ -9,7 +9,7 @@
     "postbuild": "node scripts/schema-audit.mjs && npm test",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --import ./tests/register.mjs --test tests/months.test.mjs tests/offers.test.mjs",
+    "test": "node --import ./tests/register.mjs --test tests/months.test.mjs tests/offers.test.mjs tests/authors.test.mjs",
     "schema:audit": "node scripts/schema-audit.mjs",
     "seo:audit": "node scripts/seo-audit.js",
     "i18n:audit": "node scripts/i18n-audit.mjs",

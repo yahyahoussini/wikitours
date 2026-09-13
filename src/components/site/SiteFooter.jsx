@@ -2,7 +2,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, pickLang } from '@/lib/i18n';
-import { getMenu, getCityPages, getMonthPages, getPublishedOffers } from '@/lib/data/content';
+import { getMenu, getCityPages, getMonthPages, getPublishedOffers, getTeam, getOccasions } from '@/lib/data/content';
+import { teamIndexable } from '@/lib/authors';
 import { getSettings } from '@/lib/data/settings';
 import { supabasePublic } from '@/lib/supabase/public';
 import { legalIsFilled } from '@/lib/legal-page';
@@ -30,6 +31,10 @@ export default async function SiteFooter({ locale }) {
   // authored evergreen content) — getPublishedOffers/getMonthPages are request-cached.
   const monthSet = indexableMonths(await getPublishedOffers(), await getMonthPages());
   const liveMonths = MONTH_SLUGS.map((slug, i) => [slug, i]).filter(([, i]) => monthSet.has(i));
+  // Occasion hubs (DB rows, indexed even when empty and always in the sitemap)
+  // get the same sitewide link as the months — /omra-mawlid had ONE inbound
+  // link. Ramadan already leads the hub row above.
+  const occasions = (await getOccasions()).filter((o) => o.slug !== 'ramadan');
 
   // Legal pages: only link the ones the admin has actually filled (fr+ar+
   // published) — never a dead/empty link (LAW §10, parity gate). Titles come
@@ -53,9 +58,13 @@ export default async function SiteFooter({ locale }) {
     { href: `/${locale}/avis`, label: t.nav.avis },
     { href: `/${locale}/agrement`, label: t.pages.agrementTitle },
   ]);
+  // /equipe joins the footer only once it is indexable (one complete published
+  // profile) — the footer never links into a noindex page.
+  const teamLive = teamIndexable(await getTeam());
   const col2 = await column('footer_col2', locale, [
     { href: `/${locale}/voyages`, label: t.nav.voyages },
     { href: `/${locale}/a-propos`, label: t.nav.about },
+    ...(teamLive ? [{ href: `/${locale}/equipe`, label: t.pages.teamTitle }] : []),
     { href: `/${locale}/blog`, label: t.nav.blog },
     { href: `/${locale}/contact`, label: t.nav.contact },
   ]);
@@ -163,6 +172,15 @@ export default async function SiteFooter({ locale }) {
                 ))}
               </nav>
             </>
+          ) : null}
+          {occasions.length ? (
+            <nav className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-white/55">
+              {occasions.map((o) => (
+                <Link key={o.slug} href={`/${locale}/omra-${o.slug}`} className="hover:text-bm-gold-light">
+                  {t.clusters.anchors.occasions.replace('{name}', pickLang(o, 'name', locale) ?? o.slug)}
+                </Link>
+              ))}
+            </nav>
           ) : null}
           {liveCities.length ? (
             <nav className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-white/55">

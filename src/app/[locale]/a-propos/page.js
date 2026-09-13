@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
-import { SITE_URL, hreflangAlternates, clampDesc } from '@/lib/seo';
+import { SITE_URL, hreflangAlternates, clampDesc, personNode } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { getSettings } from '@/lib/data/settings';
 import { getTeam, getFaqs } from '@/lib/data/content';
+import { authorRenderable, teamIndexable } from '@/lib/authors';
 import JsonLd from '@/components/site/JsonLd';
 import BrandLockup from '@/components/site/BrandLockup';
 import SectionBridge from '@/components/site/SectionBridge';
@@ -44,18 +45,12 @@ export default async function AProposPage({ params }) {
     settings?.gbp_review_count ? [String(settings.gbp_review_count), t.home.statReviews] : null,
   ].filter(Boolean);
 
-  // Person schema for the real, published team (E-E-A-T + GEO entity graph).
-  // sameAs only when the admin filled the profile URL — never guessed.
+  // Person schema for the real, published team (E-E-A-T + GEO entity graph) —
+  // the SAME node builder and @id as /equipe and the article bylines
+  // (personNode), renderable profiles only; never a placeholder.
   const teamJsonLd =
     settings?.team_enabled && team.length
-      ? team.map((m) => ({
-          '@context': 'https://schema.org',
-          '@type': 'Person',
-          name: m.name,
-          worksFor: { '@id': `${SITE_URL}/#organization` },
-          ...(pickLang(m, 'role', locale) ? { jobTitle: pickLang(m, 'role', locale) } : {}),
-          ...(m.sameas_url ? { sameAs: [m.sameas_url] } : {}),
-        }))
+      ? team.filter(authorRenderable).map((m) => ({ '@context': 'https://schema.org', ...personNode(m, locale) }))
       : [];
 
   return (
@@ -63,13 +58,22 @@ export default async function AProposPage({ params }) {
       <main>
         <div className="mx-auto max-w-5xl px-6 pt-10">
           {teamJsonLd.map((node) => (
-            <JsonLd key={node.name} data={node} />
+            <JsonLd key={node['@id']} data={node} />
           ))}
           <h1 className="text-3xl font-bold text-bm-black sm:text-4xl">{t.pages.aproposTitle}</h1>
           {/* Answer-first: THE canonical entity description, verbatim (the same
               string as Organization.description + llms.txt — consistency law). */}
           <p data-answer className="mt-4 max-w-2xl text-lg leading-relaxed text-bm-black/70">{t.brand.description}</p>
           <p className="mt-3 max-w-2xl leading-relaxed text-bm-black/60">{t.home.intro}</p>
+          {/* The people page — linked once it is indexable (one complete
+              published profile), never into a noindex page. */}
+          {teamIndexable(team) ? (
+            <p className="mt-3 text-sm font-semibold">
+              <Link href={`/${locale}/equipe`} className="text-wiki-blue underline-offset-4 hover:underline">
+                {t.pages.teamTitle} →
+              </Link>
+            </p>
+          ) : null}
           {/* Contextual link to the agency entity page. Lives here rather than
               in StorySection because that section renders only once the admin
               has written a story — this block always renders. */}

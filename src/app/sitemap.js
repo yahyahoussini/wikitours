@@ -20,6 +20,7 @@ import { getSettings } from '@/lib/data/settings';
 import { MONTH_SLUGS, CITY_SLUGS, cityPageIndexable, indexableMonths, departuresInMonth } from '@/lib/months';
 import { GUIDE_PILLAR_SLUG, GUIDE_CHILD_SLUGS, guideIndexable, GLOSSARY_MIN_TERMS } from '@/lib/guides';
 import { legalIsFilled } from '@/lib/legal-page';
+import { teamIndexable } from '@/lib/authors';
 import { computePeriods } from '@/lib/barometer';
 
 export const revalidate = 86400;
@@ -96,6 +97,8 @@ export default async function sitemap() {
     ...(voyages.length ? [['/voyages', 0.7, 'weekly', lastModifiedOf(voyages)]] : []),
     ...voyages.map((v) => [`/voyage/${v.slug}`, 0.7, 'weekly', v.updated_at]),
     ...hotels.map((h) => [`/hotel/${h.slug}`, 0.5, 'monthly', h.updated_at]),
+    // Team / authors page: noindex until one complete published profile exists.
+    ...(teamIndexable(team) ? [['/equipe', 0.5, 'monthly', lastModifiedOf(team)]] : []),
     ...articles.map((a) => [`/blog/${a.slug}`, 0.6, 'monthly', a.updated_at ?? a.published_at]),
     // Programmatic SEO landings: months with departures, DB occasions, 8 cities.
     // The month hub's lastmod is the SAME expression its page renders as

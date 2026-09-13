@@ -70,7 +70,8 @@ English and Arabic pages carry the French slug (`/en/omra-pas-cher`, `/ar/guide-
 | `/{locale}/avis` | `src/app/[locale]/avis/page.js` | Reviews |
 | `/{locale}/presse` | `src/app/[locale]/presse/page.js` | Driven by `settings.press_url` |
 | `/{locale}/agrement` | `src/app/[locale]/agrement/page.js` | Licence |
-| `/{locale}/a-propos` | `src/app/[locale]/a-propos/page.js` | About + team `Person` nodes |
+| `/{locale}/a-propos` | `src/app/[locale]/a-propos/page.js` | About + team `Person` nodes (via `personNode()`) |
+| `/{locale}/equipe` | `src/app/[locale]/equipe/page.js` | Team / authors (E-E-A-T): every renderable profile as a card + `Person` node with the `@id` article bylines resolve to. **noindex until one complete (fr+ar bio) published profile exists**; joins the sitemap and the footer at the same moment. `revalidate = 3600` |
 | `/{locale}/contact` | `src/app/[locale]/contact/page.js` | Contact + lazy map |
 | `/{locale}/barometre-prix-omra` | `src/app/[locale]/barometre-prix-omra/page.js` | Original-data page. `revalidate = 3600` |
 | `/{locale}/glossaire-omra` | `src/app/[locale]/glossaire-omra/page.js` | 42 terms live |
@@ -443,9 +444,11 @@ positions 1..n, …); an `@id` referenced but not defined on the same page (or �
 `aggregateRating`; markup content absent from the rendered page; a page type missing
 its node types. `npm run schema:audit` runs it on demand — `--all` (every prerendered
 page), `--only=/fr/hotel/anjum`, `--inventory`, and `--self-test`, which mutates real
-pages in memory (21 deliberate breakages) and proves each is caught with its specific
+pages in memory (22 deliberate breakages) and proves each is caught with its specific
 message. Run `--self-test` after editing the gate. Legal pages that 404 (no admin row)
-are skipped, not audited.
+are skipped, not audited. `npm test` (node:test, `tests/`) runs right after it in the
+same `postbuild`: month rollover boundaries, the departure lifecycle transitions, the
+author-profile rules.
 
 ## Migrations
 Numbered SQL in `supabase/migrations/`. Apply in order on staging, run
@@ -501,7 +504,7 @@ so the `TravelAgency` node ships on **every** public page.
 | `Dataset` | `/barometre-prix-omra` | the price-barometer periods |
 | `Review` / `Rating` / `Person` | `/avis` (`itemReviewed` → `#organization`) | `reviewRating`, `author`, `reviewBody` |
 | `VideoObject` | `/avis` | one per uploaded reel that has a poster **and** a date — `thumbnailUrl` + `uploadDate` are Google-required, so an incomplete reel emits nothing (none qualifies today); `name` = caption or H1, `description` from the dictionary |
-| `Person` | `/a-propos` | one per published team member, `worksFor` → `#organization` |
+| `Person` (`@id` = FR `/equipe` URL + `#slug`) | `/equipe`, `/a-propos`, and embedded as `BlogPosting.author` / `reviewedBy` on `/blog/[slug]` — all through `personNode()` | name in the page's script (`name_ar` on /ar, `alternateName` for the other scripts), `jobTitle`, `description` (bio), `knowsLanguage`, `image`, `hasCredential`, `sameAs`, `worksFor` → `#organization`. Only renderable profiles (published, not `is_placeholder`, with a slug and a bio — `src/lib/authors.js`). An article signed with the agency's name has `author` → `#organization`; a placeholder never renders, and any `[À COMPLÉTER]` / `[PLACEHOLDER]` / `[CONTENT NEEDED]` / `[TRANSLATION NEEDED]` text on a page fails the gate |
 | *(none beyond the sitewide node)* | `/blog`, `/hajj`, `/agrement`, `/lp/[slug]`, the 3 legal routes, 404 | — |
 
 ### robots.txt — exact served contents

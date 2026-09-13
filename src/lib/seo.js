@@ -1,5 +1,6 @@
-import { LOCALES, FALLBACK_LOCALE, getDictionary } from '@/lib/i18n';
+import { LOCALES, FALLBACK_LOCALE, getDictionary, pickLang } from '@/lib/i18n';
 import { BRAND } from '@/lib/brand';
+import { authorName, languagesOf } from '@/lib/authors';
 
 /**
  * Absolute-URL + hreflang helpers shared by the sitemap, robots and every
@@ -290,5 +291,41 @@ export function hotelNode(hotel, locale, { amenities: withAmenities = true } = {
       : {}),
     ...(hotel.stars ? { starRating: { '@type': 'Rating', ratingValue: hotel.stars, bestRating: 5 } } : {}),
     ...(amenities.length ? { amenityFeature: amenities } : {}),
+  };
+}
+
+/** Locale-invariant identity of a team member: the FR /equipe URL + #slug. */
+export function personNodeId(slug) {
+  return `${absoluteUrl(FALLBACK_LOCALE, '/equipe')}#${slug}`;
+}
+
+/**
+ * ONE Person node builder (E-E-A-T) for /equipe, /a-propos and every article's
+ * author / reviewer — the same @id everywhere, worksFor → the ONE business
+ * entity. Every field is a DB value the client entered (name in the page's
+ * script, role, bio, years, languages, credentials, photo, public profile);
+ * absent ⇒ omitted (LAW §10). Callers pass only renderable profiles
+ * (src/lib/authors.js authorRenderable) — a placeholder never reaches here.
+ */
+export function personNode(member, locale, { image = null } = {}) {
+  const name = authorName(member, locale);
+  const alternates = [member.name, member.name_ar, member.name_en].filter((n) => n && n !== name);
+  const role = pickLang(member, 'role', locale);
+  const bio = pickLang(member, 'bio', locale);
+  const credentials = pickLang(member, 'credentials', locale);
+  const languages = languagesOf(member);
+  return {
+    '@type': 'Person',
+    '@id': personNodeId(member.slug),
+    name,
+    ...(alternates.length ? { alternateName: [...new Set(alternates)] } : {}),
+    url: `${absoluteUrl(locale, '/equipe')}#${member.slug}`,
+    ...(role ? { jobTitle: role } : {}),
+    ...(bio ? { description: bio } : {}),
+    ...(languages.length ? { knowsLanguage: languages } : {}),
+    ...(image ? { image } : {}),
+    ...(member.sameas_url ? { sameAs: [member.sameas_url] } : {}),
+    ...(credentials ? { hasCredential: { '@type': 'EducationalOccupationalCredential', name: credentials } } : {}),
+    worksFor: { '@id': `${SITE_URL}/#organization` },
   };
 }

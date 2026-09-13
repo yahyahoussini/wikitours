@@ -1,8 +1,11 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
 import { BRAND } from '@/lib/brand';
-import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc, SPEAKABLE } from '@/lib/seo';
-import { getArticleBySlug, getArticles, getCovers } from '@/lib/data/content';
+import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc, SPEAKABLE, personNode } from '@/lib/seo';
+import { getArticleBySlug, getArticles, getCovers, getTeam } from '@/lib/data/content';
+import { getGallerySlides } from '@/lib/data/gallery';
+import { findAuthor, authorName, isOrganisationByline } from '@/lib/authors';
 import { publicMediaUrl } from '@/lib/media';
 import { renderMarkdown, markdownClass } from '@/lib/markdown';
 import { withBrand } from '@/lib/titles';
@@ -54,6 +57,28 @@ export default async function ArticlePage({ params }) {
   const covers = await getCovers('articles', [article.id]);
   const coverUrl = covers.get(article.id) ? publicMediaUrl(covers.get(article.id).path) : null;
 
+  // E-E-A-T: the author is a real team profile (author_id, or the legacy
+  // author_name matched to a renderable profile) → a Person node with the
+  // /equipe @id; the organisation itself when the article is signed with the
+  // agency's name (the 34 gate-published articles — honest, not anonymous);
+  // a bare Person name only when a person is named but has no profile yet.
+  // Never a placeholder: findAuthor() drops those (src/lib/authors.js).
+  const team = await getTeam();
+  const author = findAuthor(team, article, 'author');
+  const reviewer = findAuthor(team, article, 'reviewer');
+  const orgNames = [BRAND.parent, BRAND.lockup, 'Wiki Tours International'];
+  const faceOf = async (m) => (m ? (await getGallerySlides('team_members', m.id, locale)).find((s) => s.kind === 'image')?.src ?? null : null);
+  const authorNode = author
+    ? personNode(author, locale, { image: await faceOf(author) })
+    : !article.author_name || isOrganisationByline(article.author_name, orgNames)
+      ? { '@id': `${SITE_URL}/#organization` }
+      : { '@type': 'Person', name: article.author_name };
+  const reviewerNode = reviewer
+    ? personNode(reviewer, locale, { image: await faceOf(reviewer) })
+    : article.reviewed_by
+      ? { '@type': 'Person', name: article.reviewed_by }
+      : null;
+
   const articleJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
@@ -62,8 +87,8 @@ export default async function ArticlePage({ params }) {
     ...(coverUrl ? { image: coverUrl } : {}),
     inLanguage: locale,
     mainEntityOfPage: absoluteUrl(locale, `/blog/${article.slug}`),
-    ...(article.author_name ? { author: { '@type': 'Person', name: article.author_name } } : {}),
-    ...(article.reviewed_by ? { reviewedBy: { '@type': 'Person', name: article.reviewed_by } } : {}),
+    author: authorNode,
+    ...(reviewerNode ? { reviewedBy: reviewerNode } : {}),
     ...(article.published_at ? { datePublished: article.published_at } : {}),
     ...(article.updated_at ? { dateModified: article.updated_at } : {}),
     publisher: { '@id': `${SITE_URL}/#organization` },
@@ -99,16 +124,33 @@ export default async function ArticlePage({ params }) {
         {/* Author, verification and real dates — trust signals (LAWS §5).
             Dates use <time datetime> so the freshness is machine-readable,
             not just a localized string a parser has to guess at. */}
-        <p className="mt-3 text-sm text-bm-black/50">
-          {article.author_name}
-          {article.reviewed_by ? ` · ${t.pages.verifiedBy} ${article.reviewed_by}` : ''}
+        <p className="mt-3 text-sm text-bm-black/50" data-byline>
+          {author ? (
+            <>
+              {t.pages.byAuthor}{' '}
+              <Link href={`/${locale}/equipe#${author.slug}`} className="font-semibold text-bm-black/80 underline-offset-4 hover:underline">
+                {authorName(author, locale)}
+              </Link>
+            </>
+          ) : (
+            article.author_name ?? BRAND.parent
+          )}
+          {reviewer ? (
+            <>
+              {` · ${t.pages.verifiedBy} `}
+              <Link href={`/${locale}/equipe#${reviewer.slug}`} className="font-semibold text-bm-black/80 underline-offset-4 hover:underline">
+                {authorName(reviewer, locale)}
+              </Link>
+            </>
+          ) : article.reviewed_by ? ` · ${t.pages.verifiedBy} ${article.reviewed_by}` : ''}
           {article.published_at ? (
             <>
               {` · ${t.pages.publishedOn} `}
               <time dateTime={article.published_at}>{dateFmt.format(new Date(article.published_at))}</time>
             </>
           ) : null}
-          {article.updated_at && article.published_at && article.updated_at.slice(0, 10) !== article.published_at.slice(0, 10) ? (
+          {/* Both dates, always — the update date is a freshness signal even on the publication day. */}
+          {article.updated_at ? (
             <>
               {` · ${t.pages.updatedOn} `}
               <time dateTime={article.updated_at}>{dateFmt.format(new Date(article.updated_at))}</time>

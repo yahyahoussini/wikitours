@@ -110,7 +110,7 @@ const MONTHS = ['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet',
 const STATIC = {
   '': 'home', 'bab-makka': 'bab-makka', 'omra-pas-cher': 'omra-pas-cher', 'hotels-omra': 'hotels-omra',
   'agence-omra-casablanca': 'agence', hajj: 'hajj', voyages: 'voyages', blog: 'blog-index', avis: 'avis',
-  presse: 'presse', agrement: 'agrement', 'a-propos': 'a-propos', contact: 'contact',
+  presse: 'presse', agrement: 'agrement', 'a-propos': 'a-propos', contact: 'contact', equipe: 'team',
   'barometre-prix-omra': 'barometre', 'glossaire-omra': 'glossaire', 'guide-omra': 'guide',
   cgv: 'legal', 'mentions-legales': 'legal', 'politique-de-confidentialite': 'legal',
 };
@@ -135,6 +135,7 @@ const EXPECT = {
   'hotels-omra': ['WebPage', 'ItemList', 'BreadcrumbList'],
   agence: ['WebPage', 'FAQPage'],
   contact: ['WebPage'],
+  team: ['WebPage', 'BreadcrumbList'],
   presse: ['WebPage', 'BreadcrumbList'],
   barometre: ['WebPage', 'BreadcrumbList'],
   glossaire: ['WebPage', 'BreadcrumbList'],
@@ -233,6 +234,7 @@ const LOCALIZED = {
   Product: [['name', true], ['description', true]],
   TouristTrip: [['name', true], ['description', true]],
   Hotel: [['description', true]],
+  Person: [['jobTitle', true], ['description', true]], // role + bio, in the page's language and on the page
   PropertyValue: [['name', false]],
   LocationFeatureSpecification: [['name', false]], // the fact is the numeric value, checked below
   VideoObject: [['name', true], ['description', false]],
@@ -248,6 +250,9 @@ const LOCALIZED = {
 // nouns ("Bab Makka", "Abraj Al Kiswah") that stay Latin on /ar. The FIRST
 // breadcrumb is always the dictionary's "home" label, so that one IS checked.
 const CONTENT_ONLY = { Review: ['reviewBody'], Person: ['name'], ListItem: ['name'] };
+// LAW §10: placeholder copy never ships. A stub author profile, an unfilled
+// [CONTENT NEEDED] block or an untranslated field reaching a page fails the build.
+const PLACEHOLDER_MARKERS = ['[à compléter]', '[placeholder]', '[content needed]', '[translation needed]'];
 const LAYOUT_IDS = /#(organization|website|brand)$/; // sitewide nodes from the layout — not page content
 
 // ── checks ──────────────────────────────────────────────────────────────────
@@ -318,8 +323,11 @@ function runChecks(page) {
     // A standalone trip (unpriced voyage) needs a name and its URL; a trip
     // listed on a hotel page must also point back at that hotel (itinerary).
     TouristTrip: (n, trail) => (has(n, ['Product']) ? [] : [n.name ? null : 'name missing', n.url ? null : 'url missing', !/itemListElement/.test(trail) || n.itinerary ? null : 'itinerary (→ the hotel @id) missing']),
-    BlogPosting: (n) => [n.headline ? null : 'headline missing', n.author?.name ? null : 'author.name missing', n.datePublished ? null : 'datePublished missing'],
-    Article: (n) => [n.headline ? null : 'headline missing', n.author?.name ? null : 'author.name missing'],
+    // author: a named Person/Organization node, or an @id reference (the ids
+    // check proves it is defined on the page — e.g. #organization for the
+    // articles signed with the agency's name).
+    BlogPosting: (n) => [n.headline ? null : 'headline missing', n.author?.name || n.author?.['@id'] ? null : 'author missing (a named node or an @id reference)', n.datePublished ? null : 'datePublished missing', n.dateModified ? null : 'dateModified missing'],
+    Article: (n) => [n.headline ? null : 'headline missing', n.author?.name || n.author?.['@id'] ? null : 'author missing (a named node or an @id reference)'],
     Review: (n) => [isNumber(n.reviewRating?.ratingValue) ? null : 'reviewRating.ratingValue missing', n.author?.name ? null : 'author.name missing'],
     Person: (n) => [n.name ? null : 'name missing'],
     VideoObject: (n) => [n.name ? null : 'name missing', n.thumbnailUrl ? null : 'thumbnailUrl missing', n.uploadDate ? null : 'uploadDate missing', n.contentUrl || n.embedUrl ? null : 'contentUrl or embedUrl missing'],
@@ -412,6 +420,9 @@ function runChecks(page) {
     const text = norm(page.html.replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<style[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]+>/g, ' '));
     const meta = norm([...page.html.matchAll(/<meta[^>]+content="([^"]*)"/g)].map((m) => m[1]).join(' | '));
     const digits = text.replace(/(\d)[\s.,  ](?=\d)/g, '$1');
+    for (const marker of PLACEHOLDER_MARKERS) {
+      if (text.includes(marker)) F('placeholder', `placeholder text "${marker}" reached the page — a stub profile or unfilled copy is live`);
+    }
     const needText = (t, prop, v, trail) => {
       const needle = norm(v).slice(0, 80);
       if (needle.length < 3) return;
@@ -477,6 +488,7 @@ function selfTest(pages) {
     ['content', 'visible FAQ removed from the page but kept in the markup', (p) => ({ ...p, html: p.html.replace(/<details[\s\S]*?<\/details>/g, '') }), 'Answer.text', 'home'],
     ['content', 'schema price changed away from the visible price', (p) => inBlock(p, /"Product"/, (s) => s.replace(/"lowPrice":(\d+)/, (_, n) => `"lowPrice":${Number(n) + 1}`)), 'is in the markup but not in the rendered page'],
     ['expect', 'Product node removed from a departure page', (p) => ({ ...p, scripts: p.scripts.filter((s) => !/"Product"/.test(s)) }), 'offer page must carry a Product node'],
+    ['placeholder', 'a stub author profile reaches the page', (p) => ({ ...p, html: p.html.replace('<h1', '<p>[À COMPLÉTER] bio</p><h1') }), 'placeholder text "[à compléter]" reached the page', 'home'],
   ];
   let undetected = 0;
   console.log(`\nself-test — ${MUTATIONS.length} deliberate breakages, each must produce its specific failure\n`);

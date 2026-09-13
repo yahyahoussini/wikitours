@@ -276,11 +276,21 @@ create table if not exists public.team_members (
   role_ar text,
   role_en text,
   sameas_url text,
+  -- Authors / E-E-A-T (migration 024): supplied by the client, never by code.
+  slug text,                  -- stable @id fragment on /equipe and in article author nodes
+  name_ar text,
+  name_en text,
+  years_experience integer check (years_experience is null or years_experience >= 0),
+  languages text,
+  bio_fr text, bio_ar text, bio_en text,
+  credentials_fr text, credentials_ar text, credentials_en text,
+  is_placeholder boolean not null default false, -- stub profile: never rendered, never emitted
   sort_order integer not null default 0,
   is_published boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+create unique index if not exists team_members_slug_idx on public.team_members (slug) where slug is not null;
 
 create table if not exists public.testimonials (
   id uuid primary key default gen_random_uuid(),
@@ -350,6 +360,8 @@ create table if not exists public.articles (
   category text check (category in ('confiance', 'omra', 'hajj', 'hotels', 'guide')),
   author_name text,
   reviewed_by text,
+  author_id uuid references public.team_members (id) on delete set null,   -- migration 024
+  reviewer_id uuid references public.team_members (id) on delete set null, -- migration 024
   published_at timestamptz,
   supports_path text, -- owner page this article supports → RelatedArticles (migration 020)
   seo_title_fr text,

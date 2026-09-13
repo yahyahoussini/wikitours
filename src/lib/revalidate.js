@@ -43,7 +43,7 @@ const TABLE_PATHS = {
     '/[locale]/omra/[slug]', '/[locale]/[flat]', '/[locale]/guide-omra/[slug]',
   ],
   timeline_items: () => ['/', '/a-propos'],
-  team_members: () => ['/', '/a-propos'],
+  team_members: () => ['/', '/a-propos', '/equipe', '/[locale]/blog/[slug]'], // bylines embed the Person node
   // supports_path: the hub whose "Pour aller plus loin" block lists this article.
   articles: (row) => ['/', '/blog', row?.slug ? `/blog/${row.slug}` : null, row?.supports_path ?? null, 'raw:/llms.txt'],
   landing_pages: (row) => [row?.slug ? `/lp/${row.slug}` : '/[locale]/lp/[slug]'],
