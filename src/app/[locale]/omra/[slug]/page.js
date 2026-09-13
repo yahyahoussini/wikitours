@@ -23,7 +23,7 @@ import { waLink } from '@/lib/whatsapp';
 import { OMRA_YEAR, monthPagePath, monthName } from '@/lib/months';
 import { offerAvailability, hasDeparted, seatsLabel, visibleStatusKey } from '@/lib/offers';
 import BrandLockup from '@/components/site/BrandLockup';
-import Breadcrumbs from '@/components/site/Breadcrumbs';
+import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
 import OfferSubnav from '@/components/site/OfferSubnav';
 import TierAndRoomSelector from '@/components/site/TierAndRoomSelector';
 import ChooseGammeButton from '@/components/site/ChooseGammeButton';
@@ -347,16 +347,6 @@ export default async function OfferPage({ params }) {
       : {}),
   };
 
-  const breadcrumbJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: t.nav.home, item: `${SITE_URL}/${locale}` },
-      { '@type': 'ListItem', position: 2, name: BRAND.service, item: `${SITE_URL}/${locale}/bab-makka` },
-      { '@type': 'ListItem', position: 3, name: title ?? offer.slug },
-    ],
-  };
-
   /** Price line: one span per (tier × room), CSS shows the matching combination. */
   const tierRoomPriceSpans = (sizeClasses) =>
     tiers.flatMap((tier) =>
@@ -381,14 +371,13 @@ export default async function OfferPage({ params }) {
     <div id="offer-root" data-selected-tier={defaultTier ?? ''} data-selected-room={defaultRoom ?? ''} className="bg-wiki-white text-bm-black">
       <div className="scroll-progress" data-progress aria-hidden="true" suppressHydrationWarning />
       <JsonLd data={productJsonLd} />
-      <JsonLd data={breadcrumbJsonLd} />
       <span data-wt-view={`offers:${offer.id}`} hidden />
 
       <main className="mx-auto max-w-6xl px-6 pb-28 pt-6 lg:pb-16">
         <BrandLockup locale={locale} size="sm" />
 
-        {/* Visible counterpart of the BreadcrumbList JSON-LD above. */}
-        <Breadcrumbs locale={locale}
+        {/* Trail + its BreadcrumbList JSON-LD from ONE items array — no separate hand-built node to drift. */}
+        <BreadcrumbTrail locale={locale}
           className="mt-3"
           items={[
             { label: t.nav.home, href: `/${locale}` },
@@ -838,7 +827,7 @@ async function OfferFaqsSection({ locale, faqTitle }) {
                 </span>
               </span>
             </summary>
-            <p className="mt-3 text-sm leading-relaxed text-bm-black/70">{pickLang(faq, 'answer', locale)}</p>
+            <p data-faq-answer className="mt-3 text-sm leading-relaxed text-bm-black/70">{pickLang(faq, 'answer', locale)}</p>
           </details>
         ))}
       </div>

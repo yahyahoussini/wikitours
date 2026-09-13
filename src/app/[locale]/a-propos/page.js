@@ -114,7 +114,7 @@ export default async function AProposPage({ params }) {
                   <summary className="cursor-pointer list-none font-semibold marker:content-none">
                     {pickLang(faq, 'question', locale)}
                   </summary>
-                  <p className="mt-3 text-sm leading-relaxed text-bm-black/70">
+                  <p data-faq-answer className="mt-3 text-sm leading-relaxed text-bm-black/70">
                     {pickLang(faq, 'answer', locale)}
                   </p>
                 </details>

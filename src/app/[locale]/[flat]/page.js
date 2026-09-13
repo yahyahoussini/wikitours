@@ -10,7 +10,7 @@ import { OMRA_YEAR, MONTH_SLUGS, parseMonthSlug, monthPagePath, monthName, month
 import { cityTitle, cityDescription, cityYear, cityMinPrice } from '@/lib/city-seo';
 import { lastModifiedOf } from '@/lib/freshness';
 import { pageDescription, trustClauses, authoredOr } from '@/lib/page-seo';
-import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc } from '@/lib/seo';
+import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc, SPEAKABLE } from '@/lib/seo';
 import { routeTitle, withBrand } from '@/lib/titles';
 import RelatedArticles from '@/components/site/RelatedArticles';
 import BrandLockup from '@/components/site/BrandLockup';
@@ -278,7 +278,7 @@ export default async function FlatLandingPage({ params }) {
     about: { '@id': `${SITE_URL}/#organization` },
     ...(answer ? { description: answer } : {}),
     ...(updated ? { dateModified: updated } : {}),
-    speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '[data-answer]'] },
+    speakable: SPEAKABLE,
   };
 
   // FAQ block: occasion hubs carry the generically-true Omra FAQ; city pages
@@ -396,7 +396,7 @@ export default async function FlatLandingPage({ params }) {
               {faq.map((f) => (
                 <details key={f.q} className="group rounded-card border border-white/10 bg-bm-black-soft px-5 py-4">
                   <summary className="cursor-pointer list-none font-semibold marker:content-none">{f.q}</summary>
-                  <p className="mt-3 text-sm leading-relaxed text-white/70">{f.a}</p>
+                  <p data-faq-answer className="mt-3 text-sm leading-relaxed text-white/70">{f.a}</p>
                 </details>
               ))}
             </div>

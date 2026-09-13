@@ -10,7 +10,7 @@ import { getSettings } from '@/lib/data/settings';
 import { publicMediaUrl } from '@/lib/media';
 import { waLink } from '@/lib/whatsapp';
 import BrandLockup from '@/components/site/BrandLockup';
-import Breadcrumbs from '@/components/site/Breadcrumbs';
+import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
 import JsonLd from '@/components/site/JsonLd';
 import SmartGallery from '@/components/SmartGallery';
 import CtaBlock from '@/components/CtaBlock';
@@ -137,24 +137,13 @@ export default async function HotelPage({ params }) {
       }
     : null;
 
-  const breadcrumbJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: t.nav.home, item: absoluteUrl(locale, '') },
-      { '@type': 'ListItem', position: 2, name: BRAND.service, item: absoluteUrl(locale, '/bab-makka') },
-      { '@type': 'ListItem', position: 3, name: hotel.name },
-    ],
-  };
-
   return (
     <main className="mx-auto max-w-4xl px-6 pb-24 pt-10">
       <JsonLd data={hotelJsonLd} />
-      <JsonLd data={breadcrumbJsonLd} />
       {faqJsonLd ? <JsonLd data={faqJsonLd} /> : null}
       <BrandLockup locale={locale} size="sm" />
 
-      <Breadcrumbs locale={locale}
+      <BreadcrumbTrail locale={locale}
         className="mt-3"
         items={[
           { label: t.nav.home, href: `/${locale}` },
@@ -202,7 +191,7 @@ export default async function HotelPage({ params }) {
                 <summary className="cursor-pointer list-none font-semibold marker:content-none">
                   {faq.q}
                 </summary>
-                <p className="mt-3 text-sm leading-relaxed text-bm-black/70">{faq.a}</p>
+                <p data-faq-answer className="mt-3 text-sm leading-relaxed text-bm-black/70">{faq.a}</p>
               </details>
             ))}
           </div>

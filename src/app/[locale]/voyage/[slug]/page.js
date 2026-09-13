@@ -7,7 +7,7 @@ import { getVoyages, getVoyageBySlug } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { waLink } from '@/lib/whatsapp';
 import { renderMarkdown, markdownClass } from '@/lib/markdown';
-import Breadcrumbs from '@/components/site/Breadcrumbs';
+import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
 import Icon from '@/components/site/Icon';
 import JsonLd from '@/components/site/JsonLd';
 import SmartGallery from '@/components/SmartGallery';
@@ -123,22 +123,11 @@ export default async function VoyagePage({ params }) {
         }
       : {}),
   };
-  const breadcrumbJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: t.nav.home, item: absoluteUrl(locale, '') },
-      { '@type': 'ListItem', position: 2, name: t.voyages.title, item: absoluteUrl(locale, '/voyages') },
-      { '@type': 'ListItem', position: 3, name: title },
-    ],
-  };
-
   return (
     <main className="mx-auto max-w-6xl px-6 pb-24 pt-8">
       <JsonLd data={tripJsonLd} />
-      <JsonLd data={breadcrumbJsonLd} />
 
-      <Breadcrumbs locale={locale}
+      <BreadcrumbTrail locale={locale}
         items={[
           { label: t.nav.home, href: `/${locale}` },
           { label: t.voyages.title, href: `/${locale}/voyages` },

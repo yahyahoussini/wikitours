@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, pickLang } from '@/lib/i18n';
-import { SITE_URL, absoluteUrl } from '@/lib/seo';
+import { SITE_URL, absoluteUrl, SPEAKABLE } from '@/lib/seo';
 import { toOfferCard } from '@/lib/offer-card';
 import BrandLockup from '@/components/site/BrandLockup';
 import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
@@ -70,7 +70,7 @@ export default function SeasonalHub({ locale, path, heading, lede, intro, offers
     isPartOf: { '@id': `${SITE_URL}/#website` },
     about: { '@id': `${SITE_URL}/#organization` },
     ...(lede ? { description: lede } : {}),
-    speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '[data-answer]'] },
+    speakable: SPEAKABLE,
   };
 
   const dateFmt = new Intl.DateTimeFormat(locale === 'ar' ? 'ar-MA' : `${locale}-MA`, { dateStyle: 'long' });
@@ -130,7 +130,7 @@ export default function SeasonalHub({ locale, path, heading, lede, intro, offers
             {realFaq.map((f) => (
               <details key={f.q} className="group rounded-card border border-bm-black/5 bg-white px-5 py-4 shadow-hairline">
                 <summary className="cursor-pointer list-none font-semibold text-bm-black marker:content-none">{f.q}</summary>
-                <p className="mt-3 text-sm leading-relaxed text-bm-black/70">{f.a}</p>
+                <p data-faq-answer className="mt-3 text-sm leading-relaxed text-bm-black/70">{f.a}</p>
               </details>
             ))}
           </div>

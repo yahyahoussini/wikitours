@@ -6,7 +6,7 @@ import { getSettings } from '@/lib/data/settings';
 import { toOfferCard } from '@/lib/offer-card';
 import { waLink } from '@/lib/whatsapp';
 import { OMRA_YEAR, MONTH_SLUGS, monthName } from '@/lib/months';
-import { SITE_URL, absoluteUrl, hreflangAlternates } from '@/lib/seo';
+import { SITE_URL, absoluteUrl, hreflangAlternates, SPEAKABLE } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { routeTitle } from '@/lib/titles';
 import BrandLockup from '@/components/site/BrandLockup';
@@ -126,7 +126,7 @@ export default async function BabMakkahPage({ params }) {
     isPartOf: { '@id': `${SITE_URL}/#website` },
     about: { '@id': `${SITE_URL}/#organization` },
     ...(answer ? { description: answer } : {}),
-    speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '[data-answer]'] },
+    speakable: SPEAKABLE,
   };
 
   return (

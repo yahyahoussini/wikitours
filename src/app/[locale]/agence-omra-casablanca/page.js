@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
-import { SITE_URL, hreflangAlternates, clampDesc } from '@/lib/seo';
+import { SITE_URL, hreflangAlternates, clampDesc, SPEAKABLE } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { getPublishedOffers, getTestimonials, getFaqs } from '@/lib/data/content';
@@ -86,7 +86,7 @@ export default async function AgencyCasablancaPage({ params }) {
     isPartOf: { '@id': `${SITE_URL}/#website` },
     about: { '@id': `${SITE_URL}/#organization` },
     mainEntity: { '@id': `${SITE_URL}/#organization` },
-    speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '[data-answer]'] },
+    speakable: SPEAKABLE,
   };
 
   // Local/process Q&A owning the "agence omra casablanca" family (criteria live
@@ -289,7 +289,7 @@ export default async function AgencyCasablancaPage({ params }) {
                   <summary className="cursor-pointer list-none font-semibold marker:content-none">
                     {pickLang(faq, 'question', locale)}
                   </summary>
-                  <p className="mt-3 text-sm leading-relaxed text-bm-black/70">
+                  <p data-faq-answer className="mt-3 text-sm leading-relaxed text-bm-black/70">
                     {pickLang(faq, 'answer', locale)}
                   </p>
                 </details>

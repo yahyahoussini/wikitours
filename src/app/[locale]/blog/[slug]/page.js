@@ -1,12 +1,12 @@
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
 import { BRAND } from '@/lib/brand';
-import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc } from '@/lib/seo';
+import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc, SPEAKABLE } from '@/lib/seo';
 import { getArticleBySlug, getArticles, getCovers } from '@/lib/data/content';
 import { publicMediaUrl } from '@/lib/media';
 import { renderMarkdown, markdownClass } from '@/lib/markdown';
 import { withBrand } from '@/lib/titles';
-import Breadcrumbs from '@/components/site/Breadcrumbs';
+import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
 import JsonLd from '@/components/site/JsonLd';
 import SmartGallery from '@/components/SmartGallery';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
@@ -68,25 +68,14 @@ export default async function ArticlePage({ params }) {
     // page type here (hubs, guide, glossary, home). Without it the blog — the
     // site's largest surface — was the only content type answer engines had to
     // guess at.
-    speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '[data-answer]'] },
+    speakable: SPEAKABLE,
   };
-  const breadcrumbJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: t.nav.home, item: absoluteUrl(locale, '') },
-      { '@type': 'ListItem', position: 2, name: t.nav.blog, item: absoluteUrl(locale, '/blog') },
-      { '@type': 'ListItem', position: 3, name: pickLang(article, 'title', locale) },
-    ],
-  };
-
   return (
     <main className="mx-auto max-w-3xl px-6 pb-24 pt-8">
       <div className="scroll-progress" data-progress aria-hidden="true" suppressHydrationWarning />
       <JsonLd data={articleJsonLd} />
-      <JsonLd data={breadcrumbJsonLd} />
 
-      <Breadcrumbs locale={locale}
+      <BreadcrumbTrail locale={locale}
         items={[
           { label: t.nav.home, href: `/${locale}` },
           { label: t.nav.blog, href: `/${locale}/blog` },

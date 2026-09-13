@@ -1,6 +1,6 @@
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { BRAND } from '@/lib/brand';
-import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc } from '@/lib/seo';
+import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc, SPEAKABLE } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { routeTitle } from '@/lib/titles';
 import { getSettings } from '@/lib/data/settings';
@@ -109,7 +109,10 @@ export default async function HomePage({ params }) {
     ? {
         '@context': 'https://schema.org',
         '@type': 'FAQPage',
-        mainEntity: faqs.slice(0, 10).map((faq) => ({
+        // EVERY item FaqSection renders, not a slice: the page showed 18 answers
+        // while the schema declared 10, which is count drift between the visible
+        // FAQ and its markup. Same array in, same array out — zero drift.
+        mainEntity: faqs.map((faq) => ({
           '@type': 'Question',
           name: pickLang(faq, 'question', locale),
           acceptedAnswer: { '@type': 'Answer', text: pickLang(faq, 'answer', locale) },
@@ -127,7 +130,7 @@ export default async function HomePage({ params }) {
     inLanguage: locale,
     isPartOf: { '@id': `${SITE_URL}/#website` },
     about: { '@id': `${SITE_URL}/#organization` },
-    speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '[data-answer]'] },
+    speakable: SPEAKABLE,
   };
 
   return (

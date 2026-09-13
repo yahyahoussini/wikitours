@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { BRAND } from '@/lib/brand';
-import { SITE_URL, absoluteUrl } from '@/lib/seo';
+import { SITE_URL, absoluteUrl, SPEAKABLE } from '@/lib/seo';
 import { getDictionary, pickLang } from '@/lib/i18n';
 import { renderMarkdown, markdownClass } from '@/lib/markdown';
 import BrandLockup from '@/components/site/BrandLockup';
@@ -41,7 +41,7 @@ export default function GuideSection({
     isPartOf: { '@id': `${SITE_URL}/#website` },
     about: { '@id': `${SITE_URL}/#organization` },
     description: lede,
-    speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '[data-answer]'] },
+    speakable: SPEAKABLE,
   };
 
   // Article + Person author only when the content really exists (LAW §10).
@@ -142,7 +142,7 @@ export default function GuideSection({
                 <summary className="cursor-pointer list-none font-semibold marker:content-none">
                   {pickLang(f, 'question', locale)}
                 </summary>
-                <p className="mt-3 text-sm leading-relaxed text-bm-black/70">{pickLang(f, 'answer', locale)}</p>
+                <p data-faq-answer className="mt-3 text-sm leading-relaxed text-bm-black/70">{pickLang(f, 'answer', locale)}</p>
               </details>
             ))}
           </div>

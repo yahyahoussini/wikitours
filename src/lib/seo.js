@@ -108,6 +108,17 @@ export function localizeInternalHref(href, locale) {
 }
 
 /**
+ * ONE speakable spec for every WebPage node. `[data-answer]` is the answer-first
+ * lede; `[data-faq-answer]` is every rendered FAQ answer. Eleven pages used to
+ * carry their own inline copy of this object — one expression, reused, so the
+ * selector set cannot drift between routes.
+ */
+export const SPEAKABLE = Object.freeze({
+  '@type': 'SpeakableSpecification',
+  cssSelector: ['h1', '[data-answer]', '[data-faq-answer]'],
+});
+
+/**
  * Per-URL locale alternates for a sitemap entry (Google's xhtml:link form).
  * Mirrors hreflangAlternates(), x-default included: without it a searcher whose
  * language matches none of fr/ar/en — the Moroccan diaspora in Germany, the

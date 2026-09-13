@@ -2,12 +2,12 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
-import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc } from '@/lib/seo';
+import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc, SPEAKABLE } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { getHotels } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import BrandLockup from '@/components/site/BrandLockup';
-import Breadcrumbs from '@/components/site/Breadcrumbs';
+import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
 import JsonLd from '@/components/site/JsonLd';
 import RelatedArticles from '@/components/site/RelatedArticles';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
@@ -100,7 +100,7 @@ export default async function HotelsComparePage({ params }) {
     inLanguage: locale,
     isPartOf: { '@id': `${SITE_URL}/#website` },
     about: { '@id': `${SITE_URL}/#organization` },
-    speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '[data-answer]'] },
+    speakable: SPEAKABLE,
   };
 
   return (
@@ -109,7 +109,7 @@ export default async function HotelsComparePage({ params }) {
       <JsonLd data={webPageJsonLd} />
 
       <BrandLockup locale={locale} size="sm" />
-      <Breadcrumbs locale={locale}
+      <BreadcrumbTrail locale={locale}
         className="mt-3"
         items={[
           { label: t.nav.home, href: `/${locale}` },

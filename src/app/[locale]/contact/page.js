@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
-import { SITE_URL, absoluteUrl, hreflangAlternates } from '@/lib/seo';
+import { SITE_URL, absoluteUrl, hreflangAlternates, SPEAKABLE } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { getSettings } from '@/lib/data/settings';
 import { waLink } from '@/lib/whatsapp';
@@ -52,7 +52,7 @@ export default async function ContactPage({ params }) {
             inLanguage: locale,
             isPartOf: { '@id': `${SITE_URL}/#website` },
             about: { '@id': `${SITE_URL}/#organization` },
-            speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '[data-answer]'] },
+            speakable: SPEAKABLE,
           }}
         />
         <h1 className="text-3xl font-bold text-bm-black sm:text-4xl">{t.pages.contactTitle}</h1>

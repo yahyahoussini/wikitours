@@ -565,7 +565,7 @@ export function FaqSection({ locale, faqs, title = null }) {
                 </span>
               </span>
             </summary>
-            <p className="mt-3 text-sm leading-relaxed text-bm-black/70">
+            <p data-faq-answer className="mt-3 text-sm leading-relaxed text-bm-black/70">
               {pickLang(faq, 'answer', locale)}
             </p>
           </details>

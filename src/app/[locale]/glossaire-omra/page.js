@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
-import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc } from '@/lib/seo';
+import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc, SPEAKABLE } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { withBrand } from '@/lib/titles';
 import { getGlossaryTerms } from '@/lib/data/content';
@@ -65,7 +65,7 @@ export default async function GlossaryPage({ params }) {
     isPartOf: { '@id': `${SITE_URL}/#website` },
     about: { '@id': `${SITE_URL}/#organization` },
     description: t.glossary.lede,
-    speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '[data-answer]'] },
+    speakable: SPEAKABLE,
   };
 
   return (
