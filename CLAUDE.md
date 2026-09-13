@@ -42,14 +42,13 @@
 10. Do NOT remove noindex from a month page until that page has real evergreen content.
 ```
 
-> ⚠️ **Constraint 6 conflicts with shipped code — do not "fix" either side without a decision.**
-> `src/app/[locale]/omra/[slug]/page.js:258-345` emits `AggregateRating` **and** `Review` on the
-> `['Product','TouristTrip']` node, and Part II below explicitly sanctions it ("the per-offer
-> `aggregateRating` in `omra/[slug]/page.js` is legitimate and stays"). Both statements agree that
-> the rating must **never** sit on the Organization / TravelAgency / LocalBusiness node — that part
-> is settled and is enforced in `src/components/site/OrgJsonLd.jsx`. What is unsettled is the
-> per-offer node. Raise it before changing it. (The review **count** also differs: the constraint says
-> 139, `settings.gbp_review_count` is **129**.)
+> ✅ **Constraint 6 — resolved 2026-09-13 (owner decision, commercial-inventory task).** The
+> `['Product','TouristTrip']` node on `/omra/[slug]` carries **no** `aggregateRating` / `review`.
+> The block that was removed had only ever rated an offer from testimonials carrying its
+> `offer_id` — no row does — so nothing live changed. Ratings are visible copy + llms.txt only,
+> on **no** schema node; the rule that they must never sit on the Organization / TravelAgency /
+> LocalBusiness node still holds (enforced in `src/components/site/OrgJsonLd.jsx`).
+> `settings.gbp_review_count` is 139 (the sync cron updates it).
 
 ## Route inventory
 
@@ -166,6 +165,7 @@ per-entity overrides under `blog/[slug]/` and `omra/[slug]/`.
 | Offer availability + status (single source) | `src/lib/offers.js` |
 | Barometer aggregation, shared by page and sitemap | `src/lib/barometer.js` |
 | The one Organization node | `src/components/site/OrgJsonLd.jsx` |
+| Hotel node + hotel/departure `@id`s — ONE builder for the hotel page, the hub `ItemList` and each departure's `itinerary` | `hotelNode()`, `hotelPostalAddress()`, `hotelNodeId()`, `tripNodeId()` — `src/lib/seo.js` |
 | JSON-LD renderer | `src/components/site/JsonLd.jsx` |
 | **Blog automation** | |
 | Quality gate, shared by both engines (no `@/` imports) | `src/lib/server/article-gate.mjs` |
@@ -279,9 +279,9 @@ There is no `tailwind.config.js` (Tailwind v4) and no RTL plugin.
   LocalBusiness node: Google treats a rating a business publishes about itself as
   self-serving, which is ineligible for star snippets AND a documented
   "spammy structured markup" manual-action trigger that can strip rich results
-  site-wide. `Product` / `TouristTrip` is the sanctioned exception — the per-offer
-  `aggregateRating` in `omra/[slug]/page.js` is legitimate and stays.
-  *(See the hard-constraint conflict flagged in Part I before touching this.)*
+  site-wide. `Product` / `TouristTrip` carries none either (owner decision
+  2026-09-13, hard constraint 6): the per-offer block in `omra/[slug]/page.js`
+  was removed — it had never fired, no testimonial carries an `offer_id`.
 
 ## Blog automation — the AI drafts, the GATE publishes
 - `api/cron/draft-article` (04:00 UTC) writes ONE trilingual article a day from
@@ -431,9 +431,9 @@ so the `TravelAgency` node ships on **every** public page.
 | `WebPage` + `SpeakableSpecification` | `/`, `/bab-makka`, `/omra-pas-cher`, `/hotels-omra`, `/contact`, `/agence-omra-casablanca`, `/presse`, `/glossaire-omra`, `/barometre-prix-omra`, `/guide-omra(/*)`, all `[flat]` hubs | `name`, `description`, `url`, `inLanguage`, `isPartOf` → `#website`, `speakable.cssSelector: ['h1','[data-answer]']` |
 | `FAQPage` | `/`, `/agence-omra-casablanca`, `/omra-depuis-{city}`, `/omra-{occasion}`, `/omra-pas-cher`, `/hotel/[slug]`, `/guide-omra(/*)` | `mainEntity[]` → `Question` + `acceptedAnswer` → `Answer` |
 | `BreadcrumbList` | `/omra/[slug]`, `/hotel/[slug]`, `/blog/[slug]`, all `[flat]` hubs, `/barometre-prix-omra`, `/glossaire-omra`, `/presse`, `/guide-omra(/*)`, `/omra-pas-cher`, `/hotels-omra`, `/voyage/[slug]` | `itemListElement[]` → `ListItem` (`position`, `name`, `item`) |
-| `['Product','TouristTrip']` | `/omra/[slug]` | `name`, `description`, `image`, `brand` → `#brand`, `offers` → `AggregateOffer` (`lowPrice`, `highPrice`, `offerCount`, `priceCurrency`) or `Offer` (`price`), each with `availability`, `validFrom`, `validThrough`, `priceValidUntil`, `availabilityEnds`; plus `aggregateRating` → `AggregateRating` and `review[]` → `Review`/`Rating`/`Person` |
+| `['Product','TouristTrip']` | `/omra/[slug]` | `name`, `description`, `image`, `brand` → `#brand`, `offers` → `AggregateOffer` (`lowPrice`, `highPrice`, `offerCount`, `priceCurrency`) or `Offer` (`price`), each with `availability`, `validFrom`, `validThrough`, `priceValidUntil`, `availabilityEnds`, `seller` → `#organization`; `@id` (FR URL + `#trip`); `additionalProperty` → `PropertyValue` (duration DAY, nights, airline, distance to Haram as `value` or `minValue`/`maxValue` in MTR, room types); `itinerary` → full `Hotel` nodes via `hotelNode()`. **No `aggregateRating` / `review` (2026-09-13).** |
 | `['Product','TouristTrip']` | `/voyage/[slug]` | as above minus ratings; `Offer` emitted only when price **and** `date_start` both exist |
-| `Hotel` | `/hotel/[slug]`, and nested in the `/hotels-omra` `ItemList` | `name`, `address` → `PostalAddress`, `starRating` → `Rating`, `amenityFeature` → `LocationFeatureSpecification` (distance to Haram, breakfast) |
+| `Hotel` | `/hotel/[slug]`, nested in the `/hotels-omra` `ItemList`, and in each `/omra/[slug]` `itinerary` — all through `hotelNode()` | `@id` (FR URL + `#hotel`), `name`, `url`, `address` → `PostalAddress` (`streetAddress` / `postalCode` parsed from `address_en`, locality from `city`), `geo` only when both coordinates exist (migration 022), `starRating` → `Rating`, `amenityFeature` → `LocationFeatureSpecification` (distance as `value` + `unitCode: MTR`, breakfast). The hotel page also emits an `ItemList` of `TouristTrip` (the departure's `@id`, `itinerary` → this hotel's `@id`) — the reverse edge |
 | `ItemList` / `ListItem` | `/bab-makka`, `/hotels-omra`, `/voyages`, `/avis`, `/omra-pas-cher` | `itemListElement`, `itemListOrder`, `numberOfItems` |
 | `BlogPosting` | `/blog/[slug]` | `headline`, `description`, `image`, `inLanguage`, `mainEntityOfPage`, `author` → `Person`, `reviewedBy` → `Person`, `datePublished`, `dateModified`, `publisher` → `#organization`, `speakable` |
 | `Article` | `/guide-omra`, `/guide-omra/[slug]` | `headline`, `author` → `Person` (+`sameAs`), only when a body exists |
@@ -546,7 +546,7 @@ All titles ≤ 60, all descriptions ≤ 155.
 |---|---|---|
 | Sitemap URLs | 246 | 82 unique paths × 3 locales |
 | Blog articles | 27 live | 36 rows; 9 scheduled ahead, runway to 2026-10-22 |
-| Hotels | 8 published | all rows carry `city = 'makkah'` — two are Madinah properties by name |
+| Hotels | 8 published | `city` is `'makkah'` on all 8 rows while Jayden Medina Hotel and Makarem Madinah are Madinah properties (their own `address_*` say Madinah; tiers reference them only as `hotel_madinah_id`). Corrected by the data section of migration 022 / the bundle — until applied, the admin's "Hôtel Médine" dropdown (`relFilter city='madinah'`) is empty and their schema locality reads Makkah |
 | City pages | 8, all indexable | |
 | Month hubs | 12 routes, 3 indexable | only September / October / November have a 2026 departure |
 | Offers | 5 live departures | Sept ×2, Oct ×2, Nov ×1 |

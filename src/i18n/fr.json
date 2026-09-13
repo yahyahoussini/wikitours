@@ -208,7 +208,12 @@
       "reserve": "Réserver"
     },
     "roomColumn": "Chambre",
-    "priceColumn": "Prix"
+    "priceColumn": "Prix",
+    "propDuration": "Durée",
+    "propNights": "Nuits",
+    "propDistance": "Distance au Haram",
+    "propRooms": "Types de chambre",
+    "hotelDeparturesTitle": "Départs avec cet hôtel"
   },
   "archive": {
     "title": "Bab Makka — Programmes Omra depuis le Maroc",

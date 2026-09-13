@@ -20,11 +20,12 @@ const TABLE_PATHS = {
     '/hotels-omra', '/barometre-prix-omra',
     row?.slug ? `/omra/${row.slug}` : '/[locale]/omra/[slug]',
     '/[locale]/[flat]', // month + occasion hubs (price tables, offer lists)
+    '/[locale]/hotel/[slug]', // "departures with this hotel" lists
     'raw:/llms.txt',
   ],
   offer_tiers: () => [
     '/', '/bab-makka', '/omra-pas-cher', '/barometre-prix-omra',
-    '/[locale]/omra/[slug]', '/[locale]/[flat]',
+    '/[locale]/omra/[slug]', '/[locale]/[flat]', '/[locale]/hotel/[slug]',
   ],
   occasions: () => ['/', '/bab-makka', '/[locale]/[flat]'],
   hotels: (row) => [

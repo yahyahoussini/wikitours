@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
-import { hreflangAlternates, clampDesc, BRAND_ID } from '@/lib/seo';
+import { hreflangAlternates, clampDesc, BRAND_ID, hotelNode, tripNodeId } from '@/lib/seo';
 import { pageDescription, trustClauses, authoredOr } from '@/lib/page-seo';
 import { routeTitle } from '@/lib/titles';
 import {
@@ -272,8 +272,45 @@ export default async function OfferPage({ params }) {
     ROOM_KEYS.map((room) => tier[`price_${room}`]).filter((p) => typeof p === 'number' && p > 0),
   );
   const offerUrl = `${SITE_URL}/${locale}/omra/${offer.slug}`;
-  // Only testimonials genuinely attached to THIS offer may rate it (LAWS §6).
-  const offerReviews = forThisOffer.filter((x) => typeof x.rating === 'number' && x.rating > 0);
+  // The hotels this departure stays in — across the published gammes, Makkah
+  // first, each once — and the facts the key-facts bar + gamme cards already
+  // show, as typed properties. All read from the row/tiers: no literal here.
+  const tripHotels = [];
+  for (const key of ['hotel_makkah', 'hotel_madinah']) {
+    for (const tier of tiers) {
+      const h = tier[key];
+      if (h?.slug && !tripHotels.some((x) => x.id === h.id)) tripHotels.push(h);
+    }
+  }
+  const tierDistances = tiers
+    .map((tier) => tier.distance_to_haram_m ?? tier.hotel_makkah?.distance_to_haram_m)
+    .filter((d) => typeof d === 'number');
+  const roomTypes = ROOM_KEYS.filter((k) => tiers.some((tier) => tier[`price_${k}`] != null));
+  const tripProperties = [
+    offer.duration_days
+      ? { '@type': 'PropertyValue', name: t.offer.propDuration, value: offer.duration_days, unitCode: 'DAY' }
+      : null,
+    offer.duration_nights
+      ? { '@type': 'PropertyValue', name: t.offer.propNights, value: offer.duration_nights }
+      : null,
+    offer.airline && !offer.land_only
+      ? { '@type': 'PropertyValue', name: t.offer.airlineLabel, value: offer.airline }
+      : null,
+    // Distance depends on the gamme chosen: a range when the gammes differ.
+    tierDistances.length
+      ? {
+          '@type': 'PropertyValue',
+          name: t.offer.propDistance,
+          ...(Math.min(...tierDistances) === Math.max(...tierDistances)
+            ? { value: Math.min(...tierDistances) }
+            : { minValue: Math.min(...tierDistances), maxValue: Math.max(...tierDistances) }),
+          unitCode: 'MTR',
+        }
+      : null,
+    roomTypes.length
+      ? { '@type': 'PropertyValue', name: t.offer.propRooms, value: roomTypes.map((k) => t.offer.room[k]).join(', ') }
+      : null,
+  ].filter(Boolean);
   const priceNode =
     allPrices.length > 1
       ? {
@@ -290,6 +327,9 @@ export default async function OfferPage({ params }) {
     '@context': 'https://schema.org',
     // Product drives the price rich result; TouristTrip is the accurate entity.
     '@type': ['Product', 'TouristTrip'],
+    // Stable identity (FR URL + fragment, like #organization): the hotel pages
+    // list this departure under the same @id.
+    '@id': tripNodeId(offer.slug),
     name: title ?? offer.slug,
     ...(intro || summary ? { description: intro ?? summary } : {}),
     ...(coverUrl ? { image: coverUrl } : {}),
@@ -298,6 +338,11 @@ export default async function OfferPage({ params }) {
     // anonymous Brand per offer that vanished when the offer 301'd after expiry.
     brand: { '@id': BRAND_ID },
     provider: { '@id': `${SITE_URL}/#organization` },
+    ...(tripProperties.length ? { additionalProperty: tripProperties } : {}),
+    // Full Hotel nodes, not bare references — Google does not resolve an @id
+    // across pages. Each hotel page lists this departure back (ItemList →
+    // TouristTrip → itinerary → the same hotel @id), so the link is two-way.
+    ...(tripHotels.length ? { itinerary: tripHotels.map((h) => hotelNode(h, locale)) } : {}),
     // Freshness: AI search + Google favour recently-updated entities.
     ...(offer.updated_at ? { dateModified: offer.updated_at } : {}),
     ...(offer.date_start ? { startDate: offer.date_start } : {}),
@@ -327,24 +372,10 @@ export default async function OfferPage({ params }) {
           },
         }
       : {}),
-    ...(offerReviews.length
-      ? {
-          aggregateRating: {
-            '@type': 'AggregateRating',
-            ratingValue: Number(
-              (offerReviews.reduce((sum, r) => sum + r.rating, 0) / offerReviews.length).toFixed(1),
-            ),
-            reviewCount: offerReviews.length,
-            bestRating: 5,
-          },
-          review: offerReviews.slice(0, 5).map((r) => ({
-            '@type': 'Review',
-            reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5 },
-            ...(r.author_name ? { author: { '@type': 'Person', name: r.author_name } } : {}),
-            ...(pickLang(r, 'content', locale) ? { reviewBody: pickLang(r, 'content', locale) } : {}),
-          })),
-        }
-      : {}),
+    // No aggregateRating / review on this node (owner decision 2026-09-13,
+    // hard constraint 6). The block that used to sit here only ever rated an
+    // offer from testimonials carrying its offer_id — none do — so nothing
+    // live changes; testimonials stay visible copy below.
   };
 
   /** Price line: one span per (tier × room), CSS shows the matching combination. */

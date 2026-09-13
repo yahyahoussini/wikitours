@@ -1,4 +1,4 @@
-import { LOCALES, FALLBACK_LOCALE } from '@/lib/i18n';
+import { LOCALES, FALLBACK_LOCALE, getDictionary } from '@/lib/i18n';
 import { BRAND } from '@/lib/brand';
 
 /**
@@ -210,5 +210,85 @@ export function brandNode(settings) {
     name: BRAND.lockup,
     alternateName: BRAND.alternates,
     ...(socials.length ? { sameAs: socials } : {}),
+  };
+}
+
+/**
+ * Locale-invariant identities for the commercial inventory, on the same
+ * pattern as #organization / #brand: the FR (x-default) page URL plus a
+ * fragment, so /ar and /en describe the SAME hotel and the SAME departure.
+ */
+export function hotelNodeId(slug) {
+  return `${absoluteUrl(FALLBACK_LOCALE, `/hotel/${slug}`)}#hotel`;
+}
+export function tripNodeId(slug) {
+  return `${absoluteUrl(FALLBACK_LOCALE, `/omra/${slug}`)}#trip`;
+}
+
+/**
+ * PostalAddress for a partner hotel. The locality comes from the `city`
+ * column — the field that decides it everywhere else (labels, admin filters,
+ * ranking) — never parsed out of prose. The street comes from the Latin-script
+ * address (`address_en`, the form Google Maps shows for Saudi properties; FR
+ * fallback) with its "<City> <postal>, Saudi Arabia." tail removed, exactly as
+ * postalAddress() strips ", Casablanca." for the office. Locality + country
+ * only when no street address exists (LAW §10: omit, never placeholder).
+ */
+export function hotelPostalAddress(hotel) {
+  const addressLocality = hotel?.city === 'madinah' ? 'Madinah' : 'Makkah';
+  const raw = String(hotel?.address_en ?? hotel?.address_fr ?? '').trim();
+  const segments = raw.replace(/\.\s*$/, '').split(',').map((s) => s.trim()).filter(Boolean);
+  if (/saudi|arabie|السعودية/i.test(segments.at(-1) ?? '')) segments.pop();
+  let postalCode = null;
+  if (/makkah|mecca|mecque|madinah|medina|médine|مكة|المدينة/i.test(segments.at(-1) ?? '')) {
+    postalCode = segments.at(-1).match(/\b(\d{5})\b/)?.[1] ?? null;
+    segments.pop();
+  }
+  const streetAddress = segments.join(', ');
+  return {
+    '@type': 'PostalAddress',
+    ...(streetAddress ? { streetAddress } : {}),
+    addressLocality,
+    ...(postalCode ? { postalCode } : {}),
+    addressCountry: 'SA',
+  };
+}
+
+/**
+ * ONE Hotel node builder for the three places a hotel appears — its own page,
+ * the /hotels-omra ItemList and each departure's itinerary — so the same hotel
+ * is the same node (same @id, address, numeric distance) everywhere. Distance
+ * carries the NUMBER (value + unitCode), not only a localized sentence: engines
+ * compare "50 m" against "600 m", and a bare `value: true` gave them nothing to
+ * compare. geo only when BOTH coordinates exist (migration 022 adds the
+ * columns) — half a GeoCoordinates is worse than none.
+ */
+export function hotelNode(hotel, locale) {
+  const t = getDictionary(locale);
+  const distance = hotel.distance_to_haram_m;
+  const amenities = [
+    distance != null
+      ? {
+          '@type': 'LocationFeatureSpecification',
+          name: t.offer.distanceToHaram.replace('{m}', distance),
+          value: distance,
+          unitCode: 'MTR',
+        }
+      : null,
+    hotel.breakfast_included
+      ? { '@type': 'LocationFeatureSpecification', name: t.offer.breakfastIncluded, value: true }
+      : null,
+  ].filter(Boolean);
+  return {
+    '@type': 'Hotel',
+    '@id': hotelNodeId(hotel.slug),
+    name: hotel.name,
+    url: absoluteUrl(locale, `/hotel/${hotel.slug}`),
+    address: hotelPostalAddress(hotel),
+    ...(hotel.latitude != null && hotel.longitude != null
+      ? { geo: { '@type': 'GeoCoordinates', latitude: Number(hotel.latitude), longitude: Number(hotel.longitude) } }
+      : {}),
+    ...(hotel.stars ? { starRating: { '@type': 'Rating', ratingValue: hotel.stars, bestRating: 5 } } : {}),
+    ...(amenities.length ? { amenityFeature: amenities } : {}),
   };
 }

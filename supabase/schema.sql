@@ -160,6 +160,8 @@ create table if not exists public.hotels (
   city text not null check (city in ('makkah', 'madinah')),
   breakfast_included boolean not null default false,
   logo_path text,
+  latitude numeric(9, 6) check (latitude is null or (latitude between -90 and 90)),
+  longitude numeric(9, 6) check (longitude is null or (longitude between -180 and 180)),
   description_fr text,
   description_ar text,
   description_en text,

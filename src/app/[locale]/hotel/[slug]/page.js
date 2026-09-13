@@ -2,21 +2,26 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
-import { absoluteUrl, hreflangAlternates, clampDesc } from '@/lib/seo';
+import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc, hotelNode, hotelNodeId, tripNodeId } from '@/lib/seo';
 import { pageDescription, trustClauses, authoredOr } from '@/lib/page-seo';
 import { withBrand } from '@/lib/titles';
-import { getHotelBySlug, getHotels, getCovers } from '@/lib/data/content';
+import { getHotelBySlug, getHotels, getCovers, getPublishedOffers } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { publicMediaUrl } from '@/lib/media';
 import { waLink } from '@/lib/whatsapp';
+import { toOfferCard } from '@/lib/offer-card';
 import BrandLockup from '@/components/site/BrandLockup';
 import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
 import JsonLd from '@/components/site/JsonLd';
+import { OfferCard } from '@/components/site/PackagesSection';
 import SmartGallery from '@/components/SmartGallery';
 import CtaBlock from '@/components/CtaBlock';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
-export const revalidate = false;
+// Hourly ISR, like the departure pages: the departures list below is
+// date-sensitive (a departure drops out once it has left, its badge flips at
+// 0 seats). revalidate=false would freeze that until the next admin edit.
+export const revalidate = 3600;
 
 export async function generateMetadata({ params }) {
   const { locale, slug } = await params;
@@ -68,37 +73,55 @@ export default async function HotelPage({ params }) {
   const coverUrl = coverPath ? publicMediaUrl(coverPath) : null;
 
   // Hotel entity — "which hotel is closest to the Haram" is exactly the kind of
-  // question answer engines field, so the distance is modelled as an amenity.
-  const amenities = [
-    hotel.distance_to_haram_m != null
-      ? {
-          '@type': 'LocationFeatureSpecification',
-          name: t.offer.distanceToHaram.replace('{m}', hotel.distance_to_haram_m),
-          value: true,
-        }
-      : null,
-    hotel.breakfast_included
-      ? { '@type': 'LocationFeatureSpecification', name: t.offer.breakfastIncluded, value: true }
-      : null,
-  ].filter(Boolean);
-
+  // question answer engines field. ONE builder (hotelNode) is shared with the
+  // /hotels-omra ItemList and the departure pages' itinerary, so this hotel is
+  // the same node (same @id, address, numeric distance) wherever it appears.
   const hotelJsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Hotel',
-    name: hotel.name,
+    ...hotelNode(hotel, locale),
     ...(description ? { description } : {}),
     ...(coverUrl ? { image: coverUrl } : {}),
-    url: absoluteUrl(locale, `/hotel/${slug}`),
-    address: {
-      '@type': 'PostalAddress',
-      addressLocality: hotel.city === 'makkah' ? 'Makkah' : 'Madinah',
-      addressCountry: 'SA',
-    },
-    ...(hotel.stars
-      ? { starRating: { '@type': 'Rating', ratingValue: hotel.stars, bestRating: 5 } }
-      : {}),
-    ...(amenities.length ? { amenityFeature: amenities } : {}),
   };
+
+  // Departures that stay in this hotel: published, future offers whose
+  // published gammes (or the legacy offer-level hotel) reference it — the same
+  // query the listings use, so a hotel can never advertise a departure the
+  // hub does not.
+  const usesHotel = (o) =>
+    o.hotel_makkah_id === hotel.id ||
+    o.hotel_madinah_id === hotel.id ||
+    (o.tiers ?? []).some((tier) => tier.hotel_makkah_id === hotel.id || tier.hotel_madinah_id === hotel.id);
+  const departures = (await getPublishedOffers()).filter(usesHotel);
+  const departureCovers = departures.length ? await getCovers('offers', departures.map((o) => o.id)) : new Map();
+  const cardT = { ...t.offer, reserve: t.cta.reserve, whatsappAlt: t.cta.whatsappAlt, details: t.cta.details };
+
+  // Machine-readable twin of that list. TouristTrip, never Product: a Product
+  // without offers fails the Rich Results Test, and the offers belong on the
+  // departure page. Each trip's itinerary points back at THIS hotel's @id,
+  // defined above on the same page — the reverse of the departure page's
+  // itinerary → Hotel, so the relationship reads in both directions.
+  const departuresJsonLd = departures.length
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: `${hotel.name} — ${t.offer.hotelDeparturesTitle}`,
+        numberOfItems: departures.length,
+        itemListElement: departures.map((o, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          item: {
+            '@type': 'TouristTrip',
+            '@id': tripNodeId(o.slug),
+            name: pickLang(o, 'title', locale) ?? o.slug,
+            url: absoluteUrl(locale, `/omra/${o.slug}`),
+            ...(o.date_start ? { startDate: o.date_start } : {}),
+            ...(o.date_end ? { endDate: o.date_end } : {}),
+            provider: { '@id': `${SITE_URL}/#organization` },
+            itinerary: { '@id': hotelNodeId(hotel.slug) },
+          },
+        })),
+      }
+    : null;
 
   // Auto-FAQ computed from DB fields only (LAW: never invented): the distance
   // question is the long-tail query these pages exist for. Answers are built
@@ -141,6 +164,7 @@ export default async function HotelPage({ params }) {
     <main className="mx-auto max-w-4xl px-6 pb-24 pt-10">
       <JsonLd data={hotelJsonLd} />
       {faqJsonLd ? <JsonLd data={faqJsonLd} /> : null}
+      {departuresJsonLd ? <JsonLd data={departuresJsonLd} /> : null}
       <BrandLockup locale={locale} size="sm" />
 
       <BreadcrumbTrail locale={locale}
@@ -180,6 +204,24 @@ export default async function HotelPage({ params }) {
         <p className="mt-8 max-w-prose whitespace-pre-line text-lg leading-relaxed text-bm-black/80">
           {description}
         </p>
+      ) : null}
+
+      {departures.length ? (
+        <section className="mt-10">
+          <h2 className="text-xl font-bold text-bm-black">{t.offer.hotelDeparturesTitle}</h2>
+          <div className="mt-4 grid gap-5 sm:grid-cols-2">
+            {departures.map((o) => (
+              <OfferCard
+                key={o.id}
+                compact
+                offer={toOfferCard(o, departureCovers.get(o.id), locale)}
+                locale={locale}
+                t={cardT}
+                whatsappHref={whatsappHref}
+              />
+            ))}
+          </div>
+        </section>
       ) : null}
 
       {hotelFaqs.length ? (

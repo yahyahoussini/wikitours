@@ -215,6 +215,21 @@ as $$
   delete from public.bot_hits_weekly where week < (now() - interval '26 weeks')::date;
 $$;
 
+-- ---- 022 — geo coordinates on hotels + Madinah city correction --------------
+alter table public.hotels
+  add column if not exists latitude  numeric(9, 6) check (latitude  is null or (latitude  between -90  and 90)),
+  add column if not exists longitude numeric(9, 6) check (longitude is null or (longitude between -180 and 180));
+
+-- Data correction (2026-09-13). All 8 hotel rows carried city = 'makkah'.
+-- Two are Madinah properties: their own address_fr/en/ar say Médine / Madinah
+-- / المدينة المنورة, and every offer_tiers row references them ONLY as
+-- hotel_madinah_id, never as hotel_makkah_id. The admin's "Hôtel Médine"
+-- dropdown filters on city = 'madinah' and is empty until this runs.
+update public.hotels
+   set city = 'madinah'
+ where slug in ('jayden-medina-hotel', 'makarem-madinah')
+   and city <> 'madinah';
+
 -- ---- sanity -----------------------------------------------------------------
 select
   (select count(*) from public.admin_allowlist)                  as admins,

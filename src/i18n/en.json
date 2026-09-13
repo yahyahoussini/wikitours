@@ -208,7 +208,12 @@
       "reserve": "Reserve"
     },
     "roomColumn": "Room",
-    "priceColumn": "Price"
+    "priceColumn": "Price",
+    "propDuration": "Duration",
+    "propNights": "Nights",
+    "propDistance": "Distance to the Haram",
+    "propRooms": "Room types",
+    "hotelDeparturesTitle": "Departures staying at this hotel"
   },
   "archive": {
     "title": "Bab Makka — Umrah programs from Morocco",

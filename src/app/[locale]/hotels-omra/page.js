@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
-import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc, SPEAKABLE } from '@/lib/seo';
+import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc, SPEAKABLE, hotelNode } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { getHotels } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
@@ -67,26 +67,9 @@ export default async function HotelsComparePage({ params }) {
     itemListElement: hotels.map((h, i) => ({
       '@type': 'ListItem',
       position: i + 1,
-      item: {
-        '@type': 'Hotel',
-        name: h.name,
-        url: absoluteUrl(locale, `/hotel/${h.slug}`),
-        address: {
-          '@type': 'PostalAddress',
-          addressLocality: h.city === 'makkah' ? 'Makkah' : 'Madinah',
-          addressCountry: 'SA',
-        },
-        ...(h.stars ? { starRating: { '@type': 'Rating', ratingValue: h.stars, bestRating: 5 } } : {}),
-        ...(h.distance_to_haram_m != null
-          ? {
-              amenityFeature: {
-                '@type': 'LocationFeatureSpecification',
-                name: t.offer.distanceToHaram.replace('{m}', h.distance_to_haram_m),
-                value: true,
-              },
-            }
-          : {}),
-      },
+      // Same builder as the hotel page and the departures' itinerary: one
+      // hotel, one node (@id, address, numeric distance), wherever it appears.
+      item: hotelNode(h, locale),
     })),
   };
 

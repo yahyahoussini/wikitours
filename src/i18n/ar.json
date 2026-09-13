@@ -208,7 +208,12 @@
       "reserve": "الحجز"
     },
     "roomColumn": "الغرفة",
-    "priceColumn": "الثمن"
+    "priceColumn": "الثمن",
+    "propDuration": "المدة",
+    "propNights": "الليالي",
+    "propDistance": "المسافة إلى الحرم",
+    "propRooms": "أنواع الغرف",
+    "hotelDeparturesTitle": "الرحلات التي تشمل هذا الفندق"
   },
   "archive": {
     "title": "باب مكة — برامج العمرة من المغرب",
