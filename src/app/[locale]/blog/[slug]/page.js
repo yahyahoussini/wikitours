@@ -39,7 +39,10 @@ export async function generateMetadata({ params }) {
       type: 'article',
       url: absoluteUrl(locale, `/blog/${slug}`),
       ...(article.published_at ? { publishedTime: article.published_at } : {}),
-      ...(article.updated_at ? { modifiedTime: article.updated_at } : {}),
+      // Never older than the publication (the release cron leaves updated_at untouched).
+      ...(article.updated_at || article.published_at
+        ? { modifiedTime: [article.updated_at, article.published_at].filter(Boolean).sort().at(-1) }
+        : {}),
       ...(article.author_name ? { authors: [article.author_name] } : {}),
     },
   };
@@ -79,6 +82,12 @@ export default async function ArticlePage({ params }) {
       ? { '@type': 'Person', name: article.reviewed_by }
       : null;
 
+  // The release cron sets published_at without touching updated_at, so a
+  // scheduled article's "updated" stamp can PRECEDE its publication. The
+  // modification date shown and emitted is the later of the two — never
+  // an update older than the publication.
+  const modifiedAt = [article.updated_at, article.published_at].filter(Boolean).sort().at(-1) ?? null;
+
   const articleJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
@@ -90,7 +99,7 @@ export default async function ArticlePage({ params }) {
     author: authorNode,
     ...(reviewerNode ? { reviewedBy: reviewerNode } : {}),
     ...(article.published_at ? { datePublished: article.published_at } : {}),
-    ...(article.updated_at ? { dateModified: article.updated_at } : {}),
+    ...(modifiedAt ? { dateModified: modifiedAt } : {}),
     publisher: { '@id': `${SITE_URL}/#organization` },
     // Names the H1 and the answer-first lede as THE answer, like every other
     // page type here (hubs, guide, glossary, home). Without it the blog — the
@@ -150,10 +159,10 @@ export default async function ArticlePage({ params }) {
             </>
           ) : null}
           {/* Both dates, always — the update date is a freshness signal even on the publication day. */}
-          {article.updated_at ? (
+          {modifiedAt ? (
             <>
               {` · ${t.pages.updatedOn} `}
-              <time dateTime={article.updated_at}>{dateFmt.format(new Date(article.updated_at))}</time>
+              <time dateTime={modifiedAt}>{dateFmt.format(new Date(modifiedAt))}</time>
             </>
           ) : null}
         </p>
