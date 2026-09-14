@@ -11,13 +11,31 @@ const BRAND_TOKENS = ['bab makka', 'bab makkah', 'باب مكة', 'wiki tours', 
  * (in any spelling/script). Use for admin-editable seo_title fields that may or
  * may not already include the brand (CLAUDE.md: brand suffix is idempotent).
  */
-export function withBrand(title, service = BRAND.service, max = 60) {
+export function withBrand(title, service = null, max = 60) {
   if (!title) return title;
   const low = title.toLowerCase();
   if (BRAND_TOKENS.some((tok) => low.includes(tok))) return title; // already branded
-  const suffixed = `${title} | ${service}`;
+  // An Arabic title gets the Arabic brand: "| Bab Makka" on "تطبيق نسك…" was a
+  // Latin brand on every Arabic article and guide title.
+  const brand = service ?? (/[؀-ۿ]/.test(title) ? BRAND.serviceAr : BRAND.service);
+  const suffixed = `${title} | ${brand}`;
   // Append the brand only when it still fits ≤ max — an already-long admin
   // seo_title keeps its own text rather than being pushed over the limit.
+  return suffixed.length <= max ? suffixed : title;
+}
+
+/**
+ * The PARENT brand suffix for Wiki Tours surfaces (voyages, legal pages —
+ * BRAND LAW: never Bab Makka there), in the title's own script. Replaces the
+ * layout's `%s — Wiki Tours International` template, which put a Latin brand
+ * on every Arabic title. Idempotent like withBrand(); an over-long title keeps
+ * its own text.
+ */
+export function withParentBrand(title, max = 60) {
+  if (!title) return title;
+  const low = title.toLowerCase();
+  if (BRAND_TOKENS.some((tok) => low.includes(tok))) return title;
+  const suffixed = `${title} — ${/[؀-ۿ]/.test(title) ? BRAND.parentAr : BRAND.parent}`;
   return suffixed.length <= max ? suffixed : title;
 }
 
@@ -33,9 +51,10 @@ export const titleFloor = (locale) => TITLE_MIN[locale] ?? 30;
  * branded); otherwise the authored template. Mirrors authoredOr() for
  * descriptions: the admin's words win, a fragment yields to the template.
  */
-export function titleOr(adminTitle, fallback, locale, service = BRAND.service, max = 60) {
+export function titleOr(adminTitle, fallback, locale, service = null, max = 60) {
   const own = withBrand(adminTitle, service, max);
-  return own && own.length >= titleFloor(locale) ? own : withBrand(fallback, service, max);
+  const fits = own && own.length >= titleFloor(locale) && own.length <= max;
+  return fits ? own : withBrand(fallback, service, max);
 }
 
 /**

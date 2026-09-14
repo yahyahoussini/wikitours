@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { getDictionary, isLocale } from '@/lib/i18n';
 import { hreflangAlternates, clampDesc } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
+import { routeTitle } from '@/lib/titles';
 import { getSettings } from '@/lib/data/settings';
 import { getGallerySlides } from '@/lib/data/gallery';
 import { SETTINGS_HERO_ENTITY_ID } from '@/lib/entities';
@@ -20,7 +21,7 @@ export async function generateMetadata({ params }) {
   const t = getDictionary(locale);
   const trust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
-    title: t.hajjPage.title,
+    title: { absolute: routeTitle('hajj', locale) },
     description: pageDescription(locale, 'hajj', { extra: [trust.licence, trust.whatsapp] }),
     alternates: hreflangAlternates(locale, '/hajj'),
   };

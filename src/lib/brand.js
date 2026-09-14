@@ -6,11 +6,15 @@
  */
 export const BRAND = Object.freeze({
   parent: 'Wiki Tours International',
+  parentAr: 'ويكي تورز إنترناشيونال',
   // Canonical spelling is "Bab Makka" (no h) — it matches the domain, the
   // Google Business Profile, press coverage and reviews. Entity/NAP consistency
   // requires ONE name, so this is the one users see and the one in schema
   // `name`. "Bab Makkah" survives only as an `alternateName` (see `alternates`).
   service: 'Bab Makka',
+  // The service name in Arabic script — withBrand() appends THIS to an Arabic
+  // title (the Latin "| Bab Makka" landed on every Arabic article title).
+  serviceAr: 'باب مكة',
   lockup: 'Bab Makka by Wiki Tours International',
   lockupAr: 'باب مكة من ويكي تورز',
   // Alternate spellings/forms emitted as schema `alternateName` so engines still

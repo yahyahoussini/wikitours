@@ -4,6 +4,7 @@ import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { SITE_URL, hreflangAlternates } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
+import { routeTitle } from '@/lib/titles';
 import { getTestimonials } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { getTestimonialMedia } from '@/lib/data/gallery';
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }) {
   const t = getDictionary(locale);
   const trust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
-    title: t.pages.avisTitle,
+    title: { absolute: routeTitle('avis', locale) },
     description: pageDescription(locale, 'avis', { extra: [trust.licence, trust.noPayment] }),
     alternates: hreflangAlternates(locale, '/avis'),
   };

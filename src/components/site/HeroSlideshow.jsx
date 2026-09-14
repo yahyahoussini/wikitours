@@ -4,9 +4,11 @@ import MediaImage from '@/components/MediaImage';
 import { useEffect, useState } from 'react';
 
 const INTERVAL_MS = 6000;
-// If slide 1 never reports `load` (blocked or broken image), the rest still
-// mount and the rotation still starts.
-const READY_FALLBACK_MS = 4000;
+// If slide 1 never reports `load` or `error` (blocked image), the rest still
+// mount and the rotation still starts. Long on purpose: on a slow connection
+// slide 1 can still be in flight at 4 s, and unhiding the others then would
+// recreate the very contention the wrapper avoids.
+const READY_FALLBACK_MS = 10000;
 
 /**
  * Hero mode: blur-crossfade every 6s with a slow Ken Burns drift, slide
@@ -55,7 +57,9 @@ export default function HeroSlideshow({ slides }) {
           style={{
             opacity: i === index ? 1 : 0,
             filter: i === index ? 'blur(0px)' : 'blur(10px)',
-            display: i > 0 && !ready ? 'none' : undefined,
+            // Hidden until slide 1 has loaded — and for good under reduced
+            // motion, where the rotation never runs and the bytes would be wasted.
+            display: i > 0 && (!ready || reduced) ? 'none' : undefined,
           }}
         >
           <MediaImage
@@ -67,6 +71,7 @@ export default function HeroSlideshow({ slides }) {
             // the LCP hero raced the rest of the page instead of leading it.
             fetchPriority={i === 0 ? 'high' : undefined}
             onLoad={i === 0 ? () => setReady(true) : undefined}
+            onError={i === 0 ? () => setReady(true) : undefined}
             sizes="100vw"
             quality={65}
             className="object-cover"

@@ -469,7 +469,13 @@ internal link into a redirect (dated month hub, legacy path, missing locale, tra
 slash, www) or a 404; a header/footer link to a noindex page; an indexable page with < 2
 inbound links; a Latin-script city name on `/ar`; a French sentence on `/ar` or `/en`
 (the `pickLang()` fallback — reviews excepted); a page type whose `<main>` is a JS shell.
-`npm run seo:suite -- --self-test` reintroduces every one of those defects in memory (34
+A title is also failed when a brand token appears twice (the layout's `%s — Wiki Tours
+International` template on a plain-string title) or when an Arabic title carries a Latin
+brand; a canonical must sit on `NEXT_PUBLIC_SITE_URL` (https in production) with no query
+or fragment; an inbound link only counts from a DIFFERENT page (the header's language
+switcher links every page from its own siblings); a block byte-identical to the `/fr` page
+that carries a French stopword is a `pickLang()` fallback however short.
+`npm run seo:suite -- --self-test` reintroduces every one of those defects in memory (41
 mutations) and proves each is caught with its specific message; it then runs the schema
 gate's own self-test. `BASE_URL=https://wikitours.ma npm run seo:suite` runs the same
 assertions against a live server. `scripts/README.md` says how to add a page type.

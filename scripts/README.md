@@ -57,8 +57,11 @@ GitHub workflow still runs it against a started server after the build.
 
 | Rule | Source of truth |
 |---|---|
-| Title length: floor `titleFloor(locale)` (30, Arabic 20 — denser script), ceiling 65 | `src/lib/titles.js` |
-| Description 120–165, ends on a sentence, never an ellipsis; the composer pads short ones with the shared trust clauses | `src/lib/page-seo.js` (`DESC_MIN`, `padDescription`) |
+| Title length: floor `titleFloor(locale)` (30, Arabic 20 — denser script), ceiling 60 (`withBrand`'s own max); no brand token twice; an Arabic title carries the Arabic brand (`withBrand` / `withParentBrand` pick the script) | `src/lib/titles.js` |
+| Description `DESC_MIN`–`DESC_MAX` (120–155), ends on a sentence (`.!?؟؛»…`), never an ellipsis; the composer pads short ones with the shared trust clauses | `src/lib/page-seo.js` (`DESC_MIN`, `DESC_MAX`, `padDescription`) |
+| Canonical origin = `NEXT_PUBLIC_SITE_URL` (https when `VERCEL_ENV=production`), one tag, no query/fragment | the build env; `src/lib/seo.js` `SITE_URL` |
+| Inbound links: only from a *different* page (the header's language switcher links every page from its own locale siblings and does not count) | `scripts/seo-suite.mjs` |
+| French fallback: a block ≥ 20 chars byte-identical to the `/fr` page carrying a French stopword, however short; plus long Latin/French blocks by stopword ratio | `scripts/seo-suite.mjs` |
 | Redirect rules (dated month hub, legacy map, missing locale, trailing slash, www) | `src/middleware.js`, `src/lib/redirects/legacy-map.js`, `MONTH_SLUGS` — imported by the suite, not copied |
 | Latin-script city names on `/ar` | the `cities` block of `src/i18n/fr.json` + `en.json` |
 | French-fallback detection | stopword lists in `scripts/lib/build-pages.mjs` |

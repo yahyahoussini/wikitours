@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
 import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc } from '@/lib/seo';
 import { pageDescription, trustClauses, authoredOr } from '@/lib/page-seo';
+import { withParentBrand } from '@/lib/titles';
 import { getVoyages, getVoyageBySlug } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { waLink } from '@/lib/whatsapp';
@@ -48,9 +49,9 @@ export async function generateMetadata({ params }) {
   const voyagePrice = typeof voyage.starting_price === 'number' && voyage.starting_price > 0 ? voyage.starting_price : null;
   const voyageTrust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
-    // Template title — voyages are Wiki Tours parent surfaces ("— Wiki Tours
-    // International" appended), never Bab Makka (BRAND LAW).
-    title,
+    // Voyages are Wiki Tours parent surfaces ("— Wiki Tours International"
+    // appended, in the title's script), never Bab Makka (BRAND LAW).
+    title: { absolute: withParentBrand(title) },
     // Admin seo_description wins; the template replaces what was a clamped
     // slice of `summary` (body copy) ending mid-sentence.
     description: authoredOr(
@@ -69,7 +70,10 @@ export async function generateMetadata({ params }) {
 export default async function VoyagePage({ params }) {
   const { locale, slug } = await params;
   if (!isLocale(locale)) notFound();
-  const [voyage, settings] = await Promise.all([getVoyageBySlug(slug), getSettings()]);
+  const [voyage, settings, allVoyages] = await Promise.all([getVoyageBySlug(slug), getSettings(), getVoyages()]);
+  // The other published trips: every voyage page was reachable from the
+  // catalog alone (one inbound link), which the SEO suite counts as an orphan.
+  const otherVoyages = allVoyages.filter((v) => v.slug !== slug).slice(0, 4);
   if (!voyage) notFound();
 
   const t = getDictionary(locale);
@@ -218,6 +222,25 @@ export default async function VoyagePage({ params }) {
             <section className="mt-10 max-w-prose rounded-card border border-wiki-blue/20 bg-wiki-blue/5 p-5">
               <h2 className="text-xl font-bold text-bm-black">{t.offer.conditionsTitle}</h2>
               <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-bm-black/70">{conditions}</p>
+            </section>
+          ) : null}
+
+          {otherVoyages.length ? (
+            <section className="mt-12 max-w-prose">
+              <h2 className="text-xl font-bold text-bm-black">{t.voyages.others}</h2>
+              <ul className="mt-4 flex flex-col gap-2">
+                {otherVoyages.map((v) => (
+                  <li key={v.id}>
+                    <Link
+                      href={`/${locale}/voyage/${v.slug}`}
+                      className="flex items-center justify-between gap-4 rounded-card border border-bm-black/10 bg-white px-4 py-3 text-sm font-semibold text-bm-black shadow-hairline transition hover:border-wiki-blue/40 hover:shadow-lift"
+                    >
+                      <span>{pickLang(v, 'title', locale) ?? v.slug}</span>
+                      {v.destination ? <span className="shrink-0 text-xs font-medium text-bm-black/50">{v.destination}</span> : null}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </section>
           ) : null}
 

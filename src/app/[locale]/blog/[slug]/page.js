@@ -40,7 +40,7 @@ export async function generateMetadata({ params }) {
     // every other page, never clampDesc(), which cut mid-sentence.
     description: authoredOr(
       pickLang(article, 'seo_description', locale) ?? pickLang(article, 'excerpt', locale),
-      pageDescription(locale, 'guide', { vars: { title: pickLang(article, 'title', locale) }, extra: [articleTrust.licence] }),
+      pageDescription(locale, 'article', { vars: { title: pickLang(article, 'title', locale) }, extra: [articleTrust.licence] }),
       { extra: [articleTrust.licence], locale },
     ),
     alternates: hreflangAlternates(locale, `/blog/${slug}`),

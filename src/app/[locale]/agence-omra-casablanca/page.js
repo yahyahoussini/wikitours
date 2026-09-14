@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { SITE_URL, hreflangAlternates, clampDesc, SPEAKABLE } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
+import { routeTitle } from '@/lib/titles';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { getPublishedOffers, getTestimonials, getFaqs } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
@@ -27,7 +28,7 @@ export async function generateMetadata({ params }) {
   const t = getDictionary(locale);
   const trust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
-    title: t.agency.title,
+    title: { absolute: routeTitle('agency', locale) },
     description: pageDescription(locale, 'agency', { extra: [trust.licence, trust.whatsapp] }),
     alternates: hreflangAlternates(locale, '/agence-omra-casablanca'),
   };

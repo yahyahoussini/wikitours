@@ -3,6 +3,7 @@ import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { supabasePublic } from '@/lib/supabase/public';
 import { hreflangAlternates } from '@/lib/seo';
 import { pageDescription } from '@/lib/page-seo';
+import { withParentBrand } from '@/lib/titles';
 import { renderMarkdown, markdownClass } from '@/lib/markdown';
 
 /**
@@ -33,7 +34,9 @@ export function createLegalPage(slug) {
     const row = await getLegalPage(slug);
     if (!row) notFound(); // metadata-phase 404 (real status for crawlers)
     return {
-      title: pickLang(row, 'title', locale),
+      // Legal pages belong to the entity, Wiki Tours International — suffixed
+      // in the title's own script (the layout template put it in Latin on /ar).
+      title: { absolute: withParentBrand(pickLang(row, 'title', locale)) },
       // Authored, and interpolating the page's own title so the three legal
       // slugs never collide. Setting NO description used to fall through to the
       // layout default (t.brand.description) — byte-identical to /a-propos, which

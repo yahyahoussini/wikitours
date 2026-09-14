@@ -95,10 +95,13 @@ export default async function LocaleLayout({ children, params }) {
 
   const t = getDictionary(locale);
 
-  // Library media (hero, covers, partner marks) is fetched straight from the
-  // Supabase storage origin. Open that connection while the HTML is still
-  // streaming instead of when the first <img> is parsed (no crossOrigin: the
-  // <img> loads are no-cors, and a CORS connection would not be reused).
+  // What the browser fetches straight from the Supabase storage origin: every
+  // AVIF library image (hero, covers, gallery — mediaLoader() sends them to the
+  // render endpoint), the direct <img> partner marks, reel posters and videos.
+  // Other uploads go through /_next/image, same-origin. Open the connection
+  // while the HTML is still streaming instead of when the first <img> is
+  // parsed (no crossOrigin: the <img> loads are no-cors, and a CORS
+  // connection would not be reused).
   const mediaOrigin = publicMediaOrigin();
   if (mediaOrigin) {
     preconnect(mediaOrigin);

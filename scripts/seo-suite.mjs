@@ -42,6 +42,7 @@ import { resolveLegacyRedirect } from '@/lib/redirects/legacy-map';
 import { MONTH_SLUGS } from '@/lib/months';
 import { getDictionary } from '@/lib/i18n';
 import { titleFloor } from '@/lib/titles';
+import { DESC_MIN, DESC_MAX } from '@/lib/page-seo';
 
 const t0 = performance.now();
 const ARGS = new Set(process.argv.slice(2));
@@ -52,9 +53,16 @@ const YEAR = new Date().getFullYear();
 const UA = 'Mozilla/5.0 (compatible; wt-seo-audit/1; +https://wikitours.ma) wt-seo-suite';
 
 // ── the rules, in one place ─────────────────────────────────────────────────
-const TITLE_MAX = 65; // the floor is per script: titleFloor(locale) in src/lib/titles.js (30, Arabic 20)
-const DESC = [120, 165];
+// The brief allowed 65 / 165; the project's own ceilings (withBrand's 60,
+// DESC_MAX 155, both enforced by the live seo:audit too) are tighter and win.
+const TITLE_MAX = 60; // the floor is per script: titleFloor(locale) in src/lib/titles.js (30, Arabic 20)
+const DESC = [DESC_MIN, DESC_MAX];
 const MIN_INBOUND = 2;
+// Where every canonical, hreflang and sitemap URL must live. The build's own
+// NEXT_PUBLIC_SITE_URL (CI builds against localhost); production is https.
+const SITE_EXPECTED = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wikitours.ma').replace(/\/$/, '');
+const BRAND_TOKENS = ['bab makka', 'bab makkah', 'wiki tours'];
+const BRAND_TOKENS_AR = ['باب مكة', 'ويكي تورز'];
 // A JS-rendered shell leaves <main> with a handful of words (a loading label,
 // a nav); real server-rendered content is well past this on every page type.
 // It is a shell detector, not a content-length rule — thin pages are a
@@ -114,6 +122,7 @@ function parsePage(p) {
     description: metaContent(head, 'description').replace(/\s+/g, ' ').trim(),
     noindex: /noindex/i.test(metaContent(head, 'robots')),
     canonical: linksRel(head, 'canonical').map((t) => attr(t, 'href')).find(Boolean) ?? null,
+    canonicals: linksRel(head, 'canonical').length,
     hreflang: linksRel(head, 'alternate').map((t) => ({ lang: attr(t, 'hreflang'), href: attr(t, 'href') })).filter((x) => x.lang),
     h1: (body.match(/<h1[\s>]/gi) ?? []).length,
     hasMain: main != null,
@@ -257,13 +266,19 @@ async function runSuite(rawPages, sitemapXml) {
       if (seenTitle.has(t)) fail('titles', p.route, `duplicate title with ${seenTitle.get(t)}: "${t}"`);
       else seenTitle.set(t, p.route);
       for (const y of pastYears(t)) fail('titles', p.route, `hardcoded past year ${y} in the title: "${t}"`);
+      // The layout's "%s — Wiki Tours International" template trap: a plain-string
+      // title gets the suffix on top of its own brand, and on /ar in Latin.
+      const low = t.toLowerCase();
+      const doubled = BRAND_TOKENS.find((b) => low.indexOf(b) !== low.lastIndexOf(b));
+      if (doubled) fail('titles', p.route, `brand "${doubled}" appears twice in the title (layout template on a plain-string title?): "${t}"`);
+      if (p.locale === 'ar' && BRAND_TOKENS.some((b) => low.includes(b)) && !BRAND_TOKENS_AR.some((b) => t.includes(b))) fail('titles', p.route, `Latin brand in an Arabic title (use a routeTitle() template): "${t}"`);
     }
     const d = p.description;
     if (!d) fail('meta', p.route, 'missing meta description');
     else {
       if (d.length < DESC[0] || d.length > DESC[1]) fail('meta', p.route, `description ${d.length} chars (want ${DESC[0]}–${DESC[1]}): "${d.slice(0, 70)}…"`);
       if (/(\.\.\.|…)\s*$/.test(d)) fail('meta', p.route, `description ends with an ellipsis — a clamp cut it: "…${d.slice(-50)}"`);
-      else if (!/[.!?»)"”’]\s*$/.test(d)) fail('meta', p.route, `description ends mid-sentence, without terminal punctuation (cut mid-word?): "…${d.slice(-50)}"`);
+      else if (!/[.!?؟؛»)"”’]\s*$/.test(d)) fail('meta', p.route, `description ends mid-sentence, without terminal punctuation (cut mid-word?): "…${d.slice(-50)}"`);
       if (seenDesc.has(d)) fail('meta', p.route, `duplicate description with ${seenDesc.get(d)}`);
       else seenDesc.set(d, p.route);
       for (const y of pastYears(d)) fail('meta', p.route, `hardcoded past year ${y} in the description: "…${d.slice(Math.max(0, d.indexOf(String(y)) - 30), d.indexOf(String(y)) + 10)}…"`);
@@ -275,9 +290,12 @@ async function runSuite(rawPages, sitemapXml) {
     if (!p.noindex) {
       if (!p.canonical) fail('canonical', p.route, 'missing canonical');
       else {
+        if (p.canonicals > 1) fail('canonical', p.route, `${p.canonicals} canonical tags`);
         let c = null;
         try { c = new URL(p.canonical); } catch { /* not a URL */ }
-        if (!c || c.origin !== site) fail('canonical', p.route, `canonical is not on the site origin ${site}: ${p.canonical}`);
+        if (!c || c.origin !== SITE_EXPECTED) fail('canonical', p.route, `canonical origin is not ${SITE_EXPECTED} (NEXT_PUBLIC_SITE_URL): ${p.canonical}`);
+        else if (process.env.VERCEL_ENV === 'production' && c.protocol !== 'https:') fail('canonical', p.route, `canonical is not https in production: ${p.canonical}`);
+        else if (c.search || c.hash) fail('canonical', p.route, `canonical carries a query string or fragment: ${p.canonical}`);
         else if (norm(c.pathname) !== p.route) fail('canonical', p.route, `canonical not self-referencing: ${c.pathname} (hard constraint 1: each locale self-canonicalises)`);
       }
     }
@@ -325,6 +343,7 @@ async function runSuite(rawPages, sitemapXml) {
   // links ───────────────────────────────────────────────────────────────────
   const inbound = new Map(); // route → Set(source routes)
   const targets = new Map(); // key → { path, www, sources, navSources }
+  const restOf = (route) => route.split('/').slice(2).join('/');
   for (const p of live) {
     const add = (href, nav) => {
       const ip = internalPath(href, site);
@@ -334,14 +353,16 @@ async function runSuite(rawPages, sitemapXml) {
       t.sources.add(p.route);
       if (nav) t.navSources.add(p.route);
       const dest = norm(ip.path);
-      if (!ip.www && dest !== p.route) (inbound.get(dest) ?? inbound.set(dest, new Set()).get(dest)).add(p.route);
+      // The header's language switcher links every page from its own locale
+      // siblings — two "inbound" links every route has by construction. They
+      // are not discovery; only a link from a DIFFERENT page counts.
+      if (!ip.www && dest !== p.route && restOf(dest) !== restOf(p.route)) (inbound.get(dest) ?? inbound.set(dest, new Set()).get(dest)).add(p.route);
     };
     p.links.forEach((h) => add(h, false));
     p.navLinks.forEach((h) => add(h, true));
   }
   const resolvedLinks = await resolveAll([...targets.values()], built);
   const list = (set) => [...set].slice(0, 3).join(', ') + (set.size > 3 ? ` (+${set.size - 3} more)` : '');
-  const restOf = (route) => route.split('/').slice(2).join('/');
   for (const [key, t] of targets) {
     const r = resolvedLinks.get(key);
     const shown = (t.www ? 'www:' : '') + t.path;
@@ -361,7 +382,23 @@ async function runSuite(rawPages, sitemapXml) {
   }
 
   // language ────────────────────────────────────────────────────────────────
+  // The pickLang() fallback leaks the FRENCH value, so a leaked block is, by
+  // definition, also on the French sibling page: any block ≥ 20 chars that is
+  // byte-identical on /fr and carries a French stopword is a fallback, however
+  // short (a card label, a badge, an option). Proper nouns, addresses and
+  // numbers carry no stopword and stay allowed.
+  const frBlocks = new Map(live.filter((p) => p.locale === 'fr').map((p) => [p.rest, new Set(p.blocks)]));
+  const leakedFromFr = (p) => {
+    const sib = frBlocks.get(p.rest);
+    if (!sib) return [];
+    return p.blocks.filter((b) => b.length >= 20 && sib.has(b) && count(b, FR_WORDS) >= 1 && /\p{L}/u.test(b));
+  };
   for (const p of live) {
+    if (p.locale !== 'fr') {
+      const leaked = leakedFromFr(p);
+      for (const b of leaked.slice(0, 3)) fail('language', p.route, `French block identical to the /fr page (pickLang() fallback): "${b.slice(0, 90)}"`);
+      if (leaked.length > 3) fail('language', p.route, `… and ${leaked.length - 3} more block${leaked.length - 3 > 1 ? 's' : ''} identical to the /fr page`);
+    }
     if (p.locale === 'ar') {
       if (p.title && arabicShare(p.title) < 0.3) fail('language', p.route, `title carries no Arabic script on an Arabic page: "${p.title}"`);
       if (p.description && arabicShare(p.description) < 0.3) fail('language', p.route, `description carries no Arabic script on an Arabic page: "${p.description.slice(0, 60)}…"`);
@@ -383,12 +420,17 @@ async function runSuite(rawPages, sitemapXml) {
   }
 
   // rendering ───────────────────────────────────────────────────────────────
-  for (const p of live) if (p.type == null) fail('rendering', p.route, 'unclassified route — add it to STATIC/DYNAMIC in scripts/lib/build-pages.mjs (scripts/README.md)');
-  for (const p of representative(live)) {
+  // Per-page facts (the H1, the empty-state scaffold) are checked on EVERY page
+  // — they come from each row's data, not from the template. The shell
+  // detector samples one page per type × locale (it is a template property).
+  for (const p of live) {
+    if (p.type == null) fail('rendering', p.route, 'unclassified route — add it to STATIC/DYNAMIC in scripts/lib/build-pages.mjs (scripts/README.md)');
     if (!p.hasMain) { fail('rendering', p.route, 'no <main> in the served HTML'); continue; }
     if (p.h1 !== 1) fail('rendering', p.route, `${p.h1} <h1> in the served HTML (want 1)`);
-    if (p.mainWords < RENDER_MIN_WORDS) fail('rendering', p.route, `<main> carries ${p.mainWords} words in the served HTML (want ≥ ${RENDER_MIN_WORDS}) — content must not depend on JavaScript (hard constraint 5)`);
     if (!p.noindex && p.guardEmpty) fail('rendering', p.route, 'indexable page serves its data-guard="empty" scaffold state');
+  }
+  for (const p of representative(live)) {
+    if (p.hasMain && p.mainWords < RENDER_MIN_WORDS) fail('rendering', p.route, `<main> carries ${p.mainWords} words in the served HTML (want ≥ ${RENDER_MIN_WORDS}) — content must not depend on JavaScript (hard constraint 5)`);
   }
 
   return { failures, live: live.length, indexable: indexable.length, site };
@@ -409,6 +451,7 @@ async function selfTest(rawPages, sitemapXml) {
   const homeAr = pick('home', 'ar');
   const homeEn = pick('home', 'en');
   const city = pick('city');
+  const secondCity = live.filter((p) => p.type === 'city' && p.locale === 'fr')[1]?.route ?? city; // a NON-sampled page
   const hub = pick('bab-makka');
   const hubAr = pick('bab-makka', 'ar');
   const hotelsHub = pick('hotels-omra');
@@ -434,11 +477,15 @@ async function selfTest(rawPages, sitemapXml) {
     ['titles', `a ${LONG_TITLE.length}-char title`, () => ({ pages: edit(home, setTitle(LONG_TITLE)) }), `title ${LONG_TITLE.length} chars`],
     ['titles', 'the same title on two routes', () => ({ pages: edit(hub, setTitle(title(home))) }), `duplicate title with ${home}`],
     ['titles', `${YEAR - 1} hardcoded in a title`, () => ({ pages: edit(home, setTitle(title(home).replace(/20\d{2}/, String(YEAR - 1)) + (/20\d{2}/.test(title(home)) ? '' : ` ${YEAR - 1}`))) }), `hardcoded past year ${YEAR - 1} in the title`],
-    ['meta', 'a 44-char description', () => ({ pages: edit(hub, setDesc(() => 'Programmes et prix Omra depuis le Maroc.')) }), 'description 40 chars'],
+    ['titles', 'the layout template doubling the brand', () => ({ pages: edit(pick('hajj'), setTitle('Hajj avec Wiki Tours — Wiki Tours International')) }), 'brand "wiki tours" appears twice in the title'],
+    ['titles', 'a Latin brand on an Arabic title', () => ({ pages: edit(pick('hajj', 'ar'), setTitle('الحج من المغرب — Wiki Tours International')) }), 'Latin brand in an Arabic title'],
+    ['meta', 'a 40-char description', () => ({ pages: edit(hub, setDesc(() => 'Programmes et prix Omra depuis le Maroc.')) }), 'description 40 chars'],
     ['meta', 'a description clamped with an ellipsis', () => ({ pages: edit(home, setDesc((d) => `${d.slice(0, 140)}…`)) }), 'ends with an ellipsis'],
     ['meta', 'a description cut mid-word', () => ({ pages: edit(home, setDesc((d) => d.replace(/[.!?»)"”’]\s*$/, '').slice(0, -3))) }), 'ends mid-sentence'],
     ['meta', `${YEAR - 1} hardcoded in a description`, () => ({ pages: edit(home, setDesc((d) => d.replace(/^./, `Omra ${YEAR - 1} : `))) }), `hardcoded past year ${YEAR - 1} in the description`],
     ['canonical', 'the Arabic page canonicalising to the French URL', () => ({ pages: edit(homeAr, inHead((h) => h.replace(/(<link\b[^>]*rel="canonical"[^>]*href=")[^"]*/i, `$1${site}${home}`))) }), 'canonical not self-referencing'],
+    ['canonical', 'every canonical on a preview origin (wrong NEXT_PUBLIC_SITE_URL)', () => ({ pages: editAll((h) => h.replace(/(<link\b[^>]*rel="canonical"[^>]*href=")https?:\/\/[^/"]+/i, '$1https://wikitours-preview.vercel.app')) }), `canonical origin is not ${SITE_EXPECTED}`],
+    ['canonical', 'a canonical with a query string', () => ({ pages: edit(home, inHead((h) => h.replace(/(<link\b[^>]*rel="canonical"[^>]*href="[^"]*)/i, '$1?ref=nav'))) }), 'carries a query string or fragment'],
     ['hreflang', 'a region-coded alternate (fr-MA)', () => ({ pages: edit(home, inHead((h) => h.replace(/hreflang="fr"/i, 'hrefLang="fr-MA"'))) }), 'region-coded hreflang fr-MA'], // React renders the attribute as hrefLang
     ['hreflang', 'x-default removed', () => ({ pages: edit(home, inHead((h) => h.replace(/<link\b[^>]*hreflang="x-default"[^>]*>/i, ''))) }), 'missing hreflang x-default'],
     ['hreflang', 'an alternate pointing at the wrong URL', () => ({ pages: edit(hub, inHead((h) => h.replace(/(hreflang="ar"[^>]*href=")[^"]*/i, `$1${site}/ar/bab-makka-nope`).replace(/(href=")[^"]*("[^>]*hreflang="ar")/i, `$1${site}/ar/bab-makka-nope$2`))) }), `expected ${site}/ar/bab-makka`],
@@ -456,15 +503,20 @@ async function selfTest(rawPages, sitemapXml) {
     ['links', 'a link to www. (308)', () => ({ pages: edit(home, inMain(`<a href="${site.replace('://', '://www.')}/fr/bab-makka">x</a>`)) }), 'internal link to a 308'],
     ['links', 'a link to a page that does not exist (404)', () => ({ pages: edit(home, inMain('<a href="/fr/page-inexistante">x</a>')) }), 'internal link to a 404'],
     ['links', 'a header link to a noindex page', () => ({ pages: edit(home, (h) => h.replace(/(<header\b[^>]*>)/i, `$1<a href="${noindexPage}">x</a>`)) }), 'global nav (header/footer) links to a noindex page', noindexPage ? null : 'no noindex page in this build'],
-    ['links', 'every link to the glossary removed (orphan)', () => ({ pages: editAll((h) => h.replace(new RegExp(`href="${glossary}(?:[#?][^"]*)?"`, 'g'), `href="${hub}"`)) }), 'orphan: 0 inbound internal links'], // incl. the #term deep links
+    // Only the language switcher (its own /ar and /en siblings) still links it.
+    ['links', 'every link to the glossary removed except its locale siblings (orphan)', () => ({ pages: editAll((h, p) => (p.rest === restOfRoute(glossary) ? h : h.replace(new RegExp(`href="${glossary}(?:[#?][^"]*)?"`, 'g'), `href="${hub}"`))) }), 'orphan: 0 inbound internal links'], // incl. the #term deep links
     ['language', 'a Latin city name on the Arabic home', () => ({ pages: edit(homeAr, inMain('<p>عمرة انطلاقاً من Casablanca</p>')) }), 'Latin-script city name "Casablanca"'],
     ['language', 'a French paragraph on the Arabic home (pickLang fallback)', () => ({ pages: edit(homeAr, inMain(`<p>${FRENCH}</p>`)) }), 'French text on an Arabic page'],
     ['language', 'a French paragraph on the English home (pickLang fallback)', () => ({ pages: edit(homeEn, inMain(`<p>${FRENCH}</p>`)) }), 'French text on an English page'],
     ['language', 'a French description on the English home', () => ({ pages: edit(homeEn, setDesc(() => FRENCH)) }), 'French description on an English page'],
+    ['language', 'a short French label leaking on /ar (same block as /fr)', () => ({ pages: rawPages.map((p) => ([home, homeAr].includes(p.route) ? { ...p, html: inMain('<p>Hôtel à 300 m du Haram</p>')(p.html) } : p)) }), 'French block identical to the /fr page'],
+    ['language', 'a short French label leaking on /en (same block as /fr)', () => ({ pages: rawPages.map((p) => ([home, homeEn].includes(p.route) ? { ...p, html: inMain('<p>Vol direct avec la compagnie</p>')(p.html) } : p)) }), 'French block identical to the /fr page'],
     ['rendering', 'the home <main> emptied (content left to JavaScript)', () => ({ pages: edit(home, (h) => h.replace(/<main\b[^>]*>[\s\S]*?<\/main>/i, '<main><h1>Omra</h1></main>')) }), '<main> carries 1 words'],
     ['rendering', 'the <h1> removed', () => ({ pages: edit(home, (h) => h.replace(/<h1\b/i, '<h2').replace(/<\/h1>/i, '</h2>')) }), '0 <h1> in the served HTML'],
-    ['rendering', 'an indexable page serving its empty scaffold', () => ({ pages: edit(city, inMain('<div data-guard="empty"></div>')) }), 'serves its data-guard="empty" scaffold state'],
+    ['rendering', 'a NON-sampled indexable page serving its empty scaffold', () => ({ pages: edit(secondCity, inMain('<div data-guard="empty"></div>')) }), 'serves its data-guard="empty" scaffold state'],
+    ['rendering', 'a NON-sampled page with two <h1>', () => ({ pages: edit(secondCity, inMain('<h1>Deux</h1>')) }), '2 <h1> in the served HTML'],
   ];
+  const restOfRoute = (route) => route.split('/').slice(2).join('/');
 
   const baseline = new Set((await runSuite(rawPages, sitemapXml)).failures.map((f) => `${f.section}|${f.route}|${f.msg}`));
   console.log(`\nself-test — ${MUTATIONS.length} deliberate breakages, each must produce its specific failure\n`);

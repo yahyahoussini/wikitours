@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { hreflangAlternates } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
+import { routeTitle } from '@/lib/titles';
 import { getArticles, getCovers } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { publicMediaUrl } from '@/lib/media';
@@ -20,7 +21,7 @@ export async function generateMetadata({ params }) {
   const t = getDictionary(locale);
   const trust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
-    title: t.pages.blogTitle,
+    title: { absolute: routeTitle('blog', locale) },
     description: pageDescription(locale, 'blogIndex', { extra: [trust.licence, trust.noPayment] }),
     alternates: hreflangAlternates(locale, '/blog'),
   };

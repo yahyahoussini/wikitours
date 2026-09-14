@@ -103,6 +103,7 @@
     "hotel": "{name} in {city}, {distance} m from the Haram, in our Omra programmes.",
     "hotelNoDistance": "{name} in {city}, a partner hotel in our Omra programmes from Morocco.",
     "guide": "{title} — the Bab Makka Omra guide, written for Moroccan pilgrims.",
+    "article": "{title} — by the Bab Makka team, for Moroccan pilgrims.",
     "blogIndex": "Omra & Hajj guides from the Bab Makka team: documents, budget, hotels.",
     "agency": "Omra agency in Casablanca, boulevard Abdelmoumen: programmes, hotels, quotes.",
     "hajj": "Hajj from Morocco: register your interest and we call you when it opens.",
@@ -343,7 +344,8 @@
     "askQuote": "Request a quote",
     "empty": "Our upcoming organized trips will be published here very soon.",
     "departure": "Departure",
-    "priceNote": "per person"
+    "priceNote": "per person",
+    "others": "Our other trips"
   },
   "hajjPage": {
     "title": "Hajj with Wiki Tours",
@@ -550,7 +552,11 @@
     "presse": "Press & media — Wiki Tours International",
     "pasCher": "Cheap Umrah from Morocco — real prices | Bab Makka",
     "glossaire": "Omra glossary — {count} terms explained | Bab Makka",
-    "hotel": "{name} — Umrah hotel in {city} | Bab Makka"
+    "hotel": "{name} — Umrah hotel in {city} | Bab Makka",
+    "hajj": "Hajj from Morocco with Wiki Tours International",
+    "avis": "Pilgrims' reviews — Umrah testimonials | Bab Makka",
+    "blog": "Umrah & Hajj guide and advice — articles | Bab Makka",
+    "agency": "Umrah agency in Casablanca — Wiki Tours International"
   },
   "guide": {
     "pillarTitle": "Omra Guide from Morocco",

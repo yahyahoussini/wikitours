@@ -78,7 +78,7 @@ export function padDescription(desc, locale, { max = DESC_MAX, min = DESC_MIN } 
   const m = getDictionary(locale).meta;
   // Any licence wording already present (the numbered clause, the licence
   // page's own copy) makes the no-number licence clause redundant.
-  const hasLicence = /agréée|licen[cs]e|مرخصة|رخصة/i.test(out);
+  const hasLicence = /agréée?|licen[cs]e|licensed|مرخ[ّ]?صة|رخصة|ترخيص/i.test(out.normalize('NFC'));
   for (const clause of [hasLicence ? null : m.trustLicenceNoNumber, m.trustNoPayment, m.trustWhatsapp]) {
     if (out.length >= min) break;
     if (!clause || out.includes(clause)) continue;
