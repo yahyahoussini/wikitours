@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale } from '@/lib/i18n';
+import { routeTitle } from '@/lib/titles';
 import { hreflangAlternates } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { getPublishedOffers, getCovers, computeMinPrice } from '@/lib/data/content';
@@ -31,7 +32,7 @@ export async function generateMetadata({ params }) {
   const offers = await getPublishedOffers();
   const pasCherTrust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
-    title: { absolute: t.pages.pasCherTitle },
+    title: { absolute: routeTitle('pasCher', locale) },
     description: pageDescription(locale, 'pasCher', { extra: [pasCherTrust.licence, pasCherTrust.noPayment] }),
     alternates: hreflangAlternates(locale, '/omra-pas-cher'),
     // Nothing to rank on with zero offers — noindex until departures exist.

@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import MediaImage from '@/components/MediaImage';
 import { getGallerySlides } from '@/lib/data/gallery';
 import { getDictionary } from '@/lib/i18n';
 import { BLUR_DATA_URL } from '@/lib/blur';
@@ -32,7 +32,7 @@ export default async function SmartGallery({
       (slide.width && slide.height ? `${slide.width} / ${slide.height}` : '16 / 10');
     return (
       <div className={`relative overflow-hidden ${className}`} style={{ aspectRatio }}>
-        <Image src={slide.src} alt={slide.alt} fill sizes={sizes} priority quality={65} placeholder="blur" blurDataURL={BLUR_DATA_URL} className="object-cover" />
+        <MediaImage src={slide.src} alt={slide.alt} fill sizes={sizes} priority fetchPriority="high" quality={65} placeholder="blur" blurDataURL={BLUR_DATA_URL} className="object-cover" />
       </div>
     );
   }

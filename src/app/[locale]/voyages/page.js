@@ -1,9 +1,10 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import MediaImage from '@/components/MediaImage';
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { absoluteUrl, hreflangAlternates, clampDesc } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
+import { routeTitle } from '@/lib/titles';
 import { getVoyages, getCovers } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { publicMediaUrl } from '@/lib/media';
@@ -35,7 +36,7 @@ export async function generateMetadata({ params }) {
   const voyages = await getVoyages();
   const trust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
-    title: t.voyages.title,
+    title: { absolute: routeTitle('voyages', locale) },
     description: pageDescription(locale, 'voyages', { extra: [trust.licence, trust.noPayment] }),
     alternates: hreflangAlternates(locale, '/voyages'),
     // Scaffold law: an empty catalog is thin content — stay out of the index
@@ -102,7 +103,7 @@ export default async function VoyagesPage({ params }) {
                 />
                 <div className="relative aspect-[16/10] overflow-hidden">
                   {cover ? (
-                    <Image
+                    <MediaImage
                       src={publicMediaUrl(cover.path)}
                       alt={pickLang(cover, 'alt', locale) ?? title}
                       fill

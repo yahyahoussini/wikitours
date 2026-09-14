@@ -150,7 +150,9 @@ p {
   opacity: 0;
   transform: translateY(16px);
   transition: opacity 500ms var(--ease-luxe), transform 500ms var(--ease-luxe);
-  will-change: opacity, transform;
+  /* No will-change here: it promoted every one of the ~60 reveal blocks to
+     its own compositor layer at load (memory + rendering time on phones);
+     the browser promotes for the duration of the transition by itself. */
 }
 .js-motion [data-reveal].is-in {
   opacity: 1;

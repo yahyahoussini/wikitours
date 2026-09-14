@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
+import MediaImage from '@/components/MediaImage';
 
 /** Masonry wall of WhatsApp/review screenshots with a simple lightbox. */
 export default function ScreenshotWall({ shots, closeLabel }) {
@@ -18,7 +18,7 @@ export default function ScreenshotWall({ shots, closeLabel }) {
             aria-label={shot.alt || 'Agrandir la capture'}
             className="block w-full overflow-hidden rounded-card shadow-hairline transition hover:shadow-lift"
           >
-            <Image
+            <MediaImage
               src={shot.src}
               alt={shot.alt ?? ''}
               width={shot.width ?? 400}
@@ -38,7 +38,7 @@ export default function ScreenshotWall({ shots, closeLabel }) {
           className="fixed inset-0 z-[60] flex items-center justify-center bg-bm-black/85 p-6"
           onClick={() => setOpen(null)}
         >
-          <Image
+          <MediaImage
             src={open.src}
             alt={open.alt ?? ''}
             width={open.width ?? 800}

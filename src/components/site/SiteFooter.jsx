@@ -7,6 +7,7 @@ import { teamIndexable } from '@/lib/authors';
 import { getSettings } from '@/lib/data/settings';
 import { supabasePublic } from '@/lib/supabase/public';
 import { legalIsFilled } from '@/lib/legal-page';
+import { computePeriods } from '@/lib/barometer';
 import { toE164 } from '@/lib/pixels';
 import { MONTH_SLUGS, monthPagePath, monthName, indexableMonths, CITY_SLUGS, cityName, cityPageIndexable } from '@/lib/months';
 import BrandLockup from '@/components/site/BrandLockup';
@@ -29,7 +30,13 @@ export default async function SiteFooter({ locale }) {
   const liveCities = Object.keys(CITY_SLUGS).filter((slug) => cityPageIndexable(cityPages.get(slug)));
   // Same rule for months: the ONE predicate (a departure this cycle, or the
   // authored evergreen content) — getPublishedOffers/getMonthPages are request-cached.
-  const monthSet = indexableMonths(await getPublishedOffers(), await getMonthPages());
+  const offers = await getPublishedOffers();
+  const monthSet = indexableMonths(offers, await getMonthPages());
+  // The price barometer noindexes itself until a period reaches its minimum
+  // sample (the same computePeriods() its page and the sitemap use) — the
+  // footer linked it from every page regardless, i.e. the global nav pointed
+  // the whole site at a noindex URL.
+  const barometerLive = computePeriods(offers).periods.length > 0;
   const liveMonths = MONTH_SLUGS.map((slug, i) => [slug, i]).filter(([, i]) => monthSet.has(i));
   // Occasion hubs (DB rows, indexed even when empty and always in the sitemap)
   // get the same sitewide link as the months — /omra-mawlid had ONE inbound
@@ -154,7 +161,9 @@ export default async function SiteFooter({ locale }) {
             <Link href={`/${locale}/hotels-omra`} className="hover:text-bm-gold-light">{t.home.hotelsTitle}</Link>
             <Link href={`/${locale}/guide-omra`} className="hover:text-bm-gold-light">{t.guide.backToPillar}</Link>
             <Link href={`/${locale}/glossaire-omra`} className="hover:text-bm-gold-light">{t.glossary.title}</Link>
-            <Link href={`/${locale}/barometre-prix-omra`} className="hover:text-bm-gold-light">{t.barometer.title}</Link>
+            {barometerLive ? (
+              <Link href={`/${locale}/barometre-prix-omra`} className="hover:text-bm-gold-light">{t.barometer.title}</Link>
+            ) : null}
             <Link href={`/${locale}/presse`} className="hover:text-bm-gold-light">{t.pages.pressTitle}</Link>
           </nav>
           {/* Only months with a real departure. The other hubs are noindex

@@ -21,6 +21,10 @@ import { getDictionary } from '@/lib/i18n';
  */
 export const DESC_MAX = 155;
 export const DESC_TARGET_MIN = 150;
+// Below this a description reads as a fragment in the SERP; scripts/seo-suite.mjs
+// fails the build under it. padDescription() lifts short ones with the shared
+// trust clauses — it never invents copy and never truncates.
+export const DESC_MIN = 120;
 
 const fill = (tpl, vars) =>
   Object.entries(vars ?? {}).reduce((s, [k, v]) => s.replaceAll(`{${k}}`, String(v ?? '')), String(tpl ?? ''));
@@ -52,13 +56,36 @@ export function compose(clauses, max = DESC_MAX) {
  * removes. So an oversized admin string yields to the authored template rather
  * than being cut mid-sentence. Shortening it in /admin puts it straight back.
  */
-export function authoredOr(adminText, fallback, { extra = [], max = DESC_MAX } = {}) {
+export function authoredOr(adminText, fallback, { extra = [], max = DESC_MAX, locale = null } = {}) {
   const s = String(adminText ?? '').trim();
   if (!s || s.length > max) return fallback;
   // The admin's words are kept VERBATIM and first; a differentiator clause is
   // appended only when it fits, so every commercial page carries price, licence
   // or no-online-payment without anyone's copy being rewritten or cut.
-  return compose([s, ...extra], max);
+  const composed = compose([s, ...extra], max);
+  return locale ? padDescription(composed, locale, { max }) : composed;
+}
+
+/**
+ * Lift a description under DESC_MIN with the shared trust clauses — licence,
+ * no online payment, WhatsApp — in that order, each only when it is not already
+ * in the text and still fits under `max`. The admin's / template's words stay
+ * first and untouched; nothing is ever cut.
+ */
+export function padDescription(desc, locale, { max = DESC_MAX, min = DESC_MIN } = {}) {
+  let out = String(desc ?? '').trim();
+  if (!out) return out;
+  const m = getDictionary(locale).meta;
+  // Any licence wording already present (the numbered clause, the licence
+  // page's own copy) makes the no-number licence clause redundant.
+  const hasLicence = /agréée|licen[cs]e|مرخصة|رخصة/i.test(out);
+  for (const clause of [hasLicence ? null : m.trustLicenceNoNumber, m.trustNoPayment, m.trustWhatsapp]) {
+    if (out.length >= min) break;
+    if (!clause || out.includes(clause)) continue;
+    const next = `${out} ${clause}`;
+    if (next.length <= max) out = next;
+  }
+  return out;
 }
 
 /** The shared trust clauses, in the page's own language. */
@@ -79,5 +106,5 @@ export function trustClauses(locale, { license = null } = {}) {
  */
 export function pageDescription(locale, type, { vars = {}, extra = [], max = DESC_MAX } = {}) {
   const m = getDictionary(locale).meta;
-  return compose([fill(m[type], vars), ...extra], max);
+  return padDescription(compose([fill(m[type], vars), ...extra], max), locale, { max });
 }

@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
 import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc, SPEAKABLE } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
-import { withBrand } from '@/lib/titles';
+import { routeTitle } from '@/lib/titles';
 import { getGlossaryTerms } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { GLOSSARY_MIN_TERMS } from '@/lib/guides';
@@ -24,7 +24,7 @@ export async function generateMetadata({ params }) {
   const terms = await getGlossaryTerms();
   const glossTrust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
-    title: { absolute: withBrand(t.glossary.title) },
+    title: { absolute: routeTitle('glossaire', locale, { count: terms.length }) },
     description: pageDescription(locale, 'glossaire', { vars: { count: terms.length }, extra: [glossTrust.licence] }),
     alternates: hreflangAlternates(locale, '/glossaire-omra'),
     ...(terms.length >= GLOSSARY_MIN_TERMS ? {} : { robots: { index: false, follow: true } }),

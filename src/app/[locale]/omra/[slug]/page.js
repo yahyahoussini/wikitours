@@ -162,7 +162,7 @@ export async function generateMetadata({ params }) {
         vars: { dates, nights: nights ?? '', airline: offer.airline ?? '', price: priceFmt },
         extra: [offerTrust.noPayment, offerTrust.whatsapp],
       }),
-      { extra: [offerTrust.noPayment, offerTrust.whatsapp] },
+      { extra: [offerTrust.noPayment, offerTrust.whatsapp], locale },
     ),
     alternates: hreflangAlternates(locale, `/omra/${slug}`),
     // Lifecycle (src/lib/offers.js): only a LIVE departure is indexable. An

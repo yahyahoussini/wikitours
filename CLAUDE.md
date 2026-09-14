@@ -16,7 +16,7 @@
 7. SEO/AEO/GEO is the product: server-rendered HTML, JSON-LD from DB values, `/llms.txt`, IndexNow, a sitemap that mirrors every indexability rule.
 8. Scaffolded surfaces stay `noindex` until real content fills them, and the sitemap never lists a `noindex` URL.
 9. The blog releases itself daily from scheduled rows; content is written weekly by a $0 cloud routine, never by a paid API key.
-10. `npm run seo:audit` is the gate — it crawls the live sitemap and fails the build on any regression.
+10. `npm run build` is the gate: its `postbuild` runs `scripts/seo-suite.mjs` (every SEO rule, then the schema gate) and `npm test` on the build output; `npm run seo:audit` crawls the live sitemap after deploy.
 
 ---
 
@@ -185,8 +185,15 @@ per-entity overrides under `blog/[slug]/` and `omra/[slug]/`.
 | Authorization (single authority, fails closed) | `src/lib/admin/authz.js` |
 | Entity/field registry | `src/lib/admin/registry.js` |
 | **Gate** | |
-| SEO audit (crawls the live sitemap) | `scripts/seo-audit.js` |
-| Structured-data gate (`postbuild`, reads the build output; `--self-test`) | `scripts/schema-audit.mjs` + `scripts/schema-vocab.json` |
+| SEO regression suite (`postbuild`, reads the build output; titles / meta / canonical / hreflang / sitemap / links / language / rendering, then the schema gate; `--self-test`; `BASE_URL=` for a live server) | `scripts/seo-suite.mjs` — `npm run seo:suite` |
+| Structured-data gate (run by the suite as its SCHEMA step; `--self-test`) | `scripts/schema-audit.mjs` + `scripts/schema-vocab.json` |
+| Page typing + build-output loader shared by both gates — **a new route is classified here** | `scripts/lib/build-pages.mjs` (`STATIC` / `DYNAMIC` / `pageType()`), how-to in `scripts/README.md` |
+| SEO audit (crawls the live sitemap; CI runs it after the build) | `scripts/seo-audit.js` |
+| Title floor per script, admin-title-or-template | `titleFloor()`, `titleOr()` — `src/lib/titles.js` |
+| Description floor (120) + trust-clause padding | `DESC_MIN`, `padDescription()` — `src/lib/page-seo.js` |
+| **Delivery** | |
+| Library images: `MediaImage` (client wrapper) + `mediaLoader()` — AVIF sources resized by Supabase's render endpoint, everything else `/_next/image` | `src/components/MediaImage.jsx`, `src/lib/media.js` |
+| Preconnect / dns-prefetch to the media origin | `src/app/[locale]/layout.js` (`publicMediaOrigin()`) |
 
 ## Known-good patterns to follow
 
@@ -243,7 +250,22 @@ There is no `tailwind.config.js` (Tailwind v4) and no RTL plugin.
 - **The month-hub meta description is hardcoded French** (`src/app/[locale]/[flat]/page.js:99`) while the
   title beside it is localized — the head is half-translated.
 - **`withBrand()` only guards `{absolute:…}` titles.** Plain-string titles get the template suffix
-  unconditionally, so `/hajj` renders "Hajj avec Wiki Tours — Wiki Tours International".
+  unconditionally, so `/hajj` renders "Hajj avec Wiki Tours — Wiki Tours International". The
+  contact / a-propos / agrement / voyages / presse pages did the same until 2026-09-14 — it
+  made `/fr/contact` and `/en/contact` identical and gave every Arabic title a Latin brand;
+  they now use `routeTitle()` templates (`seoTitles` in the dictionaries). The suite fails
+  both symptoms.
+- **Vercel's image optimizer passes AVIF sources through untouched.** `/_next/image?url=…avif&w=640`
+  returned the 1672px / 112KB original for every `w` — the mobile LCP image at desktop size.
+  Library images render through `MediaImage`, whose `mediaLoader()` sends AVIF objects to
+  Supabase's render endpoint (`/storage/v1/render/image/public/…?width=`) and keeps every
+  other source on `/_next/image`. A `loader` function cannot cross the server → client
+  boundary, which is why the wrapper exists — never pass `loader=` from a server component.
+- **`experimental.inlineCss` broke every web font.** Turbopack writes next/font's
+  `@font-face` with relative `url(../media/…)`; inlined into the page those resolved to
+  `/media/…` → the 404 page (156KB, VeryHigh priority, three per view) and Montserrat /
+  Inter / Tajawal never applied. Keep the stylesheet as a `<link>` (18KB over the wire,
+  immutable-cached).
 - **`articles.category` is a raw enum rendered uppercase**, so Arabic blog cards read `CONFIANCE`.
 - **Prices use `Intl.NumberFormat('fr-MA')` at 14 sites**, hardcoded, not derived from locale.
 - **`supabase/schema.sql` has drifted.** `public.legal_pages` (migration 014) and `leads.tier_label`
@@ -399,8 +421,11 @@ the DB.
 - Clamp descriptions with `clampDesc()` (`lib/seo.js`) → ≤155 at a word boundary.
 
 ## On-page limits
-- `<title>` ≤ 60 chars, `<meta name=description>` ≤ 155, exactly one `<h1>`,
-  canonical + hreflang (fr/ar/en + x-default) on every public page.
+- `<title>` `titleFloor(locale)`–60 chars (30, Arabic 20 — denser script), never duplicated
+  across routes; `<meta name=description>` 120–155, ending on a sentence (the composer pads
+  a short one with the shared trust clauses, never truncates); exactly one `<h1>`;
+  canonical + hreflang (fr/ar/en + x-default) on every public page. `scripts/seo-suite.mjs`
+  fails the build on each of these.
 - FAQ answers: 40–60 words, direct answer first. Answer-first lede under H1,
   marked `data-answer` for `speakable`.
 - **fr / ar / en parity** for every user-facing string. Arabic pages: `dir="rtl"`.
@@ -431,9 +456,26 @@ Against production: `BASE_URL=https://wikitours.ma npm run seo:audit`
 (246/246 green on 2026-09-09). Locally, use the isolated build so a running dev
 server is never clobbered: `NEXT_DIST_DIR=.next-audit npm run build`.
 
-**Structured data is gated at build time.** `npm run build` ends with `postbuild →
-node scripts/schema-audit.mjs` (same on Vercel and in CI, both run `npm run build`).
-It reads the prerendered HTML — no server, no DB, ~2 s — for a representative page of
+**Every SEO rule is gated at build time.** `npm run build` ends with `postbuild → npm run
+seo:suite && npm test` (same on Vercel and in CI, both run `npm run build`).
+`scripts/seo-suite.mjs` reads EVERY prerendered page and the prerendered sitemap — no
+server, no DB, ~2 s — and exits 1 on: a title outside `titleFloor(locale)`–65 or duplicated
+across routes, or carrying a year before this one; a description outside 120–155 or ending
+in an ellipsis / without terminal punctuation; a canonical that is not self-referencing; an
+hreflang set that is not exactly fr / ar / en / x-default, a region-coded one, a target that
+is not a built 200 page or does not list the page back; an indexable page missing from the
+sitemap, a noindex or redirecting or non-200 URL in it, a URL without `<lastmod>`; an
+internal link into a redirect (dated month hub, legacy path, missing locale, trailing
+slash, www) or a 404; a header/footer link to a noindex page; an indexable page with < 2
+inbound links; a Latin-script city name on `/ar`; a French sentence on `/ar` or `/en`
+(the `pickLang()` fallback — reviews excepted); a page type whose `<main>` is a JS shell.
+`npm run seo:suite -- --self-test` reintroduces every one of those defects in memory (34
+mutations) and proves each is caught with its specific message; it then runs the schema
+gate's own self-test. `BASE_URL=https://wikitours.ma npm run seo:suite` runs the same
+assertions against a live server. `scripts/README.md` says how to add a page type.
+
+**Structured data** is the suite's SCHEMA step: `scripts/schema-audit.mjs` reads the
+prerendered HTML for a representative page of
 every page type in every locale and exits 1 on: invalid JSON-LD or a non-schema.org
 `@context`; an `@type` or property unknown to schema.org, or a property outside its
 type (`scripts/schema-vocab.json`, refresh with `--update-vocab`); a missing required

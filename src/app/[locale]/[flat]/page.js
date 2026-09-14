@@ -172,7 +172,7 @@ export async function generateMetadata({ params }) {
         vars: { name: occName },
         extra: [occTrust.licence, occTrust.noPayment],
       }),
-      { extra: [occTrust.noPayment] },
+      { extra: [occTrust.noPayment], locale },
     ),
     alternates,
   };

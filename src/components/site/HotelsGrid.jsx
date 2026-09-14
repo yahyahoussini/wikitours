@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
+import MediaImage from '@/components/MediaImage';
 import Link from 'next/link';
 import { BLUR_DATA_URL } from '@/lib/blur';
 
@@ -33,7 +33,7 @@ export default function HotelsGrid({ hotels, locale, labels }) {
           >
             <div className="relative aspect-[16/10] bg-bm-black/5">
               {hotel.cover ? (
-                <Image
+                <MediaImage
                   src={hotel.cover.src}
                   alt={hotel.cover.alt ?? hotel.name}
                   fill

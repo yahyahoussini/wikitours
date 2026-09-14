@@ -21,6 +21,23 @@ export function withBrand(title, service = BRAND.service, max = 60) {
   return suffixed.length <= max ? suffixed : title;
 }
 
+// Below this a title reads as a fragment ("Contact", "Omra glossary") and
+// scripts/seo-suite.mjs fails the build. Arabic script is denser — no short
+// vowels, connected letters — so the same content is ~25% shorter in
+// characters: a 23-char Arabic hotel title is a complete title.
+export const TITLE_MIN = { fr: 30, en: 30, ar: 20 };
+export const titleFloor = (locale) => TITLE_MIN[locale] ?? 30;
+
+/**
+ * The admin's own seo_title when it is a real title (meets the floor once
+ * branded); otherwise the authored template. Mirrors authoredOr() for
+ * descriptions: the admin's words win, a fragment yields to the template.
+ */
+export function titleOr(adminTitle, fallback, locale, service = BRAND.service, max = 60) {
+  const own = withBrand(adminTitle, service, max);
+  return own && own.length >= titleFloor(locale) ? own : withBrand(fallback, service, max);
+}
+
 /**
  * SEO title templates (LAWS §5), per route × locale, from the dictionaries.
  * {year} defaults to the calendar year (seasonYear — no constant to bump);

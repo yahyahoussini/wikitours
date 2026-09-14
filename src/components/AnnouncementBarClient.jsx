@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 /** Dismissible bar; the dismissal persists per-announcement via cookie. */
 export default function AnnouncementBarClient({ id, text, link, variant, closeLabel = 'Close' }) {
-  const cookieName = `wt_ann_${id}`;
+  const cookieName = `wt_ann_${String(id).replace(/[^\w-]/g, '')}`;
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -27,19 +27,29 @@ export default function AnnouncementBarClient({ id, text, link, variant, closeLa
   );
 
   return (
-    <div className={`relative px-10 py-2 text-center text-sm font-medium ${styles}`}>
-      {content}
-      <button
-        type="button"
-        aria-label={closeLabel}
-        onClick={() => {
-          document.cookie = `${cookieName}=1; path=/; max-age=${60 * 60 * 24 * 30}`;
-          setVisible(false);
+    <>
+      <div suppressHydrationWarning className={`relative px-10 py-2 text-center text-sm font-medium ${styles}`}>
+        {content}
+        <button
+          type="button"
+          aria-label={closeLabel}
+          onClick={() => {
+            document.cookie = `${cookieName}=1; path=/; max-age=${60 * 60 * 24 * 30}`;
+            setVisible(false);
+          }}
+          className="absolute end-3 top-1/2 -translate-y-1/2 opacity-70 transition hover:opacity-100"
+        >
+          ✕
+        </button>
+      </div>
+      {/* A visitor who already dismissed this bar gets it hidden while the
+          HTML is still parsing — before the header under it is laid out — so
+          the post-hydration unmount above never shifts the page (CLS). */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `if(document.cookie.indexOf('${cookieName}=1')>-1){var e=document.currentScript.previousElementSibling;if(e)e.style.display='none'}`,
         }}
-        className="absolute end-3 top-1/2 -translate-y-1/2 opacity-70 transition hover:opacity-100"
-      >
-        ✕
-      </button>
-    </div>
+      />
+    </>
   );
 }

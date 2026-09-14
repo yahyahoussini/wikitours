@@ -542,7 +542,15 @@
     "home": "Umrah {year} from Morocco | Bab Makka",
     "babmakkah": "Bab Makka — Umrah from Morocco: programs & prices",
     "offer": "Umrah {occasion} {year} from {price} MAD | Bab Makka",
-    "month": "Umrah {month} {year} from Morocco | Bab Makka"
+    "month": "Umrah {month} {year} from Morocco | Bab Makka",
+    "contact": "Contact us — WhatsApp, phone, enquiry form | Bab Makka",
+    "aPropos": "About us — Wiki Tours International, licensed agency",
+    "agrement": "Our licence — Licensed travel agency | Bab Makka",
+    "voyages": "Organised trips from Morocco | Wiki Tours International",
+    "presse": "Press & media — Wiki Tours International",
+    "pasCher": "Cheap Umrah from Morocco — real prices | Bab Makka",
+    "glossaire": "Omra glossary — {count} terms explained | Bab Makka",
+    "hotel": "{name} — Umrah hotel in {city} | Bab Makka"
   },
   "guide": {
     "pillarTitle": "Omra Guide from Morocco",

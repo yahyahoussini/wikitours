@@ -3,6 +3,7 @@ import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale } from '@/lib/i18n';
 import { SITE_URL, absoluteUrl, hreflangAlternates } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
+import { routeTitle } from '@/lib/titles';
 import { getSettings } from '@/lib/data/settings';
 import BrandLockup from '@/components/site/BrandLockup';
 import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
@@ -18,7 +19,7 @@ export async function generateMetadata({ params }) {
   const settings = await getSettings();
   const pressTrust = trustClauses(locale, { license: settings?.license_number ?? null });
   return {
-    title: t.pages.pressTitle,
+    title: { absolute: routeTitle('presse', locale) },
     description: pageDescription(locale, 'presse', { extra: [pressTrust.licence, pressTrust.noPayment] }),
     alternates: hreflangAlternates(locale, '/presse'),
     // Nothing to show until a press link exists — noindex the empty shell.

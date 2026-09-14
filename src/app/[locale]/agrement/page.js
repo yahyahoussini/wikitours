@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { hreflangAlternates, clampDesc } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
+import { routeTitle } from '@/lib/titles';
 import { getSettings } from '@/lib/data/settings';
 import { GuaranteesStrip } from '@/components/site/HomeSections';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
@@ -16,7 +17,7 @@ export async function generateMetadata({ params }) {
   const license = (await getSettings())?.license_number ?? null;
   const trust = trustClauses(locale, { license });
   return {
-    title: t.pages.agrementTitle,
+    title: { absolute: routeTitle('agrement', locale) },
     // Licence number IS the page — when it is unset the template would render a
     // hole, so fall back to the generic licensed-agency clause instead.
     description: license

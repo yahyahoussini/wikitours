@@ -4,7 +4,7 @@ import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
 import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc, hotelNode, hotelNodeId, tripNodeId } from '@/lib/seo';
 import { pageDescription, trustClauses, authoredOr } from '@/lib/page-seo';
-import { withBrand } from '@/lib/titles';
+import { titleOr, routeTitle } from '@/lib/titles';
 import { getHotelBySlug, getHotels, getCovers, getPublishedOffers } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { publicMediaUrl } from '@/lib/media';
@@ -30,8 +30,19 @@ export async function generateMetadata({ params }) {
   if (!hotel) notFound(); // metadata-phase 404: real status before streaming
   const hotelTrust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
-    // absolute → no template suffix (keeps titles ≤60); description clamped ≤155.
-    title: { absolute: withBrand(pickLang(hotel, 'seo_title', locale) ?? hotel.name) },
+    // absolute → no template suffix (keeps titles ≤60). The admin's seo_title
+    // wins when it is a real title; a fragment ("Swissôtel Makkah") yields to
+    // the authored template, like descriptions do.
+    title: {
+      absolute: titleOr(
+        pickLang(hotel, 'seo_title', locale),
+        routeTitle('hotel', locale, {
+          name: hotel.name,
+          city: hotel.city === 'madinah' ? getDictionary(locale).offer.madinah : getDictionary(locale).offer.makkah,
+        }),
+        locale,
+      ),
+    },
     // Admin seo_description wins; otherwise an authored template, NOT a slice
     // of the body paragraph (which truncated mid-sentence).
     description: authoredOr(
@@ -44,7 +55,7 @@ export async function generateMetadata({ params }) {
         },
         extra: [hotelTrust.noPayment, hotelTrust.whatsapp],
       }),
-      { extra: [hotelTrust.noPayment, hotelTrust.whatsapp] },
+      { extra: [hotelTrust.noPayment, hotelTrust.whatsapp], locale },
     ),
     alternates: hreflangAlternates(locale, `/hotel/${slug}`),
   };

@@ -542,7 +542,15 @@
     "home": "Omra {year} depuis le Maroc | Bab Makka",
     "babmakkah": "Bab Makka — Omra depuis le Maroc : programmes & prix",
     "offer": "Omra {occasion} {year} dès {price} MAD | Bab Makka",
-    "month": "Omra {month} {year} depuis le Maroc | Bab Makka"
+    "month": "Omra {month} {year} depuis le Maroc | Bab Makka",
+    "contact": "Contact — WhatsApp, téléphone, formulaire | Bab Makka",
+    "aPropos": "Qui sommes-nous — Wiki Tours International, agence agréée",
+    "agrement": "Notre agrément — Agence de voyages agréée | Bab Makka",
+    "voyages": "Voyages organisés depuis le Maroc | Wiki Tours International",
+    "presse": "Presse & médias — Wiki Tours International",
+    "pasCher": "Omra pas cher depuis le Maroc — prix réels | Bab Makka",
+    "glossaire": "Glossaire de l'Omra — {count} termes expliqués | Bab Makka",
+    "hotel": "{name} — hôtel Omra à {city} | Bab Makka"
   },
   "guide": {
     "pillarTitle": "Guide Omra depuis le Maroc",

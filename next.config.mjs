@@ -52,13 +52,15 @@ const nextConfig = {
   // Keep in step with `aiBots` in src/app/robots.js and BOT_UA in middleware.
   htmlLimitedBots:
     /Googlebot|Google-Extended|Bingbot|GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|Claude-SearchBot|Claude-User|Claude-Web|PerplexityBot|Perplexity-User|CCBot|DuckDuckBot|YandexBot|Applebot|facebookexternalhit|Twitterbot|LinkedInBot|WhatsApp|wt-seo-audit|curl/i,
-  experimental: {
-    // The whole stylesheet is only ~9KB gzipped — inline it into the HTML so
-    // it never becomes a render-blocking request. Lighthouse measured ~600ms
-    // of render-block from the two CSS files on Slow-4G, which was the LCP's
-    // dominant "element render delay" (540ms).
-    inlineCss: true,
-  },
+  // NOT `experimental.inlineCss`. It was on (to spare one render-blocking
+  // request) but Turbopack writes next/font's @font-face rules with RELATIVE
+  // urls — `url(../media/x.woff2)` — which resolve against the stylesheet's
+  // own /_next/static/chunks/ location and, once inlined into the page,
+  // against the page URL instead: every font request went to /media/…, hit
+  // the 404 page (~156KB of HTML each, at VeryHigh priority, three per view)
+  // and Montserrat/Inter/Tajawal never applied. The stylesheet is ~18KB over
+  // the wire, immutable-cached across every page; the inline copy also sat
+  // twice in every HTML (the <style> and the RSC payload), ~280KB per page.
   images: {
     // AVIF first (~30% smaller than WebP) with WebP fallback — Next defaults to
     // WebP only, and these are photo-heavy pages where LCP is the image.

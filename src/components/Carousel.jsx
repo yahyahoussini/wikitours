@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import MediaImage from '@/components/MediaImage';
 import { useEffect, useRef, useState } from 'react';
 import { BLUR_DATA_URL } from '@/lib/blur';
 
@@ -169,12 +169,13 @@ export default function Carousel({
                 className="size-full object-cover"
               />
             ) : (
-              <Image
+              <MediaImage
                 src={slide.src}
                 alt={slide.alt}
                 fill
                 sizes={sizes}
                 priority={i === 0 && !isHover}
+                fetchPriority={i === 0 && !isHover ? 'high' : undefined}
                 loading={i === 0 && !isHover ? undefined : 'lazy'}
                 placeholder="blur"
                 blurDataURL={BLUR_DATA_URL}

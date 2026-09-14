@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import MediaImage from '@/components/MediaImage';
 import Link from 'next/link';
 import { getDictionary, pickLang } from '@/lib/i18n';
 import { getGallerySlides, getTestimonialMedia } from '@/lib/data/gallery';
@@ -110,7 +110,7 @@ export async function StatsBand({ locale, settings }) {
         {frame ? (
           <div className="relative">
             <div className="absolute -inset-3 rounded-panel border border-bm-gold/30" aria-hidden="true" />
-            <Image
+            <MediaImage
               src={frame.src}
               alt={frame.alt}
               width={frame.width ?? 800}
@@ -404,7 +404,7 @@ export async function StorySection({ locale, team, settings, fallbackStory = nul
         {teamPhoto ? (
           <figure data-reveal suppressHydrationWarning className="self-start">
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-panel bg-bm-black/5 shadow-hairline">
-              <Image
+              <MediaImage
                 src={teamPhoto.src}
                 alt={teamPhoto.alt || t.home.storyTitle}
                 fill
@@ -422,7 +422,7 @@ export async function StorySection({ locale, team, settings, fallbackStory = nul
                 <figure key={member.id} data-reveal suppressHydrationWarning className="text-center">
                   <div className="relative mx-auto aspect-square w-full max-w-32 overflow-hidden rounded-full bg-bm-black/5 shadow-hairline">
                     {face ? (
-                      <Image src={face.src} alt={member.name} fill sizes="128px" loading="lazy" className="object-cover" />
+                      <MediaImage src={face.src} alt={member.name} fill sizes="128px" loading="lazy" className="object-cover" />
                     ) : null}
                   </div>
                   <figcaption className="mt-2">
@@ -518,7 +518,7 @@ export function BlogTeasers({ locale, articles, covers }) {
             >
               <div className="relative aspect-[16/10] bg-bm-black/5">
                 {cover ? (
-                  <Image
+                  <MediaImage
                     src={publicMediaUrl(cover.path)}
                     alt={pickLang(cover, 'alt', locale) ?? title ?? ''}
                     fill

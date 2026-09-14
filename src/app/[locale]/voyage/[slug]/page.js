@@ -59,7 +59,7 @@ export async function generateMetadata({ params }) {
         vars: { title, days: voyage.duration_days ?? '', price: nf.format(voyagePrice ?? 0) },
         extra: [voyageTrust.noPayment, voyageTrust.whatsapp],
       }),
-      { extra: [voyageTrust.noPayment, voyageTrust.whatsapp] },
+      { extra: [voyageTrust.noPayment, voyageTrust.whatsapp], locale },
     ),
     alternates: hreflangAlternates(locale, `/voyage/${slug}`),
   };

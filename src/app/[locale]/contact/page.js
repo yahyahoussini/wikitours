@@ -4,6 +4,7 @@ import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { SITE_URL, absoluteUrl, hreflangAlternates, SPEAKABLE } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
+import { routeTitle } from '@/lib/titles';
 import { getSettings } from '@/lib/data/settings';
 import { waLink } from '@/lib/whatsapp';
 import JsonLd from '@/components/site/JsonLd';
@@ -19,7 +20,10 @@ export async function generateMetadata({ params }) {
   const t = getDictionary(locale);
   const trust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
-    title: t.pages.contactTitle,
+    // absolute + template: a plain string took the layout's "— Wiki Tours
+    // International" suffix, which made /fr and /en identical and left the
+    // Arabic title with a Latin brand.
+    title: { absolute: routeTitle('contact', locale) },
     description: pageDescription(locale, 'contact', { extra: [trust.whatsapp, trust.noPayment] }),
     alternates: hreflangAlternates(locale, '/contact'),
   };

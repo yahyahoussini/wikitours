@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import MediaImage from '@/components/MediaImage';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
@@ -97,7 +97,7 @@ export default async function TeamPage({ params }) {
               <li key={m.id} id={m.slug} className="scroll-mt-24 rounded-panel border border-bm-black/10 bg-white p-6 shadow-hairline">
                 <div className="flex items-center gap-4">
                   <div className="relative size-20 shrink-0 overflow-hidden rounded-full bg-bm-black/5">
-                    {face ? <Image src={face.src} alt={name} fill sizes="80px" className="object-cover" /> : null}
+                    {face ? <MediaImage src={face.src} alt={name} fill sizes="80px" className="object-cover" /> : null}
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-bm-black">{name}</h2>

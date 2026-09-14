@@ -1,4 +1,6 @@
+import { preconnect, prefetchDNS } from 'react-dom';
 import { Montserrat, Inter, Tajawal } from 'next/font/google';
+import { publicMediaOrigin } from '@/lib/media';
 import { notFound } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { SITE_URL, parseVerificationMetas, clampDesc } from '@/lib/seo';
@@ -93,6 +95,16 @@ export default async function LocaleLayout({ children, params }) {
 
   const t = getDictionary(locale);
 
+  // Library media (hero, covers, partner marks) is fetched straight from the
+  // Supabase storage origin. Open that connection while the HTML is still
+  // streaming instead of when the first <img> is parsed (no crossOrigin: the
+  // <img> loads are no-cors, and a CORS connection would not be reused).
+  const mediaOrigin = publicMediaOrigin();
+  if (mediaOrigin) {
+    preconnect(mediaOrigin);
+    prefetchDNS(mediaOrigin);
+  }
+
   return (
     // suppressHydrationWarning: browser extensions (password managers, form
     // fillers) inject attributes onto <html>/<body> before React hydrates —
@@ -100,6 +112,10 @@ export default async function LocaleLayout({ children, params }) {
     // mismatches inside the tree.
     <html lang={locale} dir={dirFor(locale)} className={fontClasses} suppressHydrationWarning>
       <body className="antialiased" suppressHydrationWarning>
+        {/* React dedupes prefetchDNS() behind preconnect() for one origin; the
+            explicit dns-prefetch (hoisted into <head>) is the fallback for
+            browsers that ignore preconnect. */}
+        {mediaOrigin ? <link rel="dns-prefetch" href={mediaOrigin} /> : null}
         {/* Strip extension-injected attributes before React's hydration diff */}
         <script dangerouslySetInnerHTML={{ __html: EXT_ATTR_CLEANER }} />
         {/* Mark motion-capable before first paint so reveals don't flash. */}

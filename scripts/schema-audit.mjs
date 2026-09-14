@@ -31,17 +31,21 @@
  * check) and proves each is caught with a specific message — run it after
  * editing this file. `--only=/fr/hotel/anjum` restricts to one page;
  * `--inventory` prints the node types found per page type (for EXPECT).
+ *
+ * Page typing and the build-output loader are shared with the SEO suite
+ * (scripts/seo-suite.mjs, which runs this gate as its SCHEMA step):
+ * scripts/lib/build-pages.mjs. A new page type is added THERE, then to EXPECT
+ * below — scripts/README.md walks through it.
  */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { performance } from 'node:perf_hooks';
+// Page typing + loading + text helpers are shared with scripts/seo-suite.mjs.
+import { DIST, LOCALES, loadPages, representative, decode, norm, arabicShare, FR_WORDS, EN_WORDS, count } from './lib/build-pages.mjs';
 
 const t0 = performance.now();
 const ARGS = new Set(process.argv.slice(2));
 const flag = (name) => process.argv.find((a) => a.startsWith(`--${name}=`))?.slice(name.length + 3) ?? null;
-const DIST = process.env.NEXT_DIST_DIR || '.next';
-const APP = path.join(DIST, 'server', 'app');
-const LOCALES = ['fr', 'ar', 'en'];
 const VOCAB_URL = new URL('./schema-vocab.json', import.meta.url);
 
 // ── vocabulary ──────────────────────────────────────────────────────────────
@@ -106,24 +110,7 @@ function ancestors(type) {
 }
 
 // ── page typing ─────────────────────────────────────────────────────────────
-const MONTHS = ['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre'];
-const STATIC = {
-  '': 'home', 'bab-makka': 'bab-makka', 'omra-pas-cher': 'omra-pas-cher', 'hotels-omra': 'hotels-omra',
-  'agence-omra-casablanca': 'agence', hajj: 'hajj', voyages: 'voyages', blog: 'blog-index', avis: 'avis',
-  presse: 'presse', agrement: 'agrement', 'a-propos': 'a-propos', contact: 'contact', equipe: 'team',
-  'barometre-prix-omra': 'barometre', 'glossaire-omra': 'glossaire', 'guide-omra': 'guide',
-  cgv: 'legal', 'mentions-legales': 'legal', 'politique-de-confidentialite': 'legal',
-};
-const DYNAMIC = { omra: 'offer', blog: 'article', hotel: 'hotel', voyage: 'voyage', 'guide-omra': 'guide-child', lp: 'landing' };
-function pageType(rest) {
-  if (rest in STATIC) return STATIC[rest];
-  const [head, tail] = rest.split('/');
-  if (tail !== undefined) return DYNAMIC[head] ?? null;
-  if (MONTHS.some((m) => rest === `omra-${m}`)) return 'month';
-  if (rest.startsWith('omra-depuis-')) return 'city';
-  if (rest.startsWith('omra-')) return 'occasion';
-  return null;
-}
+// STATIC / DYNAMIC / pageType() live in scripts/lib/build-pages.mjs (shared).
 // Node types every page of a type MUST carry (unconditional ones only — an
 // ItemList that depends on published rows is not listed). '*' is every page.
 // Data-dependent page types (no row published ⇒ not prerendered) are optional.
@@ -152,41 +139,6 @@ const EXPECT = {
 };
 const OPTIONAL_TYPES = new Set(['landing', 'voyage', 'legal']); // legal: 404 until its admin row is filled
 
-// ── loading ─────────────────────────────────────────────────────────────────
-function loadPages() {
-  const manifestPath = path.join(DIST, 'prerender-manifest.json');
-  if (!existsSync(manifestPath)) {
-    console.error(`no build output at ${DIST} (prerender-manifest.json missing) — run the build first`);
-    process.exit(2);
-  }
-  const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
-  const routes = Object.keys(manifest.routes).filter((r) => /^\/(fr|ar|en)(\/|$)/.test(r)).sort();
-  return routes.map((route) => {
-    const [, locale, ...rest] = route.split('/');
-    const type = pageType(rest.join('/'));
-    const file = path.join(APP, `${route}.html`);
-    // Next writes <route>.meta beside the HTML. A route that called notFound()
-    // (a legal page whose row is not filled yet) prerenders as a 404 body with
-    // status 404 there — that is not a page, and it is skipped, not audited.
-    const metaFile = `${file.slice(0, -5)}.meta`;
-    const meta = existsSync(metaFile) ? JSON.parse(readFileSync(metaFile, 'utf8')) : {};
-    const html = existsSync(file) ? readFileSync(file, 'utf8') : null;
-    return { route, locale, type, status: meta.status ?? 200, html, scripts: html ? extractScripts(html) : [] };
-  });
-}
-const SCRIPT_RE = /<script type="application\/ld\+json">([\s\S]*?)<\/script>/g;
-const extractScripts = (html) => [...html.matchAll(SCRIPT_RE)].map((m) => m[1]);
-
-function representative(pages) {
-  const seen = new Set();
-  return pages.filter((p) => {
-    const key = `${p.type}/${p.locale}`;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-}
-
 // ── helpers ─────────────────────────────────────────────────────────────────
 const typesOf = (n) => [].concat(n?.['@type'] ?? []);
 const isRef = (n) => n && typeof n === 'object' && !('@type' in n) && '@id' in n;
@@ -202,23 +154,6 @@ function* walk(value, trail = '') {
   }
 }
 const label = (node, trail) => `${typesOf(node).join('+') || '@id-ref'}${trail ? ` @ ${trail}` : ''}`;
-const decode = (s) =>
-  String(s)
-    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
-    .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(+d))
-    .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-    .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&');
-const norm = (s) => decode(s).replace(/\s+/g, ' ').trim().toLowerCase();
-// Share of Arabic among the letters: a French sentence naming "Saudia Airlines
-// (الخطوط السعودية)" is still French, an Arabic answer naming "Anjum" is still Arabic.
-const arabicShare = (s) => {
-  const ar = (s.match(/[؀-ۿ]/g) ?? []).length;
-  const latin = (s.match(/[A-Za-zÀ-ÿ]/g) ?? []).length;
-  return ar + latin ? ar / (ar + latin) : 0;
-};
-const FR_WORDS = /\b(le|la|les|des|du|au|aux|une|un|et|est|pour|avec|dès|nos|vos|votre|notre|sur|dans|par|cette|qui|que|chez)\b/gi;
-const EN_WORDS = /\b(the|and|from|with|of|to|for|your|our|is|are|this|that|which|an|at|by|you|we)\b/gi;
-const count = (s, re) => (s.match(re) ?? []).length;
 const isNumber = (v) => typeof v === 'number' && Number.isFinite(v);
 
 // Localized copy per type: [property, checkedForContent]. Labels that only
@@ -537,7 +472,7 @@ console.log('');
 const failures = [];
 let passed = 0;
 for (const page of pages) {
-  if (page.type == null) { failures.push({ page, check: 'expect', msg: 'unclassified route — add it to STATIC/DYNAMIC in scripts/schema-audit.mjs so its page type is covered' }); continue; }
+  if (page.type == null) { failures.push({ page, check: 'expect', msg: 'unclassified route — add it to STATIC/DYNAMIC in scripts/lib/build-pages.mjs so its page type is covered (scripts/README.md)' }); continue; }
   if (!page.html) { failures.push({ page, check: 'json', msg: 'prerendered HTML missing' }); continue; }
   const f = runChecks(page);
   if (f.length) failures.push(...f.map((x) => ({ page, ...x })));

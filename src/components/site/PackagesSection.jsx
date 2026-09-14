@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import Image from 'next/image';
+import MediaImage from '@/components/MediaImage';
 import Link from 'next/link';
 import WhatsAppIcon from '@/components/WhatsAppIcon';
 import Icon from '@/components/site/Icon';
@@ -91,7 +91,7 @@ export function OfferCard({ offer, locale, t, whatsappHref, compact = false }) {
 
       <div className="relative aspect-[16/10] overflow-hidden">
         {offer.cover ? (
-          <Image
+          <MediaImage
             src={offer.cover.src}
             alt={offer.cover.alt ?? title ?? ''}
             fill

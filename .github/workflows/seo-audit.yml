@@ -1,14 +1,20 @@
-name: SEO Audit (blocking gate)
+name: SEO gates (blocking)
 
-# Fails the pipeline when scripts/seo-audit.js reports any failure, so a build
-# that regresses SEO fundamentals (title/desc/H1/canonical/JSON-LD, offer Offer
-# schema + FAQ, or a stale offer) cannot ship. Make this a REQUIRED status check
-# on the deploy branch so a red audit blocks the merge/deploy.
+# Two layers, both blocking:
+#  1. `npm run build` — its postbuild runs scripts/seo-suite.mjs (titles, meta,
+#     canonical, hreflang, sitemap, links, language, rendering + the schema
+#     gate) and `npm test` against the build output. A regression fails the
+#     build here exactly as it does on Vercel.
+#  2. scripts/seo-audit.js — the live crawl of the sitemap against a started
+#     server (or a staging URL via workflow_dispatch).
+# Make this job a REQUIRED status check on the deploy branch so a red gate
+# blocks the merge/deploy. The build needs the Supabase secrets below
+# (generateStaticParams reads published rows).
 
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [master]
   workflow_dispatch:
     inputs:
       base_url:
@@ -17,7 +23,7 @@ on:
         default: ''
 
 jobs:
-  seo-audit:
+  seo-gates:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -31,12 +37,12 @@ jobs:
         if: ${{ inputs.base_url != '' }}
         run: BASE_URL='${{ inputs.base_url }}' node scripts/seo-audit.js
 
-      # --- Mode B (default): build + serve here, then audit ----------------
+      # --- Mode B (default): build (postbuild = the gates), serve, live audit --
       - name: Install
         if: ${{ inputs.base_url == '' }}
         run: npm ci
 
-      - name: Build
+      - name: Build (postbuild runs scripts/seo-suite.mjs + scripts/schema-audit.mjs + npm test)
         if: ${{ inputs.base_url == '' }}
         run: npm run build
         env:
@@ -45,7 +51,11 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
-      - name: Start server, wait, audit (fails on any audit failure)
+      - name: Self-test the gates (every known defect must still be caught)
+        if: ${{ inputs.base_url == '' }}
+        run: npm run seo:suite -- --self-test
+
+      - name: Start server, wait, live audit (fails on any audit failure)
         if: ${{ inputs.base_url == '' }}
         env:
           NEXT_PUBLIC_SITE_URL: http://localhost:3000

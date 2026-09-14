@@ -2,8 +2,10 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
 import { BRAND } from '@/lib/brand';
-import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc, SPEAKABLE, personNode } from '@/lib/seo';
+import { SITE_URL, absoluteUrl, hreflangAlternates, SPEAKABLE, personNode } from '@/lib/seo';
+import { authoredOr, pageDescription, trustClauses } from '@/lib/page-seo';
 import { getArticleBySlug, getArticles, getCovers, getTeam } from '@/lib/data/content';
+import { getSettings } from '@/lib/data/settings';
 import { getGallerySlides } from '@/lib/data/gallery';
 import { findAuthor, authorName, isOrganisationByline } from '@/lib/authors';
 import { publicMediaUrl } from '@/lib/media';
@@ -30,9 +32,17 @@ export async function generateMetadata({ params }) {
   if (!isLocale(locale)) return {};
   const article = await getArticleBySlug(slug);
   if (!article) notFound(); // metadata-phase 404: real status before streaming
+  const articleTrust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
     title: { absolute: withBrand(pickLang(article, 'seo_title', locale) ?? pickLang(article, 'title', locale)) },
-    description: clampDesc(pickLang(article, 'seo_description', locale) ?? pickLang(article, 'excerpt', locale)),
+    // The authored seo_description (else the excerpt) verbatim, lifted to the
+    // description floor with the licence clause — through the same composer as
+    // every other page, never clampDesc(), which cut mid-sentence.
+    description: authoredOr(
+      pickLang(article, 'seo_description', locale) ?? pickLang(article, 'excerpt', locale),
+      pageDescription(locale, 'guide', { vars: { title: pickLang(article, 'title', locale) }, extra: [articleTrust.licence] }),
+      { extra: [articleTrust.licence], locale },
+    ),
     alternates: hreflangAlternates(locale, `/blog/${slug}`),
     // Article-typed OG so shares/AI cards carry byline + dates, not just a page.
     openGraph: {

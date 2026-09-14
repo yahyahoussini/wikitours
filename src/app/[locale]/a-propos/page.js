@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { SITE_URL, hreflangAlternates, clampDesc, personNode } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
+import { routeTitle } from '@/lib/titles';
 import { getSettings } from '@/lib/data/settings';
 import { getTeam, getFaqs } from '@/lib/data/content';
 import { authorRenderable, teamIndexable } from '@/lib/authors';
@@ -20,7 +21,7 @@ export async function generateMetadata({ params }) {
   const t = getDictionary(locale);
   const trust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
   return {
-    title: t.pages.aproposTitle,
+    title: { absolute: routeTitle('aPropos', locale) },
     // Authored, NOT t.brand.description — the legal pages inherit that string as
     // the layout default, which made /a-propos and /politique-de-confidentialite
     // byte-identical and failed the audit's duplicate check.
