@@ -180,7 +180,11 @@ per-entity overrides under `blog/[slug]/` and `omra/[slug]/`.
 | Weekly writing contract | `content/ARTICLE-BRIEF.md` |
 | Build-time ingest (`prebuild`) | `scripts/ingest-articles.mjs` |
 | Public grounding facts | `src/app/api/content/facts/route.js` |
-| Daily release cron | `src/app/api/cron/publish-articles/route.js` |
+| Daily release cron (accelerator only: IndexNow + runway e-mails) | `src/app/api/cron/publish-articles/route.js` |
+| Placeholder tags in article bodies (parser + validator; the render map) | `src/lib/content-tags.js`, `src/components/content/ArticleBody.jsx` + `CommercialCTA` / `LiveDepartures` / `ReviewQuote` / `HijriCountdown` / `DepositPolicy` / `HotelList` |
+| Stable facts a session may state (source + date per fact) | `data/allowed-facts.json` ← `scripts/build-allowed-facts.mjs` (`npm run content:facts`) |
+| Hijri events (Umm al-Qura, admin-adjustable after the sighting) | `src/lib/hijri.js`, `public.hijri_events` (migration 025) ← `scripts/build-hijri-events.mjs` (`npm run content:hijri`) |
+| The content architecture: map, decisions, open items | `docs/content-system.md` |
 | **Admin** | |
 | Authorization (single authority, fails closed) | `src/lib/admin/authz.js` |
 | Entity/field registry | `src/lib/admin/registry.js` |
@@ -325,18 +329,37 @@ There is no `tailwind.config.js` (Tailwind v4) and no RTL plugin.
   2026-09-13, hard constraint 6): the per-offer block in `omra/[slug]/page.js`
   was removed — it had never fired, no testimonial carries an `offer_id`.
 
-## Blog automation — the AI drafts, the GATE publishes
-- `api/cron/draft-article` (04:00 UTC) writes ONE trilingual article a day from
-  the admin's `article_plan` (Plan éditorial), grounded only in a fact sheet of
-  published DB rows; `api/cron/publish-articles` (07:00 UTC) releases whatever
-  is due that morning. **Owner decision (2026-09-04): no daily human action.**
-  The drafter publishes ITSELF only when ALL hold — `settings.blog_autopublish`
-  on, `settings.blog_author_name` set (E-E-A-T needs a real person), the gate
-  reports zero problems, and no unsourced-price / external-link / missing-
-  owner-link flag (`publishDecision()` in `lib/server/article-drafter.js`).
-  Anything less ⇒ unpublished draft + review e-mail. **Never loosen the gate to
-  raise the publish rate** — LAW §10 and Google's scaled-content policy are why
-  it exists; the gate is what stands in for the human.
+## Blog automation — GENERATE-AHEAD, RENDER-LIVE, PUBLISH-BY-TIME (2026-09-14)
+- **All prose is written ahead of time in Claude Code sessions** following
+  `content/ARTICLE-BRIEF.md` → `content/articles/*.json` → `scripts/ingest-articles.mjs`
+  at `prebuild`. **No runtime model call exists**: `/api/cron/draft-article` is a
+  410 stub with no cron entry. Map + decisions: `docs/content-system.md`.
+- **Volatile facts are never in prose.** Prices, departures, dates, seats, hotel
+  lists, the deposit policy, review quotes, Hijri countdowns and CTAs render at
+  request time through placeholder tags (`src/lib/content-tags.js` →
+  `src/components/content/ArticleBody.jsx`): `<CommercialCTA to>`, `<LiveDepartures>`,
+  `<ReviewQuote id>`, `<HijriCountdown event>`, `<DepositPolicy>`, `<HotelList city>`.
+  Stable facts come from `data/allowed-facts.json` (`npm run content:facts`), each
+  with a source and a date.
+- **The strict gate fails** any year (except « depuis 2016 »), amount, departure
+  date or seat count in a title / excerpt / description / body; an unknown tag; a
+  `ReviewQuote` of an unpublished testimonial; a Levantine month name or a Latin
+  city name in the Arabic body; a `query_family` that is a lander's query. A
+  failing file is **skipped and logged** (build log + `article_plan.notes`), never
+  inserted — cadence is a ceiling. Existing rows are never re-gated.
+- **Publish = `published_at` has passed**: the anon RLS policy
+  (`is_published and published_at <= now()`) IS the brief's
+  `status='scheduled' AND publish_at <= now()`. The ingest assigns the next free
+  08:00 **Africa/Casablanca** slot (`nextMorningSlot`, zone-aware — Ramadan's
+  UTC+0 included). ISR ≤ 3600 on the article page, the sitemap and llms.txt makes
+  the 07:00 `publish-articles` cron an accelerator only (IndexNow + runway
+  e-mails), not the publishing mechanism.
+- Author: the `team_members` row `yahya-houssini` (`articles.author_id`), no
+  reviewer ever. Never write his bio, years or credentials (constraint 9).
+- Hijri: `src/lib/hijri.js` (`@umalqura/core`) → `public.hijri_events`
+  (migration 025, `npm run content:hijri`), always rendered with the
+  moon-sighting caveat. **Never loosen the gate to raise the publish rate** —
+  LAW §10 and Google's scaled-content policy are why it exists.
 - Every article carries `supports_path` (its owner page) so that page lists it
   under « Pour aller plus loin » (`RelatedArticles`): the internal-linking loop
   runs both ways — article → hub (gate-enforced) and hub → article.

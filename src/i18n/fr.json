@@ -256,6 +256,7 @@
       "/a-propos": "Qui sommes-nous",
       "/equipe": "Notre équipe",
       "occasions": "Omra {name} : départs et prix",
+      "cities": "Omra depuis {city} : départs et prix",
       "months": "Omra {month} {year} : départs et prix",
       "departures": "Départ Omra : {title}",
       "school-holiday-departure": "Le départ des vacances scolaires : {title}"
@@ -539,6 +540,20 @@
     "text": "Nous utilisons des cookies de mesure pour améliorer nos offres et nos campagnes. Acceptez-vous ?",
     "accept": "Accepter",
     "decline": "Continuer sans accepter"
+  },
+  "content": {
+    "ctaLive": "{n} départs ouverts en ce moment, dès {minPrice} MAD par personne.",
+    "ctaLiveOne": "1 départ ouvert en ce moment, dès {minPrice} MAD par personne.",
+    "ctaLiveNoPrice": "{n} départs ouverts en ce moment.",
+    "ctaNone": "Aucun départ ouvert pour l'instant : laissez-nous vos coordonnées, nous vous prévenons à l'ouverture.",
+    "departuresTitle": "Départs ouverts",
+    "departuresNone": "Aucun départ ouvert pour cette période pour l'instant.",
+    "hijriLine": "{label} : {date}, dans {days} jours",
+    "hijriTodayLine": "{label} : aujourd'hui",
+    "hijriPastLine": "{label} : {date}",
+    "hijriCaveat": "sous réserve de l'observation de la lune",
+    "hotelsIn": "Nos hôtels partenaires à {city}",
+    "depositTitle": "Réservation et paiement"
   },
   "seoTitles": {
     "home": "Omra {year} depuis le Maroc | Bab Makka",

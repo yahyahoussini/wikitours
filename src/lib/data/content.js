@@ -214,6 +214,23 @@ export const getTeam = cache(async function getTeam() {
   }
 });
 
+/**
+ * Hijri events (migration 025): computed with @umalqura/core by
+ * scripts/build-hijri-events.mjs, adjustable by the admin after the moon
+ * sighting. Empty until the migration and the seed have run — the countdown
+ * component then computes the date itself.
+ */
+export const getHijriEvents = cache(async function getHijriEvents() {
+  try {
+    const supabase = supabasePublic();
+    if (!supabase) return [];
+    const { data, error } = await supabase.from('hijri_events').select('*').order('gregorian_date');
+    return error ? [] : (data ?? []);
+  } catch {
+    return [];
+  }
+});
+
 export const getTestimonials = cache(async function getTestimonials() {
   try {
     const supabase = supabasePublic();

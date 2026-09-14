@@ -194,6 +194,23 @@ export const ADMIN_ENTITIES = {
       },
       { name: 'owner_path', type: 'text', label: 'Page propriétaire à soutenir et lier (ex. /guide-omra/checklist)' },
       { name: 'season_month', type: 'number', label: 'Mois visé 1–12 (rédigé ≤ 3 mois avant ; vide = hors saison)' },
+      // Migration 025 — the content architecture: Ramadan and Hajj slots are
+      // co-mastered in Arabic (own query, own outline); secondary queries carry
+      // the transliterations and Darija phrasings Moroccans actually type.
+      {
+        name: 'slot',
+        type: 'select',
+        label: 'Créneau',
+        options: [
+          { value: 'omra', label: 'Omra' },
+          { value: 'ramadan', label: 'Omra Ramadan (arabe co-maître)' },
+          { value: 'hajj', label: 'Hajj (arabe co-maître)' },
+        ],
+      },
+      { name: 'query_family_ar', type: 'text', label: 'Famille de requêtes en arabe (Ramadan / Hajj : obligatoire)' },
+      { name: 'secondary_queries', type: 'textarea', label: 'Requêtes secondaires, une par ligne (3omra, oumra, umrah, hadj, 7ajj, ramdan…)' },
+      { name: 'secondary_queries_ar', type: 'textarea', label: 'Requêtes secondaires en arabe / darija, une par ligne' },
+      { name: 'angle_ar', type: 'textarea', label: 'Angle arabe (si différent du français)' },
       {
         name: 'status',
         type: 'select',

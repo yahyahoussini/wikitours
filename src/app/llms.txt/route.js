@@ -8,7 +8,7 @@ import { GUIDE_PILLAR_SLUG, GUIDE_CHILD_SLUGS, guideIndexable, GLOSSARY_MIN_TERM
 import { CITY_SLUGS, cityPageIndexable } from '@/lib/months';
 
 export const runtime = 'nodejs';
-export const revalidate = 86400;
+export const revalidate = 3600; // hourly, like every listing — publish-by-time needs no cron
 
 /**
  * /llms.txt — the emerging convention for handing AI answer engines a curated,

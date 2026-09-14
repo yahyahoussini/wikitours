@@ -9,7 +9,7 @@ import { getSettings } from '@/lib/data/settings';
 import { getGallerySlides } from '@/lib/data/gallery';
 import { findAuthor, authorName, isOrganisationByline } from '@/lib/authors';
 import { publicMediaUrl } from '@/lib/media';
-import { renderMarkdown, markdownClass } from '@/lib/markdown';
+import ArticleBody from '@/components/content/ArticleBody';
 import { withBrand } from '@/lib/titles';
 import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
 import ClusterLinks from '@/components/site/ClusterLinks';
@@ -19,7 +19,11 @@ import { isHajjBridge } from '@/lib/clusters';
 import SmartGallery from '@/components/SmartGallery';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
-export const revalidate = false;
+// Publish-by-time: an article is public the moment its published_at has
+// passed (the anon RLS policy). A page requested BEFORE that moment renders a
+// 404 — with revalidate=false that 404 was cached until a cron or an admin
+// write revalidated it. Hourly ISR is what makes the release cron optional.
+export const revalidate = 3600;
 
 /** Prebuild every article × locale (see the offer page for the rationale). */
 export async function generateStaticParams() {
@@ -190,10 +194,10 @@ export default async function ArticlePage({ params }) {
         </div>
 
         {pickLang(article, 'body', locale) ? (
-          <div
-            className={`mt-8 text-bm-black/80 ${markdownClass}`}
-            dangerouslySetInnerHTML={{ __html: renderMarkdown(pickLang(article, 'body', locale)) }}
-          />
+          // Markdown prose + placeholder tags rendered as request-time server
+          // components (src/lib/content-tags.js): prices, departures, quotes,
+          // Hijri countdowns and CTAs are never in the prose.
+          <ArticleBody body={pickLang(article, 'body', locale)} locale={locale} />
         ) : null}
       </article>
 

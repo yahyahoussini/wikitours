@@ -256,6 +256,7 @@
       "/a-propos": "About us",
       "/equipe": "Our team",
       "occasions": "{name} Umrah: departures and prices",
+      "cities": "Umrah from {city}: departures and prices",
       "months": "Umrah {month} {year}: departures and prices",
       "departures": "Umrah departure: {title}",
       "school-holiday-departure": "The school-holiday departure: {title}"
@@ -539,6 +540,20 @@
     "text": "We use measurement cookies to improve our offers and campaigns. Do you accept?",
     "accept": "Accept",
     "decline": "Continue without accepting"
+  },
+  "content": {
+    "ctaLive": "{n} departures open right now, from {minPrice} MAD per person.",
+    "ctaLiveOne": "1 departure open right now, from {minPrice} MAD per person.",
+    "ctaLiveNoPrice": "{n} departures open right now.",
+    "ctaNone": "No departure is open at the moment: leave us your details and we will tell you when one opens.",
+    "departuresTitle": "Open departures",
+    "departuresNone": "No departure is open for this period yet.",
+    "hijriLine": "{label}: {date}, in {days} days",
+    "hijriTodayLine": "{label}: today",
+    "hijriPastLine": "{label}: {date}",
+    "hijriCaveat": "subject to the sighting of the moon",
+    "hotelsIn": "Our partner hotels in {city}",
+    "depositTitle": "Booking and payment"
   },
   "seoTitles": {
     "home": "Umrah {year} from Morocco | Bab Makka",

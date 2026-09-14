@@ -1,0 +1,1834 @@
+{
+  "generated_at": "2026-09-14T09:21:50.778Z",
+  "rule": "Only facts listed here may be stated in prose. A fact not listed is written WITHOUT the figure. Volatile facts render live via placeholder tags. No year other than fondee_en, no price, no currency amount, no departure date, no seat count in prose.",
+  "entity": [
+    {
+      "key": "organisation",
+      "value": "Wiki Tours International",
+      "source": "src/lib/brand.js",
+      "as_of": "2026-09-14"
+    },
+    {
+      "key": "service_omra",
+      "value": "Bab Makka",
+      "source": "src/lib/brand.js",
+      "as_of": "2026-09-14",
+      "note": "graphie canonique — jamais « Bab Makkah » en texte"
+    },
+    {
+      "key": "lockup",
+      "value": "Bab Makka by Wiki Tours International",
+      "source": "src/lib/brand.js",
+      "as_of": "2026-09-14"
+    },
+    {
+      "key": "fondee_en",
+      "value": 2016,
+      "source": "src/lib/brand.js / CLAUDE.md (project summary)",
+      "as_of": "2026-09-14",
+      "note": "le seul millésime autorisé en prose : « depuis 2016 »"
+    },
+    {
+      "key": "licence",
+      "value": "ODV-25012",
+      "source": "settings.license_number",
+      "as_of": "2026-09-11",
+      "note": "licence de voyages, Ministère du Tourisme"
+    },
+    {
+      "key": "ville",
+      "value": "Casablanca",
+      "source": "settings.address_fr",
+      "as_of": "2026-09-11"
+    },
+    {
+      "key": "adresse_fr",
+      "value": "Immeuble Anoual Capital Center, 418 Angle Bd Abdelmoumen et Bd Anoual, Magasin N°1 RDC, Casablanca.",
+      "source": "settings.address_fr",
+      "as_of": "2026-09-11"
+    },
+    {
+      "key": "adresse_ar",
+      "value": "عمارة أنوال كابيتال سنتر، 418 ملتقى شارع عبد المومن وشارع أنوال، محل رقم 1 الطابق الأرضي، الدار البيضاء.",
+      "source": "settings.address_ar",
+      "as_of": "2026-09-11"
+    },
+    {
+      "key": "adresse_en",
+      "value": "Anoual Capital Center Building, 418 Corner of Abdelmoumen Blvd and Anoual Blvd, Shop No. 1 Ground Floor, Casablanca.",
+      "source": "settings.address_en",
+      "as_of": "2026-09-11"
+    },
+    {
+      "key": "telephone",
+      "value": "0634845177",
+      "source": "settings.phone_1",
+      "as_of": "2026-09-11"
+    },
+    {
+      "key": "whatsapp",
+      "value": "+212 601-351105",
+      "source": "settings.whatsapp_number",
+      "as_of": "2026-09-11"
+    },
+    {
+      "key": "email",
+      "value": "contact@wikitours.ma",
+      "source": "settings.email",
+      "as_of": "2026-09-11"
+    },
+    {
+      "key": "horaires_fr",
+      "value": "Du lundi au vendredi : 08:30 – 21:30\nSamedi : 08:30 – 14:30\nDimanche : fermé\nWhatsApp et service en ligne : 24h/24, 7j/7 — réponse en moins de 5 minutes",
+      "source": "settings.opening_hours_fr",
+      "as_of": "2026-09-11"
+    },
+    {
+      "key": "horaires_ar",
+      "value": "من الإثنين إلى الجمعة: 08:30 – 21:30\nالسبت: 08:30 – 14:30\nالأحد: مغلق\nواتساب والخدمة عبر الإنترنت: على مدار الساعة طوال أيام الأسبوع — نجيبكم في أقل من 5 دقائق",
+      "source": "settings.opening_hours_ar",
+      "as_of": "2026-09-11"
+    },
+    {
+      "key": "horaires_en",
+      "value": "Monday to Friday: 08:30 – 21:30\nSaturday: 08:30 – 14:30\nSunday: closed\nWhatsApp and online service: 24/7 — we reply in under 5 minutes",
+      "source": "settings.opening_hours_en",
+      "as_of": "2026-09-11"
+    },
+    {
+      "key": "note_google",
+      "value": 4.8,
+      "source": "settings.gbp_rating (synced by /api/cron/sync-reviews)",
+      "as_of": "2026-09-11",
+      "note": "visible copy only — never in schema; never rounded up"
+    },
+    {
+      "key": "avis_google",
+      "value": 138,
+      "source": "settings.gbp_review_count (synced)",
+      "as_of": "2026-09-11",
+      "note": "changes weekly — quote as « plus de N avis » only if N is the current value"
+    },
+    {
+      "key": "paiement",
+      "value": "Aucun paiement en ligne : contrat écrit signé à l’agence, acompte versé à l’agence, reçu officiel.",
+      "source": "src/lib/server/article-drafter.js buildFactSheet · dictionaries meta.trustNoPayment",
+      "as_of": "2026-09-14",
+      "note": "the amount of the deposit is NOT a fact here — <DepositPolicy /> renders the policy live"
+    },
+    {
+      "key": "villes_de_depart",
+      "value": [
+        {
+          "slug": "casablanca",
+          "fr": "Casablanca",
+          "ar": "الدار البيضاء",
+          "en": "Casablanca"
+        },
+        {
+          "slug": "rabat",
+          "fr": "Rabat",
+          "ar": "الرباط",
+          "en": "Rabat"
+        },
+        {
+          "slug": "marrakech",
+          "fr": "Marrakech",
+          "ar": "مراكش",
+          "en": "Marrakesh"
+        },
+        {
+          "slug": "fes",
+          "fr": "Fès",
+          "ar": "فاس",
+          "en": "Fez"
+        },
+        {
+          "slug": "tanger",
+          "fr": "Tanger",
+          "ar": "طنجة",
+          "en": "Tangier"
+        },
+        {
+          "slug": "agadir",
+          "fr": "Agadir",
+          "ar": "أكادير",
+          "en": "Agadir"
+        },
+        {
+          "slug": "meknes",
+          "fr": "Meknès",
+          "ar": "مكناس",
+          "en": "Meknes"
+        },
+        {
+          "slug": "oujda",
+          "fr": "Oujda",
+          "ar": "وجدة",
+          "en": "Oujda"
+        }
+      ],
+      "source": "src/i18n/*.json cities",
+      "as_of": "2026-09-14",
+      "note": "Arabic pages use the Arabic name only"
+    },
+    {
+      "key": "mois",
+      "value": [
+        {
+          "slug": "janvier",
+          "fr": "janvier",
+          "ar": "يناير",
+          "en": "January"
+        },
+        {
+          "slug": "fevrier",
+          "fr": "février",
+          "ar": "فبراير",
+          "en": "February"
+        },
+        {
+          "slug": "mars",
+          "fr": "mars",
+          "ar": "مارس",
+          "en": "March"
+        },
+        {
+          "slug": "avril",
+          "fr": "avril",
+          "ar": "أبريل",
+          "en": "April"
+        },
+        {
+          "slug": "mai",
+          "fr": "mai",
+          "ar": "ماي",
+          "en": "May"
+        },
+        {
+          "slug": "juin",
+          "fr": "juin",
+          "ar": "يونيو",
+          "en": "June"
+        },
+        {
+          "slug": "juillet",
+          "fr": "juillet",
+          "ar": "يوليوز",
+          "en": "July"
+        },
+        {
+          "slug": "aout",
+          "fr": "août",
+          "ar": "غشت",
+          "en": "August"
+        },
+        {
+          "slug": "septembre",
+          "fr": "septembre",
+          "ar": "شتنبر",
+          "en": "September"
+        },
+        {
+          "slug": "octobre",
+          "fr": "octobre",
+          "ar": "أكتوبر",
+          "en": "October"
+        },
+        {
+          "slug": "novembre",
+          "fr": "novembre",
+          "ar": "نونبر",
+          "en": "November"
+        },
+        {
+          "slug": "decembre",
+          "fr": "décembre",
+          "ar": "دجنبر",
+          "en": "December"
+        }
+      ],
+      "source": "src/i18n/*.json months",
+      "as_of": "2026-09-14",
+      "note": "Moroccan Arabic month names — never the Levantine forms"
+    }
+  ],
+  "faq": [
+    {
+      "source": "faqs/f8a580e1-3b19-4950-b7ea-e3add7484029",
+      "as_of": "2026-09-07",
+      "category": "ville-marrakech",
+      "fr": {
+        "q": "Peut-on organiser son Omra depuis Marrakech ?",
+        "a": "Oui. Depuis Marrakech, le dossier se prépare par téléphone ou WhatsApp : notre équipe vous conseille la gamme, liste les documents nécessaires et répond à vos questions. La réservation se confirme ensuite par un contrat signé à notre agence de Casablanca, et le départ s'effectue à l'aéroport Mohammed V."
+      },
+      "ar": {
+        "q": "هل يمكن تنظيم العمرة انطلاقاً من مراكش؟",
+        "a": "نعم. من مراكش، يُعَدّ الملف بالكامل عبر الهاتف أو واتساب دون الحاجة إلى التنقل: فريقنا ينصحكم بالفئة المناسبة ويحدد الوثائق المطلوبة ويجيب عن جميع أسئلتكم. ثم يُؤكَّد الحجز بعقد يُوقَّع بوكالتنا بالدار البيضاء مع وصل رسمي، والانطلاق يكون من مطار محمد الخامس مع المجموعة."
+      },
+      "en": {
+        "q": "Can I arrange my Umrah from Marrakech?",
+        "a": "Yes. From Marrakech, the file is prepared by phone or WhatsApp: our team advises on the tier, lists the required documents and answers your questions. The booking is then confirmed with a contract signed at our Casablanca agency, and departure takes place at Mohammed V airport."
+      }
+    },
+    {
+      "source": "faqs/93ab3ffd-e4af-4e07-96de-937ba26153ab",
+      "as_of": "2026-09-07",
+      "category": "ville-agadir",
+      "fr": {
+        "q": "Peut-on organiser son Omra depuis Agadir ?",
+        "a": "Oui. Depuis Agadir, le dossier se prépare par téléphone ou WhatsApp : notre équipe vous conseille la gamme, liste les documents nécessaires et répond à vos questions. La réservation se confirme ensuite par un contrat signé à notre agence de Casablanca, et le départ s'effectue à l'aéroport Mohammed V."
+      },
+      "ar": {
+        "q": "هل يمكن تنظيم العمرة انطلاقاً من أكادير؟",
+        "a": "نعم. من أكادير، يُعَدّ الملف بالكامل عبر الهاتف أو واتساب دون الحاجة إلى التنقل: فريقنا ينصحكم بالفئة المناسبة ويحدد الوثائق المطلوبة ويجيب عن جميع أسئلتكم. ثم يُؤكَّد الحجز بعقد يُوقَّع بوكالتنا بالدار البيضاء مع وصل رسمي، والانطلاق يكون من مطار محمد الخامس مع المجموعة."
+      },
+      "en": {
+        "q": "Can I arrange my Umrah from Agadir?",
+        "a": "Yes. From Agadir, the file is prepared by phone or WhatsApp: our team advises on the tier, lists the required documents and answers your questions. The booking is then confirmed with a contract signed at our Casablanca agency, and departure takes place at Mohammed V airport."
+      }
+    },
+    {
+      "source": "faqs/4960c0de-696a-49ce-bead-67c12a77260c",
+      "as_of": "2026-09-07",
+      "category": "ville-casablanca",
+      "fr": {
+        "q": "Peut-on organiser son Omra depuis Casablanca ?",
+        "a": "Oui — et vous êtes dans la ville de l'agence : passez nous voir boulevard Abdelmoumen pour préparer le dossier en personne, ou faites tout par téléphone et WhatsApp. La réservation se confirme par un contrat signé à l'agence, et le départ s'effectue à l'aéroport Mohammed V."
+      },
+      "ar": {
+        "q": "هل يمكن تنظيم العمرة انطلاقاً من الدار البيضاء؟",
+        "a": "نعم — وأنتم في مدينة الوكالة: زورونا بشارع عبد المومن لإعداد الملف حضورياً والاطلاع على الرخصة، أو أنجزوا كل شيء بالهاتف وواتساب إن كان ذلك أنسب لكم. يُؤكَّد الحجز بعقد يُوقَّع بالوكالة مع وصل رسمي، والانطلاق يكون من مطار محمد الخامس مع المجموعة."
+      },
+      "en": {
+        "q": "Can I arrange my Umrah from Casablanca?",
+        "a": "Yes — and you are in the agency's own city: visit us on Boulevard Abdelmoumen to prepare the file in person, or handle everything by phone and WhatsApp. The booking is confirmed with a contract signed at the agency, and departure is from Mohammed V airport."
+      }
+    },
+    {
+      "source": "faqs/1b011d9d-d21a-4826-85cb-347b4bfffe20",
+      "as_of": "2026-09-07",
+      "category": "omra",
+      "fr": {
+        "q": "Combien de temps dure un voyage Omra ?",
+        "a": "Nos départs Omra actuels durent environ 15 jours et 14 nuits, répartis entre La Mecque et Médine. Chaque offre affiche ses dates exactes de départ et de retour, sa compagnie aérienne et son programme détaillé — consultez la fiche du départ qui vous intéresse pour la durée précise."
+      },
+      "ar": {
+        "q": "كم تدوم رحلة العمرة؟",
+        "a": "تدوم رحلات العمرة الحالية لدينا حوالي 15 يوماً و14 ليلة، موزعة بين مكة المكرمة والمدينة المنورة، وقد تختلف المدة قليلاً من رحلة إلى أخرى. كل عرض يعرض تواريخ الانطلاق والعودة بدقة، وشركة الطيران المعتمدة، والبرنامج المفصل — راجعوا صفحة العرض الذي يهمكم لمعرفة المدة الدقيقة لكل رحلة."
+      },
+      "en": {
+        "q": "How long does an Umrah trip last?",
+        "a": "Our current Umrah departures last about 15 days and 14 nights, split between Makkah and Madinah. Every offer shows its exact departure and return dates, airline and detailed program — check the page of the departure you're interested in for its precise duration."
+      }
+    },
+    {
+      "source": "faqs/bd9c9f04-af93-4dec-bf57-50cb1d545e19",
+      "as_of": "2026-09-07",
+      "category": "confiance",
+      "fr": {
+        "q": "Comment vérifier que Wiki Tours est une agence agréée ?",
+        "a": "Notre licence d'agence de voyages porte le numéro ODV-25012, délivrée par le Ministère du Tourisme. Elle est affichée à notre agence de Casablanca, boulevard Abdelmoumen, et vérifiable auprès du Ministère. Vous pouvez également venir nous rencontrer sur place avant toute réservation."
+      },
+      "ar": {
+        "q": "كيف أتأكد من أن ويكي تورز وكالة مرخصة؟",
+        "a": "رخصة وكالتنا للأسفار تحمل رقم ODV-25012، وهي صادرة عن وزارة السياحة بالمملكة المغربية. وهي معلَّقة بشكل ظاهر بوكالتنا بالدار البيضاء، شارع عبد المومن، وقابلة للتحقق لدى مصالح الوزارة، كما تُذكر في عقدكم. ويمكنكم كذلك زيارتنا في المقر والاطلاع عليها بأنفسكم قبل أي حجز أو أداء."
+      },
+      "en": {
+        "q": "How can I verify that Wiki Tours is a licensed agency?",
+        "a": "Our travel agency licence is number ODV-25012, issued by the Ministry of Tourism. It is displayed at our Casablanca agency on Boulevard Abdelmoumen, and can be verified with the Ministry. You are also welcome to visit us in person before any booking."
+      }
+    },
+    {
+      "source": "faqs/f0fd9015-ed32-49e4-a07c-ccbc45617902",
+      "as_of": "2026-09-07",
+      "category": "agence",
+      "fr": {
+        "q": "Pourquoi passer par une agence agréée pour son Omra ?",
+        "a": "Une agence agréée prend en charge le visa Omra via les canaux officiels, réserve des hôtels contrôlés près du Haram, organise le vol et l'accompagnement du groupe, et vous remet un contrat écrit. Vous avez un interlocuteur responsable au Maroc en cas d'imprévu — pas un intermédiaire injoignable."
+      },
+      "ar": {
+        "q": "لماذا المرور عبر وكالة معتمدة لأداء العمرة؟",
+        "a": "الوكالة المعتمدة تتكفل بتأشيرة العمرة عبر القنوات الرسمية، وتحجز فنادق مراقَبة قرب الحرم، وتنظم الطيران ومرافقة المجموعة طوال الرحلة، وتسلمكم عقداً مكتوباً مع وصل رسمي. ويبقى لكم مخاطب مسؤول داخل المغرب من أول اتصال وعند أي طارئ، قبل السفر وأثناءه — لا وسيط يتعذر الاتصال به."
+      },
+      "en": {
+        "q": "Why go through a licensed agency for Umrah?",
+        "a": "A licensed agency handles the Umrah visa through official channels, books vetted hotels near the Haram, arranges the flight and the group guidance, and gives you a written contract. You have an accountable contact inside Morocco if anything goes wrong — not an unreachable middleman."
+      }
+    },
+    {
+      "source": "faqs/f8f2ba29-2532-40a1-97eb-f8ee51945a58",
+      "as_of": "2026-09-07",
+      "category": "ville-rabat",
+      "fr": {
+        "q": "Peut-on organiser son Omra depuis Rabat ?",
+        "a": "Oui. Depuis Rabat, le dossier se prépare par téléphone ou WhatsApp : notre équipe vous conseille la gamme, liste les documents nécessaires et répond à vos questions. La réservation se confirme ensuite par un contrat signé à notre agence de Casablanca, et le départ s'effectue à l'aéroport Mohammed V."
+      },
+      "ar": {
+        "q": "هل يمكن تنظيم العمرة انطلاقاً من الرباط؟",
+        "a": "نعم. من الرباط، يُعَدّ الملف بالكامل عبر الهاتف أو واتساب دون الحاجة إلى التنقل: فريقنا ينصحكم بالفئة المناسبة ويحدد الوثائق المطلوبة ويجيب عن جميع أسئلتكم. ثم يُؤكَّد الحجز بعقد يُوقَّع بوكالتنا بالدار البيضاء مع وصل رسمي، والانطلاق يكون من مطار محمد الخامس مع المجموعة."
+      },
+      "en": {
+        "q": "Can I arrange my Umrah from Rabat?",
+        "a": "Yes. From Rabat, the file is prepared by phone or WhatsApp: our team advises on the tier, lists the required documents and answers your questions. The booking is then confirmed with a contract signed at our Casablanca agency, and departure takes place at Mohammed V airport."
+      }
+    },
+    {
+      "source": "faqs/a33fe842-f75e-4971-8f30-5e7f7dadb624",
+      "as_of": "2026-09-07",
+      "category": "ville-oujda",
+      "fr": {
+        "q": "Peut-on organiser son Omra depuis Oujda ?",
+        "a": "Oui. Depuis Oujda, le dossier se prépare par téléphone ou WhatsApp : notre équipe vous conseille la gamme, liste les documents nécessaires et répond à vos questions. La réservation se confirme ensuite par un contrat signé à notre agence de Casablanca, et le départ s'effectue à l'aéroport Mohammed V."
+      },
+      "ar": {
+        "q": "هل يمكن تنظيم العمرة انطلاقاً من وجدة؟",
+        "a": "نعم. من وجدة، يُعَدّ الملف بالكامل عبر الهاتف أو واتساب دون الحاجة إلى التنقل: فريقنا ينصحكم بالفئة المناسبة ويحدد الوثائق المطلوبة ويجيب عن جميع أسئلتكم. ثم يُؤكَّد الحجز بعقد يُوقَّع بوكالتنا بالدار البيضاء مع وصل رسمي، والانطلاق يكون من مطار محمد الخامس مع المجموعة."
+      },
+      "en": {
+        "q": "Can I arrange my Umrah from Oujda?",
+        "a": "Yes. From Oujda, the file is prepared by phone or WhatsApp: our team advises on the tier, lists the required documents and answers your questions. The booking is then confirmed with a contract signed at our Casablanca agency, and departure takes place at Mohammed V airport."
+      }
+    },
+    {
+      "source": "faqs/8a8aa382-9d68-42f6-a0a2-0d5a58acca31",
+      "as_of": "2026-09-07",
+      "category": "ville-fes",
+      "fr": {
+        "q": "Peut-on organiser son Omra depuis Fès ?",
+        "a": "Oui. Depuis Fès, le dossier se prépare par téléphone ou WhatsApp : notre équipe vous conseille la gamme, liste les documents nécessaires et répond à vos questions. La réservation se confirme ensuite par un contrat signé à notre agence de Casablanca, et le départ s'effectue à l'aéroport Mohammed V."
+      },
+      "ar": {
+        "q": "هل يمكن تنظيم العمرة انطلاقاً من فاس؟",
+        "a": "نعم. من فاس، يُعَدّ الملف بالكامل عبر الهاتف أو واتساب دون الحاجة إلى التنقل: فريقنا ينصحكم بالفئة المناسبة ويحدد الوثائق المطلوبة ويجيب عن جميع أسئلتكم. ثم يُؤكَّد الحجز بعقد يُوقَّع بوكالتنا بالدار البيضاء مع وصل رسمي، والانطلاق يكون من مطار محمد الخامس مع المجموعة."
+      },
+      "en": {
+        "q": "Can I arrange my Umrah from Fès?",
+        "a": "Yes. From Fès, the file is prepared by phone or WhatsApp: our team advises on the tier, lists the required documents and answers your questions. The booking is then confirmed with a contract signed at our Casablanca agency, and departure takes place at Mohammed V airport."
+      }
+    },
+    {
+      "source": "faqs/a68014c0-3edf-4bf6-bbd2-2e3c27e5b2aa",
+      "as_of": "2026-09-07",
+      "category": "ville-meknes",
+      "fr": {
+        "q": "Peut-on organiser son Omra depuis Meknès ?",
+        "a": "Oui. Depuis Meknès, le dossier se prépare par téléphone ou WhatsApp : notre équipe vous conseille la gamme, liste les documents nécessaires et répond à vos questions. La réservation se confirme ensuite par un contrat signé à notre agence de Casablanca, et le départ s'effectue à l'aéroport Mohammed V."
+      },
+      "ar": {
+        "q": "هل يمكن تنظيم العمرة انطلاقاً من مكناس؟",
+        "a": "نعم. من مكناس، يُعَدّ الملف بالكامل عبر الهاتف أو واتساب دون الحاجة إلى التنقل: فريقنا ينصحكم بالفئة المناسبة ويحدد الوثائق المطلوبة ويجيب عن جميع أسئلتكم. ثم يُؤكَّد الحجز بعقد يُوقَّع بوكالتنا بالدار البيضاء مع وصل رسمي، والانطلاق يكون من مطار محمد الخامس مع المجموعة."
+      },
+      "en": {
+        "q": "Can I arrange my Umrah from Meknès?",
+        "a": "Yes. From Meknès, the file is prepared by phone or WhatsApp: our team advises on the tier, lists the required documents and answers your questions. The booking is then confirmed with a contract signed at our Casablanca agency, and departure takes place at Mohammed V airport."
+      }
+    },
+    {
+      "source": "faqs/1baedf16-545c-434c-899d-e27ba85491a9",
+      "as_of": "2026-09-07",
+      "category": "ville-tanger",
+      "fr": {
+        "q": "Peut-on organiser son Omra depuis Tanger ?",
+        "a": "Oui. Depuis Tanger, le dossier se prépare par téléphone ou WhatsApp : notre équipe vous conseille la gamme, liste les documents nécessaires et répond à vos questions. La réservation se confirme ensuite par un contrat signé à notre agence de Casablanca, et le départ s'effectue à l'aéroport Mohammed V."
+      },
+      "ar": {
+        "q": "هل يمكن تنظيم العمرة انطلاقاً من طنجة؟",
+        "a": "نعم. من طنجة، يُعَدّ الملف بالكامل عبر الهاتف أو واتساب دون الحاجة إلى التنقل: فريقنا ينصحكم بالفئة المناسبة ويحدد الوثائق المطلوبة ويجيب عن جميع أسئلتكم. ثم يُؤكَّد الحجز بعقد يُوقَّع بوكالتنا بالدار البيضاء مع وصل رسمي، والانطلاق يكون من مطار محمد الخامس مع المجموعة."
+      },
+      "en": {
+        "q": "Can I arrange my Umrah from Tangier?",
+        "a": "Yes. From Tangier, the file is prepared by phone or WhatsApp: our team advises on the tier, lists the required documents and answers your questions. The booking is then confirmed with a contract signed at our Casablanca agency, and departure takes place at Mohammed V airport."
+      }
+    },
+    {
+      "source": "faqs/291929f0-a737-4e9b-83cd-7ea43894fcb9",
+      "as_of": "2026-09-07",
+      "category": "omra",
+      "fr": {
+        "q": "Quel acompte faut-il pour confirmer une réservation Omra ?",
+        "a": "Un acompte de 50 % du montant total est demandé à la confirmation de la réservation, réglé directement auprès de l'agence — jamais en ligne. Le solde est versé ensuite selon les conditions indiquées sur la fiche de chaque offre, avant la date du départ."
+      },
+      "ar": {
+        "q": "ما هو المبلغ المطلوب لتأكيد حجز العمرة؟",
+        "a": "يُطلب دفع 50٪ من المبلغ الإجمالي عند تأكيد الحجز وتوقيع العقد، ويتم الأداء مباشرة لدى الوكالة بالدار البيضاء مع وصل رسمي، وليس عبر الإنترنت أبداً. أما المبلغ المتبقي فيُدفع لاحقاً حسب الشروط المذكورة في صفحة كل عرض، وذلك قبل تاريخ الانطلاق المحدد للرحلة."
+      },
+      "en": {
+        "q": "What deposit confirms an Umrah booking?",
+        "a": "A deposit of 50% of the total amount confirms your booking, paid directly at the Casablanca agency when the contract is signed, with an official receipt — never online. The balance is then settled according to the conditions shown on each offer page, before the departure date of your trip."
+      }
+    },
+    {
+      "source": "faqs/e646b353-f967-4022-897c-69615e32b671",
+      "as_of": "2026-09-07",
+      "category": "ville-fes",
+      "fr": {
+        "q": "D'où part le vol pour l'Omra quand on vient de Fès ?",
+        "a": "Tous nos départs s'effectuent à l'aéroport Mohammed V de Casablanca, où notre équipe rassemble le groupe plusieurs heures avant le décollage et vous assiste aux formalités d'enregistrement et d'embarquement. Depuis Fès, des trains directs passent par Meknès et Rabat (environ 290 km) jusqu'à Casa Voyageurs, puis une liaison ferroviaire mène à l'aéroport."
+      },
+      "ar": {
+        "q": "من أين تنطلق رحلة العمرة لسكان فاس؟",
+        "a": "جميع رحلاتنا تنطلق من مطار محمد الخامس بالدار البيضاء، حيث يجمع فريقنا المجموعة قبل الإقلاع بساعات ويساعدكم في إجراءات التسجيل والصعود. من فاس، قطارات مباشرة عبر مكناس والرباط (نحو 290 كلم) حتى محطة الدار البيضاء المسافرين، ثم الربط السككي نحو المطار."
+      },
+      "en": {
+        "q": "Where does the Umrah flight leave from for Fès residents?",
+        "a": "All our departures leave from Casablanca's Mohammed V airport, where our team gathers the group and assists with boarding formalities. From Fès, direct trains run via Meknès and Rabat (about 290 km), with a rail link on to the airport."
+      }
+    },
+    {
+      "source": "faqs/188da6ea-455b-445b-a54c-26d7c361a3e1",
+      "as_of": "2026-09-07",
+      "category": "confiance",
+      "fr": {
+        "q": "Comment se passe la réservation ?",
+        "a": "Vous envoyez une demande via le formulaire du site ou sur WhatsApp, sans aucun paiement en ligne. Notre équipe vous rappelle rapidement pour confirmer les détails — dates du départ, gamme et type de chambre, documents à fournir — puis la réservation est finalisée par un contrat signé à l'agence de Casablanca, avec reçu officiel."
+      },
+      "ar": {
+        "q": "كيف تتم عملية الحجز؟",
+        "a": "ترسلون طلبكم عبر استمارة الموقع أو عبر واتساب، دون أي أداء عبر الإنترنت، ثم يتصل بكم فريقنا في أقرب وقت لتأكيد جميع التفاصيل: تواريخ السفر، الفئة ونوع الغرفة، والوثائق المطلوبة. بعد هذا التأكيد يُستكمل الحجز بشكل نهائي بعقد يُوقَّع بمقر الوكالة بالدار البيضاء وبحضوركم، مع وصل رسمي."
+      },
+      "en": {
+        "q": "How does booking work?",
+        "a": "You send a request through the website form or on WhatsApp, with no online payment. Our team calls you back promptly to confirm the details — departure dates, tier and room type, documents to provide — then the booking is finalised with a contract signed at the Casablanca agency, with an official receipt."
+      }
+    },
+    {
+      "source": "faqs/c8874d8e-55c4-4c46-9a4b-6b0a3cf56dc3",
+      "as_of": "2026-09-07",
+      "category": "ville-casablanca",
+      "fr": {
+        "q": "D'où part le vol pour l'Omra quand on vient de Casablanca ?",
+        "a": "Tous nos départs s'effectuent à l'aéroport Mohammed V de Casablanca, où notre équipe rassemble le groupe et vous assiste aux formalités d'embarquement. L'aéroport se trouve à une trentaine de kilomètres au sud de Casablanca, facilement accessible en train ou en voiture."
+      },
+      "ar": {
+        "q": "من أين تنطلق رحلة العمرة لسكان الدار البيضاء؟",
+        "a": "جميع رحلاتنا تنطلق من مطار محمد الخامس بالدار البيضاء، حيث يجمع فريقنا المجموعة قبل الإقلاع بساعات ويساعدكم في إجراءات التسجيل والصعود. يوجد المطار على بعد نحو ثلاثين كيلومتراً جنوب الدار البيضاء، ويسهل الوصول إليه بالقطار انطلاقاً من محطة المسافرين أو بالسيارة أو بسيارة الأجرة."
+      },
+      "en": {
+        "q": "Where does the Umrah flight leave from for Casablanca residents?",
+        "a": "All our departures leave from Casablanca's Mohammed V airport, where our team gathers the group several hours before take-off and assists with check-in and boarding formalities. The airport sits about thirty kilometres south of Casablanca, easy to reach by train from Casa Voyageurs, by car or by taxi."
+      }
+    },
+    {
+      "source": "faqs/50e22e90-f522-44ab-a923-1db785773168",
+      "as_of": "2026-09-07",
+      "category": "ville-marrakech",
+      "fr": {
+        "q": "D'où part le vol pour l'Omra quand on vient de Marrakech ?",
+        "a": "Tous nos départs s'effectuent à l'aéroport Mohammed V de Casablanca, où notre équipe rassemble le groupe plusieurs heures avant le décollage et vous assiste aux formalités d'enregistrement et d'embarquement. Depuis Marrakech, des trains ONCF directs rejoignent Casa Voyageurs, puis une liaison ferroviaire mène à l'aéroport ; par la route, comptez environ 240 km d'autoroute."
+      },
+      "ar": {
+        "q": "من أين تنطلق رحلة العمرة لسكان مراكش؟",
+        "a": "جميع رحلاتنا تنطلق من مطار محمد الخامس بالدار البيضاء، حيث يجمع فريقنا المجموعة قبل الإقلاع بساعات ويساعدكم في إجراءات التسجيل والصعود. من مراكش، قطارات مباشرة نحو محطة الدار البيضاء المسافرين ثم ربط سككي نحو المطار، أو نحو 240 كلم بالطريق السيار بالسيارة أو الحافلة في حوالي ثلاث ساعات."
+      },
+      "en": {
+        "q": "Where does the Umrah flight leave from for Marrakech residents?",
+        "a": "All our departures leave from Casablanca's Mohammed V airport, where our team gathers the group and assists with boarding formalities. From Marrakech, direct trains reach Casa Voyageurs with a rail link to the airport, or about 240 km by motorway."
+      }
+    },
+    {
+      "source": "faqs/b3428e5a-ece3-4a9f-8a6f-08bd336aca17",
+      "as_of": "2026-09-07",
+      "category": "ville-rabat",
+      "fr": {
+        "q": "D'où part le vol pour l'Omra quand on vient de Rabat ?",
+        "a": "Tous nos départs s'effectuent à l'aéroport Mohammed V de Casablanca, où notre équipe rassemble le groupe plusieurs heures avant le décollage et vous assiste aux formalités d'enregistrement et d'embarquement. Depuis Rabat, comptez un peu plus d'une heure par l'autoroute, ou le train ONCF jusqu'à Casa Voyageurs puis la liaison ferroviaire vers l'aéroport."
+      },
+      "ar": {
+        "q": "من أين تنطلق رحلة العمرة لسكان الرباط؟",
+        "a": "جميع رحلاتنا تنطلق من مطار محمد الخامس بالدار البيضاء، حيث يجمع فريقنا المجموعة قبل الإقلاع بساعات ويساعدكم في إجراءات التسجيل والصعود. من الرباط، الطريق السيار بالسيارة أو الحافلة يستغرق ساعة ونيف، أو قطار ONCF حتى محطة الدار البيضاء المسافرين ثم الربط السككي نحو المطار."
+      },
+      "en": {
+        "q": "Where does the Umrah flight leave from for Rabat residents?",
+        "a": "All our departures leave from Casablanca's Mohammed V airport, where our team gathers the group several hours before take-off and assists with check-in and boarding formalities. From Rabat, allow just over an hour by motorway, or take the ONCF train to Casa Voyageurs and then the rail link to the airport."
+      }
+    },
+    {
+      "source": "faqs/4ea6e654-9844-44cf-a73c-d62831fd976d",
+      "as_of": "2026-09-07",
+      "category": "ville-tanger",
+      "fr": {
+        "q": "D'où part le vol pour l'Omra quand on vient de Tanger ?",
+        "a": "Tous nos départs s'effectuent à l'aéroport Mohammed V de Casablanca, où notre équipe rassemble le groupe et vous assiste aux formalités d'embarquement. Depuis Tanger, Al Boraq rejoint Casablanca en un peu plus de deux heures, puis liaison ferroviaire vers l'aéroport."
+      },
+      "ar": {
+        "q": "من أين تنطلق رحلة العمرة لسكان طنجة؟",
+        "a": "جميع رحلاتنا تنطلق من مطار محمد الخامس بالدار البيضاء، حيث يجمع فريقنا المجموعة قبل الإقلاع بساعات ويساعدكم في إجراءات التسجيل والصعود. من طنجة، يصل قطار البراق الفائق السرعة إلى محطة الدار البيضاء المسافرين في ما يزيد قليلاً عن ساعتين، ثم الربط السككي نحو المطار."
+      },
+      "en": {
+        "q": "Where does the Umrah flight leave from for Tangier residents?",
+        "a": "All our departures leave from Casablanca's Mohammed V airport, where our team gathers the group several hours before take-off and assists with check-in and boarding formalities. From Tangier, the Al Boraq high-speed train reaches Casa Voyageurs in just over two hours, with a rail link on to the airport."
+      }
+    },
+    {
+      "source": "faqs/e566b6c9-b7c7-4b32-8a44-cc8e4393ed12",
+      "as_of": "2026-09-07",
+      "category": "ville-agadir",
+      "fr": {
+        "q": "D'où part le vol pour l'Omra quand on vient de Agadir ?",
+        "a": "Tous nos départs s'effectuent à l'aéroport Mohammed V de Casablanca, où notre équipe rassemble le groupe et vous assiste aux formalités d'embarquement. Depuis Agadir, l'autoroute ou les cars interurbains (CTM, Supratours) ; des vols intérieurs relient aussi Agadir à Casablanca."
+      },
+      "ar": {
+        "q": "من أين تنطلق رحلة العمرة لسكان أكادير؟",
+        "a": "جميع رحلاتنا تنطلق من مطار محمد الخامس بالدار البيضاء، حيث يجمع فريقنا المجموعة قبل الإقلاع بساعات ويساعدكم في إجراءات التسجيل والصعود. من أكادير، يمكنكم سلوك الطريق السيار أو حافلات CTM وسوبراتور؛ وتوجد أيضاً رحلات جوية داخلية نحو الدار البيضاء لكسب الوقت."
+      },
+      "en": {
+        "q": "Where does the Umrah flight leave from for Agadir residents?",
+        "a": "All our departures leave from Casablanca's Mohammed V airport, where our team gathers the group several hours before take-off and assists with check-in and boarding formalities. From Agadir, take the motorway or an intercity coach (CTM, Supratours); domestic flights to Casablanca also exist and save time."
+      }
+    },
+    {
+      "source": "faqs/1c44c5f7-22f8-4df4-bfd8-bc1d9e6ff11f",
+      "as_of": "2026-09-07",
+      "category": "ville-meknes",
+      "fr": {
+        "q": "D'où part le vol pour l'Omra quand on vient de Meknès ?",
+        "a": "Tous nos départs s'effectuent à l'aéroport Mohammed V de Casablanca, où notre équipe rassemble le groupe plusieurs heures avant le décollage et vous assiste aux formalités d'enregistrement et d'embarquement. Depuis Meknès, un train direct rejoint Casa Voyageurs (environ 230 km), puis une liaison ferroviaire mène à l'aéroport ; par l'autoroute, comptez environ trois heures."
+      },
+      "ar": {
+        "q": "من أين تنطلق رحلة العمرة لسكان مكناس؟",
+        "a": "جميع رحلاتنا تنطلق من مطار محمد الخامس بالدار البيضاء، حيث يجمع فريقنا المجموعة قبل الإقلاع بساعات ويساعدكم في إجراءات التسجيل والصعود. من مكناس، قطار مباشر حتى محطة الدار البيضاء المسافرين (نحو 230 كلم)، ثم الربط السككي نحو المطار؛ وبالطريق السيار بالسيارة أو الحافلة احسبوا حوالي ثلاث ساعات."
+      },
+      "en": {
+        "q": "Where does the Umrah flight leave from for Meknès residents?",
+        "a": "All our departures leave from Casablanca's Mohammed V airport, where our team gathers the group several hours before take-off and assists with check-in and boarding formalities. From Meknès, a direct train reaches Casa Voyageurs (about 230 km), with a rail link on to the airport; by motorway, allow about three hours."
+      }
+    },
+    {
+      "source": "faqs/cf12a71a-38f1-4a26-abca-7caa18e61cef",
+      "as_of": "2026-09-07",
+      "category": "agence",
+      "fr": {
+        "q": "Faut-il se déplacer à l'agence de Casablanca pour réserver ?",
+        "a": "Toute la préparation se fait à distance : conseils, choix de la gamme et documents passent par téléphone ou WhatsApp, où que vous soyez au Maroc. Seule la signature du contrat se fait à notre agence de Casablanca, boulevard Abdelmoumen — c'est ce document écrit, avec reçu officiel, qui protège votre réservation."
+      },
+      "ar": {
+        "q": "هل يجب التنقل إلى الوكالة بالدار البيضاء للحجز؟",
+        "a": "كل التحضير يتم عن بُعد: النصائح واختيار الفئة والوثائق عبر الهاتف أو واتساب، أينما كنتم في المغرب، ولا يُطلب منكم أي أداء عبر الإنترنت. فقط توقيع العقد يتم بوكالتنا بالدار البيضاء، شارع عبد المومن، في موعد يناسبكم — وهذه الوثيقة المكتوبة، مع وصل رسمي، هي التي تحمي حجزكم."
+      },
+      "en": {
+        "q": "Do I need to visit the Casablanca office to book?",
+        "a": "All the preparation happens remotely: advice, tier choice and documents go through phone or WhatsApp, wherever you are in Morocco. Only the contract signature takes place at our Casablanca office on Boulevard Abdelmoumen — that written document, with an official receipt, is what protects your booking."
+      }
+    },
+    {
+      "source": "faqs/84634f2b-0b50-45dd-b738-de938aba32f8",
+      "as_of": "2026-09-07",
+      "category": "ville-oujda",
+      "fr": {
+        "q": "D'où part le vol pour l'Omra quand on vient de Oujda ?",
+        "a": "Tous nos départs s'effectuent à l'aéroport Mohammed V de Casablanca, où notre équipe rassemble le groupe plusieurs heures avant le décollage et vous assiste aux formalités d'enregistrement et d'embarquement. Depuis Oujda, un train ONCF direct rejoint Casablanca, ou des vols intérieurs permettent de gagner du temps (environ 600 km par la route) ; prévoyez d'arriver la veille."
+      },
+      "ar": {
+        "q": "من أين تنطلق رحلة العمرة لسكان وجدة؟",
+        "a": "جميع رحلاتنا تنطلق من مطار محمد الخامس بالدار البيضاء، حيث يجمع فريقنا المجموعة قبل الإقلاع بساعات ويساعدكم في إجراءات التسجيل والصعود. من وجدة، قطار مباشر نحو الدار البيضاء، أو رحلات جوية داخلية إلى الدار البيضاء لكسب الوقت (نحو 600 كلم بالطريق)؛ ويُستحسن الوصول عشية السفر."
+      },
+      "en": {
+        "q": "Where does the Umrah flight leave from for Oujda residents?",
+        "a": "All our departures leave from Casablanca's Mohammed V airport, where our team gathers the group and assists with boarding formalities. From Oujda, a direct ONCF train runs to Casablanca, or take a domestic flight to save time (about 600 km)."
+      }
+    },
+    {
+      "source": "faqs/3bfefb3c-fa00-4648-b5e1-136217332eac",
+      "as_of": "2026-09-07",
+      "category": "ville-marrakech",
+      "fr": {
+        "q": "Le prix de l'Omra est-il plus cher depuis Marrakech ?",
+        "a": "Non. Nos prix sont par personne, selon la gamme et le type de chambre — jamais selon votre ville. Le vol depuis Casablanca, l'hôtel, le visa et l'accompagnement sont inclus comme pour tous ; seul le trajet jusqu'à l'aéroport Mohammed V reste à votre charge."
+      },
+      "ar": {
+        "q": "هل ثمن العمرة أغلى انطلاقاً من مراكش؟",
+        "a": "لا. أثمنتنا للشخص الواحد حسب الفئة ونوع الغرفة — لا حسب مدينتكم، فسكان مراكش يدفعون نفس الثمن الذي يدفعه سكان الدار البيضاء. الطيران من الدار البيضاء والفندق والتأشيرة والمرافقة مشمولة للجميع؛ فقط التنقل إلى مطار محمد الخامس يوم السفر يبقى على نفقتكم."
+      },
+      "en": {
+        "q": "Is Umrah more expensive from Marrakech?",
+        "a": "No. Our prices are per person, by tier and room type — never by city, so residents of Marrakech pay exactly what Casablanca residents pay. The flight from Casablanca, hotel, visa and guidance are included for everyone; only the trip to Mohammed V airport on departure day is at your own expense."
+      }
+    },
+    {
+      "source": "faqs/7874596e-45bb-4e01-a044-8c007577b149",
+      "as_of": "2026-09-07",
+      "category": "ville-meknes",
+      "fr": {
+        "q": "Le prix de l'Omra est-il plus cher depuis Meknès ?",
+        "a": "Non. Nos prix sont par personne, selon la gamme et le type de chambre — jamais selon votre ville. Le vol depuis Casablanca, l'hôtel, le visa et l'accompagnement sont inclus comme pour tous ; seul le trajet jusqu'à l'aéroport Mohammed V reste à votre charge."
+      },
+      "ar": {
+        "q": "هل ثمن العمرة أغلى انطلاقاً من مكناس؟",
+        "a": "لا. أثمنتنا للشخص الواحد حسب الفئة ونوع الغرفة — لا حسب مدينتكم، فسكان مكناس يدفعون نفس الثمن الذي يدفعه سكان الدار البيضاء. الطيران من الدار البيضاء والفندق والتأشيرة والمرافقة مشمولة للجميع؛ فقط التنقل إلى مطار محمد الخامس يوم السفر يبقى على نفقتكم."
+      },
+      "en": {
+        "q": "Is Umrah more expensive from Meknès?",
+        "a": "No. Our prices are per person, by tier and room type — never by city, so residents of Meknès pay exactly what Casablanca residents pay. The flight from Casablanca, hotel, visa and guidance are included for everyone; only the trip to Mohammed V airport on departure day is at your own expense."
+      }
+    },
+    {
+      "source": "faqs/5699d649-2ded-476c-8f60-e5379d24049c",
+      "as_of": "2026-07-22",
+      "category": "omra",
+      "fr": {
+        "q": "Peut-on choisir sa gamme d'hôtel et son type de chambre ?",
+        "a": "Oui. Chaque départ propose plusieurs gammes — de l'économique au VIP — avec les hôtels à La Mecque et Médine affichés sur la fiche, ainsi que leur distance au Haram. Vous choisissez ensuite votre chambre (double, triple, quadruple ou quintuple) et le prix par personne s'ajuste automatiquement."
+      },
+      "ar": {
+        "q": "هل يمكن اختيار فئة الفندق ونوع الغرفة؟",
+        "a": "نعم. كل رحلة تقدم عدة فئات — من الاقتصادية إلى VIP — مع عرض فنادق مكة والمدينة في صفحة العرض ومسافتها عن الحرم الشريف. تختارون بعد ذلك نوع الغرفة (ثنائية، ثلاثية، رباعية أو خماسية) ويتغير الثمن للشخص الواحد تلقائياً حسب اختياركم."
+      },
+      "en": {
+        "q": "Can I choose my hotel tier and room type?",
+        "a": "Yes. Every departure offers several tiers — from Economy to VIP — with the Makkah and Madinah hotels shown on the offer page along with their distance to the Haram. You then pick your room type (double, triple, quad or quint) and the per-person price adjusts automatically."
+      }
+    },
+    {
+      "source": "faqs/bc13cb0a-5318-4795-8e99-604ab7a62202",
+      "as_of": "2026-09-07",
+      "category": "ville-casablanca",
+      "fr": {
+        "q": "Le prix de l'Omra est-il plus cher depuis Casablanca ?",
+        "a": "Non. Nos prix sont par personne, selon la gamme et le type de chambre — jamais selon votre ville. Le vol depuis Casablanca, l'hôtel, le visa et l'accompagnement sont inclus comme pour tous ; seul le trajet jusqu'à l'aéroport Mohammed V reste à votre charge."
+      },
+      "ar": {
+        "q": "هل ثمن العمرة أغلى انطلاقاً من الدار البيضاء؟",
+        "a": "لا. أثمنتنا للشخص الواحد حسب الفئة ونوع الغرفة — لا حسب مدينتكم، فالثمن المعروض في صفحة كل عرض هو نفسه للجميع أينما كانوا. الطيران من الدار البيضاء والفندق والتأشيرة والمرافقة مشمولة للجميع؛ فقط التنقل إلى مطار محمد الخامس يوم السفر يبقى على نفقتكم."
+      },
+      "en": {
+        "q": "Is Umrah more expensive from Casablanca?",
+        "a": "No. Our prices are per person, by tier and room type — never by city, so the price shown on each offer page is the same for everyone, wherever they live. The flight from Casablanca, hotel, visa and guidance are included for everyone; only the trip to Mohammed V airport on departure day is at your own expense."
+      }
+    },
+    {
+      "source": "faqs/8391ea75-76bf-47f5-b5a9-005dbbae139d",
+      "as_of": "2026-09-07",
+      "category": "ville-rabat",
+      "fr": {
+        "q": "Le prix de l'Omra est-il plus cher depuis Rabat ?",
+        "a": "Non. Nos prix sont par personne, selon la gamme et le type de chambre — jamais selon votre ville. Le vol depuis Casablanca, l'hôtel, le visa et l'accompagnement sont inclus comme pour tous ; seul le trajet jusqu'à l'aéroport Mohammed V reste à votre charge."
+      },
+      "ar": {
+        "q": "هل ثمن العمرة أغلى انطلاقاً من الرباط؟",
+        "a": "لا. أثمنتنا للشخص الواحد حسب الفئة ونوع الغرفة — لا حسب مدينتكم، فسكان الرباط يدفعون نفس الثمن الذي يدفعه سكان الدار البيضاء. الطيران من الدار البيضاء والفندق والتأشيرة والمرافقة مشمولة للجميع؛ فقط التنقل إلى مطار محمد الخامس يوم السفر يبقى على نفقتكم."
+      },
+      "en": {
+        "q": "Is Umrah more expensive from Rabat?",
+        "a": "No. Our prices are per person, by tier and room type — never by city, so residents of Rabat pay exactly what Casablanca residents pay. The flight from Casablanca, hotel, visa and guidance are included for everyone; only the trip to Mohammed V airport on departure day is at your own expense."
+      }
+    },
+    {
+      "source": "faqs/5c4859bc-fcb8-4c59-a25b-b6dd0810302c",
+      "as_of": "2026-09-07",
+      "category": "agence",
+      "fr": {
+        "q": "Que se passe-t-il après ma demande envoyée sur le site ?",
+        "a": "Aucun paiement en ligne : votre demande arrive chez nous, puis un membre de l'équipe vous rappelle pour vérifier les places, la gamme et le type de chambre. Une fois tout confirmé de vive voix, la réservation se finalise par un contrat signé à l'agence, avec reçu officiel."
+      },
+      "ar": {
+        "q": "ماذا يحدث بعد إرسال طلبي عبر الموقع؟",
+        "a": "لا أداء عبر الإنترنت: يصلنا طلبكم فوراً، ثم يتصل بكم أحد أعضاء الفريق في أقرب وقت للتأكد من الأماكن المتاحة والفئة ونوع الغرفة والإجابة عن أسئلتكم. وبعد تأكيد كل شيء شفهياً، يُستكمل الحجز بعقد يُوقَّع بالوكالة بالدار البيضاء مع وصل رسمي بكل مبلغ مدفوع."
+      },
+      "en": {
+        "q": "What happens after I send a request on the site?",
+        "a": "No online payment: your request reaches us, then a team member calls you back to check availability, tier and room type. Once everything is confirmed by voice, the booking is finalized with a contract signed at the agency, with an official receipt."
+      }
+    },
+    {
+      "source": "faqs/ee38b4df-cf10-4e46-8337-fd6ebad776e8",
+      "as_of": "2026-09-07",
+      "category": "ville-agadir",
+      "fr": {
+        "q": "Le prix de l'Omra est-il plus cher depuis Agadir ?",
+        "a": "Non. Nos prix sont par personne, selon la gamme et le type de chambre — jamais selon votre ville. Le vol depuis Casablanca, l'hôtel, le visa et l'accompagnement sont inclus comme pour tous ; seul le trajet jusqu'à l'aéroport Mohammed V reste à votre charge."
+      },
+      "ar": {
+        "q": "هل ثمن العمرة أغلى انطلاقاً من أكادير؟",
+        "a": "لا. أثمنتنا للشخص الواحد حسب الفئة ونوع الغرفة — لا حسب مدينتكم، فسكان أكادير يدفعون نفس الثمن الذي يدفعه سكان الدار البيضاء. الطيران من الدار البيضاء والفندق والتأشيرة والمرافقة مشمولة للجميع؛ فقط التنقل إلى مطار محمد الخامس يوم السفر يبقى على نفقتكم."
+      },
+      "en": {
+        "q": "Is Umrah more expensive from Agadir?",
+        "a": "No. Our prices are per person, by tier and room type — never by city, so residents of Agadir pay exactly what Casablanca residents pay. The flight from Casablanca, hotel, visa and guidance are included for everyone; only the trip to Mohammed V airport on departure day is at your own expense."
+      }
+    },
+    {
+      "source": "faqs/4b284c89-d057-4764-b5a7-acc4d80a5f91",
+      "as_of": "2026-09-07",
+      "category": "confiance",
+      "fr": {
+        "q": "Le paiement se fait-il en ligne ?",
+        "a": "Non. Aucun paiement n'est demandé sur ce site : votre réservation est une demande, pas un achat, et aucune carte bancaire ne vous est jamais demandée en ligne. Le règlement s'effectue directement auprès de l'agence de Casablanca, lors de la signature du contrat, avec un reçu officiel pour chaque montant versé."
+      },
+      "ar": {
+        "q": "هل يتم الدفع عبر الإنترنت؟",
+        "a": "لا. لا يُطلب منكم أي أداء عبر هذا الموقع، ولا تُطلب منكم أي بطاقة بنكية: حجزكم هنا هو مجرد طلب وليس عملية شراء أو دفع. يتم الأداء مباشرة لدى الوكالة بالدار البيضاء وبحضوركم عند توقيع العقد، وتحصلون مقابل ذلك على وصل رسمي بكل مبلغ مدفوع."
+      },
+      "en": {
+        "q": "Is payment made online?",
+        "a": "No. No payment is requested on this website: your reservation is a request, not a purchase, and you are never asked for a bank card online. Payment is made directly at the Casablanca agency when the contract is signed, with an official receipt for every amount paid."
+      }
+    },
+    {
+      "source": "faqs/b06e21fb-3601-436c-aabb-bb8f0e856c7c",
+      "as_of": "2026-09-07",
+      "category": "ville-fes",
+      "fr": {
+        "q": "Le prix de l'Omra est-il plus cher depuis Fès ?",
+        "a": "Non. Nos prix sont par personne, selon la gamme et le type de chambre — jamais selon votre ville. Le vol depuis Casablanca, l'hôtel, le visa et l'accompagnement sont inclus comme pour tous ; seul le trajet jusqu'à l'aéroport Mohammed V reste à votre charge."
+      },
+      "ar": {
+        "q": "هل ثمن العمرة أغلى انطلاقاً من فاس؟",
+        "a": "لا. أثمنتنا للشخص الواحد حسب الفئة ونوع الغرفة — لا حسب مدينتكم، فسكان فاس يدفعون نفس الثمن الذي يدفعه سكان الدار البيضاء. الطيران من الدار البيضاء والفندق والتأشيرة والمرافقة مشمولة للجميع؛ فقط التنقل إلى مطار محمد الخامس يوم السفر يبقى على نفقتكم."
+      },
+      "en": {
+        "q": "Is Umrah more expensive from Fès?",
+        "a": "No. Our prices are per person, by tier and room type — never by city, so residents of Fès pay exactly what Casablanca residents pay. The flight from Casablanca, hotel, visa and guidance are included for everyone; only the trip to Mohammed V airport on departure day is at your own expense."
+      }
+    },
+    {
+      "source": "faqs/20fe27c2-4baa-46cc-a59d-cbab597fd013",
+      "as_of": "2026-09-07",
+      "category": "ville-tanger",
+      "fr": {
+        "q": "Le prix de l'Omra est-il plus cher depuis Tanger ?",
+        "a": "Non. Nos prix sont par personne, selon la gamme et le type de chambre — jamais selon votre ville. Le vol depuis Casablanca, l'hôtel, le visa et l'accompagnement sont inclus comme pour tous ; seul le trajet jusqu'à l'aéroport Mohammed V reste à votre charge."
+      },
+      "ar": {
+        "q": "هل ثمن العمرة أغلى انطلاقاً من طنجة؟",
+        "a": "لا. أثمنتنا للشخص الواحد حسب الفئة ونوع الغرفة — لا حسب مدينتكم، فسكان طنجة يدفعون نفس الثمن الذي يدفعه سكان الدار البيضاء. الطيران من الدار البيضاء والفندق والتأشيرة والمرافقة مشمولة للجميع؛ فقط التنقل إلى مطار محمد الخامس يوم السفر يبقى على نفقتكم."
+      },
+      "en": {
+        "q": "Is Umrah more expensive from Tangier?",
+        "a": "No. Our prices are per person, by tier and room type — never by city, so residents of Tangier pay exactly what Casablanca residents pay. The flight from Casablanca, hotel, visa and guidance are included for everyone; only the trip to Mohammed V airport on departure day is at your own expense."
+      }
+    },
+    {
+      "source": "faqs/9287b750-6b86-4ca3-8651-76af33739e9a",
+      "as_of": "2026-09-07",
+      "category": "ville-oujda",
+      "fr": {
+        "q": "Le prix de l'Omra est-il plus cher depuis Oujda ?",
+        "a": "Non. Nos prix sont par personne, selon la gamme et le type de chambre — jamais selon votre ville. Le vol depuis Casablanca, l'hôtel, le visa et l'accompagnement sont inclus comme pour tous ; seul le trajet jusqu'à l'aéroport Mohammed V reste à votre charge."
+      },
+      "ar": {
+        "q": "هل ثمن العمرة أغلى انطلاقاً من وجدة؟",
+        "a": "لا. أثمنتنا للشخص الواحد حسب الفئة ونوع الغرفة — لا حسب مدينتكم، فسكان وجدة يدفعون نفس الثمن الذي يدفعه سكان الدار البيضاء. الطيران من الدار البيضاء والفندق والتأشيرة والمرافقة مشمولة للجميع؛ فقط التنقل إلى مطار محمد الخامس يوم السفر يبقى على نفقتكم."
+      },
+      "en": {
+        "q": "Is Umrah more expensive from Oujda?",
+        "a": "No. Our prices are per person, by tier and room type — never by city, so residents of Oujda pay exactly what Casablanca residents pay. The flight from Casablanca, hotel, visa and guidance are included for everyone; only the trip to Mohammed V airport on departure day is at your own expense."
+      }
+    },
+    {
+      "source": "faqs/a595c51a-19ae-44bc-84ff-150d04b6f715",
+      "as_of": "2026-09-07",
+      "category": "ville-casablanca",
+      "fr": {
+        "q": "Combien de temps faut-il pour rejoindre l'aéroport depuis Casablanca le jour du départ ?",
+        "a": "L'aéroport Mohammed V se trouve à une trentaine de kilomètres au sud de la ville, soit 30 à 45 minutes en voiture selon la circulation, ou une liaison ferroviaire directe depuis Casa Voyageurs. Prévoyez une marge confortable : le rassemblement et l'enregistrement se font plusieurs heures avant le décollage, et notre équipe vous communique l'heure exacte de rendez-vous."
+      },
+      "ar": {
+        "q": "كم من الوقت يلزم للوصول إلى المطار من الدار البيضاء يوم السفر؟",
+        "a": "يقع مطار محمد الخامس على بعد نحو ثلاثين كيلومتراً جنوب المدينة، أي حوالي 30 إلى 45 دقيقة بالسيارة حسب حركة السير، أو ربط سككي مباشر من محطة الدار البيضاء المسافرين. احرصوا على هامش زمني مريح: فتجمع المجموعة وإجراءات التسجيل تتم قبل الإقلاع بساعات، وفريقنا يبلغكم بالتوقيت الدقيق للموعد قبل السفر."
+      },
+      "en": {
+        "q": "How long does it take to reach the airport from Casablanca on departure day?",
+        "a": "Mohammed V airport is about thirty kilometres south of the city — roughly 30 to 45 minutes by car depending on traffic, or a direct rail link from Casa Voyageurs. Leave a comfortable margin: the group meet-up and check-in formalities happen several hours before take-off, and our team gives you the exact meeting time before departure."
+      }
+    },
+    {
+      "source": "faqs/db6dea89-c3d9-4e70-9eb5-99af22fd07e4",
+      "as_of": "2026-09-07",
+      "category": "omra",
+      "fr": {
+        "q": "Le visa Omra est-il inclus dans le prix ?",
+        "a": "Oui. Les frais et les démarches du visa Omra sont inclus dans nos offres : notre équipe monte le dossier, le dépose via les canaux officiels et suit son traitement jusqu'à l'obtention. Vous fournissez seulement un passeport valide 6 mois et des photos d'identité récentes."
+      },
+      "ar": {
+        "q": "هل تأشيرة العمرة مشمولة في الثمن؟",
+        "a": "نعم. رسوم وإجراءات تأشيرة العمرة مشمولة في عروضنا: فريقنا يعدّ الملف كاملاً ويودعه عبر القنوات الرسمية ويتابع معالجته خطوة بخطوة حتى الحصول عليها، دون أي رسوم إضافية. أنتم تقدمون فقط جواز سفر صالحاً 6 أشهر بعد تاريخ العودة وصوراً شخصية حديثة."
+      },
+      "en": {
+        "q": "Is the Umrah visa included in the price?",
+        "a": "Yes. Umrah visa fees and processing are included in our offers: our team builds the complete file, submits it through official channels and tracks it step by step until issuance, with no extra fee. You only provide a passport valid for 6 months after the return date and recent ID photos."
+      }
+    },
+    {
+      "source": "faqs/aea0b638-732f-4c3d-b06b-3cb3e83afd49",
+      "as_of": "2026-08-24",
+      "category": "ville-fes",
+      "fr": {
+        "q": "Combien de temps faut-il pour rejoindre l'aéroport depuis Fès le jour du départ ?",
+        "a": "Comptez environ trois heures trente à quatre heures (290 km) par l'autoroute, ou le train direct jusqu'à Casa Voyageurs puis la liaison vers l'aéroport. Prévoyez une marge confortable : le rassemblement du groupe et les formalités d'enregistrement se font plusieurs heures avant le décollage, et notre équipe vous communique l'heure exacte de rendez-vous avant le départ."
+      },
+      "ar": {
+        "q": "كم من الوقت يلزم للوصول إلى المطار من فاس يوم السفر؟",
+        "a": "احسبوا حوالي ثلاث ساعات ونصف إلى أربع ساعات (290 كلم) بالطريق السيار، أو القطار المباشر حتى الدار البيضاء المسافرين ثم الربط نحو المطار. احرصوا على هامش زمني مريح: فتجمع المجموعة وإجراءات التسجيل تتم قبل الإقلاع بساعات، وفريقنا يبلغكم بالتوقيت الدقيق للموعد قبل السفر."
+      },
+      "en": {
+        "q": "How long does it take to reach the airport from Fès on departure day?",
+        "a": "Allow about three and a half to four hours (290 km) by motorway, or the direct train to Casa Voyageurs then the airport link. Leave a comfortable margin: the group meet-up and check-in formalities happen several hours before take-off, and our team gives you the exact meeting time before departure."
+      }
+    },
+    {
+      "source": "faqs/f109998c-d3ff-440a-920a-5478daa2d8e4",
+      "as_of": "2026-09-07",
+      "category": "ville-tanger",
+      "fr": {
+        "q": "Combien de temps faut-il pour rejoindre l'aéroport depuis Tanger le jour du départ ?",
+        "a": "Le train à grande vitesse Al‑Boraq rejoint Casa Voyageurs en un peu plus de deux heures, puis une liaison ferroviaire mène à l'aéroport ; par la route, comptez environ quatre heures (340 km). Prévoyez une marge confortable : le rassemblement et l'enregistrement se font plusieurs heures avant le décollage, et notre équipe vous communique l'heure exacte de rendez-vous."
+      },
+      "ar": {
+        "q": "كم من الوقت يلزم للوصول إلى المطار من طنجة يوم السفر؟",
+        "a": "يصل قطار البراق الفائق السرعة إلى محطة الدار البيضاء المسافرين في ما يزيد قليلاً عن ساعتين، ثم يقود ربط سككي إلى المطار؛ وبالطريق احسبوا حوالي أربع ساعات (340 كلم). احرصوا على هامش زمني مريح: فتجمع المجموعة وإجراءات التسجيل تتم قبل الإقلاع بساعات، وفريقنا يبلغكم بالتوقيت الدقيق للموعد قبل السفر."
+      },
+      "en": {
+        "q": "How long does it take to reach the airport from Tangier on departure day?",
+        "a": "The Al‑Boraq high-speed train reaches Casa Voyageurs in just over two hours, then a rail link runs to the airport; by road allow about four hours (340 km). Leave a comfortable margin: the group meet-up and check-in formalities happen several hours before take-off, and our team gives you the exact meeting time before departure."
+      }
+    },
+    {
+      "source": "faqs/72b63632-74f2-4218-8ee9-849fcd87aa35",
+      "as_of": "2026-09-07",
+      "category": "ville-marrakech",
+      "fr": {
+        "q": "Combien de temps faut-il pour rejoindre l'aéroport depuis Marrakech le jour du départ ?",
+        "a": "Comptez environ trois heures par l'autoroute (240 km), ou un train ONCF jusqu'à Casa Voyageurs suivi de la liaison vers l'aéroport. Prévoyez une marge confortable : le rassemblement du groupe et les formalités d'enregistrement se font plusieurs heures avant le décollage, et notre équipe vous communique l'heure exacte de rendez-vous avant le départ."
+      },
+      "ar": {
+        "q": "كم من الوقت يلزم للوصول إلى المطار من مراكش يوم السفر؟",
+        "a": "احسبوا حوالي ثلاث ساعات بالطريق السيار (240 كلم) بالسيارة أو الحافلة، أو قطاراً مباشراً حتى محطة الدار البيضاء المسافرين ثم الربط السككي نحو المطار. احرصوا على هامش زمني مريح: فتجمع المجموعة وإجراءات التسجيل تتم قبل الإقلاع بساعات، وفريقنا يبلغكم بالتوقيت الدقيق للموعد قبل السفر."
+      },
+      "en": {
+        "q": "How long does it take to reach the airport from Marrakech on departure day?",
+        "a": "Allow about three hours by motorway (240 km), or an ONCF train to Casa Voyageurs then the link to the airport. Leave a comfortable margin: the group meet-up and check-in formalities happen several hours before take-off, and our team gives you the exact meeting time before departure."
+      }
+    },
+    {
+      "source": "faqs/dbf60b00-fbfc-4306-93b2-7795c950a35b",
+      "as_of": "2026-09-07",
+      "category": "ville-rabat",
+      "fr": {
+        "q": "Combien de temps faut-il pour rejoindre l'aéroport depuis Rabat le jour du départ ?",
+        "a": "Comptez environ une heure trente par l'autoroute, ou le train jusqu'à Casa Voyageurs puis la liaison ferroviaire vers l'aéroport. Prévoyez une marge confortable : le rassemblement du groupe et les formalités d'enregistrement se font plusieurs heures avant le décollage, et notre équipe vous communique l'heure exacte de rendez-vous avant le départ."
+      },
+      "ar": {
+        "q": "كم من الوقت يلزم للوصول إلى المطار من الرباط يوم السفر؟",
+        "a": "احسبوا حوالي ساعة ونصف بالطريق السيار بالسيارة أو الحافلة، أو القطار المباشر حتى محطة الدار البيضاء المسافرين ثم الربط السككي نحو المطار يوم السفر. احرصوا على هامش زمني مريح: فتجمع المجموعة وإجراءات التسجيل تتم قبل الإقلاع بساعات، وفريقنا يبلغكم بالتوقيت الدقيق للموعد قبل السفر."
+      },
+      "en": {
+        "q": "How long does it take to reach the airport from Rabat on departure day?",
+        "a": "Allow about an hour and a half by motorway, or the train to Casa Voyageurs then the rail link to the airport. Leave a comfortable margin: the group meet-up and check-in formalities happen several hours before take-off, and our team gives you the exact meeting time before departure."
+      }
+    },
+    {
+      "source": "faqs/8d1e6649-0e20-4c6a-aa29-4cc5e9171061",
+      "as_of": "2026-08-24",
+      "category": "ville-meknes",
+      "fr": {
+        "q": "Combien de temps faut-il pour rejoindre l'aéroport depuis Meknès le jour du départ ?",
+        "a": "Comptez environ trois heures (230 km) par l'autoroute, ou le train direct jusqu'à Casa Voyageurs puis la liaison ferroviaire vers l'aéroport. Prévoyez une marge confortable : le rassemblement du groupe et les formalités d'enregistrement se font plusieurs heures avant le décollage, et notre équipe vous communique l'heure exacte de rendez-vous avant le départ."
+      },
+      "ar": {
+        "q": "كم من الوقت يلزم للوصول إلى المطار من مكناس يوم السفر؟",
+        "a": "احسبوا حوالي ثلاث ساعات (230 كلم) بالطريق السيار، أو القطار المباشر حتى الدار البيضاء المسافرين ثم الربط السككي نحو المطار. احرصوا على هامش زمني مريح: فتجمع المجموعة وإجراءات التسجيل تتم قبل الإقلاع بساعات، وفريقنا يبلغكم بالتوقيت الدقيق للموعد قبل السفر."
+      },
+      "en": {
+        "q": "How long does it take to reach the airport from Meknès on departure day?",
+        "a": "Allow about three hours (230 km) by motorway, or the direct train to Casa Voyageurs then the rail link to the airport. Leave a comfortable margin: the group meet-up and check-in formalities happen several hours before take-off, and our team gives you the exact meeting time before departure."
+      }
+    },
+    {
+      "source": "faqs/1274ed43-c2c4-4091-b8c6-23c67ae6d1ad",
+      "as_of": "2026-09-07",
+      "category": "ville-oujda",
+      "fr": {
+        "q": "Combien de temps faut-il pour rejoindre l'aéroport depuis Oujda le jour du départ ?",
+        "a": "Comptez une journée de trajet par la route ou le train (environ 600 km) ; un vol intérieur Oujda–Casablanca reste de loin l'option la plus confortable la veille du départ. Prévoyez une marge confortable : le rassemblement et l'enregistrement se font plusieurs heures avant le décollage, et notre équipe vous communique l'heure exacte de rendez-vous."
+      },
+      "ar": {
+        "q": "كم من الوقت يلزم للوصول إلى المطار من وجدة يوم السفر؟",
+        "a": "احسبوا يوماً كاملاً في الطريق أو بالقطار (نحو 600 كلم)؛ وتبقى رحلة داخلية وجدة–الدار البيضاء الخيار الأكثر راحة عشية السفر. احرصوا على هامش زمني مريح: فتجمع المجموعة وإجراءات التسجيل تتم قبل الإقلاع بساعات، وفريقنا يبلغكم بالتوقيت الدقيق للموعد قبل السفر."
+      },
+      "en": {
+        "q": "How long does it take to reach the airport from Oujda on departure day?",
+        "a": "Allow a full day by road or train (about 600 km); a domestic Oujda–Casablanca flight is by far the most comfortable option the day before departure. Leave a comfortable margin: the group meet-up and check-in formalities happen several hours before take-off, and our team gives you the exact meeting time before departure."
+      }
+    },
+    {
+      "source": "faqs/87ca3c4a-e801-4dea-91f2-dca2d4505fe6",
+      "as_of": "2026-09-07",
+      "category": "confiance",
+      "fr": {
+        "q": "Quels documents faut-il pour l'Omra ?",
+        "a": "Un passeport valide au moins 6 mois après la date de retour et des photos d'identité récentes. Notre équipe s'occupe de toutes les démarches de visa Omra via les canaux officiels et vous communique la liste complète des pièces à fournir lors de la confirmation de votre réservation, par téléphone ou WhatsApp."
+      },
+      "ar": {
+        "q": "ما هي الوثائق المطلوبة للعمرة؟",
+        "a": "تحتاجون جواز سفر صالحاً لمدة 6 أشهر على الأقل بعد تاريخ العودة، بالإضافة إلى صور شخصية حديثة. يتكفل فريقنا بجميع إجراءات التأشيرة الخاصة بالعمرة عبر القنوات الرسمية، ويوافيكم بالقائمة الكاملة للوثائق المطلوبة بالتفصيل عند تأكيد الحجز، عبر الهاتف أو واتساب، حتى لا يفوتكم أي شيء."
+      },
+      "en": {
+        "q": "Which documents are needed for Umrah?",
+        "a": "A passport valid at least 6 months after the return date, plus recent identity photos. Our team handles the whole Umrah visa process through official channels and sends you the full list of documents to provide when your booking is confirmed, by phone or WhatsApp, so nothing is missed."
+      }
+    },
+    {
+      "source": "faqs/6832d02b-cf53-48ce-96cb-7573ae5a2be2",
+      "as_of": "2026-09-07",
+      "category": "ville-agadir",
+      "fr": {
+        "q": "Combien de temps faut-il pour rejoindre l'aéroport depuis Agadir le jour du départ ?",
+        "a": "Comptez environ cinq à six heures par la route (près de 500 km) en voiture ou en car (CTM, Supratours) ; un vol intérieur vers Casablanca reste l'option la plus rapide. Prévoyez une marge confortable : le rassemblement et l'enregistrement se font plusieurs heures avant le décollage, et notre équipe vous communique l'heure exacte de rendez-vous."
+      },
+      "ar": {
+        "q": "كم من الوقت يلزم للوصول إلى المطار من أكادير يوم السفر؟",
+        "a": "احسبوا حوالي خمس إلى ست ساعات بالطريق (قرابة 500 كلم) بالسيارة أو الحافلة (CTM، سوبراتور)؛ وتبقى الرحلة الداخلية نحو الدار البيضاء الخيار الأسرع. احرصوا على هامش زمني مريح: فتجمع المجموعة وإجراءات التسجيل تتم قبل الإقلاع بساعات، وفريقنا يبلغكم بالتوقيت الدقيق للموعد قبل السفر."
+      },
+      "en": {
+        "q": "How long does it take to reach the airport from Agadir on departure day?",
+        "a": "Allow about five to six hours by road (nearly 500 km) by car or coach (CTM, Supratours); a domestic flight to Casablanca is the fastest option. Leave a comfortable margin: the group meet-up and check-in formalities happen several hours before take-off, and our team gives you the exact meeting time before departure."
+      }
+    },
+    {
+      "source": "faqs/71481137-5ddf-450d-ae69-877d051a3824",
+      "as_of": "2026-09-07",
+      "category": "omra",
+      "fr": {
+        "q": "Que comprend l'accompagnement pendant l'Omra ?",
+        "a": "Nos offres incluent le vol aller-retour, les démarches de visa, les transferts sur place et un encadrement par notre équipe tout au long du séjour. Les inclusions exactes (repas, excursions, guide) sont détaillées sur la fiche de chaque offre — rien n'est facturé qui n'y figure pas."
+      },
+      "ar": {
+        "q": "ماذا تشمل المرافقة خلال العمرة؟",
+        "a": "تشمل عروضنا تذكرة الطائرة ذهاباً وإياباً، وإجراءات التأشيرة، والتنقلات في الأماكن المقدسة بين المطار والفنادق والحرمين، وتأطيراً من فريقنا طوال مدة الرحلة. أما التفاصيل الدقيقة (الوجبات، الزيارات، المرشد) فمذكورة في صفحة كل عرض — ولا نطالبكم بأي مبلغ غير مذكور فيها."
+      },
+      "en": {
+        "q": "What does the guidance during Umrah include?",
+        "a": "Our offers include the round-trip flight, visa processing, on-site transfers between the airport, the hotels and the two Holy Mosques, and guidance from our team throughout the stay. The exact inclusions (meals, excursions, guide) are detailed on each offer's page — nothing is charged that isn't listed there."
+      }
+    },
+    {
+      "source": "faqs/b08e30e0-d0e9-4f39-9719-1a181a56cd48",
+      "as_of": "2026-09-07",
+      "category": "confiance",
+      "fr": {
+        "q": "Que comprend le prix d'une offre Omra ?",
+        "a": "Les inclusions exactes sont listées sur la fiche de chaque offre : hôtels à La Mecque et à Médine, vols, transferts sur place, démarches de visa et accompagnement selon l'offre choisie. Ce qui n'y figure pas n'est pas inclus, et rien ne vous sera facturé en plus — n'hésitez pas à nous demander avant de réserver."
+      },
+      "ar": {
+        "q": "ماذا يشمل ثمن عرض العمرة؟",
+        "a": "تُذكر التفاصيل الدقيقة في صفحة كل عرض: الفنادق بمكة المكرمة والمدينة المنورة، الطيران، التنقلات في الأماكن المقدسة، إجراءات التأشيرة، والمرافقة حسب العرض المختار. ما لم يُذكر فهو غير مشمول، ولن تُطالَبوا بأي مبلغ إضافي — لا تترددوا في سؤالنا قبل الحجز."
+      },
+      "en": {
+        "q": "What does the price of an Umrah offer include?",
+        "a": "The exact inclusions are listed on each offer page: hotels in Makkah and Madinah, flights, on-site transfers, visa processing and guidance depending on the offer you choose. Anything not listed is not included, and nothing extra will be charged — feel free to ask us before you book."
+      }
+    },
+    {
+      "source": "faqs/6974a1a8-68ba-41e1-87da-ce5ae62099e2",
+      "as_of": "2026-09-07",
+      "category": "confiance",
+      "fr": {
+        "q": "Puis-je visiter votre agence ?",
+        "a": "Oui, et nous vous y encourageons : rien ne remplace une rencontre à l'agence, boulevard Abdelmoumen à Casablanca, pour poser vos questions et voir la licence affichée. Nos coordonnées et horaires figurent sur la page contact ; vous pouvez aussi nous appeler ou nous écrire sur WhatsApp avant de passer."
+      },
+      "ar": {
+        "q": "هل يمكنني زيارة وكالتكم؟",
+        "a": "نعم، بل ننصحكم بذلك بشدة: لا شيء يعوض لقاءً بالوكالة، شارع عبد المومن بالدار البيضاء، لطرح أسئلتكم والاطلاع على الرخصة المعلَّقة. تجدون عنوان الوكالة وأوقات العمل كاملة في صفحة الاتصال بالموقع؛ كما يمكنكم الاتصال بنا هاتفياً أو مراسلتنا على واتساب لتحديد موعد قبل زيارتكم لمقرنا."
+      },
+      "en": {
+        "q": "Can I visit your agency?",
+        "a": "Yes, and we encourage it: nothing replaces a meeting at the agency on Boulevard Abdelmoumen in Casablanca, to ask your questions and see the licence on display. Our address and opening hours are on the contact page; you can also call us or write to us on WhatsApp before coming."
+      }
+    },
+    {
+      "source": "faqs/ee38b3b9-9811-4e71-a8f6-f3427eb3e3ff",
+      "as_of": "2026-09-07",
+      "category": "omra",
+      "fr": {
+        "q": "D'où partent les vols pour l'Omra ?",
+        "a": "Nos départs actuels s'effectuent depuis l'aéroport Mohammed V de Casablanca, avec rassemblement du groupe plusieurs heures avant le décollage et assistance de notre équipe aux formalités d'embarquement. La compagnie aérienne de chaque départ est indiquée sur la fiche de l'offre correspondante, et l'heure exacte de rendez-vous vous est communiquée avant le départ."
+      },
+      "ar": {
+        "q": "من أين تنطلق رحلات العمرة؟",
+        "a": "تنطلق رحلاتنا الحالية من مطار محمد الخامس بالدار البيضاء، مع تجمع المجموعة قبل الإقلاع بساعات ومساعدة فريقنا في إجراءات التسجيل والصعود. وتُذكر شركة الطيران الخاصة بكل رحلة في صفحة العرض المعني، أما التوقيت الدقيق للموعد بالمطار فيبلغكم به فريقنا قبل السفر عبر الهاتف أو واتساب."
+      },
+      "en": {
+        "q": "Where do the Umrah flights depart from?",
+        "a": "Our current departures leave from Casablanca's Mohammed V airport, with a group meet-up several hours before take-off and our team assisting with check-in and boarding formalities. Each departure's airline is shown on its offer page, and the exact meeting time at the airport is sent to you before departure, by phone or WhatsApp."
+      }
+    },
+    {
+      "source": "faqs/7b4d5d3b-d8f4-484b-b21b-c15d31d7ffd7",
+      "as_of": "2026-09-07",
+      "category": "confiance",
+      "fr": {
+        "q": "Quelle est la différence entre Bab Makka et Wiki Tours International ?",
+        "a": "Bab Makka est le service premium Omra & Hajj de Wiki Tours International, agence de voyages marocaine établie à Casablanca. C'est une seule et même entreprise : Wiki Tours organise l'ensemble des voyages, et Bab Makka porte spécifiquement ses programmes de pèlerinage vers La Mecque et Médine."
+      },
+      "ar": {
+        "q": "ما الفرق بين باب مكة وويكي تورز الدولية؟",
+        "a": "باب مكة هو القسم المتخصص في العمرة والحج التابع لويكي تورز الدولية، وكالة الأسفار المغربية المرخصة والمستقرة بالدار البيضاء منذ 2016. إنهما شركة واحدة بعقد واحد ورخصة واحدة: ويكي تورز تنظم جميع الأسفار، وباب مكة يحمل برامجها الخاصة بالحج والعمرة نحو مكة المكرمة والمدينة المنورة."
+      },
+      "en": {
+        "q": "What is the difference between Bab Makka and Wiki Tours International?",
+        "a": "Bab Makka is the premium Umrah & Hajj service of Wiki Tours International, a Moroccan travel agency based in Casablanca. They are one and the same company: Wiki Tours organizes all travel, and Bab Makka carries its pilgrimage programs to Makkah and Madinah specifically."
+      }
+    },
+    {
+      "source": "faqs/5568a11d-2bef-4e4a-ac50-636b32508254",
+      "as_of": "2026-09-07",
+      "category": "omra",
+      "fr": {
+        "q": "Peut-on partir en famille avec des enfants ?",
+        "a": "Oui, nos groupes accueillent les familles. Les chambres triples, quadruples et quintuples réduisent le prix par personne, et chaque enfant doit disposer de son propre passeport en cours de validité. Les conditions par âge figurent sur la fiche de chaque départ — notre équipe vous conseille la meilleure configuration."
+      },
+      "ar": {
+        "q": "هل يمكن السفر عائلياً مع الأطفال؟",
+        "a": "نعم، مجموعاتنا ترحب بالعائلات والأطفال. الغرف الثلاثية والرباعية والخماسية تخفض الثمن للشخص الواحد، ويجب أن يتوفر كل طفل على جواز سفر خاص به ساري الصلاحية. وتُذكر شروط الأعمار في صفحة كل رحلة — وفريقنا ينصحكم بأفضل تشكيلة للغرف حسب عدد أفراد أسرتكم وأعمارهم."
+      },
+      "en": {
+        "q": "Can families travel with children?",
+        "a": "Yes, our groups welcome families and children. Triple, quad and quint rooms lower the per-person price, and every child needs their own valid passport. Age conditions appear on each departure page — our team advises the best room configuration for the size and ages of your family."
+      }
+    },
+    {
+      "source": "faqs/f236b479-4c14-4932-bfe7-b0c777a0eeed",
+      "as_of": "2026-09-07",
+      "category": "confiance",
+      "fr": {
+        "q": "Depuis quand Wiki Tours International existe-t-elle ?",
+        "a": "Wiki Tours International opère depuis 2016 à Casablanca. L'agence organise des Omras en groupe encadré tout au long de l'année, le Hajj, ainsi que des voyages organisés vers d'autres destinations — avec une équipe joignable à l'agence, par téléphone et sur WhatsApp."
+      },
+      "ar": {
+        "q": "منذ متى تأسست ويكي تورز الدولية؟",
+        "a": "تعمل ويكي تورز الدولية منذ 2016 بالدار البيضاء، بشارع عبد المومن. تنظم الوكالة رحلات عمرة جماعية مؤطرة على مدار السنة، والحج، إضافة إلى رحلات منظمة نحو وجهات أخرى — مع فريق دائم يمكن التواصل معه بالوكالة وعبر الهاتف وواتساب، قبل السفر وخلاله وبعد العودة."
+      },
+      "en": {
+        "q": "How long has Wiki Tours International existed?",
+        "a": "Wiki Tours International has operated since 2016 in Casablanca, on Boulevard Abdelmoumen. The agency organizes guided group Umrahs year-round, Hajj, and organized trips to other destinations — with a permanent team reachable at the agency, by phone and on WhatsApp, before, during and after your trip."
+      }
+    },
+    {
+      "source": "faqs/3547beaf-a73a-4ed4-b4cb-3b566844e97c",
+      "as_of": "2026-09-07",
+      "category": "omra",
+      "fr": {
+        "q": "Comment être averti des nouveaux départs Omra ?",
+        "a": "Envoyez votre demande via le formulaire du site ou sur WhatsApp en précisant la période qui vous intéresse : les personnes inscrites sont recontactées en priorité dès qu'un départ correspondant ouvre — avant toute annonce publique. C'est particulièrement utile pour le Ramadan, où les places partent vite."
+      },
+      "ar": {
+        "q": "كيف أُخبَر بالرحلات الجديدة للعمرة؟",
+        "a": "أرسلوا طلبكم عبر استمارة الموقع أو واتساب مع تحديد الفترة التي تهمكم وعدد المسافرين، دون أي التزام من جهتكم: يُتَّصل بالمسجلين أولاً فور فتح رحلة موافقة — قبل أي إعلان عمومي على الموقع أو الشبكات الاجتماعية. وهذا مفيد خصوصاً لرمضان والعطل حيث تنفد الأماكن بسرعة."
+      },
+      "en": {
+        "q": "How can I be notified of new Umrah departures?",
+        "a": "Send your request via the site form or WhatsApp, stating the period you're interested in and the number of travellers: registered contacts are called back first whenever a matching departure opens — before any public announcement on the site or social networks. Especially useful for Ramadan and school holidays, where places go fast."
+      }
+    },
+    {
+      "source": "faqs/b5f03165-70e3-44aa-ab03-ab0ded4fadfb",
+      "as_of": "2026-09-07",
+      "category": "confiance",
+      "fr": {
+        "q": "Où peut-on lire les avis de vos clients ?",
+        "a": "Nos avis clients sont publics et vérifiables : consultez notre fiche Google (notes et commentaires authentiques) et notre page Avis, qui rassemble témoignages écrits, captures WhatsApp et vidéos de nos pèlerins. Nous n'inventons jamais d'avis — tout provient de clients réels, identifiables."
+      },
+      "ar": {
+        "q": "أين يمكن قراءة آراء زبنائكم؟",
+        "a": "آراء زبنائنا علنية وقابلة للتحقق: اطلعوا على صفحتنا في غوغل (تقييمات وتعليقات حقيقية تُنشر مباشرة من الزبناء) وعلى صفحة الآراء بموقعنا التي تجمع شهادات مكتوبة ولقطات واتساب وفيديوهات لمعتمرينا بعد عودتهم. لا نختلق أي رأي — كل شيء من زبناء حقيقيين يمكن التعرف عليهم والتواصل معهم."
+      },
+      "en": {
+        "q": "Where can I read your client reviews?",
+        "a": "Our client reviews are public and verifiable: see our Google listing (authentic ratings and comments) and our Reviews page, which gathers written testimonials, WhatsApp screenshots and videos from our pilgrims. We never invent reviews — everything comes from real, identifiable clients."
+      }
+    },
+    {
+      "source": "faqs/f78398f7-29b8-4453-bb33-322581abf7b6",
+      "as_of": "2026-09-07",
+      "category": "confiance",
+      "fr": {
+        "q": "Proposez-vous aussi le Hajj et d'autres voyages ?",
+        "a": "Oui. Au-delà de l'Omra, Wiki Tours International accompagne le Hajj (voir notre page dédiée) et organise des voyages de groupe vers d'autres destinations — Istanbul, la Thaïlande, Bali et plus — listés dans notre catalogue Voyages avec dates, hôtels et prix réels."
+      },
+      "ar": {
+        "q": "هل تنظمون أيضاً الحج وأسفاراً أخرى؟",
+        "a": "نعم. إلى جانب العمرة، تواكب ويكي تورز الدولية الحج (انظروا صفحته الخاصة بالموقع) وتنظم رحلات جماعية نحو وجهات أخرى — إسطنبول وتايلاند وبالي وغيرها — مدرجة في كتالوج الرحلات بالموقع مع التواريخ والفنادق والأثمنة الحقيقية، ويمكنكم الاستفسار عنها عبر واتساب بنفس السهولة."
+      },
+      "en": {
+        "q": "Do you also offer Hajj and other trips?",
+        "a": "Yes. Beyond Umrah, Wiki Tours International supports Hajj (see the dedicated page on this site) and organizes group trips to other destinations — Istanbul, Thailand, Bali and more — listed in our Voyages catalog with real dates, hotels and prices, and you can ask about them on WhatsApp just as easily."
+      }
+    }
+  ],
+  "glossary": [
+    {
+      "source": "glossary_terms/c6932236-d695-4d06-af2f-4440581bd148",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Omra",
+        "def": "Pèlerinage à La Mecque pouvant être accompli à tout moment de l'année, contrairement au Hajj. Elle comprend l'ihram, le tawaf autour de la Kaaba, le sa'i entre Safâ et Marwa, puis le rasage ou la coupe des cheveux."
+      },
+      "ar": {
+        "term": "العمرة",
+        "def": "زيارة تعبدية لمكة المكرمة يمكن أداؤها في أي وقت من السنة، خلافاً للحج. تتكون من الإحرام، والطواف حول الكعبة، والسعي بين الصفا والمروة، ثم الحلق أو التقصير."
+      },
+      "en": {
+        "term": "Umrah",
+        "def": "A pilgrimage to Makkah that can be performed at any time of the year, unlike Hajj. It consists of ihram, tawaf around the Kaaba, sa'i between Safa and Marwah, then shaving or trimming the hair."
+      }
+    },
+    {
+      "source": "glossary_terms/61408858-178b-4426-b49b-2f9c5affa74f",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Ihram",
+        "def": "État de sacralisation dans lequel entre le pèlerin avant le miqat, marqué par une intention et, pour les hommes, deux pièces de tissu blanc non cousues. Certains actes deviennent alors interdits jusqu'à la fin des rites."
+      },
+      "ar": {
+        "term": "الإحرام",
+        "def": "حالة تعبدية يدخل فيها المعتمر قبل الميقات، بالنية وارتداء الرجال لإزارٍ ورداءٍ أبيضين غير مخيطين. تُمنع خلالها بعض الأفعال حتى إتمام المناسك."
+      },
+      "en": {
+        "term": "Ihram",
+        "def": "The sacred state a pilgrim enters before the miqat, marked by intention and, for men, two unstitched white garments. Certain acts become forbidden until the rites are completed."
+      }
+    },
+    {
+      "source": "glossary_terms/83f329fc-d91a-4a31-a126-32b733d5dbbd",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Miqat",
+        "def": "Point de passage fixé autour de La Mecque qu'un pèlerin ne peut franchir sans être en état d'ihram. Les voyageurs venant du Maroc en avion se sacralisent généralement avant l'atterrissage ou au miqat correspondant à leur route."
+      },
+      "ar": {
+        "term": "الميقات",
+        "def": "حدود مكانية حول مكة لا يجوز للمعتمر تجاوزها إلا محرماً. المسافرون من المغرب جواً يُحرمون عادة قبل الهبوط أو من الميقات الموافق لطريقهم."
+      },
+      "en": {
+        "term": "Miqat",
+        "def": "A boundary point around Makkah that a pilgrim may not cross without being in ihram. Travelers flying from Morocco usually enter ihram before landing or at the miqat on their route."
+      }
+    },
+    {
+      "source": "glossary_terms/b3ff6a3e-ec33-4ac1-aa02-1c380f1fa838",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Talbiya",
+        "def": "Invocation répétée par le pèlerin dès l'entrée en ihram : « Labbayka Allahumma labbayk… » (« Me voici, ô Allah, me voici »). Elle accompagne le voyageur jusqu'au début du tawaf."
+      },
+      "ar": {
+        "term": "التلبية",
+        "def": "دعاء يردده المعتمر منذ الإحرام: «لبيك اللهم لبيك...». ويستمر في ترديدها حتى بدء الطواف."
+      },
+      "en": {
+        "term": "Talbiyah",
+        "def": "The invocation repeated by the pilgrim from the moment of ihram: \"Labbayka Allahumma labbayk…\" (\"Here I am, O Allah, here I am\"). It accompanies the traveler until the tawaf begins."
+      }
+    },
+    {
+      "source": "glossary_terms/ce709852-98f1-4bdd-a9d0-afe902bca020",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Tawaf",
+        "def": "Circumambulation rituelle : sept tours autour de la Kaaba, en commençant à la Pierre noire, la Kaaba à sa gauche. Il est suivi d'une prière derrière le maqam Ibrahim quand c'est possible."
+      },
+      "ar": {
+        "term": "الطواف",
+        "def": "الدوران حول الكعبة سبعة أشواط، بدءاً من الحجر الأسود وجعل الكعبة عن اليسار. يُستحب بعده صلاة ركعتين خلف مقام إبراهيم إن أمكن."
+      },
+      "en": {
+        "term": "Tawaf",
+        "def": "The ritual circumambulation: seven circuits around the Kaaba, starting at the Black Stone with the Kaaba on one's left, followed when possible by a prayer behind the Station of Ibrahim."
+      }
+    },
+    {
+      "source": "glossary_terms/7348159a-52b0-4e90-a1b5-9675ae94f722",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Sa'i (Safâ et Marwa)",
+        "def": "Parcours rituel de sept trajets entre les collines de Safâ et Marwa, à l'intérieur de la Grande Mosquée, en mémoire de Hajar. Il suit le tawaf dans les rites de l'Omra."
+      },
+      "ar": {
+        "term": "السعي (الصفا والمروة)",
+        "def": "التنقل سبعة أشواط بين الصفا والمروة داخل المسجد الحرام، إحياءً لذكرى هاجر عليها السلام. يأتي بعد الطواف في مناسك العمرة."
+      },
+      "en": {
+        "term": "Sa'i (Safa & Marwah)",
+        "def": "The ritual walk of seven laps between the hills of Safa and Marwah inside the Grand Mosque, commemorating Hajar. It follows the tawaf in the Umrah rites."
+      }
+    },
+    {
+      "source": "glossary_terms/d85aca3a-91f3-4906-968d-7b17f5598b68",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Halq / Taqsir",
+        "def": "Acte final de l'Omra : rasage complet de la tête (halq) ou coupe d'une partie des cheveux (taqsir) pour les hommes ; les femmes coupent une mèche. Il marque la sortie de l'état d'ihram."
+      },
+      "ar": {
+        "term": "الحلق / التقصير",
+        "def": "الخطوة الأخيرة في العمرة: حلق الرأس كاملاً أو تقصير الشعر للرجال، وقص قدر أنملة للنساء. وبه يتحلل المعتمر من إحرامه."
+      },
+      "en": {
+        "term": "Halq / Taqsir",
+        "def": "The final act of Umrah: fully shaving the head (halq) or trimming the hair (taqsir) for men; women cut a fingertip's length. It marks the exit from the state of ihram."
+      }
+    },
+    {
+      "source": "glossary_terms/32d4f037-fb53-413a-86d2-3a64242836bc",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Eau de Zamzam",
+        "def": "Eau de la source située dans l'enceinte de la Grande Mosquée de La Mecque, liée à l'histoire de Hajar et Ismaïl. Les pèlerins en boivent sur place et en rapportent souvent au Maroc."
+      },
+      "ar": {
+        "term": "ماء زمزم",
+        "def": "ماء البئر الواقعة في حرم المسجد الحرام، المرتبطة بقصة هاجر وإسماعيل عليهما السلام. يشرب منه المعتمرون وكثيراً ما يحملونه معهم إلى المغرب."
+      },
+      "en": {
+        "term": "Zamzam water",
+        "def": "Water from the well within the Grand Mosque of Makkah, linked to the story of Hajar and Ismail. Pilgrims drink it on site and often bring some home to Morocco."
+      }
+    },
+    {
+      "source": "glossary_terms/0acfdafe-3d13-46f1-b803-c5f8b235dd92",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Masjid al-Haram",
+        "def": "La Grande Mosquée de La Mecque, qui entoure la Kaaba. C'est le lieu du tawaf et du sa'i ; la proximité de l'hôtel avec le Haram est l'un des critères principaux du choix d'une gamme d'Omra."
+      },
+      "ar": {
+        "term": "المسجد الحرام",
+        "def": "المسجد الكبير بمكة المكرمة الذي يحيط بالكعبة، وفيه يؤدى الطواف والسعي. ويُعد قرب الفندق من الحرم من أهم معايير اختيار فئة العمرة."
+      },
+      "en": {
+        "term": "Masjid al-Haram",
+        "def": "The Grand Mosque of Makkah surrounding the Kaaba, where tawaf and sa'i are performed. Hotel distance to the Haram is one of the main criteria when choosing an Umrah tier."
+      }
+    },
+    {
+      "source": "glossary_terms/881527b3-be6b-4919-af8c-b9ef5dd2b703",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Rawda (Médine)",
+        "def": "Espace de la Mosquée du Prophète à Médine situé entre le minbar et la chambre du Prophète ﷺ, particulièrement recherché pour la prière. Sa visite se réserve aujourd'hui via l'application officielle Nusuk."
+      },
+      "ar": {
+        "term": "الروضة الشريفة",
+        "def": "المنطقة الواقعة في المسجد النبوي بين المنبر والحجرة النبوية الشريفة، يحرص الزوار على الصلاة فيها. وتُحجز زيارتها اليوم عبر تطبيق نسك الرسمي."
+      },
+      "en": {
+        "term": "Rawdah (Madinah)",
+        "def": "The area of the Prophet's Mosque in Madinah between the minbar and the Prophet's ﷺ chamber, especially sought for prayer. Visits are now booked via the official Nusuk app."
+      }
+    },
+    {
+      "source": "glossary_terms/9d5429f0-c838-4a2b-8f58-a8f5176e414e",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Tawaf al-Wadâ' (adieu)",
+        "def": "Tawaf d'adieu accompli avant de quitter La Mecque, en fin de séjour. Recommandé au terme de l'Omra, il constitue le dernier acte du pèlerin autour de la Kaaba avant le retour."
+      },
+      "ar": {
+        "term": "طواف الوداع",
+        "def": "طواف يؤديه المعتمر قبل مغادرة مكة في نهاية إقامته، وهو آخر عهده بالكعبة قبل العودة إلى بلده."
+      },
+      "en": {
+        "term": "Farewell tawaf",
+        "def": "The farewell tawaf performed before leaving Makkah at the end of the stay — the pilgrim's last act around the Kaaba before returning home."
+      }
+    },
+    {
+      "source": "glossary_terms/06a376d2-e472-4802-9761-310d9693ae9f",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Nusuk",
+        "def": "Plateforme officielle saoudienne pour les services du pèlerinage : visas Omra, réservation de la Rawda et services sur place. Pour les voyageurs marocains passant par une agence agréée, ces démarches sont prises en charge par l'agence."
+      },
+      "ar": {
+        "term": "نسك",
+        "def": "المنصة السعودية الرسمية لخدمات العمرة والزيارة: التأشيرات وحجز الروضة والخدمات الميدانية. وعند السفر عبر وكالة معتمدة بالمغرب، تتكفل الوكالة بهذه الإجراءات."
+      },
+      "en": {
+        "term": "Nusuk",
+        "def": "Saudi Arabia's official platform for pilgrimage services: Umrah visas, Rawdah booking and on-site services. For Moroccan travelers using a licensed agency, these steps are handled by the agency."
+      }
+    },
+    {
+      "source": "glossary_terms/d86bdc8b-7bca-47da-bc13-6d386b916262",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Tahallul (sortie d'ihram)",
+        "def": "Sortie effective de l'état d'ihram et retour à l'état normal après le halq ou le taqsir. On distingue un tahallul mineur et un tahallul complet, ce dernier levant tous les interdits de l'ihram."
+      },
+      "ar": {
+        "term": "التحلل (من الإحرام)",
+        "def": "الخروج الفعلي من حالة الإحرام والعودة إلى الحالة الطبيعية بعد إتمام الحلق أو التقصير. ينقسم إلى تحلل أصغر وتحلل كامل، وفيه تحلّ كل المحظورات."
+      },
+      "en": {
+        "term": "Tahallul (leaving ihram)",
+        "def": "The effective exit from the state of ihram and return to normal life after halq or taqsir. It divides into a minor and a complete tahallul, the latter lifting all ihram prohibitions."
+      }
+    },
+    {
+      "source": "glossary_terms/f1478f32-2de9-4f1c-86bf-9e35a35f1853",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Interdits de l'ihram",
+        "def": "Actes interdits au pèlerin pendant toute la durée de l'ihram : couvrir la tête pour les hommes, se couper les ongles, retirer des cheveux ou des poils, et utiliser parfum ou produits parfumés."
+      },
+      "ar": {
+        "term": "محظورات الإحرام",
+        "def": "الأفعال التي يُحظر على المحرم القيام بها طيلة فترة الإحرام، مثل: تغطية الرأس للرجال، تقليم الأظافر، أخذ شيء من الشعر، واستخدام الطيب أو العطور."
+      },
+      "en": {
+        "term": "Ihram prohibitions",
+        "def": "Acts forbidden to the pilgrim throughout ihram: covering the head for men, trimming nails, removing any hair, and using perfume or scented products."
+      }
+    },
+    {
+      "source": "glossary_terms/7b116c11-2e47-40c8-b533-a7930634a71b",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Raml",
+        "def": "Marche rapide à petits pas pratiquée uniquement pendant les trois premiers tours du tawaf. C'est une sunna propre aux hommes, non aux femmes."
+      },
+      "ar": {
+        "term": "الرَّمَل",
+        "def": "الإسراع في المشي مع مقاربة الخطى خلال الأشواط الثلاثة الأولى فقط من الطواف، وهو سنة خاصة بالرجال دون النساء."
+      },
+      "en": {
+        "term": "Raml",
+        "def": "A brisk, short-stepped walk performed only during the first three circuits of tawaf. It is a sunnah for men, not for women."
+      }
+    },
+    {
+      "source": "glossary_terms/3cdc4a63-11aa-49d1-b3d4-3facd73152dc",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Idtibâ'",
+        "def": "Fait pour l'homme de découvrir l'épaule droite en passant le milieu du rida' sous l'aisselle droite et ses extrémités sur l'épaule gauche — uniquement pendant le tawaf d'arrivée ou le tawaf de l'Omra."
+      },
+      "ar": {
+        "term": "الاضطباع",
+        "def": "كشف الكتف الأيمن للرجل بوضع وسط الرداء تحت الإبط الأيمن وطرفيه على الكتف الأيسر، ويكون فقط أثناء طواف القدوم أو طواف العمرة."
+      },
+      "en": {
+        "term": "Idtiba'",
+        "def": "Uncovering the right shoulder by passing the middle of the rida' under the right armpit with its ends over the left shoulder — only during the arrival tawaf or the Umrah tawaf."
+      }
+    },
+    {
+      "source": "glossary_terms/49b034c2-bc9b-44e7-b90b-23f857205199",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Shawt (tour)",
+        "def": "Un tour complet commençant et finissant à la ligne de la Pierre noire. Le tawaf compte 7 shawts ; le sa'i aussi (Safâ vers Marwa = un shawt, Marwa vers Safâ = un autre)."
+      },
+      "ar": {
+        "term": "الشوط",
+        "def": "دورة كاملة واحدة تبدأ من خط الحجر الأسود وتنتهي عنده. الطواف يتكون من 7 أشواط، والسعي يتكون من 7 أشواط كذلك (من الصفا إلى المروة يُحسب شوطاً، ومن المروة إلى الصفا شوطاً آخر)."
+      },
+      "en": {
+        "term": "Shawt (circuit)",
+        "def": "One complete circuit starting and ending at the Black Stone line. Tawaf counts 7 shawts; so does sa'i (Safa to Marwah = one shawt, Marwah back to Safa = another)."
+      }
+    },
+    {
+      "source": "glossary_terms/f01bdc13-7363-4346-b28c-ed38acb865cf",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Istilâm et takbir",
+        "def": "Geste de la main vers la Pierre noire en disant « Allahu akbar » à sa hauteur, au début de chaque tour du tawaf — sans avoir à se frayer un passage ni à s'arrêter."
+      },
+      "ar": {
+        "term": "الاستلام والتكبير",
+        "def": "الإشارة باليد إلى الحجر الأسود مع قول «الله أكبر» عند محاذاته في بداية كل شوط من أشواط الطواف، دون حاجة للتزاحم أو التوقف."
+      },
+      "en": {
+        "term": "Istilam and takbir",
+        "def": "Gesturing with the hand toward the Black Stone while saying \"Allahu akbar\" when aligned with it, at the start of each tawaf circuit — with no need to push through or stop."
+      }
+    },
+    {
+      "source": "glossary_terms/0258bb9e-272d-414f-8bce-112eac2b62fd",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Coin yéménite",
+        "def": "Le coin de la Kaaba qui précède celui de la Pierre noire. Il est sunna de le toucher de la main si possible, sans l'embrasser ; en cas d'affluence, on le dépasse sans geste particulier."
+      },
+      "ar": {
+        "term": "الركن اليماني",
+        "def": "الركن السابق لركن الحجر الأسود في الكعبة. يُسن مسحه باليد إن أمكن دون تقبيل، أو تجاوزه دون إشارة إذا كان هناك ازدحام."
+      },
+      "en": {
+        "term": "Yemeni corner",
+        "def": "The corner of the Kaaba preceding the Black Stone corner. It is sunnah to touch it by hand when possible, without kissing it; in crowds, simply pass it without gesture."
+      }
+    },
+    {
+      "source": "glossary_terms/e7ff944e-e04a-4f03-8bed-6cc74a42dbd1",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Maqam Ibrahim",
+        "def": "La pierre sur laquelle se tenait le prophète Ibrahim pendant la construction de la Kaaba. Il est sunna d'y prier deux rakaat derrière, après avoir achevé les sept tours du tawaf."
+      },
+      "ar": {
+        "term": "مقام إبراهيم",
+        "def": "الحجر الذي وقف عليه نبي الله إبراهيم أثناء بناء الكعبة. يُسن أن يُصلى خلفه ركعتان بعد الانتهاء من أشواط الطواف السبعة."
+      },
+      "en": {
+        "term": "Maqam Ibrahim",
+        "def": "The stone on which Prophet Ibrahim stood while building the Kaaba. It is sunnah to pray two rakaat behind it after completing the seven tawaf circuits."
+      }
+    },
+    {
+      "source": "glossary_terms/a36fdcb1-f0fc-4831-b151-0a5d1b633d07",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Mataf et Mas'â",
+        "def": "Le mataf est l'esplanade et les niveaux réservés au tawaf autour de la Kaaba ; le mas'â est le bâtiment à plusieurs étages dédié au parcours entre les collines de Safâ et Marwa."
+      },
+      "ar": {
+        "term": "المطاف والمسعى",
+        "def": "المطاف: الساحة المفتوحة والطبقات المخصصة للطواف حول الكعبة. المسعى: المبنى المكون من عدة طوابق المخصص للمشي بين تلي الصفا والمروة."
+      },
+      "en": {
+        "term": "Mataf and Mas'a",
+        "def": "The mataf is the open esplanade and levels reserved for tawaf around the Kaaba; the mas'a is the multi-storey building dedicated to the walk between the hills of Safa and Marwah."
+      }
+    },
+    {
+      "source": "glossary_terms/2005a43a-7944-47c5-9498-3712f1d2e457",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "La Ziyara (visite de Médine)",
+        "def": "Le voyage pour saluer le Prophète ﷺ et ses deux compagnons (Abou Bakr et Omar), et prier à la Mosquée du Prophète. C'est une sunna indépendante, sans lien avec la validité de l'Omra, effectuée avant d'aller à La Mecque ou après en être sorti."
+      },
+      "ar": {
+        "term": "الزيارة (زيارة المدينة)",
+        "def": "رحلة السلام على الرسول ﷺ وصاحبيه (أبي بكر وعمر رضي الله عنهما) وزيارة المسجد النبوي. وهي سنّة مستقلة غير مرتبطة بصحة العمرة، وتكون إما قبل الذهاب إلى مكة أو بعد الخروج منها."
+      },
+      "en": {
+        "term": "The Ziyarah (Madinah visit)",
+        "def": "The journey to greet the Prophet ﷺ and his two companions (Abu Bakr and Umar) and pray at the Prophet's Mosque. An independent sunnah, unrelated to the validity of the Umrah, done before going to Makkah or after leaving it."
+      }
+    },
+    {
+      "source": "glossary_terms/8e7118e9-5432-420a-834e-8cc12618b922",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Le salut au Prophète ﷺ",
+        "def": "Se tenir devant la noble chambre prophétique à la Mosquée du Prophète pour adresser le salut au Prophète ﷺ et à ses deux compagnons, selon les convenances et de manière ordonnée."
+      },
+      "ar": {
+        "term": "السلام على الرسول ﷺ",
+        "def": "الوقوف أمام الحجرة النبوية الشريفة في المسجد النبوي لإلقاء السلام على النبي ﷺ وصاحبيه وفق الأدب الشرعي وبشكل منظم."
+      },
+      "en": {
+        "term": "Greeting the Prophet ﷺ",
+        "def": "Standing before the noble Prophetic chamber in the Prophet's Mosque to offer greetings to the Prophet ﷺ and his two companions, with proper etiquette and in an orderly manner."
+      }
+    },
+    {
+      "source": "glossary_terms/590ee759-8a35-498d-9a6e-d5dadb8174a6",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Mosquée de Qubâ et les Sept Mosquées",
+        "def": "Qubâ est la première mosquée fondée en islam ; y prier est recommandé aux visiteurs de Médine (sa récompense est comparée à celle d'une Omra). Les Sept Mosquées et la mosquée des Deux Qiblas sont des repères historiques visités lors des circuits de Médine."
+      },
+      "ar": {
+        "term": "المساجد السبعة ومسجد قباء",
+        "def": "مسجد قباء: أول مسجد أُسس في الإسلام، وتُستحب الصلاة فيه لقاصدي المدينة (أجرها كأجر عمرة). المساجد السبعة ومسجد القبلتين: معالم تاريخية يزورها المعتمرون ضمن جولات المزارات بالمدينة."
+      },
+      "en": {
+        "term": "Quba Mosque and the Seven Mosques",
+        "def": "Quba is the first mosque founded in Islam; praying there is recommended for Madinah visitors (its reward is likened to an Umrah). The Seven Mosques and the Mosque of the Two Qiblas are historic landmarks visited on Madinah tours."
+      }
+    },
+    {
+      "source": "glossary_terms/0ec516ad-bf5b-4954-adea-d61e37dc8b5d",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Mont Uhud et les martyrs",
+        "def": "Site de la bataille historique d'Uhud et cimetière de ses martyrs. On le visite pour la méditation et les invocations en faveur des martyrs."
+      },
+      "ar": {
+        "term": "جبل أحد والشهداء",
+        "def": "موقع معركة أحد التاريخية ومقبرة شهداء أحد، تُزار للاعتبار والدعاء للشهداء."
+      },
+      "en": {
+        "term": "Mount Uhud and the martyrs",
+        "def": "The site of the historic Battle of Uhud and the cemetery of its martyrs, visited for reflection and supplication for the martyrs."
+      }
+    },
+    {
+      "source": "glossary_terms/ff08a0be-261c-4038-a35f-645453498cf8",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Visa Omra",
+        "def": "L'autorisation officielle d'entrer en Arabie saoudite pour accomplir les rites. Elle existe sous plusieurs formes (visa Omra, visa touristique ou visa de transit) ; en réservant via notre agence, la démarche est prise en charge de bout en bout."
+      },
+      "ar": {
+        "term": "تأشيرة العمرة",
+        "def": "الموافقة الرسمية للدخول إلى المملكة العربية السعودية لأداء المناسك. تتوفر بصيغ متعددة (تأشيرة عمرة، تأشيرة سياحية، أو تأشيرة ترانزيت)، وعند الحجز عبر وكالتنا تتم الإجراءات من البداية إلى النهاية."
+      },
+      "en": {
+        "term": "Umrah visa",
+        "def": "The official authorization to enter Saudi Arabia to perform the rites. It exists in several forms (Umrah visa, tourist visa or transit visa); when booking through our agency, the process is handled end to end."
+      }
+    },
+    {
+      "source": "glossary_terms/a545048e-3e53-48f1-956a-bbffb0e9ca3f",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Tafwij (gestion des flux)",
+        "def": "Système d'organisation des déplacements des groupes de pèlerins entre les hôtels et le Haram, ou entre La Mecque, Médine et Djeddah, afin d'éviter les engorgements."
+      },
+      "ar": {
+        "term": "التفويج",
+        "def": "نظام إدارة وحركة مجموعات المعتمرين بين الفنادق والحرم، أو أثناء التنقل بين مكة والمدينة وجدة، لضمان عدم الاكتظاظ."
+      },
+      "en": {
+        "term": "Tafwij (group flow management)",
+        "def": "The system organizing pilgrim groups' movements between hotels and the Haram, or between Makkah, Madinah and Jeddah, to prevent overcrowding."
+      }
+    },
+    {
+      "source": "glossary_terms/9b2836ca-9116-4ee2-ac49-a663267743bc",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Train Haramain à grande vitesse",
+        "def": "La liaison ferroviaire rapide reliant l'aéroport King Abdulaziz de Djeddah, La Mecque et Médine, qui réduit considérablement les temps de trajet."
+      },
+      "ar": {
+        "term": "قطار الحرمين السريع",
+        "def": "وسيلة النقل السريعة التي تربط بين مطار الملك عبد العزيز بجدة ومكة المكرمة والمدينة المنورة، وتختصر وقت التنقل بشكل كبير."
+      },
+      "en": {
+        "term": "Haramain high-speed train",
+        "def": "The high-speed rail link connecting Jeddah's King Abdulaziz airport, Makkah and Madinah, dramatically shortening travel times."
+      }
+    },
+    {
+      "source": "glossary_terms/937afa86-baca-48a8-86aa-997756e43510",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Mazarat (visites guidées)",
+        "def": "Excursions de groupe organisées par les agences à La Mecque (mont Thawr, mont Arafat, fabrique de la kiswa de la Kaaba…) et à Médine, en complément des rites."
+      },
+      "ar": {
+        "term": "المزارات (الجولات الميدانية)",
+        "def": "رحلات جماعية تُنظمها وكالات الأسفار داخل مكة (مثل: جبل ثور، جبل عرفات، ومصنع كسوة الكعبة) وداخل المدينة المنورة."
+      },
+      "en": {
+        "term": "Mazarat (guided visits)",
+        "def": "Group excursions organized by agencies in Makkah (Mount Thawr, Mount Arafat, the Kaaba kiswa factory…) and in Madinah, complementing the rites."
+      }
+    },
+    {
+      "source": "glossary_terms/8b1f0337-02f9-4426-91d0-ef5b7c6a6aaf",
+      "as_of": "2026-07-22",
+      "fr": {
+        "term": "Cadeaux de l'Omra",
+        "def": "Les achats traditionnels que le pèlerin rapporte aux siens : tapis de prière, mushafs, dattes (comme la 'ajwa), eau de Zamzam, parfums et encens — souvent au souk Al-Ma'abda ou au marché central."
+      },
+      "ar": {
+        "term": "هدايا العمرة (سوق المعابدة والمركزية)",
+        "def": "المشتريات التقليدية التي يجلبها المعتمر لأهله، وأبرزها: سجاد الصلاة، المصاحف، التمور (مثل العجوة)، ماء زمزم، والعطور والبخور — غالباً من سوق المعابدة أو السوق المركزية."
+      },
+      "en": {
+        "term": "Umrah gifts",
+        "def": "The traditional purchases pilgrims bring home: prayer mats, mushafs, dates (like 'ajwa), Zamzam water, perfumes and incense — often from the Al-Ma'abda souk or the central market."
+      }
+    },
+    {
+      "source": "glossary_terms/46d427d7-fd3e-418a-a1f5-b13762c68a70",
+      "as_of": "2026-07-24",
+      "fr": {
+        "term": "La Kaaba",
+        "def": "Édifice cubique au centre de la Masjid al‑Harâm à La Mecque, vers lequel les musulmans se tournent pour la prière (la qibla). Le tawaf s'effectue en tournant sept fois autour d'elle. Elle est recouverte de la kiswa, une étoffe noire brodée d'or."
+      },
+      "ar": {
+        "term": "الكعبة المشرفة",
+        "def": "بناء مكعب الشكل في وسط المسجد الحرام بمكة، يتوجه إليه المسلمون في صلاتهم (القبلة). ويُؤدى الطواف بالدوران حولها سبع مرات. وتُغطى بالكسوة، وهي ثوب أسود مطرز بالذهب."
+      },
+      "en": {
+        "term": "The Kaaba",
+        "def": "The cube-shaped building at the centre of the Masjid al‑Haram in Makkah, toward which Muslims turn in prayer (the qibla). Tawaf is performed by circling it seven times. It is draped in the kiswa, a black cloth embroidered with gold."
+      }
+    },
+    {
+      "source": "glossary_terms/7878e839-d37b-4ed4-8db8-fa276ef99d3e",
+      "as_of": "2026-07-24",
+      "fr": {
+        "term": "La Pierre Noire (Hajar al‑Aswad)",
+        "def": "Pierre scellée dans l'angle est de la Kaaba, point de départ et d'arrivée de chaque tour du tawaf. Le pèlerin la touche ou l'embrasse si possible ; sinon il pointe vers elle en disant « Allâhu akbar », sans jamais bousculer la foule."
+      },
+      "ar": {
+        "term": "الحجر الأسود",
+        "def": "حجر مثبت في الركن الشرقي من الكعبة، وهو نقطة بداية ونهاية كل شوط من الطواف. يستلمه المعتمر أو يقبّله إن تيسّر، وإلا أشار إليه قائلاً «الله أكبر»، دون مزاحمة."
+      },
+      "en": {
+        "term": "The Black Stone (Hajar al‑Aswad)",
+        "def": "A stone set into the eastern corner of the Kaaba, marking the start and end of each tawaf circuit. The pilgrim touches or kisses it if possible; otherwise points to it saying 'Allahu akbar', never pushing through the crowd."
+      }
+    },
+    {
+      "source": "glossary_terms/fab012c0-de92-48a4-9e5f-990d80641f5a",
+      "as_of": "2026-07-24",
+      "fr": {
+        "term": "Le Hijr Ismaïl (Al‑Hatîm)",
+        "def": "Espace en demi-cercle bordé d'un muret bas, adjacent à la Kaaba côté nord. Il fait partie de la Kaaba : prier à l'intérieur revient à prier dans la Kaaba elle-même. Le tawaf doit s'effectuer autour de lui, jamais à travers."
+      },
+      "ar": {
+        "term": "حِجر إسماعيل (الحطيم)",
+        "def": "مساحة نصف دائرية يحيط بها جدار منخفض، ملاصقة للكعبة من الجهة الشمالية. وهي جزء من الكعبة: فالصلاة داخلها كالصلاة في الكعبة نفسها. ويجب أن يكون الطواف من ورائه لا من داخله."
+      },
+      "en": {
+        "term": "The Hijr Ismail (Al‑Hatim)",
+        "def": "A semicircular area enclosed by a low wall, adjoining the Kaaba on its northern side. It is part of the Kaaba: praying inside it counts as praying within the Kaaba. Tawaf must go around it, never through it."
+      }
+    },
+    {
+      "source": "glossary_terms/5e9ea96b-7be7-42ba-a568-540a2bac12dc",
+      "as_of": "2026-07-24",
+      "fr": {
+        "term": "La Mosquée du Prophète ﷺ",
+        "def": "Deuxième lieu saint de l'islam, à Médine, fondée par le Prophète ﷺ lui-même. Elle abrite sa tombe ﷺ et la Rawda. La visiter ne fait pas partie des rites de l'Omra, mais la plupart des programmes marocains y consacrent plusieurs jours."
+      },
+      "ar": {
+        "term": "المسجد النبوي ﷺ",
+        "def": "ثاني الحرمين الشريفين، بالمدينة المنورة، أسسه النبي ﷺ بنفسه. ويضم قبره الشريف ﷺ والروضة الشريفة. وزيارته ليست من مناسك العمرة، لكن أغلب البرامج المغربية تخصص لها عدة أيام."
+      },
+      "en": {
+        "term": "The Prophet's Mosque ﷺ",
+        "def": "Islam's second holiest site, in Madinah, founded by the Prophet ﷺ himself. It houses his grave ﷺ and the Rawdah. Visiting it is not part of the Umrah rites, but most Moroccan programs devote several days to it."
+      }
+    },
+    {
+      "source": "glossary_terms/4e6c3955-df90-40d8-8b8a-d26d44c39b01",
+      "as_of": "2026-07-24",
+      "fr": {
+        "term": "Le cimetière d'Al‑Baqî'",
+        "def": "Principal cimetière de Médine, près de la Mosquée du Prophète ﷺ. De nombreux Compagnons et membres de la famille du Prophète ﷺ y sont enterrés. Les hommes peuvent le visiter et y faire des invocations pour les défunts."
+      },
+      "ar": {
+        "term": "مقبرة البقيع",
+        "def": "المقبرة الرئيسية بالمدينة المنورة، بجوار المسجد النبوي ﷺ. دُفن فيها كثير من الصحابة وأهل بيت النبي ﷺ. ويمكن للرجال زيارتها والدعاء فيها للأموات."
+      },
+      "en": {
+        "term": "The Al‑Baqi cemetery",
+        "def": "Madinah's main cemetery, next to the Prophet's Mosque ﷺ. Many Companions and members of the Prophet's ﷺ household are buried there. Men may visit it and make supplications for the deceased."
+      }
+    },
+    {
+      "source": "glossary_terms/fa211135-d5e0-4d50-9ef0-d4ab55bdf3c4",
+      "as_of": "2026-07-24",
+      "fr": {
+        "term": "Le Hajj",
+        "def": "Cinquième pilier de l'islam : le pèlerinage à La Mecque, obligatoire une fois dans la vie pour tout musulman qui en a la capacité. Il se déroule du 8 au 13 de Dhou al‑Hijja et ajoute aux rites de l'Omra la station à 'Arafat, Mouzdalifa, Mina et la lapidation."
+      },
+      "ar": {
+        "term": "الحج",
+        "def": "الركن الخامس من أركان الإسلام: الحج إلى مكة، الواجب مرة في العمر على كل مسلم مستطيع. يقام من 8 إلى 13 ذي الحجة، ويضيف إلى مناسك العمرة الوقوف بعرفة والمبيت بمزدلفة ومنى ورمي الجمرات."
+      },
+      "en": {
+        "term": "The Hajj",
+        "def": "Islam's fifth pillar: the pilgrimage to Makkah, obligatory once in a lifetime for every able Muslim. It runs 8–13 Dhul‑Hijjah and adds to the Umrah rites the standing at 'Arafat, Muzdalifah, Mina and the stoning."
+      }
+    },
+    {
+      "source": "glossary_terms/c21d83a1-f5d7-4be8-91a4-7053bf2f0f80",
+      "as_of": "2026-07-24",
+      "fr": {
+        "term": "Tamattu', Ifrâd et Qirân",
+        "def": "Les trois manières d'accomplir le Hajj : le Tamattu' (Omra puis Hajj avec un nouvel ihram, le plus courant), l'Ifrâd (Hajj seul) et le Qirân (Omra et Hajj réunis dans un seul ihram). Le Tamattu' et le Qirân impliquent un sacrifice (hady)."
+      },
+      "ar": {
+        "term": "التمتع والإفراد والقران",
+        "def": "الطرق الثلاث لأداء الحج: التمتع (عمرة ثم حج بإحرام جديد، وهو الأكثر شيوعاً)، والإفراد (حج وحده)، والقران (عمرة وحج في إحرام واحد). ويلزم في التمتع والقران هدي."
+      },
+      "en": {
+        "term": "Tamattu', Ifrad and Qiran",
+        "def": "The three ways to perform Hajj: Tamattu' (Umrah then Hajj with a new ihram, the most common), Ifrad (Hajj alone) and Qiran (Umrah and Hajj joined in one ihram). Tamattu' and Qiran require a sacrifice (hady)."
+      }
+    },
+    {
+      "source": "glossary_terms/952d7d28-5e54-4a6f-9ff5-12d2438daab3",
+      "as_of": "2026-07-24",
+      "fr": {
+        "term": "Le jour de 'Arafat",
+        "def": "Vaste plaine à l'est de La Mecque où les pèlerins se rassemblent le 9 de Dhou al‑Hijja, du midi au coucher du soleil, pour l'invocation et le repentir. La station à 'Arafat est le pilier essentiel du Hajj : « Le Hajj, c'est 'Arafat. » Elle ne fait pas partie de l'Omra."
+      },
+      "ar": {
+        "term": "يوم عرفة",
+        "def": "سهل واسع شرق مكة يجتمع فيه الحجاج يوم 9 ذي الحجة، من الزوال إلى غروب الشمس، للدعاء والتوبة. والوقوف بعرفة هو الركن الأعظم للحج: «الحج عرفة». وهو ليس من العمرة."
+      },
+      "en": {
+        "term": "The Day of 'Arafat",
+        "def": "A vast plain east of Makkah where pilgrims gather on 9 Dhul‑Hijjah, from noon to sunset, for supplication and repentance. The standing at 'Arafat is the essential pillar of Hajj: 'Hajj is 'Arafat.' It is not part of Umrah."
+      }
+    },
+    {
+      "source": "glossary_terms/188764d7-15a5-4a3c-ba59-ae53eafdcdaa",
+      "as_of": "2026-07-24",
+      "fr": {
+        "term": "Mouzdalifa",
+        "def": "Zone à ciel ouvert entre 'Arafat et Mina où les pèlerins passent la nuit du 9 au 10 de Dhou al‑Hijja après 'Arafat. Ils y prient, s'y reposent et y ramassent les cailloux destinés à la lapidation à Mina."
+      },
+      "ar": {
+        "term": "مزدلفة",
+        "def": "منطقة مكشوفة بين عرفة ومنى يبيت فيها الحجاج ليلة 9 إلى 10 ذي الحجة بعد عرفة. يصلّون فيها ويستريحون ويجمعون الحصى المخصص لرمي الجمرات بمنى."
+      },
+      "en": {
+        "term": "Muzdalifah",
+        "def": "An open area between 'Arafat and Mina where pilgrims spend the night of 9–10 Dhul‑Hijjah after 'Arafat. They pray, rest, and gather the pebbles for the stoning at Mina."
+      }
+    },
+    {
+      "source": "glossary_terms/311a11b7-8df0-476f-9289-7a8d9e63f8e4",
+      "as_of": "2026-07-24",
+      "fr": {
+        "term": "Mina",
+        "def": "Vallée à l'est de La Mecque, couverte de tentes, où les pèlerins séjournent pendant les jours du Hajj. C'est là que se déroulent la lapidation des stèles (jamarât) et le sacrifice. On l'appelle parfois « la ville des tentes »."
+      },
+      "ar": {
+        "term": "منى",
+        "def": "وادٍ شرق مكة مغطى بالخيام، يقيم فيه الحجاج خلال أيام الحج. وفيه يتم رمي الجمرات والنحر. ويُسمى أحياناً «مدينة الخيام»."
+      },
+      "en": {
+        "term": "Mina",
+        "def": "A valley east of Makkah, covered in tents, where pilgrims stay during the days of Hajj. It is where the stoning of the pillars (jamarat) and the sacrifice take place. Sometimes called 'the city of tents.'"
+      }
+    },
+    {
+      "source": "glossary_terms/0193c9bf-0741-45f1-adb8-d86be07b8501",
+      "as_of": "2026-07-24",
+      "fr": {
+        "term": "La lapidation (Ramy al‑Jamarât)",
+        "def": "Lancer sept cailloux sur chacune des trois stèles (jamarât) à Mina, du 10 au 13 de Dhou al‑Hijja. Ce rite commémore le rejet de Satan par le Prophète Ibrahim. Il ne concerne que le Hajj, pas l'Omra."
+      },
+      "ar": {
+        "term": "رمي الجمرات",
+        "def": "رمي سبع حصيات على كل جمرة من الجمرات الثلاث بمنى، من 10 إلى 13 ذي الحجة. ويُحيي هذا النسك رفض النبي إبراهيم للشيطان. وهو خاص بالحج دون العمرة."
+      },
+      "en": {
+        "term": "The stoning (Ramy al‑Jamarat)",
+        "def": "Throwing seven pebbles at each of the three pillars (jamarat) in Mina, from 10 to 13 Dhul‑Hijjah. The rite commemorates Prophet Ibrahim's rejection of Satan. It belongs to Hajj only, not Umrah."
+      }
+    },
+    {
+      "source": "glossary_terms/eb653216-26aa-4dd2-8574-418c7ad29efd",
+      "as_of": "2026-07-24",
+      "fr": {
+        "term": "Le Hady (offrande)",
+        "def": "Animal sacrifié pendant le Hajj (mouton, chèvre, ou part de chameau/vache), obligatoire pour les pèlerins en Tamattu' et Qirân. Sa viande est distribuée aux pauvres. Le sacrifice a lieu à partir du jour de l'Aïd al‑Adha, le 10 de Dhou al‑Hijja."
+      },
+      "ar": {
+        "term": "الهدي",
+        "def": "الأنعام التي تُذبح أثناء الحج (شاة أو معز أو سُبع بدنة/بقرة)، وهي واجبة على المتمتع والقارن. ويُوزع لحمها على الفقراء. ويكون النحر ابتداءً من يوم عيد الأضحى، 10 ذي الحجة."
+      },
+      "en": {
+        "term": "The Hady (offering)",
+        "def": "The animal sacrificed during Hajj (sheep, goat, or a share of a camel/cow), required for pilgrims performing Tamattu' and Qiran. Its meat is distributed to the poor. The sacrifice begins on Eid al‑Adha, 10 Dhul‑Hijjah."
+      }
+    }
+  ],
+  "official": []
+}

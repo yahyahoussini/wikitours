@@ -256,6 +256,7 @@
       "/a-propos": "من نحن",
       "/equipe": "فريقنا",
       "occasions": "عمرة {name}: الرحلات والأثمنة",
+      "cities": "عمرة انطلاقاً من {city}: الرحلات والأثمنة",
       "months": "عمرة {month} {year}: الرحلات والأثمنة",
       "departures": "رحلة عمرة: {title}",
       "school-holiday-departure": "رحلة العطلة المدرسية: {title}"
@@ -539,6 +540,20 @@
     "text": "نستخدم ملفات تعريف الارتباط لقياس الأداء وتحسين عروضنا وحملاتنا. هل توافقون؟",
     "accept": "موافق",
     "decline": "المتابعة دون موافقة"
+  },
+  "content": {
+    "ctaLive": "{n} رحلات مفتوحة حالياً، ابتداءً من {minPrice} درهم للشخص.",
+    "ctaLiveOne": "رحلة واحدة مفتوحة حالياً، ابتداءً من {minPrice} درهم للشخص.",
+    "ctaLiveNoPrice": "{n} رحلات مفتوحة حالياً.",
+    "ctaNone": "لا توجد رحلة مفتوحة حالياً: اتركوا لنا بياناتكم ونخبركم عند الافتتاح.",
+    "departuresTitle": "الرحلات المفتوحة",
+    "departuresNone": "لا توجد رحلة مفتوحة لهذه الفترة حالياً.",
+    "hijriLine": "{label}: {date}، بعد {days} يوماً",
+    "hijriTodayLine": "{label}: اليوم",
+    "hijriPastLine": "{label}: {date}",
+    "hijriCaveat": "حسب رؤية الهلال",
+    "hotelsIn": "فنادقنا الشريكة في {city}",
+    "depositTitle": "الحجز والأداء"
   },
   "seoTitles": {
     "home": "عمرة {year} من المغرب — باب مكة من ويكي تورز",

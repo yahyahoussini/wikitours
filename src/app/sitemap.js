@@ -23,7 +23,9 @@ import { legalIsFilled } from '@/lib/legal-page';
 import { teamIndexable } from '@/lib/authors';
 import { computePeriods } from '@/lib/barometer';
 
-export const revalidate = 86400;
+// Hourly, like every listing: a scheduled article joins the sitemap within the
+// hour its published_at passes, without a cron (content architecture 2026-09-14).
+export const revalidate = 3600;
 
 /**
  * Dynamic sitemap: every public, indexable route × 3 locales, each entry

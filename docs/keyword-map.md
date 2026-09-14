@@ -190,3 +190,26 @@ Honest backlog — each needs real data before it can exist (LAW: never invent).
 | omra vacances scolaires | a real offer aligned on school holidays | month hub of that period (no new page) |
 | hajj {année} prix / inscription | client's Hajj program data [CONTENT NEEDED] | `/hajj` (existing owner — content refresh) |
 | licence / agrément number visible | `settings.license_number` [ADMIN DATA] | `/agrement` (already wired, renders when set) |
+
+## Lander query families a blog post must never own (content architecture, 2026-09-14)
+
+Enforced mechanically by `targetsLanderQuery()` in `src/lib/server/article-gate.mjs`
+(a plan row or a generated file whose `query_family` matches fails the gate):
+
+| Owner page | Families (accent-free heads; transliterations 3omra / oumra / umrah / hadj / 7ajj count) |
+|---|---|
+| `/` | omra depuis le maroc · agence omra |
+| `/agence-omra-casablanca` | agence omra casablanca · وكالة عمرة |
+| `/omra-pas-cher` | omra pas cher · prix omra maroc |
+| `/omra-ramadan` | omra ramadan {année} · عمرة رمضان |
+| `/omra-{mois}` ×12 | omra {mois} {année} |
+| `/omra-depuis-{ville}` ×8 | omra depuis {ville} |
+| `/omra-{occasion}` | omra rajab · chaâbane · chawal · mawlid · été |
+| `/omra-5-etoiles` | omra 5 étoiles · omra de luxe · عمرة فاخرة |
+| `/hajj` | hajj · hajj depuis le maroc · الحج من المغرب |
+| `/bab-makka` | départs / programmes omra (the pillar; posts support it, never own it) |
+
+Blog posts serve informational and long-tail intent and link TO these pages with
+`<CommercialCTA to="…" />`. The ten plan rows « omra janvier … omra decembre »
+seeded by migration 019 target lander queries and must be re-angled before they
+are written (owner's call — see `docs/content-system.md`).

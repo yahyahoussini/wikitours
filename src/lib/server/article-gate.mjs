@@ -1,4 +1,5 @@
 import { BRAND } from '../brand.js';
+import { validateContentTags, stripContentTags } from '../content-tags.js';
 
 /**
  * The blog quality gate and publish decision — DEPENDENCY-FREE on purpose.
@@ -39,11 +40,103 @@ export function clampDescription(s, n = 155) {
   return `${(i > 40 ? cut.slice(0, i) : cut).trim()}…`;
 }
 
-/** Next free 08:00 Casablanca (07:00 UTC) morning after the last scheduled post. */
-export function nextMorningSlot(lastScheduledAt, now = new Date()) {
+export const SITE_TZ = 'Africa/Casablanca';
+export const RELEASE_HOUR = 8;
+
+/** Calendar date parts of an instant in a time zone. */
+function zonedParts(date, timeZone = SITE_TZ) {
+  const parts = new Intl.DateTimeFormat('en-CA', { timeZone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hour12: false }).formatToParts(date);
+  const get = (t) => Number(parts.find((p) => p.type === t)?.value);
+  return { y: get('year'), m: get('month'), d: get('day'), h: get('hour') % 24 };
+}
+
+/**
+ * Next free RELEASE_HOUR (08:00) Africa/Casablanca morning after the last
+ * scheduled post. Morocco is UTC+1 all year EXCEPT during Ramadan (UTC+0),
+ * so the UTC instant of "08:00 local" moves — the zone data decides, never a
+ * fixed offset.
+ */
+export function nextMorningSlot(lastScheduledAt, now = new Date(), { timeZone = SITE_TZ, hour = RELEASE_HOUR } = {}) {
   const last = lastScheduledAt ? new Date(lastScheduledAt) : null;
   const base = last && last > now ? last : now;
-  return new Date(Date.UTC(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate() + 1, 7, 0, 0)).toISOString();
+  const { y, m, d } = zonedParts(base, timeZone);
+  // The local calendar day after `base`, as a UTC instant, then the candidate
+  // UTC hours around the wanted local hour — the one that reads back as
+  // `hour` in the zone wins (offset 0 or +1 for Morocco; ±14 covers any zone).
+  const nextDay = new Date(Date.UTC(y, m - 1, d + 1, hour, 0, 0));
+  for (const off of [1, 0, 2, -1, 3, -2, 4, -3, 5, -4, 6, -5, 7, -6, 8, -7, 9, -8, 10, -9, 11, -10, 12, -11, 13, -12, 14, -13, -14]) {
+    const candidate = new Date(nextDay.getTime() - off * 3600000);
+    const p = zonedParts(candidate, timeZone);
+    if (p.h === hour && p.d === new Date(Date.UTC(y, m - 1, d + 1)).getUTCDate()) return candidate.toISOString();
+  }
+  return nextDay.toISOString();
+}
+
+// ── the content architecture's prose rules (2026-09-14) ─────────────────────
+// GENERATE-AHEAD, RENDER-LIVE: volatile facts are never in prose. Any year
+// (other than the founding year in "depuis 2016"), price, currency amount,
+// departure date or seat count in a title, excerpt, description or body is a
+// blocking problem — the live component tags carry them instead.
+const FR_MONTHS = 'janvier|f[ée]vrier|mars|avril|mai|juin|juillet|ao[uû]t|septembre|octobre|novembre|d[ée]cembre';
+const EN_MONTHS = 'january|february|march|april|may|june|july|august|september|october|november|december';
+const AR_MONTHS = 'يناير|فبراير|مارس|أبريل|ابريل|ماي|مايو|يونيو|يوليوز|يوليو|غشت|أغسطس|شتنبر|سبتمبر|أكتوبر|اكتوبر|نونبر|نوفمبر|دجنبر|ديسمبر|أيلول|تشرين|كانون|شباط|آذار|نيسان|أيار|حزيران|تموز|آب';
+const FOUNDING_CONTEXT = /(depuis|since|منذ|fond[ée]e|founded|cr[ée][ée]e|established)\s+(en\s+|in\s+|عام\s+|سنة\s+)?$/i;
+export const PROSE_RULES = [
+  { rule: 'année', re: /\b(?:19|20)\d{2}\b/g, allow: (ctx) => FOUNDING_CONTEXT.test(ctx) },
+  { rule: 'année hégirienne', re: /\b1[45]\d{2}\s*(?:هـ|ه\b|AH\b|H\b)/g },
+  { rule: 'montant', re: /\d[\d\s.,]*\s?(?:MAD|DH|Dhs?|dirhams?|درهم|دراهم|€|EUR|\$|USD)\b/gi },
+  { rule: 'montant', re: /(?:à partir de|dès|from|ابتداءً من|ابتداء من)\s+\d/gi },
+  { rule: 'date', re: new RegExp(`\\b\\d{1,2}(?:er|st|nd|rd|th)?\\s+(?:${FR_MONTHS}|${EN_MONTHS}|${AR_MONTHS})\\b`, 'gi') },
+  { rule: 'date', re: /\b\d{4}-\d{2}-\d{2}\b|\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/g },
+  { rule: 'nombre de places', re: /\b\d+\s*(?:places?|si[èe]ges?|seats?|مقعد|مقاعد)\b/gi },
+];
+// Levantine / MSA month names: Moroccan Arabic writes شتنبر، غشت، نونبر، دجنبر
+// (hard constraint 8) — the others fail the Arabic body.
+export const NON_MOROCCAN_MONTHS = ['أيلول', 'تشرين الأول', 'تشرين الثاني', 'كانون الأول', 'كانون الثاني', 'شباط', 'آذار', 'نيسان', 'أيار', 'حزيران', 'تموز', 'آب', 'سبتمبر', 'أغسطس', 'نوفمبر', 'ديسمبر'];
+// Latin-script city names in Arabic prose (the CITY_SLUGS-instead-of-cityName trap).
+const LATIN_CITIES = ['Casablanca', 'Rabat', 'Marrakech', 'Marrakesh', 'Fès', 'Fes', 'Fez', 'Tanger', 'Tangier', 'Agadir', 'Meknès', 'Meknes', 'Oujda'];
+
+/** Every volatile-fact hit in a text: [{ rule, match }]. */
+export function proseViolations(text) {
+  const out = [];
+  const s = String(text ?? '');
+  for (const { rule, re, allow } of PROSE_RULES) {
+    re.lastIndex = 0;
+    for (const m of s.matchAll(re)) {
+      if (allow && allow(s.slice(Math.max(0, m.index - 20), m.index))) continue;
+      out.push({ rule, match: m[0].trim() });
+    }
+  }
+  return out;
+}
+
+// The lander query families a post must never own (hard constraint 4) — the
+// heads of docs/keyword-map.md's ownership table, accent-free, with the
+// transliterations Moroccans type. Compared against `query_family`.
+const MONTHS_SLUGS = 'janvier|fevrier|mars|avril|mai|juin|juillet|aout|septembre|octobre|novembre|decembre';
+const CITY_SLUGS = 'casablanca|rabat|marrakech|fes|tanger|agadir|meknes|oujda';
+export const LANDER_QUERIES = [
+  /^(?:omra|umrah|oumra|3omra) (?:depuis le )?maroc$/,
+  /^agence (?:omra|umrah|oumra)(?: (?:a |à )?casablanca)?$/,
+  /^(?:omra|umrah|oumra) pas cher(?: maroc)?$/,
+  /^prix (?:omra|umrah|oumra)(?: maroc)?$/,
+  /^(?:omra|umrah|oumra) ramadan(?: \d{4})?$/,
+  /^(?:omra|umrah|oumra) 5 etoiles$/,
+  /^(?:omra|umrah|oumra) de luxe$/,
+  new RegExp(`^(?:omra|umrah|oumra) (?:${MONTHS_SLUGS})(?: \\d{4})?$`),
+  new RegExp(`^(?:omra|umrah|oumra) depuis (?:${CITY_SLUGS})$`),
+  /^(?:omra|umrah|oumra) (?:rajab|chaabane|chawal|mawlid|ete)$/,
+  /^(?:hajj|hadj|7ajj)(?: (?:depuis le )?maroc)?$/,
+  /^عمرة (?:رمضان|رخيصة|فاخرة|من المغرب)$/,
+  /^وكالة عمرة(?: بالدار البيضاء| في الدار البيضاء)?$/,
+  /^الحج(?: من المغرب)?$/,
+];
+const normQuery = (s) => String(s ?? '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9؀-ۿ ]+/g, ' ').replace(/\s+/g, ' ').trim();
+/** The lander pattern a query family collides with, or null. */
+export function targetsLanderQuery(queryFamily) {
+  const q = normQuery(queryFamily);
+  if (!q) return null;
+  return LANDER_QUERIES.find((re) => re.test(q))?.source ?? null;
 }
 
 /**
@@ -52,27 +145,59 @@ export function nextMorningSlot(lastScheduledAt, now = new Date()) {
  * link) also block. Prose accuracy is not checked here — that is the
  * fact-sheet grounding's job, and the human's.
  */
-export function qualityGate(draft, { ownerPath, existingSlugs, priceSet }) {
+export function qualityGate(draft, { ownerPath, existingSlugs, priceSet, strict = true, testimonialIds = null } = {}) {
   const problems = [];
   const flags = [];
   const slugs = existingSlugs instanceof Set ? existingSlugs : new Set(existingSlugs ?? []);
   const prices = priceSet instanceof Set ? priceSet : new Set(priceSet ?? []);
+  // Prose = the body without its placeholder tags (the tags carry the volatile facts).
+  const prose = (lang) => stripContentTags(draft[`body_${lang}`]);
 
   if (!SLUG_RE.test(draft.slug ?? '') || (draft.slug ?? '').length > 80) problems.push(`slug invalide : « ${draft.slug} »`);
   if (slugs.has(draft.slug)) problems.push(`slug déjà utilisé : « ${draft.slug} »`);
 
-  const n = words(draft.body_fr);
+  const n = words(prose('fr'));
   if (n < 600) problems.push(`body_fr trop court : ${n} mots (minimum 800)`);
   else if (n < 800) flags.push(`body_fr un peu court : ${n} mots`);
 
   const h2 = (String(draft.body_fr ?? '').match(/^## /gm) ?? []).length;
   if (h2 < 3) problems.push(`seulement ${h2} section(s) « ## » (minimum 4)`);
 
-  if (ownerPath && !String(draft.body_fr ?? '').includes(`](/fr${ownerPath}`)) {
-    problems.push(`lien vers la page propriétaire ${ownerPath} manquant dans body_fr`);
-  }
-  for (const [lang, body] of [['ar', draft.body_ar], ['en', draft.body_en]]) {
-    if (ownerPath && !String(body ?? '').includes(`](/${lang}${ownerPath}`)) flags.push(`lien propriétaire manquant dans body_${lang}`);
+  // The link to the owner page: a <CommercialCTA to="{owner}" /> tag (the
+  // architecture's way) or a markdown link, in every locale's body.
+  const linksOwner = (lang, body) => !ownerPath || String(body ?? '').includes(`](/${lang}${ownerPath}`) || new RegExp(`<CommercialCTA\\s+to="${ownerPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"\\s*/>`).test(String(body ?? ''));
+  if (!linksOwner('fr', draft.body_fr)) problems.push(`lien vers la page propriétaire ${ownerPath} manquant dans body_fr (<CommercialCTA to="${ownerPath}" /> ou lien markdown)`);
+  for (const lang of ['ar', 'en']) if (!linksOwner(lang, draft[`body_${lang}`])) flags.push(`lien propriétaire manquant dans body_${lang}`);
+
+  if (strict) {
+    // Placeholder tags: only the registry's, with valid attributes.
+    for (const lang of ['fr', 'ar', 'en']) for (const p of validateContentTags(draft[`body_${lang}`])) problems.push(`body_${lang} : ${p}`);
+    // A quoted testimonial must exist and be published.
+    if (testimonialIds) {
+      for (const m of `${draft.body_fr ?? ''}\n${draft.body_ar ?? ''}\n${draft.body_en ?? ''}`.matchAll(/<ReviewQuote\s+id="([^"]+)"/g)) {
+        if (!testimonialIds.has(m[1])) problems.push(`<ReviewQuote id="${m[1]}"> : aucun témoignage publié avec cet id`);
+      }
+    }
+    // No volatile fact in prose — titles, excerpts, descriptions, bodies, all locales.
+    for (const lang of ['fr', 'ar', 'en']) {
+      for (const field of ['title', 'excerpt', 'seo_title', 'seo_description']) {
+        for (const v of proseViolations(draft[`${field}_${lang}`])) problems.push(`${field}_${lang} : ${v.rule} en clair « ${v.match} » — les faits volatils passent par une balise`);
+      }
+      const seen = new Set();
+      for (const v of proseViolations(prose(lang))) {
+        const key = `${v.rule}|${v.match}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        problems.push(`body_${lang} : ${v.rule} en clair « ${v.match} » — les faits volatils passent par une balise`);
+      }
+    }
+    // Moroccan Arabic register: month names and city names (hard constraints 5 and 8).
+    const ar = `${draft.title_ar ?? ''}\n${draft.excerpt_ar ?? ''}\n${prose('ar')}`;
+    for (const m of NON_MOROCCAN_MONTHS) if (ar.includes(m)) problems.push(`body_ar : nom de mois non marocain « ${m} » (écrire شتنبر، غشت، نونبر، دجنبر…)`);
+    for (const c of LATIN_CITIES) if (new RegExp(`(?<![\\p{L}])${c}(?![\\p{L}])`, 'u').test(ar)) problems.push(`body_ar : nom de ville en caractères latins « ${c} » (الدار البيضاء، الرباط، مراكش، فاس، طنجة، أكادير، مكناس، وجدة)`);
+    // Anti-cannibalisation is mechanical: the query family must not be a lander's.
+    const hit = targetsLanderQuery(draft.query_family);
+    if (hit) problems.push(`query_family « ${draft.query_family} » est la requête d'une page commerciale (${hit}) — un article la soutient, il ne la cible jamais`);
   }
 
   const bodyFr = String(draft.body_fr ?? '');
@@ -95,13 +220,16 @@ export function qualityGate(draft, { ownerPath, existingSlugs, priceSet }) {
   if (/\[À VÉRIFIER\]/i.test(all)) problems.push('marqueur [À VÉRIFIER] dans le corps — il doit rester dans needs_review');
   if (/https?:\/\//i.test(all)) flags.push('lien externe présent — à vérifier par le relecteur');
 
-  // Every MAD amount must exist in the fact sheet. Unsourced ⇒ flagged, never
-  // silently accepted (LAW §10).
-  const amounts = [...bodyFr.matchAll(/(\d[\d\s. ]{2,})\s?(?:MAD|dirhams?|DH)\b/gi)]
-    .map((m) => Number(m[1].replace(/[\s. ]/g, '')))
-    .filter((v) => Number.isFinite(v) && v >= 100);
-  const unsourced = [...new Set(amounts.filter((v) => !prices.has(v)))];
-  if (unsourced.length) flags.push(`prix NON sourcés dans body_fr : ${unsourced.map((v) => `${nf.format(v)} MAD`).join(', ')}`);
+  // Legacy (non-strict) rule: every MAD amount must exist in the fact sheet.
+  // Unsourced ⇒ flagged, never silently accepted (LAW §10). In strict mode any
+  // amount is already a problem above.
+  if (!strict) {
+    const amounts = [...bodyFr.matchAll(/(\d[\d\s. ]{2,})\s?(?:MAD|dirhams?|DH)\b/gi)]
+      .map((m) => Number(m[1].replace(/[\s. ]/g, '')))
+      .filter((v) => Number.isFinite(v) && v >= 100);
+    const unsourced = [...new Set(amounts.filter((v) => !prices.has(v)))];
+    if (unsourced.length) flags.push(`prix NON sourcés dans body_fr : ${unsourced.map((v) => `${nf.format(v)} MAD`).join(', ')}`);
+  }
 
   return { ok: problems.length === 0, problems, flags };
 }
@@ -121,8 +249,12 @@ export function publishDecision({ settings, gate }) {
   return { publish: reasons.length === 0, reasons };
 }
 
-/** Normalize a produced article into the `articles` row shape (no id/dates). */
-export function toArticleRow(draft, { plan = {}, settings = null, slug }) {
+/**
+ * Normalize a produced article into the `articles` row shape (no id/dates).
+ * Author: the AUTHOR record (team_members.id, resolved by the caller) plus the
+ * configured name; no reviewer — the content architecture has none.
+ */
+export function toArticleRow(draft, { plan = {}, settings = null, slug, authorId = null }) {
   return {
     slug,
     title_fr: draft.title_fr,
@@ -144,7 +276,9 @@ export function toArticleRow(draft, { plan = {}, settings = null, slug }) {
     category: CATEGORIES.has(draft.category) ? draft.category : CATEGORIES.has(plan.category) ? plan.category : 'omra',
     supports_path: draft.owner_path ?? plan.owner_path ?? null,
     author_name: settings?.blog_author_name?.trim() || null,
-    reviewed_by: settings?.blog_reviewer_name?.trim() || null,
+    author_id: authorId,
+    reviewed_by: null,
+    reviewer_id: null,
   };
 }
 

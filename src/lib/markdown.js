@@ -26,20 +26,28 @@ function inline(text) {
     );
 }
 
-export function renderMarkdown(md) {
-  if (!md) return '';
-  const blocks = escapeHtml(md.replaceAll('\r\n', '\n')).split(/\n{2,}/);
-  const html = [];
-
-  // Heading normalization: the page H1 belongs to the layout, so the SMALLEST
-  // heading level used in the body must render as <h2> — whatever hash depth
-  // the author typed. Keeps the hierarchy gap-free (audit: no skipped levels).
+/**
+ * The smallest heading depth used in a body (1 when it has no heading). The
+ * page H1 belongs to the layout, so that depth renders as <h2> — whatever hash
+ * depth the author typed — and the hierarchy stays gap-free (audit: no skipped
+ * levels). Exported so a body split into segments (placeholder tags between
+ * them, src/components/content/ArticleBody.jsx) normalises every segment
+ * against the WHOLE body, not against the segment it happens to sit in.
+ */
+export function minHeadingDepth(md) {
   let minHashes = Infinity;
-  for (const block of blocks) {
+  for (const block of String(md ?? '').replaceAll('\r\n', '\n').split(/\n{2,}/)) {
     const m = block.match(/^(#{1,4})\s+/);
     if (m && m[1].length < minHashes) minHashes = m[1].length;
   }
-  if (!Number.isFinite(minHashes)) minHashes = 1;
+  return Number.isFinite(minHashes) ? minHashes : 1;
+}
+
+export function renderMarkdown(md, { minHashes = null } = {}) {
+  if (!md) return '';
+  const blocks = escapeHtml(md.replaceAll('\r\n', '\n')).split(/\n{2,}/);
+  const html = [];
+  if (minHashes == null) minHashes = minHeadingDepth(md);
 
   for (const block of blocks) {
     const lines = block.split('\n').filter((l) => l.trim() !== '');
