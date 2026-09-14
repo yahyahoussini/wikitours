@@ -17,7 +17,11 @@ const NAV = [
   { href: '/admin/e/plan-articles', label: 'Plan éditorial' },
   { href: '/admin/e/guides', label: 'Guide Omra' },
   { href: '/admin/e/glossaire', label: 'Glossaire' },
-  { href: '/admin/e/pages-villes', label: 'Pages villes' },
+  // Two programmatic-SEO entities, two menu entries: the month landers
+  // (/omra-{mois}) and the city pages (/omra-depuis-{ville}). The month entity
+  // used to sit under the "Pages villes" label and the city one had no entry.
+  { href: '/admin/e/pages-mois', label: 'Pages mois' },
+  { href: '/admin/e/city_pages', label: 'Pages villes' },
   { href: '/admin/e/landing-pages', label: 'Landing Pages' },
   { href: '/admin/e/voyages', label: 'Voyages' },
   { href: '/admin/e/services', label: 'Services' },

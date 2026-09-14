@@ -51,6 +51,9 @@ export const ADMIN_ENTITIES = {
         ],
       },
       { name: 'distance_to_haram_m', type: 'number', label: 'Distance au Haram (m)' },
+      // Migration 022 — hotelNode() emits schema `geo` only when BOTH are set.
+      { name: 'latitude', type: 'number', label: 'Latitude (ex. 21.4225 — copiée depuis Google Maps)' },
+      { name: 'longitude', type: 'number', label: 'Longitude (ex. 39.8262)' },
       { name: 'stars', type: 'number', label: 'Étoiles (1–5)' },
       { name: 'breakfast_included', type: 'bool', label: 'Petit-déjeuner inclus' },
       { name: 'logo_path', type: 'media', label: 'Logo de l’hôtel', accept: 'image/jpeg,image/png,image/webp,image/avif' },
@@ -404,7 +407,7 @@ export const ADMIN_ENTITIES = {
     ],
   },
 
-  'pages-villes': {
+  'pages-mois': {
     table: 'month_pages',
     title: 'Pages mois (Omra en …)',
     // The publish toggle IS the index switch, on the city-page pattern: the
