@@ -1,5 +1,7 @@
 {
-  "note": "Gate G1: the word-count range of each FORMAT per locale (tags stripped, FAQ included). The calendar's length_target names a format. Arabic runs ~25% shorter than French for the same content and English ~10%; the ranges follow. G2–G4 (answer-first 40–55 words, ≥4 question H2s, FAQ 5–6 items with 30–90-word answers) apply to every format.",
+  "note": "Gate G1: the word-count range of each FORMAT per locale (tags stripped, FAQ included). The calendar's length_target names a format. Arabic runs ~25% shorter than French for the same content and English ~10%; the ranges follow. G2–G4 (answer-first 40–55 words, ≥4 question H2s, FAQ 5–6 items) apply to every format.",
+  "faq_answer_words": [30, 75],
+  "faq_answer_note": "The brief says 30–90, but scripts/seo-audit.js has failed a FAQPage answer outside 25–75 since before this system existed, and it runs against production in CI. A gate must never pass what a later gate fails, so the ceiling is 75. CLAUDE.md's on-page limits say 40–60, which is the editorial target inside this hard range. The two run-1 articles (omra-8-jours-ou-15-jours, prix-omra-maroc-par-gamme-et-mois) predate all of this and fail the live audit at 81–116 words in all three locales — a pre-existing defect, fixed by editing those two posts in the admin.",
   "formats": {
     "explainer": { "fr": [1100, 1900], "ar": [850, 1700], "en": [950, 1750], "h2_min": 4, "faq": [5, 6] },
     "guide": { "fr": [1400, 2400], "ar": [1050, 2100], "en": [1200, 2200], "h2_min": 5, "faq": [5, 6] },

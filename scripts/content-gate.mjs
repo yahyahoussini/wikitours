@@ -155,12 +155,18 @@ function G3(draft, fmt) {
   }
   return { ok: !details.length, details };
 }
+// The FAQ answer window. The brief says 30–90, but scripts/seo-audit.js has
+// failed a FAQPage answer outside 25–75 since before this system existed, and
+// it runs against production in CI — so a post the content gate passed at 85
+// words would break the build the day its slot arrived. A gate must never pass
+// what a later gate fails: the ceiling is the stricter one.
+const [FAQ_MIN, FAQ_MAX] = formats.faq_answer_words ?? [30, 75];
 function G4(draft) {
   const details = [];
   for (const l of LOCALES) {
     const faq = extractFaq(draft[`body_${l}`]);
     if (faq.length < 5 || faq.length > 6) details.push(`body_${l} : FAQ de ${faq.length} question(s), attendu 5–6`);
-    faq.forEach((it, i) => { const n = wordCount(it.answer); if (n < 30 || n > 90) details.push(`body_${l} : réponse FAQ ${i + 1} de ${n} mots, attendu 30–90`); });
+    faq.forEach((it, i) => { const n = wordCount(it.answer); if (n < FAQ_MIN || n > FAQ_MAX) details.push(`body_${l} : réponse FAQ ${i + 1} de ${n} mots, attendu ${FAQ_MIN}–${FAQ_MAX} (scripts/seo-audit.js échoue au-delà de 75 sur la production)`); });
   }
   return { ok: !details.length, details };
 }

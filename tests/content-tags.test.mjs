@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { parseContentTags, validateContentTags, stripContentTags, contentTagsOf, TAGS, LIVE_ALIASES } from '@/lib/content-tags';
 import { resolveIntent, offersForFilter } from '@/lib/content-resolver';
 import { parseHijriEventTag, ramadanLastTenNights, hijriToGregorian } from '@/lib/hijri';
-import { extractFaq, faqPageJsonLd } from '@/lib/article-schema';
+import { extractFaq, faqPageJsonLd, FAQ_ANSWER_MAX } from '@/lib/article-schema';
 
 describe('parseContentTags — placeholder tags inside markdown', () => {
   test('splits markdown and recognised self-closing tags, keeps order', () => {
@@ -145,11 +145,13 @@ describe('Hijri tag vocabulary and the last ten nights', () => {
 
 describe('extractFaq — the FAQ section → FAQPage', () => {
   test('reads the ### items under the FAQ heading and stops at the next section', () => {
-    const body = '## Comment ?\n\nTexte.\n\n## Questions fréquentes\n\n### Première question ?\n\nRéponse **une** avec [lien](/fr/bab-makka).\n\n### Deuxième ?\n\nRéponse deux.\n\n<CommercialCTA intent="ramadan" />\n\n## Conclusion\n\nFin.';
+    // 30 words each, so the extracted pair also clears the emitter's window.
+    const filler = Array.from({ length: 26 }, () => 'mot').join(' ');
+    const body = `## Comment ?\n\nTexte.\n\n## Questions fréquentes\n\n### Première question ?\n\nRéponse **une** avec [lien](/fr/bab-makka), ${filler}.\n\n### Deuxième ?\n\nRéponse deux, ${filler}.\n\n<CommercialCTA intent="ramadan" />\n\n## Conclusion\n\nFin.`;
     const faq = extractFaq(body);
     assert.equal(faq.length, 2);
     assert.equal(faq[0].question, 'Première question ?');
-    assert.equal(faq[0].answer, 'Réponse une avec lien.');
+    assert.match(faq[0].answer, /^Réponse une avec lien, mot mot/, 'bold, links and tags are stripped from the answer');
     const node = faqPageJsonLd(faq);
     assert.equal(node['@type'], 'FAQPage');
     assert.equal(node.mainEntity.length, 2);
@@ -159,5 +161,19 @@ describe('extractFaq — the FAQ section → FAQPage', () => {
   test('Arabic and English headings are recognised', () => {
     assert.equal(extractFaq('## الأسئلة الشائعة\n\n### سؤال؟\n\nجواب.').length, 1);
     assert.equal(extractFaq('## Frequently asked questions\n\n### Q?\n\nA.').length, 1);
+  });
+  test('FAQPage is emitted only when EVERY answer is extractable', () => {
+    // scripts/seo-audit.js fails a FAQPage answer outside 25–75 words on
+    // production. Marking up a 116-word answer is a promise we cannot keep —
+    // and it is exactly what the pre-contract posts produce, because their
+    // closing WhatsApp CTA has no heading and reads as part of the last answer.
+    const ok = (n) => Array.from({ length: n }, (_, i) => ({ question: `Q${i} ?`, answer: Array.from({ length: 40 }, () => 'mot').join(' ') }));
+    assert.equal(faqPageJsonLd(ok(3)).mainEntity.length, 3);
+    const tooLong = [...ok(2), { question: 'Q long ?', answer: Array.from({ length: FAQ_ANSWER_MAX + 20 }, () => 'mot').join(' ') }];
+    assert.equal(faqPageJsonLd(tooLong), null, 'one over-long answer suppresses the whole node');
+    const tooShort = [...ok(2), { question: 'Q court ?', answer: 'Trop court.' }];
+    assert.equal(faqPageJsonLd(tooShort), null);
+    assert.equal(faqPageJsonLd(ok(1)), null, 'a single question is not an FAQ');
+    assert.equal(faqPageJsonLd([]), null);
   });
 });

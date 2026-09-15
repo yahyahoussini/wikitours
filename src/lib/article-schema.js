@@ -31,12 +31,39 @@ export function extractFaq(body) {
   return items.map((it) => ({ question: it.question, answer: it.answer.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').trim() })).filter((it) => it.question && it.answer);
 }
 
+/**
+ * The extractability window `scripts/seo-audit.js` enforces on every FAQPage
+ * answer it finds on production (25–75 words). The content gate's G4 is
+ * deliberately narrower (30–75) so a post it passes can never fail the audit.
+ */
+export const FAQ_ANSWER_MIN = 25;
+export const FAQ_ANSWER_MAX = 75;
+const answerWords = (s) => String(s ?? '').trim().split(/\s+/).filter(Boolean).length;
+
+/**
+ * FAQPage — emitted ONLY when every extracted answer sits in the audit's
+ * window and there are at least two of them.
+ *
+ * Marking up an answer is a promise to a search engine that it is a good
+ * extractable answer; an answer outside the window is not, and the live audit
+ * fails it. The 36 posts that predate the content contract end their last FAQ
+ * item with a closing WhatsApp CTA that has no heading of its own, so the
+ * extractor legitimately reads it as part of that answer and it runs to
+ * 81–116 words. Emitting the node anyway broke the production audit in three
+ * locales on two articles the moment this page started emitting FAQPage at
+ * all. Those posts now emit no FAQPage — which is what they did before — and a
+ * post written to the contract earns one.
+ */
 export function faqPageJsonLd(items) {
-  if (!items?.length) return null;
+  const usable = (items ?? []).filter((it) => {
+    const n = answerWords(it.answer);
+    return n >= FAQ_ANSWER_MIN && n <= FAQ_ANSWER_MAX;
+  });
+  if (usable.length < 2 || usable.length !== (items ?? []).length) return null;
   return {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: items.map((it) => ({ '@type': 'Question', name: it.question, acceptedAnswer: { '@type': 'Answer', text: it.answer } })),
+    mainEntity: usable.map((it) => ({ '@type': 'Question', name: it.question, acceptedAnswer: { '@type': 'Answer', text: it.answer } })),
   };
 }
 
