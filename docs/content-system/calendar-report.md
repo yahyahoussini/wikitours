@@ -1,18 +1,18 @@
-# Calendar report — generated 2026-09-15T08:51Z
+# Calendar report — generated 2026-09-15T09:26Z
 
 Slots: **243** (2026-09-21 → 2027-09-19, 2 posts every 3 days at 08:30 / 18:00 Africa/Casablanca).
-Filled: **88** · unfillable: **155** · topics in the pool: 88 (valid 88, rejected 0, unused valid 0).
+Filled: **167** · unfillable: **76** · topics in the pool: 169 (valid 169, rejected 0, unused valid 2).
 
 ## Phases (assigned ramadan / omra / hajj vs the brief's weights)
 
 | Phase | Slots | Assigned R / O / H | Weights | Unfillable |
 |---|---|---|---|---|
-| P1 2026-09-13 → 2026-10-31 | 28 | 9 / 15 / 4 | 35/50/15 | 0 |
-| P2 2026-11-01 → 2026-12-31 | 40 | 7 / 17 / 1 | 50/35/15 | 15 |
-| P3 2027-01-01 → 2027-02-07 | 26 | 6 / 1 / 2 | 60/25/15 | 17 |
-| P4 2027-02-08 → 2027-03-09 | 20 | 0 / 1 / 2 | 60/20/20 | 17 |
-| P5 2027-03-10 → 2027-04-30 | 34 | 0 / 2 / 12 | 25/35/40 | 20 |
-| P6 2027-05-01 → 2027-06-15 | 31 | 0 / 1 / 3 | 10/40/50 | 27 |
+| P1 2026-09-13 → 2026-10-31 | 28 | 6 / 18 / 4 | 35/50/15 | 0 |
+| P2 2026-11-01 → 2026-12-31 | 40 | 10 / 29 / 1 | 50/35/15 | 0 |
+| P3 2027-01-01 → 2027-02-07 | 26 | 6 / 18 / 2 | 60/25/15 | 0 |
+| P4 2027-02-08 → 2027-03-09 | 20 | 0 / 18 / 2 | 60/20/20 | 0 |
+| P5 2027-03-10 → 2027-04-30 | 34 | 0 / 22 / 12 | 25/35/40 | 0 |
+| P6 2027-05-01 → 2027-06-15 | 31 | 0 / 11 / 3 | 10/40/50 | 17 |
 | P7 2027-06-16 → 2027-08-31 | 51 | 1 / 3 / 1 | 20/60/20 | 46 |
 | P8 2027-09-01 → 2027-09-19 | 13 | 0 / 0 / 0 | 45/40/15 | 13 |
 
@@ -22,7 +22,7 @@ Filled: **88** · unfillable: **155** · topics in the pool: 88 (valid 88, rejec
 - hajj-1448: 8/8 parts placed
 - premiere-omra: 8/8 parts placed
 - mois-par-mois: 12/12 parts placed
-- villes: 0/7 parts placed
+- villes: 4/7 parts placed
 
 ### ramadan-1448
 
@@ -88,106 +88,30 @@ Filled: **88** · unfillable: **155** · topics in the pool: 88 (valid 88, rejec
 
 | Part | Slot | Date | Query |
 |---|---|---|---|
+| 1 | 6 | 2026-09-28 | omra depuis rabat : comment rejoindre le départ de casablanca |
+| 2 | 12 | 2026-10-07 | omra depuis marrakech : comment rejoindre le départ de casablanca |
+| 3 | 18 | 2026-10-16 | omra depuis fès : comment rejoindre le départ de casablanca |
+| 4 | 24 | 2026-10-25 | omra depuis tanger : comment rejoindre le départ de casablanca |
 
+## Unfillable slots (76)
 
-## Unfillable slots (155)
-
-- #51 2026-12-05 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-05
-- #52 2026-12-06 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-06
-- #53 2026-12-08 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-08
-- #54 2026-12-09 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-09
-- #56 2026-12-12 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-12
-- #57 2026-12-14 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-14
-- #58 2026-12-15 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-15
-- #59 2026-12-17 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-17
-- #61 2026-12-20 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-20
-- #62 2026-12-21 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-21
-- #63 2026-12-23 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-23
-- #64 2026-12-24 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-24
-- #65 2026-12-26 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-26
-- #66 2026-12-27 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-27
-- #67 2026-12-29 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-29
-- #69 2027-01-01 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-01
-- #70 2027-01-02 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-02
-- #71 2027-01-04 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-04
-- #73 2027-01-07 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-07
-- #74 2027-01-08 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-08
-- #75 2027-01-10 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-10
-- #77 2027-01-13 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-13
-- #78 2027-01-14 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-14
-- #83 2027-01-22 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-22
-- #84 2027-01-23 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-23
-- #86 2027-01-26 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-26
-- #87 2027-01-28 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-28
-- #88 2027-01-29 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-29
-- #90 2027-02-01 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-02-01
-- #91 2027-02-03 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-02-03
-- #92 2027-02-04 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-02-04
-- #94 2027-02-07 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-02-07
-- #95 2027-02-09 (P4) — no distinct topic left for P4 (ramadan > omra > hajj) on 2027-02-09
-- #96 2027-02-10 (P4) — no distinct topic left for P4 (ramadan > omra > hajj) on 2027-02-10
-- #97 2027-02-12 (P4) — no distinct topic left for P4 (ramadan > omra > hajj) on 2027-02-12
-- #98 2027-02-13 (P4) — no distinct topic left for P4 (ramadan > omra > hajj) on 2027-02-13
-- #101 2027-02-18 (P4) — no distinct topic left for P4 (ramadan > omra > hajj) on 2027-02-18
-- #102 2027-02-19 (P4) — no distinct topic left for P4 (ramadan > omra > hajj) on 2027-02-19
-- #103 2027-02-21 (P4) — no distinct topic left for P4 (ramadan > omra > hajj) on 2027-02-21
-- #104 2027-02-22 (P4) — no distinct topic left for P4 (ramadan > omra > hajj) on 2027-02-22
-- #105 2027-02-24 (P4) — no distinct topic left for P4 (ramadan > omra > hajj) on 2027-02-24
-- #106 2027-02-25 (P4) — no distinct topic left for P4 (ramadan > omra > hajj) on 2027-02-25
-- #107 2027-02-27 (P4) — no distinct topic left for P4 (ramadan > omra > hajj) on 2027-02-27
-- #108 2027-02-28 (P4) — no distinct topic left for P4 (ramadan > omra > hajj) on 2027-02-28
-- #110 2027-03-03 (P4) — no distinct topic left for P4 (ramadan > omra > hajj) on 2027-03-03
-- #111 2027-03-05 (P4) — no distinct topic left for P4 (ramadan > omra > hajj) on 2027-03-05
-- #112 2027-03-06 (P4) — no distinct topic left for P4 (ramadan > omra > hajj) on 2027-03-06
-- #113 2027-03-08 (P4) — no distinct topic left for P4 (ramadan > omra > hajj) on 2027-03-08
-- #114 2027-03-09 (P4) — no distinct topic left for P4 (ramadan > omra > hajj) on 2027-03-09
-- #122 2027-03-21 (P5) — no distinct topic left for P5 (omra > ramadan > hajj) on 2027-03-21
-- #123 2027-03-23 (P5) — no distinct topic left for P5 (omra > ramadan > hajj) on 2027-03-23
-- #124 2027-03-24 (P5) — no distinct topic left for P5 (omra > ramadan > hajj) on 2027-03-24
-- #125 2027-03-26 (P5) — no distinct topic left for P5 (omra > ramadan > hajj) on 2027-03-26
-- #126 2027-03-27 (P5) — no distinct topic left for P5 (omra > ramadan > hajj) on 2027-03-27
-- #127 2027-03-29 (P5) — no distinct topic left for P5 (omra > ramadan > hajj) on 2027-03-29
-- #128 2027-03-30 (P5) — no distinct topic left for P5 (omra > ramadan > hajj) on 2027-03-30
-- #134 2027-04-08 (P5) — no distinct topic left for P5 (omra > ramadan > hajj) on 2027-04-08
-- #135 2027-04-10 (P5) — no distinct topic left for P5 (omra > ramadan > hajj) on 2027-04-10
-- #136 2027-04-11 (P5) — no distinct topic left for P5 (omra > ramadan > hajj) on 2027-04-11
-- #137 2027-04-13 (P5) — no distinct topic left for P5 (omra > ramadan > hajj) on 2027-04-13
-- #138 2027-04-14 (P5) — no distinct topic left for P5 (omra > ramadan > hajj) on 2027-04-14
-- #139 2027-04-16 (P5) — no distinct topic left for P5 (omra > ramadan > hajj) on 2027-04-16
-- #141 2027-04-19 (P5) — no distinct topic left for P5 (omra > ramadan > hajj) on 2027-04-19
-- #142 2027-04-20 (P5) — no distinct topic left for P5 (omra > ramadan > hajj) on 2027-04-20
-- #143 2027-04-22 (P5) — no distinct topic left for P5 (omra > ramadan > hajj) on 2027-04-22
-- #144 2027-04-23 (P5) — no distinct topic left for P5 (omra > ramadan > hajj) on 2027-04-23
-- #145 2027-04-25 (P5) — no distinct topic left for P5 (omra > ramadan > hajj) on 2027-04-25
-- #147 2027-04-28 (P5) — no distinct topic left for P5 (omra > ramadan > hajj) on 2027-04-28
-- #148 2027-04-29 (P5) — no distinct topic left for P5 (omra > ramadan > hajj) on 2027-04-29
-- #150 2027-05-02 (P6) — no distinct topic left for P6 (hajj > omra > ramadan) on 2027-05-02
-- #151 2027-05-04 (P6) — no distinct topic left for P6 (hajj > omra > ramadan) on 2027-05-04
-- #152 2027-05-05 (P6) — no distinct topic left for P6 (hajj > omra > ramadan) on 2027-05-05
-- #153 2027-05-07 (P6) — no distinct topic left for P6 (hajj > omra > ramadan) on 2027-05-07
-- #154 2027-05-08 (P6) — no distinct topic left for P6 (hajj > omra > ramadan) on 2027-05-08
-- #155 2027-05-10 (P6) — no distinct topic left for P6 (hajj > omra > ramadan) on 2027-05-10
-- #156 2027-05-11 (P6) — no distinct topic left for P6 (hajj > omra > ramadan) on 2027-05-11
-- #157 2027-05-13 (P6) — no distinct topic left for P6 (hajj > omra > ramadan) on 2027-05-13
-- #158 2027-05-14 (P6) — no distinct topic left for P6 (hajj > omra > ramadan) on 2027-05-14
-- #159 2027-05-16 (P6) — no distinct topic left for P6 (hajj > omra > ramadan) on 2027-05-16
-- #161 2027-05-19 (P6) — no distinct topic left for P6 (hajj > omra > ramadan) on 2027-05-19
-- #162 2027-05-20 (P6) — no distinct topic left for P6 (hajj > omra > ramadan) on 2027-05-20
-- #163 2027-05-22 (P6) — no distinct topic left for P6 (hajj > omra > ramadan) on 2027-05-22
-- #164 2027-05-23 (P6) — no distinct topic left for P6 (hajj > omra > ramadan) on 2027-05-23
-- #166 2027-05-26 (P6) — no distinct topic left for P6 (hajj > omra > ramadan) on 2027-05-26
-- #167 2027-05-28 (P6) — no distinct topic left for P6 (hajj > omra > ramadan) on 2027-05-28
-- #168 2027-05-29 (P6) — no distinct topic left for P6 (hajj > omra > ramadan) on 2027-05-29
-- #169 2027-05-31 (P6) — no distinct topic left for P6 (hajj > omra > ramadan) on 2027-05-31
-- #171 2027-06-03 (P6) — no distinct topic left for P6 (omra > ramadan > hajj) on 2027-06-03
-- #172 2027-06-04 (P6) — no distinct topic left for P6 (omra > ramadan > hajj) on 2027-06-04
-- #173 2027-06-06 (P6) — no distinct topic left for P6 (omra > ramadan > hajj) on 2027-06-06
-- #174 2027-06-07 (P6) — no distinct topic left for P6 (omra > ramadan > hajj) on 2027-06-07
-- #175 2027-06-09 (P6) — no distinct topic left for P6 (omra > ramadan > hajj) on 2027-06-09
-- #176 2027-06-10 (P6) — no distinct topic left for P6 (omra > ramadan > hajj) on 2027-06-10
-- #177 2027-06-12 (P6) — no distinct topic left for P6 (omra > ramadan > hajj) on 2027-06-12
-- #178 2027-06-13 (P6) — no distinct topic left for P6 (omra > ramadan > hajj) on 2027-06-13
-- #179 2027-06-15 (P6) — no distinct topic left for P6 (omra > ramadan > hajj) on 2027-06-15
+- #161 2027-05-19 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-19
+- #162 2027-05-20 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-20
+- #163 2027-05-22 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-22
+- #164 2027-05-23 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-23
+- #166 2027-05-26 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-26
+- #167 2027-05-28 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-28
+- #168 2027-05-29 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-29
+- #169 2027-05-31 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-31
+- #171 2027-06-03 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-06-03
+- #172 2027-06-04 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-06-04
+- #173 2027-06-06 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-06-06
+- #174 2027-06-07 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-06-07
+- #175 2027-06-09 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-06-09
+- #176 2027-06-10 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-06-10
+- #177 2027-06-12 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-06-12
+- #178 2027-06-13 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-06-13
+- #179 2027-06-15 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-06-15
 - #182 2027-06-19 (P7) — no distinct topic left for P7 (omra > ramadan > hajj) on 2027-06-19
 - #183 2027-06-21 (P7) — no distinct topic left for P7 (omra > ramadan > hajj) on 2027-06-21
 - #184 2027-06-22 (P7) — no distinct topic left for P7 (omra > ramadan > hajj) on 2027-06-22
@@ -252,6 +176,7 @@ Filled: **88** · unfillable: **155** · topics in the pool: 88 (valid 88, rejec
 
 - none
 
-## Unused valid topics (0)
+## Unused valid topics (2)
 
-- none
+- audience-entreprise-association [omra/B] une entreprise ou une association qui envoie un groupe en omra : comment procéder (window 2026-09-21 → 2026-11-30)
+- audience-etudiants-budget [omra/D] partir en omra quand on est étudiant : budget serré et pauses universitaires (window 2026-12-20 → 2027-01-20)

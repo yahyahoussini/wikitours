@@ -150,12 +150,20 @@ const nearestFreeBefore = (date, back = 4, forward = 14, floor = null) => {
   return nearestFree(date, 1, forward);
 };
 
-// 1. frozen rows come back as they were
-for (const [i, row] of frozen) Object.assign(byIndex.get(i) ?? {}, row);
+// 1. frozen rows come back as they were — and the topic each one already
+// carries is marked used, or the series loop below would place it a SECOND
+// time in a free slot (which is what made every series show one part too many
+// once the first slots were scheduled).
+for (const [i, row] of frozen) {
+  Object.assign(byIndex.get(i) ?? {}, row);
+  if (row.topic_id) used.add(row.topic_id);
+}
 // 2. pinned topics
 for (const t of valid.filter((t) => t.pinned_slot_index)) {
+  if (used.has(t.id)) continue;
   const slot = byIndex.get(t.pinned_slot_index);
   if (slot && isFree(slot)) assign(slot, t, 'pinned');
+  else log(`pinned topic ${t.id} wants slot #${t.pinned_slot_index}, which is taken — left unplaced`);
 }
 // 3. series
 const seriesReport = [];
