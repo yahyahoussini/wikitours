@@ -106,6 +106,15 @@ async function main() {
     if (existingSlugs.has(draft.slug)) {
       const row = existingBySlug.get(draft.slug);
       const stillScheduled = row?.published_at && row.published_at > now.toISOString();
+      // A row that was deliberately WITHDRAWN (is_published = false, e.g. a
+      // slot skipped after review) is left exactly as it is: refreshing it
+      // would quietly resurrect text someone chose to hold back. Re-publishing
+      // is an admin decision, never a build's.
+      if (REFRESH && stillScheduled && row.is_published === false) {
+        alreadyIn++;
+        log(`HELD ${file} (${draft.slug}) — row is unpublished (withdrawn); not refreshed`);
+        continue;
+      }
       if (!REFRESH || !stillScheduled) { alreadyIn++; continue; } // already ingested, or already live — never rewritten by a build
       // Corrected after review, before its slot: re-gate and update in place.
       const plan = { query_family: draft.query_family ?? null, owner_path: draft.owner_path ?? null, category: draft.category ?? null };
