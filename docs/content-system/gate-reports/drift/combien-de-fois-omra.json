@@ -1,0 +1,165 @@
+{
+  "slug": "combien-de-fois-omra",
+  "file": null,
+  "row": true,
+  "state": "scheduled",
+  "format": "explainer",
+  "checked_at": "2026-09-15T11:00:45.705Z",
+  "ok": false,
+  "failed": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G6",
+    "G10",
+    "G12",
+    "G13",
+    "G0"
+  ],
+  "pending": [
+    "G16"
+  ],
+  "words": {
+    "fr": 340,
+    "ar": 230,
+    "en": 297
+  },
+  "checks": {
+    "G1": {
+      "ok": false,
+      "details": [
+        "body_fr : 340 mots, attendu 1100–1900 (format explainer)",
+        "body_ar : 230 mots, attendu 850–1700 (format explainer)",
+        "body_en : 297 mots, attendu 950–1750 (format explainer)"
+      ],
+      "format": "explainer"
+    },
+    "G2": {
+      "ok": false,
+      "details": [
+        "excerpt_ar (bloc réponse d'abord) : 33 mots, attendu 40–55"
+      ]
+    },
+    "G3": {
+      "ok": false,
+      "details": [
+        "body_fr : 1 H2 en forme de question sur 4, minimum 4",
+        "body_ar : 1 H2 en forme de question sur 4, minimum 4",
+        "body_en : 1 H2 en forme de question sur 4, minimum 4"
+      ]
+    },
+    "G4": {
+      "ok": false,
+      "details": [
+        "body_fr : FAQ de 0 question(s), attendu 5–6",
+        "body_ar : FAQ de 0 question(s), attendu 5–6",
+        "body_en : FAQ de 0 question(s), attendu 5–6"
+      ]
+    },
+    "G5": {
+      "ok": true,
+      "details": []
+    },
+    "G6": {
+      "ok": false,
+      "details": [
+        "body_fr : 3 lien(s) interne(s) (liens markdown + CTA), minimum 4",
+        "body_fr : aucun lien vers le pilier /guide-omra (<CommercialCTA> ou lien markdown)",
+        "body_fr : 1 lien(s) vers des pages sœurs du dossier E, minimum 2",
+        "body_fr : « /fr/blog/omra-badal-pour-un-proche » n'est pas une page construite (404 ou redirection)",
+        "body_fr : lien en dur vers la page commerciale « /bab-makka » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_ar : 3 lien(s) interne(s) (liens markdown + CTA), minimum 4",
+        "body_ar : aucun lien vers le pilier /guide-omra (<CommercialCTA> ou lien markdown)",
+        "body_ar : 1 lien(s) vers des pages sœurs du dossier E, minimum 2",
+        "body_ar : « /ar/blog/omra-badal-pour-un-proche » n'est pas une page construite (404 ou redirection)",
+        "body_ar : lien en dur vers la page commerciale « /bab-makka » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_en : 3 lien(s) interne(s) (liens markdown + CTA), minimum 4",
+        "body_en : aucun lien vers le pilier /guide-omra (<CommercialCTA> ou lien markdown)",
+        "body_en : 1 lien(s) vers des pages sœurs du dossier E, minimum 2",
+        "body_en : « /en/blog/omra-badal-pour-un-proche » n'est pas une page construite (404 ou redirection)",
+        "body_en : lien en dur vers la page commerciale « /bab-makka » — utiliser <CommercialCTA intent=\"…\" />"
+      ]
+    },
+    "G7": {
+      "ok": true,
+      "details": [],
+      "warnings": []
+    },
+    "G8": {
+      "ok": true,
+      "details": []
+    },
+    "G9": {
+      "ok": true,
+      "details": [],
+      "arabicShare": 100
+    },
+    "G10": {
+      "ok": false,
+      "details": [
+        "en : expression interdite « the best »"
+      ]
+    },
+    "G11": {
+      "ok": true,
+      "details": []
+    },
+    "G12": {
+      "ok": false,
+      "details": [
+        "title_fr (H1) : 74 caractères, maximum 70",
+        "seo_title_ar avec marque : 34 caractères, attendu 45–60 (« كم مرة يمكن أداء العمرة؟ | باب مكة »)",
+        "seo_description_ar : 100 caractères, attendu 120–155"
+      ]
+    },
+    "G13": {
+      "ok": false,
+      "details": [
+        "FAQPage : 0 question(s) extraites de body_fr, minimum 5",
+        "ligne programmée absente d'un build normal (publish-by-time) : rejouer avec CONTENT_PREVIEW_SCHEDULED=1"
+      ],
+      "pending": true
+    },
+    "G14": {
+      "ok": true,
+      "details": [
+        "créneau omra : règle non applicable"
+      ]
+    },
+    "G15": {
+      "ok": true,
+      "details": [],
+      "closest": {
+        "fr": {
+          "slug": "omra-badal-pour-un-proche",
+          "score": 0.029
+        },
+        "ar": {
+          "slug": "omra-badal-pour-un-proche",
+          "score": 0.02
+        },
+        "en": {
+          "slug": "omra-badal-pour-un-proche",
+          "score": 0.023
+        }
+      },
+      "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
+    },
+    "G16": {
+      "ok": null,
+      "pending": true,
+      "details": [
+        "ligne programmée absente d'un build normal (publish-by-time) : rejouer avec CONTENT_PREVIEW_SCHEDULED=1"
+      ]
+    },
+    "G0": {
+      "ok": false,
+      "details": [
+        "body_fr trop court : 339 mots (minimum 800)",
+        "bloc « Questions fréquentes » absent ou avec 0 question(s) (minimum 3)"
+      ],
+      "flags": []
+    }
+  }
+}

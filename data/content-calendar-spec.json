@@ -31,7 +31,8 @@
   "hijri_anchors": {
     "rajab_1448": "2026-12-10", "shaban_1448": "2027-01-09", "ramadan_1448_start": "2027-02-08", "ramadan_1448_last10": "2027-02-28", "laylat_al_qadr_1448": "2027-03-06", "eid_al_fitr_1448": "2027-03-09",
     "dhul_hijja_1448": "2027-05-07", "arafah_1448": "2027-05-15", "eid_al_adha_1448": "2027-05-16", "muharram_1449": "2027-06-06", "ashura_1449": "2027-06-15", "mawlid_1449": "2027-08-14", "ramadan_1449_start": "2028-01-28",
-    "tolerance_days": 2
+    "tolerance_days": 2,
+    "lead_days": 7
   },
   "school_holidays_2026_2027": [
     { "id": "autumn", "from": "2026-10-18", "to": "2026-10-25" },

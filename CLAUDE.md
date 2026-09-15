@@ -378,7 +378,9 @@ There is no `tailwind.config.js` (Tailwind v4) and no RTL plugin.
   slot, 3-gram similarity below the threshold, and the rendered body with
   JavaScript disabled. The dependency-free `src/lib/server/article-gate.mjs`
   then re-runs at `prebuild`; a failing file is **skipped and logged**, never
-  inserted — cadence is a ceiling. Existing rows are never re-gated.
+  inserted — cadence is a ceiling. Existing rows are never re-gated at ingest;
+  `npm run content:gate -- --existing` audits them (scheduled failures exit 1,
+  published ones are reported as backlog) — see `docs/content-system/audit-2026-09.md`.
 - **Publish = `published_at` has passed**: the anon RLS policy
   (`is_published and published_at <= now()`) IS the brief's
   `status='scheduled' AND publish_at <= now()`, proven by

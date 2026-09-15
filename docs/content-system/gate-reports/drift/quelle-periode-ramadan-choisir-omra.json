@@ -1,0 +1,174 @@
+{
+  "slug": "quelle-periode-ramadan-choisir-omra",
+  "file": null,
+  "row": true,
+  "state": "scheduled",
+  "format": "explainer",
+  "checked_at": "2026-09-15T11:00:45.177Z",
+  "ok": false,
+  "failed": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6",
+    "G10",
+    "G12",
+    "G13",
+    "G0"
+  ],
+  "pending": [
+    "G16"
+  ],
+  "words": {
+    "fr": 376,
+    "ar": 254,
+    "en": 352
+  },
+  "checks": {
+    "G1": {
+      "ok": false,
+      "details": [
+        "body_fr : 376 mots, attendu 1100–1900 (format explainer)",
+        "body_ar : 254 mots, attendu 850–1700 (format explainer)",
+        "body_en : 352 mots, attendu 950–1750 (format explainer)"
+      ],
+      "format": "explainer"
+    },
+    "G2": {
+      "ok": false,
+      "details": [
+        "excerpt_fr (bloc réponse d'abord) : 58 mots, attendu 40–55",
+        "excerpt_ar (bloc réponse d'abord) : 36 mots, attendu 40–55"
+      ]
+    },
+    "G3": {
+      "ok": false,
+      "details": [
+        "body_fr : 1 H2 en forme de question sur 5, minimum 4",
+        "body_ar : 1 H2 en forme de question sur 5, minimum 4",
+        "body_en : 1 H2 en forme de question sur 5, minimum 4"
+      ]
+    },
+    "G4": {
+      "ok": false,
+      "details": [
+        "body_fr : FAQ de 0 question(s), attendu 5–6",
+        "body_ar : FAQ de 0 question(s), attendu 5–6",
+        "body_en : FAQ de 0 question(s), attendu 5–6"
+      ]
+    },
+    "G5": {
+      "ok": false,
+      "details": [
+        "seo_description_fr : année en clair « 2027 »",
+        "body_fr : année en clair « 2027 »",
+        "seo_description_ar : année en clair « 2027 »",
+        "body_ar : année en clair « 2027 »",
+        "seo_description_en : année en clair « 2027 »",
+        "body_en : année en clair « 2027 »"
+      ]
+    },
+    "G6": {
+      "ok": false,
+      "details": [
+        "body_fr : 2 lien(s) interne(s) (liens markdown + CTA), minimum 4",
+        "body_fr : 1 lien(s) vers des pages sœurs du dossier D, minimum 2",
+        "body_fr : lien en dur vers la page commerciale « /omra-ramadan » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_ar : 2 lien(s) interne(s) (liens markdown + CTA), minimum 4",
+        "body_ar : 1 lien(s) vers des pages sœurs du dossier D, minimum 2",
+        "body_ar : lien en dur vers la page commerciale « /omra-ramadan » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_en : 2 lien(s) interne(s) (liens markdown + CTA), minimum 4",
+        "body_en : 1 lien(s) vers des pages sœurs du dossier D, minimum 2",
+        "body_en : lien en dur vers la page commerciale « /omra-ramadan » — utiliser <CommercialCTA intent=\"…\" />"
+      ]
+    },
+    "G7": {
+      "ok": true,
+      "details": [],
+      "warnings": []
+    },
+    "G8": {
+      "ok": true,
+      "details": []
+    },
+    "G9": {
+      "ok": true,
+      "details": [],
+      "arabicShare": 100
+    },
+    "G10": {
+      "ok": false,
+      "details": [
+        "en : expression interdite « the best »"
+      ]
+    },
+    "G11": {
+      "ok": true,
+      "details": []
+    },
+    "G12": {
+      "ok": false,
+      "details": [
+        "seo_title_ar avec marque : 35 caractères, attendu 45–60 (« أي فترة من رمضان تختارون؟ | باب مكة »)",
+        "seo_description_ar : 104 caractères, attendu 120–155",
+        "seo_title_en avec marque : 43 caractères, attendu 45–60 (« Which Ramadan window to choose? | Bab Makka »)"
+      ]
+    },
+    "G13": {
+      "ok": false,
+      "details": [
+        "FAQPage : 0 question(s) extraites de body_fr, minimum 5",
+        "ligne programmée absente d'un build normal (publish-by-time) : rejouer avec CONTENT_PREVIEW_SCHEDULED=1"
+      ],
+      "pending": true
+    },
+    "G14": {
+      "ok": true,
+      "details": [
+        "créneau omra : règle non applicable"
+      ]
+    },
+    "G15": {
+      "ok": true,
+      "details": [],
+      "closest": {
+        "fr": {
+          "slug": "omra-10-derniers-jours-ramadan-2027",
+          "score": 0.031
+        },
+        "ar": {
+          "slug": "omra-ramadan-2027-quand-reserver",
+          "score": 0.025
+        },
+        "en": {
+          "slug": "omra-ramadan-2027-quand-reserver",
+          "score": 0.037
+        }
+      },
+      "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
+    },
+    "G16": {
+      "ok": null,
+      "pending": true,
+      "details": [
+        "ligne programmée absente d'un build normal (publish-by-time) : rejouer avec CONTENT_PREVIEW_SCHEDULED=1"
+      ]
+    },
+    "G0": {
+      "ok": false,
+      "details": [
+        "body_fr trop court : 376 mots (minimum 800)",
+        "seo_description_fr : année en clair « 2027 » — les faits volatils passent par une balise",
+        "body_fr : année en clair « 2027 » — les faits volatils passent par une balise",
+        "seo_description_ar : année en clair « 2027 » — les faits volatils passent par une balise",
+        "body_ar : année en clair « 2027 » — les faits volatils passent par une balise",
+        "seo_description_en : année en clair « 2027 » — les faits volatils passent par une balise",
+        "body_en : année en clair « 2027 » — les faits volatils passent par une balise",
+        "bloc « Questions fréquentes » absent ou avec 0 question(s) (minimum 3)"
+      ],
+      "flags": []
+    }
+  }
+}

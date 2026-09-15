@@ -1,7 +1,7 @@
-# Calendar report — generated 2026-09-15T09:27Z
+# Calendar report — generated 2026-09-15T10:57Z
 
 Slots: **243** (2026-09-21 → 2027-09-19, 2 posts every 3 days at 08:30 / 18:00 Africa/Casablanca).
-Filled: **170** · unfillable: **73** · topics in the pool: 172 (valid 172, rejected 0, unused valid 2).
+Filled: **169** · unfillable: **74** · topics in the pool: 172 (valid 172, rejected 0, unused valid 3).
 
 ## Phases (assigned ramadan / omra / hajj vs the brief's weights)
 
@@ -12,7 +12,7 @@ Filled: **170** · unfillable: **73** · topics in the pool: 172 (valid 172, rej
 | P3 2027-01-01 → 2027-02-07 | 26 | 6 / 18 / 2 | 60/25/15 | 0 |
 | P4 2027-02-08 → 2027-03-09 | 20 | 0 / 18 / 2 | 60/20/20 | 0 |
 | P5 2027-03-10 → 2027-04-30 | 34 | 0 / 22 / 12 | 25/35/40 | 0 |
-| P6 2027-05-01 → 2027-06-15 | 31 | 0 / 14 / 3 | 10/40/50 | 14 |
+| P6 2027-05-01 → 2027-06-15 | 31 | 0 / 13 / 3 | 10/40/50 | 15 |
 | P7 2027-06-16 → 2027-08-31 | 51 | 1 / 3 / 1 | 20/60/20 | 46 |
 | P8 2027-09-01 → 2027-09-19 | 13 | 0 / 0 / 0 | 45/40/15 | 13 |
 
@@ -96,8 +96,9 @@ Filled: **170** · unfillable: **73** · topics in the pool: 172 (valid 172, rej
 | 6 | 36 | 2026-11-12 | omra depuis meknès : comment rejoindre le départ de casablanca |
 | 7 | 43 | 2026-11-23 | omra depuis oujda : comment rejoindre le départ de casablanca |
 
-## Unfillable slots (73)
+## Unfillable slots (74)
 
+- #163 2027-05-22 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-22
 - #164 2027-05-23 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-23
 - #166 2027-05-26 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-26
 - #167 2027-05-28 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-28
@@ -176,7 +177,8 @@ Filled: **170** · unfillable: **73** · topics in the pool: 172 (valid 172, rej
 
 - none
 
-## Unused valid topics (2)
+## Unused valid topics (3)
 
 - audience-entreprise-association [omra/B] une entreprise ou une association qui envoie un groupe en omra : comment procéder (window 2026-09-21 → 2026-11-30)
 - audience-etudiants-budget [omra/D] partir en omra quand on est étudiant : budget serré et pauses universitaires (window 2026-12-20 → 2027-01-20)
+- seasonal-coupure-mi-annee [omra/D] omra pendant la coupure de mi-année : partir en plein hiver avec des scolaires

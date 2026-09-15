@@ -123,11 +123,37 @@ One JSON per post in `docs/content-system/gate-reports/<slug>.json`:
   `CONTENT_PREVIEW_SCHEDULED=1` is a **local build flag only** — it makes the
   build prerender rows whose slot has not passed. Never set it on Vercel.
 - The rule numbers: G0 the shared strict gate · G1 word count · G2 answer-first
-  40–55 words · G3 four question H2s · G4 FAQ 5–6 × 30–90 words · G5 volatile
+  40–55 words · G3 four question H2s · G4 FAQ 5–6 × 30–75 words · G5 volatile
   facts · G6 internal links · G7 external links · G8 query ownership ·
   G9 language purity · G10 banned phrases · G11 quotations · G12 title and meta
   · G13 schema · G14 Hijri component on Ramadan/Hajj · G15 similarity ·
   G16 rendered HTML without JavaScript.
+
+---
+
+## Re-gate what is already in the table (the drift audit)
+
+The gate reads drafts. A rule added later never reaches a row that is already
+ingested — that is how two live posts kept 43 prices in prose for a week after
+the rule forbidding them landed. Run this after any rule change, and monthly:
+
+```
+npm run content:gate -- --existing=scheduled --offline --quiet --out=docs/content-system/gate-reports/drift
+npm run content:gate -- --existing=published --offline --quiet --out=docs/content-system/gate-reports/drift
+```
+
+- `--existing=scheduled` **exits 1** on any failing row: it has not gone out, so
+  fix or unschedule it (§ Unschedule a post). Do not wire it into `prebuild`
+  while pre-contract rows are still queued — it would block every deploy.
+- `--existing=published` lists failures as **backlog and exits 0**. Keep it that
+  way: a gate that is permanently red gets loosened.
+- In a normal build a scheduled row has no page, so G13 and G16 report `pending`
+  for it rather than failing. To judge them, build with
+  `CONTENT_PREVIEW_SCHEDULED=1` first (locally only).
+- A link to a still-scheduled sibling is fine when that sibling publishes first;
+  the naive "is it built?" check flags it anyway.
+
+Write the result up as `audit-YYYY-MM.md` beside this file.
 
 ---
 

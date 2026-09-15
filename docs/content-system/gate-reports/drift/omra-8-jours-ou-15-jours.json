@@ -1,0 +1,263 @@
+{
+  "slug": "omra-8-jours-ou-15-jours",
+  "file": null,
+  "row": true,
+  "state": "published",
+  "format": "explainer",
+  "checked_at": "2026-09-15T11:01:10.877Z",
+  "ok": false,
+  "failed": [
+    "G2",
+    "G4",
+    "G5",
+    "G6",
+    "G10",
+    "G13",
+    "G0"
+  ],
+  "pending": [],
+  "words": {
+    "fr": 1164,
+    "ar": 866,
+    "en": 1079
+  },
+  "checks": {
+    "G1": {
+      "ok": true,
+      "details": [],
+      "format": "explainer"
+    },
+    "G2": {
+      "ok": false,
+      "details": [
+        "excerpt_fr (bloc réponse d'abord) : 27 mots, attendu 40–55",
+        "excerpt_ar (bloc réponse d'abord) : 20 mots, attendu 40–55",
+        "excerpt_en (bloc réponse d'abord) : 27 mots, attendu 40–55"
+      ]
+    },
+    "G3": {
+      "ok": true,
+      "details": []
+    },
+    "G4": {
+      "ok": false,
+      "details": [
+        "body_fr : FAQ de 3 question(s), attendu 5–6",
+        "body_fr : réponse FAQ 3 de 118 mots, attendu 30–75 (scripts/seo-audit.js échoue au-delà de 75 sur la production)",
+        "body_ar : FAQ de 3 question(s), attendu 5–6",
+        "body_ar : réponse FAQ 3 de 86 mots, attendu 30–75 (scripts/seo-audit.js échoue au-delà de 75 sur la production)",
+        "body_en : FAQ de 3 question(s), attendu 5–6",
+        "body_en : réponse FAQ 3 de 108 mots, attendu 30–75 (scripts/seo-audit.js échoue au-delà de 75 sur la production)"
+      ]
+    },
+    "G5": {
+      "ok": false,
+      "details": [
+        "excerpt_fr : année en clair « 2026 »",
+        "body_fr : année en clair « 2026 »",
+        "body_fr : montant en clair « 14 100 MAD »",
+        "body_fr : montant en clair « 13 600 MAD »",
+        "body_fr : montant en clair « 13 100 MAD »",
+        "body_fr : montant en clair « 12 500 MAD »",
+        "body_fr : montant en clair « 15 900 MAD »",
+        "body_fr : montant en clair « 14 900 MAD »",
+        "body_fr : montant en clair « 13 900 MAD »",
+        "body_fr : montant en clair « 12 300 MAD »",
+        "body_fr : montant en clair « 20 900 MAD »",
+        "body_fr : montant en clair « 26 300 MAD »",
+        "body_fr : date en clair « 9 septembre »",
+        "body_fr : date en clair « 23 septembre »",
+        "body_fr : date en clair « 6 octobre »",
+        "body_fr : date en clair « 4 novembre »",
+        "body_fr : date en clair « 24 octobre »",
+        "body_fr : date en clair « 20 octobre »",
+        "body_fr : nombre « 14100 » absent de data/allowed-facts.json",
+        "body_fr : nombre « 13600 » absent de data/allowed-facts.json",
+        "body_fr : nombre « 13100 » absent de data/allowed-facts.json",
+        "body_fr : nombre « 12500 » absent de data/allowed-facts.json",
+        "body_fr : nombre « 20 » absent de data/allowed-facts.json",
+        "body_fr : nombre « 15900 » absent de data/allowed-facts.json",
+        "body_fr : nombre « 14900 » absent de data/allowed-facts.json",
+        "body_fr : nombre « 13900 » absent de data/allowed-facts.json",
+        "body_fr : nombre « 12300 » absent de data/allowed-facts.json",
+        "body_fr : nombre « 20900 » absent de data/allowed-facts.json",
+        "body_fr : nombre « 26300 » absent de data/allowed-facts.json",
+        "excerpt_ar : année en clair « 2026 »",
+        "body_ar : année en clair « 2026 »",
+        "body_ar : nombre « 14100 » absent de data/allowed-facts.json",
+        "body_ar : nombre « 13600 » absent de data/allowed-facts.json",
+        "body_ar : nombre « 13100 » absent de data/allowed-facts.json",
+        "body_ar : nombre « 12500 » absent de data/allowed-facts.json",
+        "body_ar : nombre « 20 » absent de data/allowed-facts.json",
+        "body_ar : nombre « 15900 » absent de data/allowed-facts.json",
+        "body_ar : nombre « 14900 » absent de data/allowed-facts.json",
+        "body_ar : nombre « 13900 » absent de data/allowed-facts.json",
+        "body_ar : nombre « 12300 » absent de data/allowed-facts.json",
+        "body_ar : nombre « 20900 » absent de data/allowed-facts.json",
+        "body_ar : nombre « 26300 » absent de data/allowed-facts.json",
+        "excerpt_en : année en clair « 2026 »",
+        "body_en : année en clair « 2026 »",
+        "body_en : montant en clair « 14,100 MAD »",
+        "body_en : montant en clair « 13,600 MAD »",
+        "body_en : montant en clair « 13,100 MAD »",
+        "body_en : montant en clair « 12,500 MAD »",
+        "body_en : montant en clair « 15,900 MAD »",
+        "body_en : montant en clair « 14,900 MAD »",
+        "body_en : montant en clair « 13,900 MAD »",
+        "body_en : montant en clair « 12,300 MAD »",
+        "body_en : montant en clair « 20,900 MAD »",
+        "body_en : montant en clair « 26,300 MAD »",
+        "body_en : montant en clair « from 1 »",
+        "body_en : date en clair « 9 September »",
+        "body_en : date en clair « 23 September »",
+        "body_en : date en clair « 6 October »",
+        "body_en : date en clair « 4 November »",
+        "body_en : date en clair « 24 October »",
+        "body_en : date en clair « 20 October »",
+        "body_en : nombre « 14100 » absent de data/allowed-facts.json",
+        "body_en : nombre « 13600 » absent de data/allowed-facts.json",
+        "body_en : nombre « 13100 » absent de data/allowed-facts.json",
+        "body_en : nombre « 12500 » absent de data/allowed-facts.json",
+        "body_en : nombre « 20 » absent de data/allowed-facts.json",
+        "body_en : nombre « 15900 » absent de data/allowed-facts.json",
+        "body_en : nombre « 14900 » absent de data/allowed-facts.json",
+        "body_en : nombre « 13900 » absent de data/allowed-facts.json",
+        "body_en : nombre « 12300 » absent de data/allowed-facts.json",
+        "body_en : nombre « 20900 » absent de data/allowed-facts.json",
+        "body_en : nombre « 26300 » absent de data/allowed-facts.json"
+      ]
+    },
+    "G6": {
+      "ok": false,
+      "details": [
+        "body_fr : 1 lien(s) vers des pages sœurs du dossier D, minimum 2",
+        "body_fr : lien en dur vers la page commerciale « /omra-octobre » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_fr : lien en dur vers la page commerciale « /bab-makka » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_ar : 1 lien(s) vers des pages sœurs du dossier D, minimum 2",
+        "body_ar : lien en dur vers la page commerciale « /omra-octobre » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_ar : lien en dur vers la page commerciale « /bab-makka » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_en : 1 lien(s) vers des pages sœurs du dossier D, minimum 2",
+        "body_en : lien en dur vers la page commerciale « /omra-octobre » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_en : lien en dur vers la page commerciale « /bab-makka » — utiliser <CommercialCTA intent=\"…\" />"
+      ]
+    },
+    "G7": {
+      "ok": true,
+      "details": [],
+      "warnings": []
+    },
+    "G8": {
+      "ok": true,
+      "details": []
+    },
+    "G9": {
+      "ok": true,
+      "details": [],
+      "arabicShare": 99.9
+    },
+    "G10": {
+      "ok": false,
+      "details": [
+        "fr : expression interdite « le moins cher »",
+        "fr : expression interdite « 100 % »",
+        "fr : expression interdite « 100% »",
+        "ar : expression interdite « 100٪ »",
+        "ar : expression interdite « 100% »",
+        "en : expression interdite « the best »",
+        "en : expression interdite « 100% »",
+        "en : expression interdite « 100 % »"
+      ]
+    },
+    "G11": {
+      "ok": true,
+      "details": []
+    },
+    "G12": {
+      "ok": true,
+      "details": []
+    },
+    "G13": {
+      "ok": false,
+      "details": [
+        "FAQPage : 3 question(s) extraites de body_fr, minimum 5",
+        "/fr : nœud FAQPage absent",
+        "/ar : nœud FAQPage absent",
+        "/en : nœud FAQPage absent"
+      ]
+    },
+    "G14": {
+      "ok": true,
+      "details": [
+        "créneau omra : règle non applicable"
+      ]
+    },
+    "G15": {
+      "ok": true,
+      "details": [],
+      "closest": {
+        "fr": {
+          "slug": "prix-omra-maroc-par-gamme-et-mois",
+          "score": 0.081
+        },
+        "ar": {
+          "slug": "prix-omra-maroc-par-gamme-et-mois",
+          "score": 0.081
+        },
+        "en": {
+          "slug": "prix-omra-maroc-par-gamme-et-mois",
+          "score": 0.076
+        }
+      },
+      "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
+    },
+    "G16": {
+      "ok": true,
+      "details": []
+    },
+    "G0": {
+      "ok": false,
+      "details": [
+        "excerpt_fr : année en clair « 2026 » — les faits volatils passent par une balise",
+        "body_fr : année en clair « 2026 » — les faits volatils passent par une balise",
+        "body_fr : montant en clair « 14 100 MAD » — les faits volatils passent par une balise",
+        "body_fr : montant en clair « 13 600 MAD » — les faits volatils passent par une balise",
+        "body_fr : montant en clair « 13 100 MAD » — les faits volatils passent par une balise",
+        "body_fr : montant en clair « 12 500 MAD » — les faits volatils passent par une balise",
+        "body_fr : montant en clair « 15 900 MAD » — les faits volatils passent par une balise",
+        "body_fr : montant en clair « 14 900 MAD » — les faits volatils passent par une balise",
+        "body_fr : montant en clair « 13 900 MAD » — les faits volatils passent par une balise",
+        "body_fr : montant en clair « 12 300 MAD » — les faits volatils passent par une balise",
+        "body_fr : montant en clair « 20 900 MAD » — les faits volatils passent par une balise",
+        "body_fr : montant en clair « 26 300 MAD » — les faits volatils passent par une balise",
+        "body_fr : date en clair « 9 septembre » — les faits volatils passent par une balise",
+        "body_fr : date en clair « 23 septembre » — les faits volatils passent par une balise",
+        "body_fr : date en clair « 6 octobre » — les faits volatils passent par une balise",
+        "body_fr : date en clair « 4 novembre » — les faits volatils passent par une balise",
+        "body_fr : date en clair « 24 octobre » — les faits volatils passent par une balise",
+        "body_fr : date en clair « 20 octobre » — les faits volatils passent par une balise",
+        "excerpt_ar : année en clair « 2026 » — les faits volatils passent par une balise",
+        "body_ar : année en clair « 2026 » — les faits volatils passent par une balise",
+        "excerpt_en : année en clair « 2026 » — les faits volatils passent par une balise",
+        "body_en : année en clair « 2026 » — les faits volatils passent par une balise",
+        "body_en : montant en clair « 14,100 MAD » — les faits volatils passent par une balise",
+        "body_en : montant en clair « 13,600 MAD » — les faits volatils passent par une balise",
+        "body_en : montant en clair « 13,100 MAD » — les faits volatils passent par une balise",
+        "body_en : montant en clair « 12,500 MAD » — les faits volatils passent par une balise",
+        "body_en : montant en clair « 15,900 MAD » — les faits volatils passent par une balise",
+        "body_en : montant en clair « 14,900 MAD » — les faits volatils passent par une balise",
+        "body_en : montant en clair « 13,900 MAD » — les faits volatils passent par une balise",
+        "body_en : montant en clair « 12,300 MAD » — les faits volatils passent par une balise",
+        "body_en : montant en clair « 20,900 MAD » — les faits volatils passent par une balise",
+        "body_en : montant en clair « 26,300 MAD » — les faits volatils passent par une balise",
+        "body_en : montant en clair « from 1 » — les faits volatils passent par une balise",
+        "body_en : date en clair « 9 September » — les faits volatils passent par une balise",
+        "body_en : date en clair « 23 September » — les faits volatils passent par une balise",
+        "body_en : date en clair « 6 October » — les faits volatils passent par une balise",
+        "body_en : date en clair « 4 November » — les faits volatils passent par une balise",
+        "body_en : date en clair « 24 October » — les faits volatils passent par une balise",
+        "body_en : date en clair « 20 October » — les faits volatils passent par une balise"
+      ],
+      "flags": []
+    }
+  }
+}

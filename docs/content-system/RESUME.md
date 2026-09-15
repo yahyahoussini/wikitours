@@ -27,7 +27,7 @@ nothing costs money.
 | | |
 |---|---|
 | Calendar | **243 slots**, 21 Sep 2026 → 19 Sep 2027, 2 posts every 3 days at 08:30 and 18:00 Africa/Casablanca |
-| Slots filled | **170 of 243**. Phases P1–P5 are 100 % filled (21 Sep 2026 → 30 Apr 2027, the whole Ramadan decision window, Ramadan itself and the Hajj lottery bridge); all 73 unfilled slots are May–Sep 2027. Re-read the head of `calendar-report.md` after every `npm run content:calendar` |
+| Slots filled | **169 of 243**. Phases P1–P5 are 100 % filled (21 Sep 2026 → 30 Apr 2027, the whole Ramadan decision window, Ramadan itself and the Hajj lottery bridge); all 74 unfilled slots are May–Sep 2027. Re-read the head of `calendar-report.md` after every `npm run content:calendar` |
 | Topic pool | **172 topics** in `data/content-topics/*.json` — one file per batch. Add a batch file to extend it; the builder rejects a topic whose query is a lander's or whose angle is within 0.6 of an existing post |
 | Series | `ramadan-1448` 12 (AR co-master) · `hajj-1448` 8 (AR co-master) · `premiere-omra` 8 · `mois-par-mois` 12 · `villes` 7 — each placed exactly once |
 | Phase weights | **Not met, deliberately.** See `04-setup-report.md` § "The phase weights are not met, and forcing them would be wrong" — the Ramadan track has 22 distinct angles against a target needing ~60, because 19 of its floor rows are already held by a thin existing post that deserves a rewrite, not a duplicate |
@@ -38,6 +38,7 @@ nothing costs money.
 | Honest ceiling | `02-gaps.md` gives the number of distinct angles the map supports without duplicating an existing URL. It is **lower than 243**. Cadence is a ceiling, not a target |
 | Database | migrations 025 + 026 are written and committed; **applying them is the owner's step** (`RUNBOOK.md` § Apply the database side). Everything works without them: the components fall back to dictionary copy and the repo's JSON files are the record |
 | `enabled` | `true` in `data/content-calendar-spec.json`; it reaches `content_ops_settings` on the first `npm run content:calendar -- --seed` after migration 026 |
+| Last audit | **2026-09-15** — `audit-2026-09.md`. Three system fixes: the drift re-gate (`content:gate -- --existing`), Hijri anchors as a real placement constraint, sitemap `lastmod` no longer predating publication. 28 published + 8 scheduled rows are below the current bar (all pre-contract); 0 link rot; **no Search Console export exists** |
 
 ---
 
@@ -98,6 +99,15 @@ Run this, exactly, and stop cleanly.
 - **A wrong gate is fixed at the gate, not in the post — and reported.** If a
   rule is a false positive, change `scripts/content-gate.mjs`, say so in the
   commit, and re-run every post to see what the change now lets through.
+- **A rule only counts for what it reaches.** After any change to a rule, run
+  `npm run content:gate -- --existing` as well as the drafts: rows already in the
+  table are otherwise never re-read. A failing *scheduled* row exits 1; a failing
+  *published* row is backlog and exits 0 — never make that one blocking, it is
+  how gates get loosened (`audit-2026-09.md` § Fixes).
+- **A Hijri anchor is a deadline, not a label.** An anchored topic is placed at
+  least `lead_days + tolerance_days` before its event by
+  `build-content-calendar.mjs`; an explicit `earliest` after the anchor is the
+  only way to place one after it, and should mean the topic is about what follows.
 
 ## Do not touch
 
@@ -117,6 +127,8 @@ Run this, exactly, and stop cleanly.
 ---
 
 ## What is waiting on the owner
+
+**Added by the 2026-09-15 audit — read `audit-2026-09.md` § What remains for the owner.** Top of it: export Search Console into `data/gsc/` (none exists, so no ranking claim can be made); apply migrations 025 + 026; decide the 8 pre-contract queued posts.
 
 0. **Unblock the experiential content — this is what skipped two of the first
    four posts, and it blocks about half the calendar.** Two steps, either of

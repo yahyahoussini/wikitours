@@ -1,0 +1,210 @@
+{
+  "slug": "ramadan-2027-dates-calendrier",
+  "file": null,
+  "row": true,
+  "state": "scheduled",
+  "format": "explainer",
+  "checked_at": "2026-09-15T11:00:45.062Z",
+  "ok": false,
+  "failed": [
+    "G1",
+    "G3",
+    "G4",
+    "G5",
+    "G6",
+    "G11",
+    "G12",
+    "G13",
+    "G0"
+  ],
+  "pending": [
+    "G16"
+  ],
+  "words": {
+    "fr": 382,
+    "ar": 275,
+    "en": 336
+  },
+  "checks": {
+    "G1": {
+      "ok": false,
+      "details": [
+        "body_fr : 382 mots, attendu 1100–1900 (format explainer)",
+        "body_ar : 275 mots, attendu 850–1700 (format explainer)",
+        "body_en : 336 mots, attendu 950–1750 (format explainer)"
+      ],
+      "format": "explainer"
+    },
+    "G2": {
+      "ok": true,
+      "details": []
+    },
+    "G3": {
+      "ok": false,
+      "details": [
+        "body_fr : 1 H2 en forme de question sur 5, minimum 4",
+        "body_ar : 2 H2 en forme de question sur 5, minimum 4",
+        "body_en : 2 H2 en forme de question sur 5, minimum 4"
+      ]
+    },
+    "G4": {
+      "ok": false,
+      "details": [
+        "body_fr : FAQ de 0 question(s), attendu 5–6",
+        "body_ar : FAQ de 0 question(s), attendu 5–6",
+        "body_en : FAQ de 0 question(s), attendu 5–6"
+      ]
+    },
+    "G5": {
+      "ok": false,
+      "details": [
+        "title_fr : année en clair « 2027 »",
+        "excerpt_fr : année en clair « 2027 »",
+        "excerpt_fr : date en clair « 7 février »",
+        "excerpt_fr : date en clair « 8 mars »",
+        "seo_title_fr : année en clair « 2027 »",
+        "seo_description_fr : année en clair « 2027 »",
+        "seo_description_fr : date en clair « 7 février »",
+        "seo_description_fr : date en clair « 8 mars »",
+        "body_fr : année en clair « 2027 »",
+        "body_fr : année en clair « 2026 »",
+        "body_fr : date en clair « 7 février »",
+        "body_fr : date en clair « 8 mars »",
+        "title_ar : année en clair « 2027 »",
+        "excerpt_ar : année en clair « 2027 »",
+        "seo_title_ar : année en clair « 2027 »",
+        "seo_description_ar : année en clair « 2027 »",
+        "body_ar : année en clair « 2027 »",
+        "body_ar : année en clair « 2026 »",
+        "title_en : année en clair « 2027 »",
+        "excerpt_en : année en clair « 2027 »",
+        "excerpt_en : date en clair « 7 February »",
+        "excerpt_en : date en clair « 8 March »",
+        "seo_title_en : année en clair « 2027 »",
+        "seo_description_en : année en clair « 2027 »",
+        "seo_description_en : date en clair « 7 February »",
+        "seo_description_en : date en clair « 8 March »",
+        "body_en : année en clair « 2027 »",
+        "body_en : année en clair « 2026 »",
+        "body_en : date en clair « 7 February »",
+        "body_en : date en clair « 8 March »"
+      ]
+    },
+    "G6": {
+      "ok": false,
+      "details": [
+        "body_fr : lien en dur vers la page commerciale « /omra-ramadan » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_ar : lien en dur vers la page commerciale « /omra-ramadan » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_en : lien en dur vers la page commerciale « /omra-ramadan » — utiliser <CommercialCTA intent=\"…\" />"
+      ]
+    },
+    "G7": {
+      "ok": true,
+      "details": [],
+      "warnings": []
+    },
+    "G8": {
+      "ok": true,
+      "details": []
+    },
+    "G9": {
+      "ok": true,
+      "details": [],
+      "arabicShare": 100
+    },
+    "G10": {
+      "ok": true,
+      "details": []
+    },
+    "G11": {
+      "ok": false,
+      "details": [
+        "body_fr : citation hors <ReviewQuote> «  parce que les dates ne sont pas sûres … »"
+      ]
+    },
+    "G12": {
+      "ok": false,
+      "details": [
+        "seo_description_ar : 109 caractères, attendu 120–155"
+      ]
+    },
+    "G13": {
+      "ok": false,
+      "details": [
+        "FAQPage : 0 question(s) extraites de body_fr, minimum 5",
+        "ligne programmée absente d'un build normal (publish-by-time) : rejouer avec CONTENT_PREVIEW_SCHEDULED=1"
+      ],
+      "pending": true
+    },
+    "G14": {
+      "ok": true,
+      "details": [
+        "créneau omra : règle non applicable"
+      ]
+    },
+    "G15": {
+      "ok": true,
+      "details": [],
+      "closest": {
+        "fr": {
+          "slug": "omra-ramadan-2027-quand-reserver",
+          "score": 0.073
+        },
+        "ar": {
+          "slug": "omra-ramadan-2027-quand-reserver",
+          "score": 0.083
+        },
+        "en": {
+          "slug": "omra-ramadan-2027-quand-reserver",
+          "score": 0.055
+        }
+      },
+      "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
+    },
+    "G16": {
+      "ok": null,
+      "pending": true,
+      "details": [
+        "ligne programmée absente d'un build normal (publish-by-time) : rejouer avec CONTENT_PREVIEW_SCHEDULED=1"
+      ]
+    },
+    "G0": {
+      "ok": false,
+      "details": [
+        "body_fr trop court : 387 mots (minimum 800)",
+        "title_fr : année en clair « 2027 » — les faits volatils passent par une balise",
+        "excerpt_fr : année en clair « 2027 » — les faits volatils passent par une balise",
+        "excerpt_fr : date en clair « 7 février » — les faits volatils passent par une balise",
+        "excerpt_fr : date en clair « 8 mars » — les faits volatils passent par une balise",
+        "seo_title_fr : année en clair « 2027 » — les faits volatils passent par une balise",
+        "seo_description_fr : année en clair « 2027 » — les faits volatils passent par une balise",
+        "seo_description_fr : date en clair « 7 février » — les faits volatils passent par une balise",
+        "seo_description_fr : date en clair « 8 mars » — les faits volatils passent par une balise",
+        "body_fr : année en clair « 2027 » — les faits volatils passent par une balise",
+        "body_fr : année en clair « 2026 » — les faits volatils passent par une balise",
+        "body_fr : date en clair « 7 février » — les faits volatils passent par une balise",
+        "body_fr : date en clair « 8 mars » — les faits volatils passent par une balise",
+        "title_ar : année en clair « 2027 » — les faits volatils passent par une balise",
+        "excerpt_ar : année en clair « 2027 » — les faits volatils passent par une balise",
+        "seo_title_ar : année en clair « 2027 » — les faits volatils passent par une balise",
+        "seo_description_ar : année en clair « 2027 » — les faits volatils passent par une balise",
+        "body_ar : année en clair « 2027 » — les faits volatils passent par une balise",
+        "body_ar : année en clair « 2026 » — les faits volatils passent par une balise",
+        "title_en : année en clair « 2027 » — les faits volatils passent par une balise",
+        "excerpt_en : année en clair « 2027 » — les faits volatils passent par une balise",
+        "excerpt_en : date en clair « 7 February » — les faits volatils passent par une balise",
+        "excerpt_en : date en clair « 8 March » — les faits volatils passent par une balise",
+        "seo_title_en : année en clair « 2027 » — les faits volatils passent par une balise",
+        "seo_description_en : année en clair « 2027 » — les faits volatils passent par une balise",
+        "seo_description_en : date en clair « 7 February » — les faits volatils passent par une balise",
+        "seo_description_en : date en clair « 8 March » — les faits volatils passent par une balise",
+        "body_en : année en clair « 2027 » — les faits volatils passent par une balise",
+        "body_en : année en clair « 2026 » — les faits volatils passent par une balise",
+        "body_en : date en clair « 7 February » — les faits volatils passent par une balise",
+        "body_en : date en clair « 8 March » — les faits volatils passent par une balise",
+        "bloc « Questions fréquentes » absent ou avec 0 question(s) (minimum 3)"
+      ],
+      "flags": []
+    }
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "slug": "pas-tire-au-sort-hajj-omra",
+  "file": null,
+  "row": true,
+  "state": "published",
+  "format": "explainer",
+  "checked_at": "2026-09-15T11:01:10.395Z",
+  "ok": false,
+  "failed": [
+    "G1",
+    "G3",
+    "G4",
+    "G6",
+    "G12",
+    "G13",
+    "G0"
+  ],
+  "pending": [],
+  "words": {
+    "fr": 403,
+    "ar": 282,
+    "en": 350
+  },
+  "checks": {
+    "G1": {
+      "ok": false,
+      "details": [
+        "body_fr : 403 mots, attendu 1100–1900 (format explainer)",
+        "body_ar : 282 mots, attendu 850–1700 (format explainer)",
+        "body_en : 350 mots, attendu 950–1750 (format explainer)"
+      ],
+      "format": "explainer"
+    },
+    "G2": {
+      "ok": true,
+      "details": []
+    },
+    "G3": {
+      "ok": false,
+      "details": [
+        "body_fr : 0 H2 en forme de question sur 4, minimum 4",
+        "body_ar : 2 H2 en forme de question sur 4, minimum 4",
+        "body_en : 2 H2 en forme de question sur 4, minimum 4"
+      ]
+    },
+    "G4": {
+      "ok": false,
+      "details": [
+        "body_fr : FAQ de 0 question(s), attendu 5–6",
+        "body_ar : FAQ de 0 question(s), attendu 5–6",
+        "body_en : FAQ de 0 question(s), attendu 5–6"
+      ]
+    },
+    "G5": {
+      "ok": true,
+      "details": []
+    },
+    "G6": {
+      "ok": false,
+      "details": [
+        "body_fr : aucun lien vers le pilier /hajj (<CommercialCTA> ou lien markdown)",
+        "body_fr : lien en dur vers la page commerciale « /bab-makka » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_ar : aucun lien vers le pilier /hajj (<CommercialCTA> ou lien markdown)",
+        "body_ar : lien en dur vers la page commerciale « /bab-makka » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_en : aucun lien vers le pilier /hajj (<CommercialCTA> ou lien markdown)",
+        "body_en : lien en dur vers la page commerciale « /bab-makka » — utiliser <CommercialCTA intent=\"…\" />"
+      ]
+    },
+    "G7": {
+      "ok": true,
+      "details": [],
+      "warnings": []
+    },
+    "G8": {
+      "ok": true,
+      "details": []
+    },
+    "G9": {
+      "ok": true,
+      "details": [],
+      "arabicShare": 100
+    },
+    "G10": {
+      "ok": true,
+      "details": []
+    },
+    "G11": {
+      "ok": true,
+      "details": []
+    },
+    "G12": {
+      "ok": false,
+      "details": [
+        "seo_title_ar avec marque : 43 caractères, attendu 45–60 (« لم تُقبل في قرعة الحج: ماذا تفعل؟ | باب مكة »)"
+      ]
+    },
+    "G13": {
+      "ok": false,
+      "details": [
+        "FAQPage : 0 question(s) extraites de body_fr, minimum 5",
+        "/fr : nœud FAQPage absent",
+        "/ar : nœud FAQPage absent",
+        "/en : nœud FAQPage absent"
+      ]
+    },
+    "G14": {
+      "ok": true,
+      "details": [
+        "créneau omra : règle non applicable"
+      ]
+    },
+    "G15": {
+      "ok": true,
+      "details": [],
+      "closest": {
+        "fr": {
+          "slug": "difference-omra-hajj",
+          "score": 0.062
+        },
+        "ar": {
+          "slug": "hajj-maroc-inscription-quota",
+          "score": 0.027
+        },
+        "en": {
+          "slug": "difference-omra-hajj",
+          "score": 0.041
+        }
+      },
+      "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
+    },
+    "G16": {
+      "ok": true,
+      "details": []
+    },
+    "G0": {
+      "ok": false,
+      "details": [
+        "body_fr trop court : 408 mots (minimum 800)",
+        "bloc « Questions fréquentes » absent ou avec 0 question(s) (minimum 3)"
+      ],
+      "flags": []
+    }
+  }
+}

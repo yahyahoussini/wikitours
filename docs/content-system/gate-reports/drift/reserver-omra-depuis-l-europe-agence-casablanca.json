@@ -1,0 +1,116 @@
+{
+  "slug": "reserver-omra-depuis-l-europe-agence-casablanca",
+  "file": null,
+  "row": true,
+  "state": "scheduled",
+  "format": "guide",
+  "checked_at": "2026-09-15T11:00:46.140Z",
+  "ok": true,
+  "failed": [],
+  "pending": [
+    "G13",
+    "G16"
+  ],
+  "words": {
+    "fr": 2059,
+    "ar": 1426,
+    "en": 1807
+  },
+  "checks": {
+    "G1": {
+      "ok": true,
+      "details": [],
+      "format": "guide"
+    },
+    "G2": {
+      "ok": true,
+      "details": []
+    },
+    "G3": {
+      "ok": true,
+      "details": []
+    },
+    "G4": {
+      "ok": true,
+      "details": []
+    },
+    "G5": {
+      "ok": true,
+      "details": []
+    },
+    "G6": {
+      "ok": true,
+      "details": []
+    },
+    "G7": {
+      "ok": true,
+      "details": [],
+      "warnings": []
+    },
+    "G8": {
+      "ok": true,
+      "details": []
+    },
+    "G9": {
+      "ok": true,
+      "details": [],
+      "arabicShare": 99.9
+    },
+    "G10": {
+      "ok": true,
+      "details": []
+    },
+    "G11": {
+      "ok": true,
+      "details": []
+    },
+    "G12": {
+      "ok": true,
+      "details": []
+    },
+    "G13": {
+      "ok": true,
+      "details": [
+        "ligne programmée absente d'un build normal (publish-by-time) : rejouer avec CONTENT_PREVIEW_SCHEDULED=1"
+      ],
+      "pending": true
+    },
+    "G14": {
+      "ok": true,
+      "details": [
+        "créneau omra : règle non applicable"
+      ]
+    },
+    "G15": {
+      "ok": true,
+      "details": [],
+      "closest": {
+        "fr": {
+          "slug": "omra-en-novembre-meteo-affluence-conseils",
+          "score": 0.032
+        },
+        "ar": {
+          "slug": "omra-en-novembre-meteo-affluence-conseils",
+          "score": 0.029
+        },
+        "en": {
+          "slug": "omra-en-novembre-meteo-affluence-conseils",
+          "score": 0.028
+        }
+      },
+      "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
+    },
+    "G16": {
+      "ok": null,
+      "pending": true,
+      "details": [
+        "ligne programmée absente d'un build normal (publish-by-time) : rejouer avec CONTENT_PREVIEW_SCHEDULED=1"
+      ]
+    },
+    "G0": {
+      "ok": true,
+      "details": [],
+      "flags": []
+    }
+  }
+}

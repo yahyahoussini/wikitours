@@ -7,6 +7,11 @@
  *   files          content/articles/*.json drafts (default: every file whose slug
  *                  is not in the articles table yet)
  *   --slug=a,b     gate ROWS of the articles table instead of files (post-ingest)
+ *   --existing[=x] gate EVERY existing row — the drift re-gate. x is `all`
+ *                  (default), `scheduled` or `published`. A rule added after a
+ *                  row was written otherwise never reaches it. A failing
+ *                  SCHEDULED row exits 1 (it has not gone out yet); a failing
+ *                  PUBLISHED one is listed as backlog and exits 0.
  *   --format=x     override the format (else draft.format, else the calendar
  *                  slot's length_target, else data/content-formats.json default)
  *   --require-build  G6 (link status), G13 (emitted schema) and G16 (rendered
@@ -38,6 +43,7 @@ const opt = (name) => argv.find((a) => a.startsWith(`--${name}=`))?.split('=').s
 const flag = (name) => argv.includes(`--${name}`);
 const FILES = argv.filter((a) => !a.startsWith('--'));
 const SLUGS = opt('slug')?.split(',').map((s) => s.trim()).filter(Boolean) ?? null;
+const EXISTING = opt('existing') ?? (flag('existing') ? 'all' : null);
 const REQUIRE_BUILD = flag('require-build');
 const OFFLINE = flag('offline');
 const QUIET = flag('quiet');
@@ -89,6 +95,12 @@ function builtPage(route) {
   return { html, status: meta.status ?? 200, noindex: /<meta name="robots" content="[^"]*noindex/.test(html) };
 }
 const hasBuild = existsSync(path.join(DIST, 'prerender-manifest.json'));
+// A scheduled row has no prerendered page in a NORMAL build — that is
+// publish-by-time working, not a defect — so the rules that read the rendered
+// page (G13, G16) can only judge it in a CONTENT_PREVIEW_SCHEDULED build.
+// Detected from the output itself rather than the shell, because the build
+// that matters is the one on disk. Set in loadContext().
+let previewBuild = false;
 const pending = (why) => ({ ok: REQUIRE_BUILD ? false : null, pending: true, details: [why] });
 
 const jaccard = (a, b) => {
@@ -119,6 +131,7 @@ async function loadContext() {
   ctx.existing = rows ?? [];
   ctx.existingSlugs = new Set(ctx.existing.map((r) => r.slug));
   ctx.refreshable = new Set(ctx.existing.filter((r) => r.published_at && r.published_at > now).map((r) => r.slug));
+  previewBuild = hasBuild && ctx.existing.some((r) => r.is_published && r.published_at > now && builtPage(`/fr/blog/${r.slug}`));
   ctx.testimonialIds = new Set((tm ?? []).map((t) => t.id));
   if (!opt('threshold') && settings?.similarity_threshold) ctx.threshold = Number(settings.similarity_threshold);
   ctx.hotels = (hotels ?? []).map((h) => h.name);
@@ -363,7 +376,7 @@ function G13(draft, ctx) {
   if (draft.__row && !draft.published_at) details.push('BlogPosting.datePublished absent sur la ligne');
   // The author @id resolves to the /equipe Person only when the profile is renderable; else the organisation — both valid targets.
   if (draft.__row && !draft.author_id && !draft.author_name) details.push('BlogPosting.author : ni author_id ni author_name');
-  if (hasBuild && draft.__row) {
+  if (hasBuild && draft.__row && !(draft.__state === 'scheduled' && !previewBuild)) {
     for (const l of LOCALES) {
       const page = builtPage(`/${l}/blog/${draft.slug}`);
       if (!page) { details.push(`/${l}/blog/${draft.slug} non construite`); continue; }
@@ -379,7 +392,11 @@ function G13(draft, ctx) {
     }
   }
   const out = { ok: !details.filter((d) => !/attribué à l'ingestion/.test(d)).length, details };
-  if (!hasBuild || !draft.__row) { out.pending = true; out.details.push('nœuds émis non vérifiés : pas de build de la page (ingérer puis construire)'); if (REQUIRE_BUILD) out.ok = false; }
+  if (!hasBuild || !draft.__row || (draft.__state === 'scheduled' && !previewBuild)) {
+    out.pending = true;
+    out.details.push(draft.__state === 'scheduled' ? 'ligne programmée absente d\'un build normal (publish-by-time) : rejouer avec CONTENT_PREVIEW_SCHEDULED=1' : 'nœuds émis non vérifiés : pas de build de la page (ingérer puis construire)');
+    if (REQUIRE_BUILD) out.ok = false;
+  }
   return out;
 }
 function G14(draft) {
@@ -410,6 +427,7 @@ function G15(draft, ctx) {
 }
 function G16(draft) {
   if (!hasBuild || !draft.__row) return pending('rendu non vérifié : ingérer puis construire (NEXT_DIST_DIR=.next-audit CONTENT_PREVIEW_SCHEDULED=1)');
+  if (draft.__state === 'scheduled' && !previewBuild) return pending('ligne programmée absente d\'un build normal (publish-by-time) : rejouer avec CONTENT_PREVIEW_SCHEDULED=1');
   const details = [];
   const textOf = (html) => html.replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/\s+/g, ' ');
   const MARKERS = { CommercialCTA: 'data-commercial-cta', LiveDepartures: 'data-live-departures', PriceRange: 'data-price-range', HotelCard: 'data-hotel-card', HotelList: 'data-hotel-list', ReviewQuote: 'data-review-quote', HijriCountdown: 'data-hijri-countdown', PolicyFact: 'data-policy-fact', DepositPolicy: 'data-deposit-policy', HajjBridgeCTA: 'data-hajj-bridge', RamadanNightsTable: 'data-ramadan-nights' };
@@ -434,11 +452,28 @@ function G16(draft) {
 async function main() {
   const ctx = await loadContext();
   let drafts = [];
-  if (SLUGS) {
+  // --existing: the DRIFT re-gate. Rows already in `articles` were never
+  // re-checked, so every rule added after a row was written had no reach over
+  // it — which is how two live posts kept 43 prices and 18 dates in prose that
+  // the gate has forbidden since 2026-09-14, and how two others kept a link
+  // into a noindex lander. A rule is only worth what it covers.
+  let selected = SLUGS;
+  const rowState = new Map();
+  if (EXISTING) {
     if (!sb) { console.error('no Supabase env'); process.exit(2); }
-    const { data } = await sb.from('articles').select('*').in('slug', SLUGS);
-    drafts = (data ?? []).map((r) => ({ ...r, __row: true, owner_path: r.supports_path, query_family: r.query_family ?? calendar.slots?.find((s) => s.slug === r.slug)?.primary_query_fr ?? null, query_family_ar: calendar.slots?.find((s) => s.slug === r.slug)?.primary_query_ar ?? null, slot: calendar.slots?.find((s) => s.slug === r.slug)?.track ?? null, format: calendar.slots?.find((s) => s.slug === r.slug)?.length_target ?? null }));
-    for (const s of SLUGS) if (!drafts.some((d) => d.slug === s)) console.error(`row not found: ${s}`);
+    const stamp = new Date().toISOString();
+    const { data } = await sb.from('articles').select('slug, is_published, published_at');
+    const stateOf = (r) => (!r.is_published ? 'withdrawn' : r.published_at > stamp ? 'scheduled' : 'published');
+    const wanted = EXISTING === 'all' ? ['published', 'scheduled'] : EXISTING.split(',').map((s) => s.trim());
+    for (const r of data ?? []) if (wanted.includes(stateOf(r))) rowState.set(r.slug, stateOf(r));
+    selected = [...rowState.keys()];
+    console.log(`[content-gate] drift re-gate over ${selected.length} existing row(s) — ${wanted.join(' + ')}`);
+  }
+  if (selected) {
+    if (!sb) { console.error('no Supabase env'); process.exit(2); }
+    const { data } = await sb.from('articles').select('*').in('slug', selected);
+    drafts = (data ?? []).map((r) => ({ ...r, __row: true, __state: rowState.get(r.slug) ?? null, owner_path: r.supports_path, query_family: r.query_family ?? calendar.slots?.find((s) => s.slug === r.slug)?.primary_query_fr ?? null, query_family_ar: calendar.slots?.find((s) => s.slug === r.slug)?.primary_query_ar ?? null, slot: calendar.slots?.find((s) => s.slug === r.slug)?.track ?? null, format: calendar.slots?.find((s) => s.slug === r.slug)?.length_target ?? null }));
+    for (const s of selected) if (!drafts.some((d) => d.slug === s)) console.error(`row not found: ${s}`);
   } else {
     const files = FILES.length ? FILES : readdirSync('content/articles').filter((f) => f.endsWith('.json')).map((f) => path.join('content/articles', f));
     for (const f of files) {
@@ -452,6 +487,8 @@ async function main() {
   mkdirSync(OUT, { recursive: true });
 
   let failures = 0;
+  let blocking = 0;
+  const backlog = [];
   for (const draft of drafts) {
     const fmt = opt('format') ?? draft.format ?? draft.length_target ?? calendar.slots?.find((s) => s.slug === draft.slug)?.length_target ?? formats.default;
     const checks = {
@@ -470,13 +507,19 @@ async function main() {
     const failed = Object.entries(checks).filter(([, c]) => c.ok === false).map(([k]) => k);
     const pendingRules = Object.entries(checks).filter(([, c]) => c.pending && c.ok !== false).map(([k]) => k);
     const ok = !failed.length;
-    if (!ok) failures++;
-    const report = { slug: draft.slug, file: draft.__file ?? null, row: Boolean(draft.__row), format: fmt, checked_at: new Date().toISOString(), ok, failed, pending: pendingRules, words: Object.fromEntries(LOCALES.map((l) => [l, wordCount(prose(draft, l))])), checks };
+    if (!ok) { failures++; if (draft.__state !== 'published') blocking++; else backlog.push(draft.slug); }
+    const report = { slug: draft.slug, file: draft.__file ?? null, row: Boolean(draft.__row), state: draft.__state ?? null, format: fmt, checked_at: new Date().toISOString(), ok, failed, pending: pendingRules, words: Object.fromEntries(LOCALES.map((l) => [l, wordCount(prose(draft, l))])), checks };
     writeFileSync(path.join(OUT, `${draft.slug}.json`), `${JSON.stringify(report, null, 2)}\n`);
     console.log(`[content-gate] ${ok ? 'PASS' : 'FAIL'} ${draft.slug} · ${fmt} · fr ${report.words.fr} / ar ${report.words.ar} / en ${report.words.en}${failed.length ? ` · failed ${failed.join(', ')}` : ''}${pendingRules.length ? ` · pending ${pendingRules.join(', ')}` : ''}`);
     if (!QUIET) for (const k of failed) for (const d of checks[k].details) console.log(`    ${k}: ${d}`);
   }
   console.log(`[content-gate] ${drafts.length} post(s) · ${drafts.length - failures} pass · ${failures} fail · reports in ${OUT}`);
-  process.exit(failures ? 1 : 0);
+  // An ALREADY PUBLISHED row that fails is history, not a decision anyone can
+  // still take: it is reported as backlog and does not fail the run, because a
+  // permanently red gate is the pressure that gets gates loosened, and the
+  // rulebook forbids loosening this one. A scheduled row has not gone out yet,
+  // so it still blocks.
+  if (backlog.length) console.log(`[content-gate] backlog — ${backlog.length} PUBLISHED row(s) below the current bar, not blocking: ${backlog.join(', ')}`);
+  process.exit(blocking ? 1 : 0);
 }
 main().catch((e) => { console.error(e); process.exit(2); });

@@ -1,0 +1,164 @@
+{
+  "slug": "application-nusuk-guide",
+  "file": null,
+  "row": true,
+  "state": "published",
+  "format": "explainer",
+  "checked_at": "2026-09-15T11:01:09.105Z",
+  "ok": false,
+  "failed": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G6",
+    "G10",
+    "G11",
+    "G12",
+    "G13",
+    "G0"
+  ],
+  "pending": [],
+  "words": {
+    "fr": 596,
+    "ar": 402,
+    "en": 532
+  },
+  "checks": {
+    "G1": {
+      "ok": false,
+      "details": [
+        "body_fr : 596 mots, attendu 1100–1900 (format explainer)",
+        "body_ar : 402 mots, attendu 850–1700 (format explainer)",
+        "body_en : 532 mots, attendu 950–1750 (format explainer)"
+      ],
+      "format": "explainer"
+    },
+    "G2": {
+      "ok": false,
+      "details": [
+        "excerpt_ar (bloc réponse d'abord) : 35 mots, attendu 40–55"
+      ]
+    },
+    "G3": {
+      "ok": false,
+      "details": [
+        "body_fr : 0 H2 en forme de question sur 7, minimum 4",
+        "body_ar : 1 H2 en forme de question sur 7, minimum 4",
+        "body_en : 1 H2 en forme de question sur 7, minimum 4"
+      ]
+    },
+    "G4": {
+      "ok": false,
+      "details": [
+        "body_fr : FAQ de 0 question(s), attendu 5–6",
+        "body_ar : FAQ de 0 question(s), attendu 5–6",
+        "body_en : FAQ de 0 question(s), attendu 5–6"
+      ]
+    },
+    "G5": {
+      "ok": true,
+      "details": []
+    },
+    "G6": {
+      "ok": false,
+      "details": [
+        "body_fr : 3 lien(s) interne(s) (liens markdown + CTA), minimum 4",
+        "body_fr : aucun lien vers le pilier /guide-omra (<CommercialCTA> ou lien markdown)",
+        "body_fr : 1 lien(s) vers des pages sœurs du dossier E, minimum 2",
+        "body_fr : « /fr/glossaire-omra#rawda » n'est pas une page construite (404 ou redirection)",
+        "body_ar : 3 lien(s) interne(s) (liens markdown + CTA), minimum 4",
+        "body_ar : aucun lien vers le pilier /guide-omra (<CommercialCTA> ou lien markdown)",
+        "body_ar : 1 lien(s) vers des pages sœurs du dossier E, minimum 2",
+        "body_ar : « /ar/glossaire-omra#rawda » n'est pas une page construite (404 ou redirection)",
+        "body_en : 3 lien(s) interne(s) (liens markdown + CTA), minimum 4",
+        "body_en : aucun lien vers le pilier /guide-omra (<CommercialCTA> ou lien markdown)",
+        "body_en : 1 lien(s) vers des pages sœurs du dossier E, minimum 2",
+        "body_en : « /en/glossaire-omra#rawda » n'est pas une page construite (404 ou redirection)"
+      ]
+    },
+    "G7": {
+      "ok": true,
+      "details": [],
+      "warnings": []
+    },
+    "G8": {
+      "ok": true,
+      "details": []
+    },
+    "G9": {
+      "ok": true,
+      "details": [],
+      "arabicShare": 100
+    },
+    "G10": {
+      "ok": false,
+      "details": [
+        "fr : expression interdite « n°1 »",
+        "fr : expression interdite « vite »"
+      ]
+    },
+    "G11": {
+      "ok": false,
+      "details": [
+        "body_fr : citation hors <ReviewQuote> «  un jardin des jardins du Paradis … »",
+        "body_en : citation hors <ReviewQuote> « a garden from the gardens of Paradise.… »"
+      ]
+    },
+    "G12": {
+      "ok": false,
+      "details": [
+        "seo_title_ar avec marque : 31 caractères, attendu 45–60 (« تطبيق نسك: حجز الروضة | باب مكة »)",
+        "seo_description_ar : 108 caractères, attendu 120–155",
+        "seo_title_en avec marque : 41 caractères, attendu 45–60 (« Nusuk app: booking the Rawdah | Bab Makka »)"
+      ]
+    },
+    "G13": {
+      "ok": false,
+      "details": [
+        "FAQPage : 0 question(s) extraites de body_fr, minimum 5",
+        "/fr : nœud FAQPage absent",
+        "/ar : nœud FAQPage absent",
+        "/en : nœud FAQPage absent"
+      ]
+    },
+    "G14": {
+      "ok": true,
+      "details": [
+        "créneau omra : règle non applicable"
+      ]
+    },
+    "G15": {
+      "ok": true,
+      "details": [],
+      "closest": {
+        "fr": {
+          "slug": "que-visiter-medine-ziyara",
+          "score": 0.021
+        },
+        "ar": {
+          "slug": "que-visiter-medine-ziyara",
+          "score": 0.012
+        },
+        "en": {
+          "slug": "que-visiter-medine-ziyara",
+          "score": 0.023
+        }
+      },
+      "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
+    },
+    "G16": {
+      "ok": true,
+      "details": []
+    },
+    "G0": {
+      "ok": false,
+      "details": [
+        "bloc « Questions fréquentes » absent ou avec 0 question(s) (minimum 3)"
+      ],
+      "flags": [
+        "body_fr un peu court : 611 mots"
+      ]
+    }
+  }
+}

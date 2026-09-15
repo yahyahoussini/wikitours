@@ -101,7 +101,11 @@ export default async function sitemap() {
     ...hotels.map((h) => [`/hotel/${h.slug}`, 0.5, 'monthly', h.updated_at]),
     // Team / authors page: noindex until one complete published profile exists.
     ...(teamIndexable(team) ? [['/equipe', 0.5, 'monthly', lastModifiedOf(team)]] : []),
-    ...articles.map((a) => [`/blog/${a.slug}`, 0.6, 'monthly', a.updated_at ?? a.published_at]),
+    // An article is WRITTEN ahead of its slot and RELEASED when published_at
+    // passes, so `updated_at` is routinely older than the day the URL first
+    // answered 200 (17 of 28 live posts on 2026-09-15). Taking the later of the
+    // two stops a brand-new post entering the sitemap back-dated by weeks.
+    ...articles.map((a) => [`/blog/${a.slug}`, 0.6, 'monthly', lastModifiedOf(a.updated_at, a.published_at)]),
     // Programmatic SEO landings: months with departures, DB occasions, 8 cities.
     // The month hub's lastmod is the SAME expression its page renders as
     // "Mis à jour le" ([flat]/page.js) — they used to disagree.

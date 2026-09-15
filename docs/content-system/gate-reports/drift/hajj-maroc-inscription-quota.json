@@ -1,0 +1,163 @@
+{
+  "slug": "hajj-maroc-inscription-quota",
+  "file": null,
+  "row": true,
+  "state": "published",
+  "format": "explainer",
+  "checked_at": "2026-09-15T11:01:10.278Z",
+  "ok": false,
+  "failed": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6",
+    "G12",
+    "G13",
+    "G0"
+  ],
+  "pending": [],
+  "words": {
+    "fr": 467,
+    "ar": 313,
+    "en": 411
+  },
+  "checks": {
+    "G1": {
+      "ok": false,
+      "details": [
+        "body_fr : 467 mots, attendu 1100–1900 (format explainer)",
+        "body_ar : 313 mots, attendu 850–1700 (format explainer)",
+        "body_en : 411 mots, attendu 950–1750 (format explainer)"
+      ],
+      "format": "explainer"
+    },
+    "G2": {
+      "ok": false,
+      "details": [
+        "excerpt_ar (bloc réponse d'abord) : 33 mots, attendu 40–55"
+      ]
+    },
+    "G3": {
+      "ok": false,
+      "details": [
+        "body_fr : 0 H2 en forme de question sur 5, minimum 4",
+        "body_ar : 0 H2 en forme de question sur 5, minimum 4",
+        "body_en : 0 H2 en forme de question sur 5, minimum 4"
+      ]
+    },
+    "G4": {
+      "ok": false,
+      "details": [
+        "body_fr : FAQ de 0 question(s), attendu 5–6",
+        "body_ar : FAQ de 0 question(s), attendu 5–6",
+        "body_en : FAQ de 0 question(s), attendu 5–6"
+      ]
+    },
+    "G5": {
+      "ok": false,
+      "details": [
+        "body_fr : places disponibles en clair « places disponibles »"
+      ]
+    },
+    "G6": {
+      "ok": false,
+      "details": [
+        "body_fr : 1 lien(s) vers des pages sœurs du dossier G, minimum 2",
+        "body_fr : lien en dur vers la page commerciale « /hajj » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_fr : lien en dur vers la page commerciale « /hajj » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_fr : lien en dur vers la page commerciale « /hajj » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_fr : lien en dur vers la page commerciale « /hajj » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_fr : lien en dur vers la page commerciale « /hajj » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_ar : 1 lien(s) vers des pages sœurs du dossier G, minimum 2",
+        "body_ar : lien en dur vers la page commerciale « /hajj » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_ar : lien en dur vers la page commerciale « /hajj » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_ar : lien en dur vers la page commerciale « /hajj » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_ar : lien en dur vers la page commerciale « /hajj » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_ar : lien en dur vers la page commerciale « /hajj » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_en : 1 lien(s) vers des pages sœurs du dossier G, minimum 2",
+        "body_en : lien en dur vers la page commerciale « /hajj » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_en : lien en dur vers la page commerciale « /hajj » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_en : lien en dur vers la page commerciale « /hajj » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_en : lien en dur vers la page commerciale « /hajj » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_en : lien en dur vers la page commerciale « /hajj » — utiliser <CommercialCTA intent=\"…\" />"
+      ]
+    },
+    "G7": {
+      "ok": true,
+      "details": [],
+      "warnings": []
+    },
+    "G8": {
+      "ok": true,
+      "details": []
+    },
+    "G9": {
+      "ok": true,
+      "details": [],
+      "arabicShare": 100
+    },
+    "G10": {
+      "ok": true,
+      "details": []
+    },
+    "G11": {
+      "ok": true,
+      "details": []
+    },
+    "G12": {
+      "ok": false,
+      "details": [
+        "seo_title_ar avec marque : 40 caractères, attendu 45–60 (« الحج من المغرب: التسجيل والحصة | باب مكة »)",
+        "seo_description_ar : 118 caractères, attendu 120–155"
+      ]
+    },
+    "G13": {
+      "ok": false,
+      "details": [
+        "FAQPage : 0 question(s) extraites de body_fr, minimum 5",
+        "/fr : nœud FAQPage absent",
+        "/ar : nœud FAQPage absent",
+        "/en : nœud FAQPage absent"
+      ]
+    },
+    "G14": {
+      "ok": true,
+      "details": [
+        "créneau omra : règle non applicable"
+      ]
+    },
+    "G15": {
+      "ok": true,
+      "details": [],
+      "closest": {
+        "fr": {
+          "slug": "difference-omra-hajj",
+          "score": 0.049
+        },
+        "ar": {
+          "slug": "difference-omra-hajj",
+          "score": 0.033
+        },
+        "en": {
+          "slug": "loterie-hajj-maroc",
+          "score": 0.031
+        }
+      },
+      "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
+    },
+    "G16": {
+      "ok": true,
+      "details": []
+    },
+    "G0": {
+      "ok": false,
+      "details": [
+        "body_fr trop court : 464 mots (minimum 800)",
+        "bloc « Questions fréquentes » absent ou avec 0 question(s) (minimum 3)"
+      ],
+      "flags": []
+    }
+  }
+}

@@ -126,7 +126,37 @@ const assign = (slot, topic, how) => {
   used.add(topic.id);
 };
 const isFree = (slot) => slot.status === 'planned' && !slot.topic_id && !frozen.has(slot.slot_index);
-const fits = (topic, slot) => (!topic.earliest || slot.date >= topic.earliest) && (!topic.latest || slot.date <= topic.latest);
+/**
+ * A Hijri anchor is a CONSTRAINT, not a label. A topic anchored to an event
+ * has to be live — and found — before that event, so its slot must sit at
+ * least `lead_days` ahead of it, plus the `tolerance_days` by which the real
+ * Moroccan sighting can move the date. Until this existed the anchor was only
+ * copied onto the slot and seven topics landed on or after their own event:
+ * « la dernière semaine de Chaabane » published the day AFTER Ramadan began,
+ * and the Chawwal post a month after Chawwal had started.
+ */
+const HIJRI = spec.hijri_anchors ?? {};
+const HIJRI_MARGIN = Number(HIJRI.tolerance_days ?? 2) + Number(HIJRI.lead_days ?? 7);
+const anchorDeadline = (topic) => {
+  const iso = topic.hijri_anchor ? HIJRI[topic.hijri_anchor] : null;
+  if (typeof iso !== 'string') return null;
+  const deadline = addDays(iso, -HIJRI_MARGIN);
+  // An explicit `earliest` is the author's deliberate call and outranks the
+  // anchor, because a few topics are ABOUT what follows their anchor — the
+  // homecoming after the Hajj, preparing for the next season — and say so with
+  // a window that opens after it. The anchor only caps a topic that has none.
+  return topic.earliest && topic.earliest > deadline ? null : deadline;
+};
+/** The last date a topic may be published: its own `latest`, its anchor's deadline, or both. */
+const effectiveLatest = (topic) => {
+  const dates = [topic.latest, anchorDeadline(topic)].filter(Boolean);
+  return dates.length ? dates.sort()[0] : null;
+};
+const fits = (topic, slot) => {
+  if (topic.earliest && slot.date < topic.earliest) return false;
+  const latest = effectiveLatest(topic);
+  return !latest || slot.date <= latest;
+};
 const nearestFree = (date, from = 0, to = 10) => {
   for (let d = from; d <= to; d++) {
     const s = slots.find((x) => x.date === addDays(date, d) && isFree(x));
@@ -217,7 +247,7 @@ for (const slot of slots) {
   let chosen = null;
   for (const track of order) {
     const pool = valid.filter((t) => t.track === track && !used.has(t.id) && !t.series_id && !t.pinned_slot_index && fits(t, slot) && t.cluster !== prevCluster)
-      .sort((a, b) => (a.priority ?? 2) - (b.priority ?? 2) || (a.latest ?? '9999').localeCompare(b.latest ?? '9999'));
+      .sort((a, b) => (a.priority ?? 2) - (b.priority ?? 2) || (effectiveLatest(a) ?? '9999').localeCompare(effectiveLatest(b) ?? '9999'));
     if (pool.length) { chosen = pool[0]; break; }
   }
   if (!chosen) {
