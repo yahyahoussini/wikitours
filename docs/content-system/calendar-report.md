@@ -1,7 +1,7 @@
-# Calendar report — generated 2026-09-15T09:26Z
+# Calendar report — generated 2026-09-15T09:27Z
 
 Slots: **243** (2026-09-21 → 2027-09-19, 2 posts every 3 days at 08:30 / 18:00 Africa/Casablanca).
-Filled: **167** · unfillable: **76** · topics in the pool: 169 (valid 169, rejected 0, unused valid 2).
+Filled: **170** · unfillable: **73** · topics in the pool: 172 (valid 172, rejected 0, unused valid 2).
 
 ## Phases (assigned ramadan / omra / hajj vs the brief's weights)
 
@@ -12,7 +12,7 @@ Filled: **167** · unfillable: **76** · topics in the pool: 169 (valid 169, rej
 | P3 2027-01-01 → 2027-02-07 | 26 | 6 / 18 / 2 | 60/25/15 | 0 |
 | P4 2027-02-08 → 2027-03-09 | 20 | 0 / 18 / 2 | 60/20/20 | 0 |
 | P5 2027-03-10 → 2027-04-30 | 34 | 0 / 22 / 12 | 25/35/40 | 0 |
-| P6 2027-05-01 → 2027-06-15 | 31 | 0 / 11 / 3 | 10/40/50 | 17 |
+| P6 2027-05-01 → 2027-06-15 | 31 | 0 / 14 / 3 | 10/40/50 | 14 |
 | P7 2027-06-16 → 2027-08-31 | 51 | 1 / 3 / 1 | 20/60/20 | 46 |
 | P8 2027-09-01 → 2027-09-19 | 13 | 0 / 0 / 0 | 45/40/15 | 13 |
 
@@ -22,7 +22,7 @@ Filled: **167** · unfillable: **76** · topics in the pool: 169 (valid 169, rej
 - hajj-1448: 8/8 parts placed
 - premiere-omra: 8/8 parts placed
 - mois-par-mois: 12/12 parts placed
-- villes: 4/7 parts placed
+- villes: 7/7 parts placed
 
 ### ramadan-1448
 
@@ -92,12 +92,12 @@ Filled: **167** · unfillable: **76** · topics in the pool: 169 (valid 169, rej
 | 2 | 12 | 2026-10-07 | omra depuis marrakech : comment rejoindre le départ de casablanca |
 | 3 | 18 | 2026-10-16 | omra depuis fès : comment rejoindre le départ de casablanca |
 | 4 | 24 | 2026-10-25 | omra depuis tanger : comment rejoindre le départ de casablanca |
+| 5 | 30 | 2026-11-03 | omra depuis agadir : comment rejoindre le départ de casablanca |
+| 6 | 36 | 2026-11-12 | omra depuis meknès : comment rejoindre le départ de casablanca |
+| 7 | 43 | 2026-11-23 | omra depuis oujda : comment rejoindre le départ de casablanca |
 
-## Unfillable slots (76)
+## Unfillable slots (73)
 
-- #161 2027-05-19 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-19
-- #162 2027-05-20 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-20
-- #163 2027-05-22 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-22
 - #164 2027-05-23 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-23
 - #166 2027-05-26 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-26
 - #167 2027-05-28 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-28

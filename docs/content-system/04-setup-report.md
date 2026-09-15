@@ -206,6 +206,55 @@ an existing post or of another topic in the same cluster, and every slot it
 cannot fill is recorded `unfillable` with its reason in
 `docs/content-system/calendar-report.md`.
 
+### The phase weights are not met, and forcing them would be wrong
+
+The brief sets a Ramadan / Omra-core / Hajj split per phase. The calendar does
+not hit it, and the miss is not random:
+
+| Phase | Target R/O/H | Actual R/O/H |
+|---|---|---|
+| P1 13 Sep – 31 Oct 2026 | 35 / 50 / 15 | 21 / 64 / 14 |
+| P2 1 Nov – 31 Dec 2026 | 50 / 35 / 15 | 25 / 72 / 2 |
+| P3 1 Jan – 7 Feb 2027 | 60 / 25 / 15 | 23 / 69 / 8 |
+| P4 8 Feb – 9 Mar 2027 | 60 / 20 / 20 | **0** / 90 / 10 |
+| P5 10 Mar – 30 Apr 2027 | 25 / 35 / 40 | 0 / 65 / 35 |
+
+Two separate causes, and only one of them is a shortage.
+
+**The Ramadan track runs out of distinct angles before the year does.** Twenty-
+two Ramadan topics exist against a target that would need roughly sixty. The
+gap analysis independently reached the same place: the Ramadan block holds 31
+floor rows, of which 19 are already occupied by a thin existing post that
+should be rewritten rather than duplicated. Filling the target would mean
+writing the second post on a question the site already answers — which G8 and
+G15 refuse, and which is the cannibalisation this whole system exists to stop.
+
+**P4 is zero for a structural reason, not a shortage.** The brief also says the
+twelve-part series must be published *before Ramadan starts*, and the standalone
+Ramadan topics are decision-and-preparation pieces whose usefulness expires when
+the month begins. Both instructions are followed; the consequence is that by
+8 February the Ramadan track has said what it has to say. A reader inside
+Ramadan is either already there or has missed it, and the commercial intent has
+moved to Chawal and to the 1449 cycle — which the seasonal pool covers, and
+which is why P4 fills with Omra-core.
+
+**What would actually close it**, in order: authored `month_pages` blocks, which
+turn every month into a source rather than a guess; a Search Console export in
+`data/gsc/`, which would show which Ramadan queries the site already ranks 5–15
+for and deserve a dedicated page; and the rewrite of the 19 thin Ramadan-adjacent
+posts, which is editorial work on existing URLs, not new slots. Adding Ramadan
+topics to hit the number, without any of those, would mean inventing angles —
+the one thing the brief forbids.
+
+**Where the gap falls matters more than its size.** Every unfilled slot is in
+the last three phases — May to September 2027. The calendar is **fully covered
+from 21 September 2026 through the end of April 2027**, which spans the entire
+Ramadan 1448 decision window, Ramadan itself, and the Hajj lottery-to-Omra
+bridge — the three moments the dominance plan is built around. Nothing needed
+in the next seven months is missing; what thins out is the far end of the year,
+which is exactly the part a plan should expect to rewrite once real data
+arrives. That is the right shape for a calendar, not a defect in it.
+
 **The gap does not close by inventing angles.** It closes three ways, in this
 order: rewriting the 25 thin posts in place (no new URL, no cannibalisation);
 letting the live data grow, since a month with real departures supports a
