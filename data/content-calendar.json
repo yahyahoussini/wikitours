@@ -259,7 +259,7 @@
       "date": "2026-09-24",
       "publish_at": "2026-09-24T07:30:00.000Z",
       "phase": "P1",
-      "status": "scheduled",
+      "status": "skipped",
       "how": "pinned",
       "track": "omra",
       "pillar": "seasonal",
@@ -368,8 +368,9 @@
       "length_target": "month_support",
       "topic_id": "mois-novembre",
       "slug": "omra-en-novembre-meteo-affluence-conseils",
-      "article_id": "30f380ae-9080-4459-9a9a-cc3b6d04f58c",
-      "generated_at": "2026-09-15T09:26:03.082Z"
+      "article_id": null,
+      "generated_at": "2026-09-15T09:26:03.082Z",
+      "skip_reason": "Relecteur FR 7,4 puis 6,6 après l’unique réécriture autorisée (seuil 8). Cause de fond, pas de rédaction : data/allowed-facts.json ne contient ni climat ni affluence, et les blocs authorisés de month_pages pour novembre ne sont pas écrits — l’article promet « météo et affluence » dans son titre, puis ne peut que renvoyer vers un bloc vide. À reprendre quand month_pages.weather_* / crowds_* existent pour novembre (fr + ar)."
     },
     {
       "slot_index": 4,

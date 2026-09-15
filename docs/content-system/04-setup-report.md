@@ -137,6 +137,33 @@ mechanical and catches what is countable; it cannot tell a sourced sentence from
 a plausible one. Two of the four posts were rejected by a reviewer after passing
 every automated rule.
 
+### One of the four was skipped, and that is the system working
+
+`omra-en-novembre-meteo-affluence-conseils` scored **7.4**, was rewritten once —
+the single rewrite the process allows — and came back at **6.6**. The rewrite
+cleaned the body but left the climate promise in `seo_description_fr` and
+`_en`, where it then contradicted the text's own "nos données ne contiennent
+aucun relevé de température", and it replaced a claim repeated five times with
+another repeated six. The reviewer also caught that the article twice refers the
+reader to `month_pages` blocks for November **that do not exist**.
+
+So the rule was applied rather than bent: the slot is `skipped` with the reason,
+and the row — already ingested as scheduled before review — was **unpublished**,
+never deleted. It was never public, `npm run content:proof` confirms the anon
+client cannot see it, and the text stays in the table and in
+`content/articles/` with a `skip_reason` for whoever picks the slot up.
+
+The cause is not the writing. **`month_pages` is empty**, and
+`data/allowed-facts.json` has no climate or crowd section, so an article titled
+"météo, affluence et conseils" has no honest way to deliver either half of its
+own title. It can only attribute an observation or point at a block that is not
+written. That is a data gap the owner closes in the admin, not something a
+better draft would fix — and it is the same gap that will block the eleven
+remaining month posts.
+
+Three of four scheduled, one skipped, for a stated reason, with nothing invented
+to save it. A pipeline that published all four would have been the worse result.
+
 ---
 
 ## Contradictions between the brief and the repo

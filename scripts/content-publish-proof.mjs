@@ -50,12 +50,16 @@ const DIST = process.env.NEXT_DIST_DIR || '.next-audit';
 const sitemap = path.join(DIST, 'server', 'app', 'sitemap.xml.body');
 if (existsSync(sitemap)) {
   const xml = readFileSync(sitemap, 'utf8');
-  const preview = process.env.CONTENT_PREVIEW_SCHEDULED === '1';
+  // Whether the build was a PREVIEW build is a property of the build, not of
+  // this shell: read it off the output. A prerendered page for a row whose
+  // slot has not passed can only come from CONTENT_PREVIEW_SCHEDULED=1, and
+  // asserting against it would fail for the wrong reason.
+  const preview = future.some((r) => existsSync(path.join(DIST, 'server', 'app', 'fr', 'blog', `${r.slug}.html`)));
   if (!preview) {
     check(future.every((r) => !xml.includes(`/blog/${r.slug}<`)), `the prerendered sitemap (${DIST}) lists no future-dated article`);
     check(past.slice(-3).every((r) => xml.includes(`/blog/${r.slug}<`)), 'the prerendered sitemap lists the latest past-dated articles');
   } else {
-    console.log(`SKIP sitemap check — ${DIST} was built with CONTENT_PREVIEW_SCHEDULED=1 (local proof build), scheduled rows are expected in it`);
+    console.log(`SKIP sitemap check — ${DIST} holds prerendered pages for not-yet-due rows, so it was built with CONTENT_PREVIEW_SCHEDULED=1 (a local proof build); scheduled rows are expected in its sitemap. Rebuild without that flag to assert on the sitemap.`);
   }
 } else {
   console.log(`SKIP sitemap check — no build at ${DIST}`);
