@@ -1,19 +1,21 @@
 {
-  "slug": "inscription-hajj-maroc-etapes-et-calendrier",
-  "file": "content/articles/2026-09-14-inscription-hajj-maroc-etapes-et-calendrier.json",
+  "slug": "guide-omra-ramadan-1-vivre-le-mois",
+  "file": "content/articles/2026-09-14-guide-omra-ramadan-1-vivre-le-mois.json",
   "row": false,
   "format": "series_part",
-  "checked_at": "2026-09-15T08:39:33.785Z",
-  "ok": true,
-  "failed": [],
+  "checked_at": "2026-09-15T08:56:16.457Z",
+  "ok": false,
+  "failed": [
+    "G6"
+  ],
   "pending": [
     "G13",
     "G16"
   ],
   "words": {
-    "fr": 1932,
-    "ar": 1362,
-    "en": 1677
+    "fr": 1775,
+    "ar": 1238,
+    "en": 1647
   },
   "checks": {
     "G1": {
@@ -38,8 +40,12 @@
       "details": []
     },
     "G6": {
-      "ok": true,
-      "details": []
+      "ok": false,
+      "details": [
+        "body_fr : 0 lien(s) vers des pages sœurs du dossier A, minimum 2",
+        "body_ar : 0 lien(s) vers des pages sœurs du dossier A, minimum 2",
+        "body_en : 0 lien(s) vers des pages sœurs du dossier A, minimum 2"
+      ]
     },
     "G7": {
       "ok": true,
@@ -53,7 +59,7 @@
     "G9": {
       "ok": true,
       "details": [],
-      "arabicShare": 100
+      "arabicShare": 99.9
     },
     "G10": {
       "ok": true,
@@ -84,16 +90,16 @@
       "details": [],
       "closest": {
         "fr": {
-          "slug": "hajj-maroc-inscription-quota",
-          "score": 0.029
+          "slug": "difference-omra-hajj",
+          "score": 0.014
         },
         "ar": {
-          "slug": "hajj-maroc-inscription-quota",
-          "score": 0.012
+          "slug": "prix-omra-maroc-par-gamme-et-mois",
+          "score": 0.008
         },
         "en": {
-          "slug": "hajj-maroc-inscription-quota",
-          "score": 0.015
+          "slug": "omra-8-jours-ou-15-jours",
+          "score": 0.01
         }
       },
       "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
@@ -108,9 +114,7 @@
     "G0": {
       "ok": true,
       "details": [],
-      "flags": [
-        "lien externe présent — à vérifier par le relecteur"
-      ]
+      "flags": []
     }
   }
 }

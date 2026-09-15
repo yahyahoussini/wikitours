@@ -1,9 +1,9 @@
 {
-  "slug": "reserver-omra-depuis-l-europe-agence-casablanca",
-  "file": "content/articles/2026-09-14-reserver-omra-depuis-l-europe-agence-casablanca.json",
+  "slug": "inscription-hajj-maroc-les-etapes",
+  "file": "content/articles/2026-09-14-inscription-hajj-maroc-les-etapes.json",
   "row": false,
-  "format": "guide",
-  "checked_at": "2026-09-15T08:55:23.860Z",
+  "format": "series_part",
+  "checked_at": "2026-09-15T08:55:23.301Z",
   "ok": true,
   "failed": [],
   "pending": [
@@ -11,15 +11,15 @@
     "G16"
   ],
   "words": {
-    "fr": 2067,
-    "ar": 1434,
-    "en": 1815
+    "fr": 1923,
+    "ar": 1353,
+    "en": 1681
   },
   "checks": {
     "G1": {
       "ok": true,
       "details": [],
-      "format": "guide"
+      "format": "series_part"
     },
     "G2": {
       "ok": true,
@@ -53,7 +53,7 @@
     "G9": {
       "ok": true,
       "details": [],
-      "arabicShare": 99.9
+      "arabicShare": 100
     },
     "G10": {
       "ok": true,
@@ -77,25 +77,23 @@
     },
     "G14": {
       "ok": true,
-      "details": [
-        "créneau omra : règle non applicable"
-      ]
+      "details": []
     },
     "G15": {
       "ok": true,
       "details": [],
       "closest": {
         "fr": {
-          "slug": "prix-omra-maroc-par-gamme-et-mois",
-          "score": 0.017
+          "slug": "hajj-maroc-inscription-quota",
+          "score": 0.03
         },
         "ar": {
-          "slug": "prix-omra-maroc-par-gamme-et-mois",
-          "score": 0.009
+          "slug": "hajj-maroc-inscription-quota",
+          "score": 0.012
         },
         "en": {
-          "slug": "hajj-ministere-ou-agence",
-          "score": 0.007
+          "slug": "hajj-maroc-inscription-quota",
+          "score": 0.015
         }
       },
       "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
