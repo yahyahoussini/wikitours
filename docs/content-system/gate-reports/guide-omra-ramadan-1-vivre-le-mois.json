@@ -3,7 +3,7 @@
   "file": "content/articles/2026-09-14-guide-omra-ramadan-1-vivre-le-mois.json",
   "row": false,
   "format": "series_part",
-  "checked_at": "2026-09-15T09:08:34.654Z",
+  "checked_at": "2026-09-15T09:34:28.568Z",
   "ok": true,
   "failed": [],
   "pending": [
@@ -11,9 +11,9 @@
     "G16"
   ],
   "words": {
-    "fr": 1760,
-    "ar": 1223,
-    "en": 1632
+    "fr": 1764,
+    "ar": 1221,
+    "en": 1650
   },
   "checks": {
     "G1": {
@@ -84,16 +84,16 @@
       "details": [],
       "closest": {
         "fr": {
-          "slug": "inscription-hajj-maroc-les-etapes",
-          "score": 0.024
+          "slug": "omra-en-novembre-meteo-affluence-conseils",
+          "score": 0.023
         },
         "ar": {
           "slug": "inscription-hajj-maroc-les-etapes",
-          "score": 0.025
+          "score": 0.027
         },
         "en": {
           "slug": "inscription-hajj-maroc-les-etapes",
-          "score": 0.021
+          "score": 0.022
         }
       },
       "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
