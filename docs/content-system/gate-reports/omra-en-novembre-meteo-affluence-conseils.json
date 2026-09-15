@@ -3,20 +3,17 @@
   "file": "content/articles/2026-09-14-omra-en-novembre-meteo-affluence-conseils.json",
   "row": false,
   "format": "month_support",
-  "checked_at": "2026-09-15T09:01:37.486Z",
-  "ok": false,
-  "failed": [
-    "G8",
-    "G0"
-  ],
+  "checked_at": "2026-09-15T09:13:09.939Z",
+  "ok": true,
+  "failed": [],
   "pending": [
     "G13",
     "G16"
   ],
   "words": {
-    "fr": 1519,
-    "ar": 1104,
-    "en": 1372
+    "fr": 1544,
+    "ar": 1102,
+    "en": 1410
   },
   "checks": {
     "G1": {
@@ -50,10 +47,8 @@
       "warnings": []
     },
     "G8": {
-      "ok": false,
-      "details": [
-        "slug « omra-en-novembre-meteo-affluence-conseils » déjà dans la table articles"
-      ]
+      "ok": true,
+      "details": []
     },
     "G9": {
       "ok": true,
@@ -92,7 +87,7 @@
       "closest": {
         "fr": {
           "slug": "reserver-omra-depuis-l-europe-agence-casablanca",
-          "score": 0.033
+          "score": 0.032
         },
         "ar": {
           "slug": "reserver-omra-depuis-l-europe-agence-casablanca",
@@ -113,10 +108,8 @@
       ]
     },
     "G0": {
-      "ok": false,
-      "details": [
-        "slug déjà utilisé : « omra-en-novembre-meteo-affluence-conseils »"
-      ],
+      "ok": true,
+      "details": [],
       "flags": []
     }
   }
