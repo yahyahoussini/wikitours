@@ -140,6 +140,54 @@ export function targetsLanderQuery(queryFamily) {
 }
 
 /**
+ * A `<CommercialCTA intent="…">` INTENT → the lander path it resolves to, as a
+ * pure map — the same table `resolveIntent()` (src/lib/content-resolver.js)
+ * applies at request time, minus the indexability check, which needs live data
+ * this dependency-free module must not import. The gate only has to know WHICH
+ * page an intent is about; the resolver decides at render time whether that
+ * page still qualifies and falls back to /bab-makka when it does not.
+ *
+ * Kept here so `linksOwner` accepts the intent form: hard-coding a lander URL
+ * in a body is exactly what the architecture forbids, so the owner link had to
+ * be satisfiable without one.
+ */
+const MONTH_SLUG_LIST = MONTHS_SLUGS.split('|');
+export function intentPath(intent) {
+  const raw = String(intent ?? '').trim().toLowerCase();
+  const STATIC = {
+    ramadan: '/omra-ramadan', hajj: '/hajj', pas_cher: '/omra-pas-cher', premium: '/omra-5-etoiles',
+    agency: '/agence-omra-casablanca', guide: '/guide-omra', hotels: '/hotels-omra', next: '/bab-makka', all: '/bab-makka',
+  };
+  if (raw in STATIC) return STATIC[raw];
+  const month = raw.match(/^month:(\d{1,2})$/);
+  if (month) { const i = Number(month[1]) - 1; return i >= 0 && i < 12 ? `/omra-${MONTH_SLUG_LIST[i]}` : null; }
+  const city = raw.match(/^city:([a-z]+)$/);
+  if (city) return new RegExp(`^(?:${CITY_SLUGS})$`).test(city[1]) ? `/omra-depuis-${city[1]}` : null;
+  const occasion = raw.match(/^occasion:([a-z0-9-]+)$/);
+  if (occasion) return `/omra-${occasion[1]}`;
+  return null;
+}
+
+/**
+ * Every lander path a body points at through a CTA tag, in either spelling
+ * (`<CommercialCTA to|intent …/>`, `{{live:cta to=…|intent=…}}`) and in any
+ * attribute order.
+ */
+export function ctaTargets(body) {
+  const src = String(body ?? '');
+  const out = new Set();
+  for (const m of src.matchAll(/<CommercialCTA\b([^<>]*)\/>|\{\{\s*live:cta\b([^}]*)\}\}/g)) {
+    const attrs = m[1] ?? m[2] ?? '';
+    const to = attrs.match(/\bto=(?:"([^"]*)"|([^\s"}]+))/);
+    if (to) { out.add(to[1] ?? to[2]); continue; }
+    const intent = attrs.match(/\bintent=(?:"([^"]*)"|([^\s"}]+))/);
+    const path = intent ? intentPath(intent[1] ?? intent[2]) : null;
+    if (path) out.add(path);
+  }
+  return out;
+}
+
+/**
  * Code-side quality gate. `problems` block auto-publish; `flags` reach the
  * reviewer and three of them (unsourced price, external link, missing owner
  * link) also block. Prose accuracy is not checked here — that is the
@@ -163,10 +211,13 @@ export function qualityGate(draft, { ownerPath, existingSlugs, priceSet, strict 
   const h2 = (String(draft.body_fr ?? '').match(/^## /gm) ?? []).length;
   if (h2 < 3) problems.push(`seulement ${h2} section(s) « ## » (minimum 4)`);
 
-  // The link to the owner page: a <CommercialCTA to="{owner}" /> tag (the
-  // architecture's way) or a markdown link, in every locale's body.
-  const linksOwner = (lang, body) => !ownerPath || String(body ?? '').includes(`](/${lang}${ownerPath}`) || new RegExp(`<CommercialCTA\\s+to="${ownerPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"\\s*/>`).test(String(body ?? ''));
-  if (!linksOwner('fr', draft.body_fr)) problems.push(`lien vers la page propriétaire ${ownerPath} manquant dans body_fr (<CommercialCTA to="${ownerPath}" /> ou lien markdown)`);
+  // The link to the owner page: a CTA tag in either spelling — `to="{owner}"`
+  // or an `intent` that resolves to it (intentPath) — or a markdown link, in
+  // every locale's body. The intent form is the architecture's way: a body must
+  // never hard-code a lander URL, so requiring `to=` here used to force every
+  // post to carry a second, duplicate CTA block just to satisfy this rule.
+  const linksOwner = (lang, body) => !ownerPath || String(body ?? '').includes(`](/${lang}${ownerPath}`) || ctaTargets(body).has(ownerPath);
+  if (!linksOwner('fr', draft.body_fr)) problems.push(`lien vers la page propriétaire ${ownerPath} manquant dans body_fr (<CommercialCTA intent="…" /> résolvant vers ${ownerPath}, <CommercialCTA to="${ownerPath}" /> ou lien markdown)`);
   for (const lang of ['ar', 'en']) if (!linksOwner(lang, draft[`body_${lang}`])) flags.push(`lien propriétaire manquant dans body_${lang}`);
 
   if (strict) {

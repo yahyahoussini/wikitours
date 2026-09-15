@@ -14,8 +14,11 @@ const GOLD = '#d4af37';
 const GOLD_LIGHT = '#e8c766';
 const BLACK = '#0d0d0d';
 
-export function OgCard({ title, meta, badge, cover }) {
+export function OgCard({ title, meta, badge, cover, scale = 1 }) {
   const heading = title ?? BRAND.lockup;
+  // `scale` lets the same card render at 1600×900 (the article hero) with the
+  // type sized for the larger canvas; 1 is the 1200×630 share card.
+  const s = (n) => Math.round(n * scale);
   return (
     <div
       style={{
@@ -26,7 +29,7 @@ export function OgCard({ title, meta, badge, cover }) {
         justifyContent: 'flex-end',
         position: 'relative',
         backgroundColor: BLACK,
-        padding: 64,
+        padding: s(64),
       }}
     >
       {cover ? (
@@ -75,17 +78,17 @@ export function OgCard({ title, meta, badge, cover }) {
         }}
       />
 
-      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', maxWidth: 880 }}>
+      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', maxWidth: s(880) }}>
         {badge ? (
-          <div style={{ display: 'flex', marginBottom: 20 }}>
+          <div style={{ display: 'flex', marginBottom: s(20) }}>
             <div
               style={{
                 display: 'flex',
                 border: `2px solid ${GOLD}`,
                 color: GOLD,
                 borderRadius: 999,
-                padding: '6px 22px',
-                fontSize: 24,
+                padding: `${s(6)}px ${s(22)}px`,
+                fontSize: s(24),
                 fontWeight: 700,
                 letterSpacing: 2,
               }}
@@ -99,7 +102,7 @@ export function OgCard({ title, meta, badge, cover }) {
           style={{
             display: 'flex',
             color: '#ffffff',
-            fontSize: heading.length > 58 ? 52 : 66,
+            fontSize: s(heading.length > 58 ? 52 : 66),
             fontWeight: 800,
             lineHeight: 1.12,
           }}
@@ -108,7 +111,7 @@ export function OgCard({ title, meta, badge, cover }) {
         </div>
 
         {meta ? (
-          <div style={{ display: 'flex', color: GOLD_LIGHT, fontSize: 34, fontWeight: 700, marginTop: 18 }}>
+          <div style={{ display: 'flex', color: GOLD_LIGHT, fontSize: s(34), fontWeight: 700, marginTop: s(18) }}>
             {meta}
           </div>
         ) : null}
@@ -117,9 +120,9 @@ export function OgCard({ title, meta, badge, cover }) {
           style={{
             display: 'flex',
             color: 'rgba(255,255,255,0.72)',
-            fontSize: 26,
+            fontSize: s(26),
             fontWeight: 600,
-            marginTop: 26,
+            marginTop: s(26),
           }}
         >
           {BRAND.lockup}

@@ -16,12 +16,20 @@
 
 create table if not exists public.hijri_events (
   id uuid primary key default gen_random_uuid(),
-  event text not null check (event in ('ramadan', 'laylat-al-qadr', 'eid-al-fitr', 'dhul-hijja', 'arafat', 'eid-al-adha', 'ashura', 'mawlid')),
+  -- The keys of src/lib/hijri.js HIJRI_EVENT_DEFS (the month starts the
+  -- content calendar anchors on, the Ramadan milestones, the Hajj days).
+  event text not null check (event in (
+    'muharram', 'ashura', 'mawlid', 'rajab', 'shaban',
+    'ramadan', 'ramadan-last10', 'laylat-al-qadr', 'eid-al-fitr',
+    'dhul-qada', 'dhul-hijja', 'arafat', 'eid-al-adha'
+  )),
   hijri_year integer not null check (hijri_year between 1400 and 1500),
   hijri_month smallint not null check (hijri_month between 1 and 12),
   hijri_day smallint not null check (hijri_day between 1 and 30),
   -- Computed (Umm al-Qura) at seed time; the admin overwrites it after the sighting.
   gregorian_date date not null,
+  -- How far the real date may move once the moon is sighted (the brief: ±2 days).
+  tolerance_days smallint not null default 2,
   is_confirmed boolean not null default false,
   label_fr text, label_ar text, label_en text,
   created_at timestamptz not null default now(),

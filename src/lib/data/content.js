@@ -1,4 +1,5 @@
 import { cache } from 'react';
+import { createClient } from '@supabase/supabase-js';
 import { supabasePublic } from '@/lib/supabase/public';
 
 /**
@@ -271,15 +272,29 @@ export const getAnnouncements = cache(async function getAnnouncements() {
   }
 });
 
+/**
+ * LOCAL PROOF MODE ONLY — never set on Vercel. With CONTENT_PREVIEW_SCHEDULED=1
+ * and the service key in the env, the article reads include the rows whose
+ * published_at has NOT passed yet, so an isolated build (NEXT_DIST_DIR=
+ * .next-audit) prerenders a scheduled post and the gate can check its
+ * rendered HTML (scripts/content-gate.mjs G16) before its slot. Both
+ * variables are undefined in the browser bundle and on the production
+ * server, so the branch is dead everywhere except that local build.
+ */
+function articleReader() {
+  if (process.env.CONTENT_PREVIEW_SCHEDULED === '1' && process.env.SUPABASE_SERVICE_ROLE_KEY && process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
+  }
+  return supabasePublic();
+}
+
 export const getArticles = cache(async function getArticles(limit = 50) {
   try {
-    const supabase = supabasePublic();
+    const supabase = articleReader();
     if (!supabase) return [];
-    const { data } = await supabase
-      .from('articles')
-      .select('*')
-      .order('published_at', { ascending: false })
-      .limit(limit);
+    let query = supabase.from('articles').select('*').order('published_at', { ascending: false }).limit(limit);
+    if (process.env.CONTENT_PREVIEW_SCHEDULED === '1') query = query.eq('is_published', true);
+    const { data } = await query;
     return data ?? [];
   } catch {
     return [];
@@ -303,12 +318,31 @@ export const getRelatedArticles = cache(async function getRelatedArticles(path, 
 
 export const getArticleBySlug = cache(async function getArticleBySlug(slug) {
   try {
-    const supabase = supabasePublic();
+    const supabase = articleReader();
     if (!supabase || !slug) return null;
-    const { data } = await supabase.from('articles').select('*').eq('slug', slug).maybeSingle();
+    let query = supabase.from('articles').select('*').eq('slug', slug);
+    if (process.env.CONTENT_PREVIEW_SCHEDULED === '1') query = query.eq('is_published', true);
+    const { data } = await query.maybeSingle();
     return data;
   } catch {
     return null;
+  }
+});
+
+/**
+ * Policies the live components render (<PolicyFact key />): deposit, payment,
+ * passport validity, visa, children — public.policies (migration 026),
+ * admin-editable. Empty until the migration runs; the component then falls
+ * back to the dictionary copy of the same FAQ sentences.
+ */
+export const getPolicies = cache(async function getPolicies() {
+  try {
+    const supabase = supabasePublic();
+    if (!supabase) return [];
+    const { data, error } = await supabase.from('policies').select('*');
+    return error ? [] : (data ?? []);
+  } catch {
+    return [];
   }
 });
 

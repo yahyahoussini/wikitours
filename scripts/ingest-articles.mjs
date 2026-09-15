@@ -24,6 +24,7 @@
  * Run by hand: node --env-file=.env.local scripts/ingest-articles.mjs [--dry]
  */
 import { readdir, readFile } from 'node:fs/promises';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createClient } from '@supabase/supabase-js';
@@ -45,6 +46,22 @@ const ROOT = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 const DIR = path.join(ROOT, 'content', 'articles');
 const REQUIRED = ['slug', 'title_fr', 'title_ar', 'title_en', 'excerpt_fr', 'excerpt_ar', 'excerpt_en', 'body_fr', 'body_ar', 'body_en', 'seo_title_fr', 'seo_title_ar', 'seo_title_en', 'seo_description_fr', 'seo_description_ar', 'seo_description_en'];
 const log = (m) => console.log(`[ingest-articles] ${m}`);
+// The calendar (brief C5): a file that names its slot_index is scheduled at
+// that slot's publish_at — never earlier than now + 24 h (the generator's
+// rule) — and the slot is marked scheduled in the table when it exists.
+const CALENDAR = path.join(ROOT, 'data', 'content-calendar.json');
+const calendarSlots = existsSync(CALENDAR) ? (JSON.parse(readFileSync(CALENDAR, 'utf8')).slots ?? []) : [];
+const MIN_LEAD_MS = 24 * 3600 * 1000;
+
+/** The instant a file is released: its calendar slot (≥ now + 24 h), else the next free 08:00 Casablanca morning. */
+function releaseInstant(draft, lastSlot, now) {
+  const slot = draft.slot_index ? calendarSlots.find((s) => s.slot_index === Number(draft.slot_index)) : null;
+  if (slot?.publish_at) {
+    const at = Math.max(Date.parse(slot.publish_at), now.getTime() + MIN_LEAD_MS);
+    return { at: new Date(at).toISOString(), slot };
+  }
+  return { at: nextMorningSlot(lastSlot, now), slot: null };
+}
 
 async function main() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -101,16 +118,27 @@ async function main() {
     }
 
     const slug = uniqueSlug(draft.slug, existingSlugs, plan.query_family ?? file);
-    const slot = nextMorningSlot(lastSlot, now);
+    const { at: slot, slot: calendarSlot } = releaseInstant(draft, lastSlot, now);
     const row = { ...toArticleRow(draft, { plan, settings, slug, authorId }), published_at: slot, is_published: true };
 
-    log(`${file} → /blog/${slug} · ${words(draft.body_fr)} mots · programmé ${slot}${gate.flags.length ? ` · flags: ${gate.flags.join(' | ')}` : ''}`);
-    if (DRY) { inserted++; lastSlot = slot; existingSlugs.add(slug); continue; }
+    log(`${file} → /blog/${slug} · ${words(draft.body_fr)} mots · programmé ${slot}${calendarSlot ? ` (créneau #${calendarSlot.slot_index})` : ''}${gate.flags.length ? ` · flags: ${gate.flags.join(' | ')}` : ''}`);
+    if (DRY) { inserted++; if (!calendarSlot) lastSlot = slot; existingSlugs.add(slug); continue; }
 
-    const { error } = await sb.from('articles').insert(row);
+    const { data: insertedRow, error } = await sb.from('articles').insert(row).select('id').maybeSingle();
     if (error) { log(`FAILED ${file}: ${error.message}`); continue; }
     inserted++;
-    lastSlot = slot; existingSlugs.add(slug);
+    if (!calendarSlot) lastSlot = slot;
+    existingSlugs.add(slug);
+
+    // The calendar row (migration 026) — best effort: without the table the
+    // repo's data/content-calendar.json, updated by the generator, is the record.
+    if (calendarSlot) {
+      const { error: calError } = await sb.from('content_calendar')
+        .update({ status: 'scheduled', slug, article_id: insertedRow?.id ?? null, generated_at: now.toISOString(), updated_at: now.toISOString() })
+        .eq('slot_index', calendarSlot.slot_index);
+      if (calError) log(`calendar row #${calendarSlot.slot_index} not updated (${calError.message}) — table absent until migration 026`);
+      await sb.from('content_ops_events').insert({ kind: 'ingest', level: 'info', slot_index: calendarSlot.slot_index, slug, message: `scheduled ${slug} at ${slot} from ${file}` }).then(({ error: e }) => { if (e) log(`ops event not logged (${e.message})`); });
+    }
 
     if (plan.query_family) {
       await sb.from('article_plan')

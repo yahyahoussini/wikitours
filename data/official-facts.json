@@ -1,0 +1,66 @@
+{
+  "note": "Hand-maintained official facts (ministry, Nusuk, carriers) with the URL and the date they were read. scripts/build-allowed-facts.mjs copies them into data/allowed-facts.json; nothing is edited there. Each entry says how it was verified: 'fetched' (the page itself was read), 'search-summary' (the page was found and summarised by a web search; the direct fetch was blocked by the site's certificate) — a writing session may use a search-summary fact only as STRUCTURE (steps, who does what) and never as a figure in prose until the owner marks it 'fetched'.",
+  "facts": [
+    {
+      "key": "hajj_ma_organisation",
+      "value": "Le Hajj des Marocains est organisé sous l'autorité de la Commission royale du Hajj ; deux canaux existent : l'organisation officielle (encadrée par le Ministère des Habous et des Affaires islamiques) et les agences de voyages touristiques agréées (sélectionnées par le Ministère du Tourisme).",
+      "value_ar": "يُنظَّم حج المغاربة تحت إشراف اللجنة الملكية للحج؛ وله تنظيمان: التنظيم الرسمي (تحت إشراف وزارة الأوقاف والشؤون الإسلامية) وتنظيم وكالات الأسفار السياحية المرخصة (تختارها وزارة السياحة).",
+      "source": "https://www.habous.gov.ma/pelerinage/",
+      "as_of": "2026-09-14",
+      "verification": "search-summary",
+      "note": "structure only"
+    },
+    {
+      "key": "hajj_ma_inscription",
+      "value": "L'inscription au Hajj se fait par voie électronique, pendant une fenêtre annoncée chaque année par le Ministère des Habous (pour la saison 1448/2027 : du lundi 8 au vendredi 19 décembre 2025). Conditions annoncées : être âgé de 18 ans ou plus et ne pas avoir accompli le Hajj au cours des dix dernières années ; aptitude physique ; une femme enceinte de plus de six mois ne peut pas participer.",
+      "value_ar": "يتم التسجيل في الحج إلكترونياً خلال فترة تعلنها وزارة الأوقاف كل سنة (بالنسبة لموسم 1448هـ/2027م: من الاثنين 8 إلى الجمعة 19 دجنبر 2025). الشروط المعلنة: بلوغ 18 سنة فأكثر وعدم أداء الحج خلال السنوات العشر الأخيرة؛ القدرة البدنية؛ ولا يمكن للمرأة الحامل بأكثر من ستة أشهر المشاركة.",
+      "source": "https://www.habous.gov.ma/component/content/article/22090-%D8%B9%D9%85%D9%84%D9%8A%D8%A9-%D8%A7%D9%84%D9%82%D8%B1%D8%B9%D8%A9-%D9%84%D9%85%D9%88%D8%B3%D9%85-%D8%A7%D9%84%D8%AD%D8%AC-1448%D9%87%D9%80-2027%D9%85.html",
+      "as_of": "2026-09-14",
+      "verification": "search-summary",
+      "note": "the dates are those of the 1448 season and change every year — prose says « une fenêtre annoncée chaque année » and never a date (gate G5); the age (18) and the ten-year rule may be stated"
+    },
+    {
+      "key": "hajj_ma_qura",
+      "value": "Le tirage au sort (القرعة) désigne les listes définitives et une liste d'attente pour remplacer les désistements ; pour la saison 1448/2027 il s'est tenu du 2 au 13 mars 2026. Il est organisé au niveau des caïdats et arrondissements pour les pèlerins de l'organisation officielle, et au niveau des préfectures et provinces pour ceux des agences de voyages. Les listes sont publiées par le ministère dès la fin de chaque opération.",
+      "value_ar": "تحدد القرعة اللوائح النهائية ولائحة انتظار لتعويض المعتذرين؛ وبالنسبة لموسم 1448هـ/2027م أُجريت من 2 إلى 13 مارس 2026. تُجرى على مستوى القيادات والمقاطعات بالنسبة لحجاج التنظيم الرسمي، وعلى مستوى العمالات والأقاليم بالنسبة لحجاج وكالات الأسفار. وتنشر الوزارة اللوائح فور انتهاء كل عملية.",
+      "source": "https://www.habous.gov.ma/component/content/article/22090-%D8%B9%D9%85%D9%84%D9%8A%D8%A9-%D8%A7%D9%84%D9%82%D8%B1%D8%B9%D8%A9-%D9%84%D9%85%D9%88%D8%B3%D9%85-%D8%A7%D9%84%D8%AD%D8%AC-1448%D9%87%D9%80-2027%D9%85.html",
+      "as_of": "2026-09-14",
+      "verification": "search-summary",
+      "note": "structure only in prose (levels, waiting list); the dates never"
+    },
+    {
+      "key": "hajj_ma_quota_1448",
+      "value": "Quota du Maroc pour la saison 1448/2027 tel que rapporté : 34 000 pèlerins, dont 22 400 dans l'organisation officielle et 11 600 par les agences de voyages.",
+      "value_ar": "حصة المغرب لموسم 1448هـ/2027م كما ورد: 34.000 حاج، منهم 22.400 في التنظيم الرسمي و11.600 عبر وكالات الأسفار.",
+      "source": "https://www.habous.gov.ma/pelerinage/ (reported by the press citing the Royal Hajj Commission)",
+      "as_of": "2026-09-14",
+      "verification": "search-summary",
+      "note": "season figure — NOT to be stated in prose until the owner marks it fetched; the split (two thirds official / one third agencies) may be described in words"
+    },
+    {
+      "key": "hajj_ma_cout_1447",
+      "value": "Coût annoncé du Hajj de l'organisation officielle pour la saison 1447/2025 : 63 221 dirhams.",
+      "source": "https://www.habous.gov.ma/ (minister's announcement, as reported)",
+      "as_of": "2026-09-14",
+      "verification": "search-summary",
+      "note": "an amount — never in prose (gate G5); kept for the owner's reference only"
+    },
+    {
+      "key": "nusuk_umrah_process",
+      "value": "Pour la Omra, le visa est demandé via la plateforme Nusuk du Ministère saoudien du Hajj et de la Omra ; les pèlerins des pays hors liste e-visa, dont le Maroc, passent par une agence agréée qui réserve le forfait (vol, hôtels, transferts) et dépose la demande de visa ; l'application Nusuk sert ensuite aux permis (Rawdah) sur place. Passeport valide au moins six mois.",
+      "value_ar": "بالنسبة للعمرة، تُطلب التأشيرة عبر منصة نسك التابعة لوزارة الحج والعمرة السعودية؛ ويمر معتمرو الدول غير المدرجة في التأشيرة الإلكترونية، ومنها المغرب، عبر وكالة مرخصة تحجز الباقة (طيران، فنادق، نقل) وتودع طلب التأشيرة؛ ثم يُستعمل تطبيق نسك للتصاريح (الروضة) في عين المكان. جواز السفر صالح ستة أشهر على الأقل.",
+      "source": "https://www.nusuk.sa/ · https://umrah.nusuk.sa/",
+      "as_of": "2026-09-14",
+      "verification": "search-summary",
+      "note": "the six-month passport rule is also the agency's own FAQ (policies.passport_validity) and may be stated; the rest as structure"
+    },
+    {
+      "key": "ecole_ma_calendrier_2026_2027",
+      "value": "Calendrier scolaire marocain 2026-2027 (décision ministérielle n° 047.26 du 3 juillet 2026, telle que relayée) : rentrée des élèves le 7 septembre 2026 ; vacances intermédiaires du 18 au 25 octobre 2026, du 6 au 13 décembre 2026, du 21 au 28 mars 2027 et du 9 au 16 mai 2027 ; vacances de mi-année du 24 au 31 janvier 2027.",
+      "source": "https://www.men.gov.ma/ (décision 047.26, relayée par moutamadris.ma, taalimprimaire.com, concoursonline.ma)",
+      "as_of": "2026-09-14",
+      "verification": "search-summary",
+      "note": "used to TIME the calendar's school-holiday slots only; the dates never appear in prose (gate G5) — a post says « pendant les vacances intermédiaires d'automne » and the live departures show the real dates"
+    }
+  ]
+}

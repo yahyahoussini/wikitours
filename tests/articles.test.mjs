@@ -1,6 +1,6 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
-import { qualityGate, proseViolations, targetsLanderQuery, nextMorningSlot, toArticleRow, sampleDrafts } from '@/lib/server/article-gate';
+import { qualityGate, proseViolations, targetsLanderQuery, nextMorningSlot, toArticleRow, sampleDrafts, intentPath, ctaTargets } from '@/lib/server/article-gate';
 
 const para = 'Cette phrase de démonstration sert uniquement à vérifier le contrôle qualité automatique du blog et ne contient aucune information réelle. ';
 const filler = (n) => Array.from({ length: n }, () => para).join('');
@@ -28,6 +28,30 @@ describe('strict gate — no volatile fact in prose', () => {
     assert.deepEqual(gate(d).problems, []);
     d.body_fr = d.body_fr.replace('[tous les départs](/fr/bab-makka)', 'rien');
     assert.match(gate(d).problems.join('|'), /page propriétaire \/bab-makka manquant/);
+  });
+  test('an INTENT that resolves to the owner satisfies the rule too — a body never hard-codes a lander URL', () => {
+    // The defect this covers: requiring to="…" forced every post to carry a
+    // second, duplicate CTA block just to pass, because G6 forbids a markdown
+    // link to a commercial page.
+    assert.equal(intentPath('ramadan'), '/omra-ramadan');
+    assert.equal(intentPath('agency'), '/agence-omra-casablanca');
+    assert.equal(intentPath('month:11'), '/omra-novembre');
+    assert.equal(intentPath('city:fes'), '/omra-depuis-fes');
+    assert.equal(intentPath('occasion:mawlid'), '/omra-mawlid');
+    assert.equal(intentPath('month:13'), null);
+    assert.equal(intentPath('city:paris'), null);
+    assert.equal(intentPath('nonsense'), null);
+    assert.deepEqual([...ctaTargets('<CommercialCTA intent="hajj" />')], ['/hajj']);
+    assert.deepEqual([...ctaTargets('{{live:cta intent=month:11}}')], ['/omra-novembre']);
+    assert.deepEqual([...ctaTargets('<CommercialCTA intent="ramadan" to="/hajj" />')], ['/hajj'], 'an explicit to wins, whatever the attribute order');
+    const d = clean();
+    d.owner_path = '/hajj';
+    d.body_fr = d.body_fr.replace('<CommercialCTA to="/bab-makka" />', '<CommercialCTA intent="hajj" />');
+    d.body_ar = d.body_ar.replace('<CommercialCTA to="/bab-makka" />', '<CommercialCTA intent="hajj" />');
+    d.body_en = d.body_en.replace('<CommercialCTA to="/bab-makka" />', '<CommercialCTA intent="hajj" />');
+    const g = gate(d, { ownerPath: '/hajj' });
+    assert.deepEqual(g.problems, []);
+    assert.deepEqual(g.flags.filter((f) => /propriétaire/.test(f)), []);
   });
   test('a year, a price, a departure date and a seat count each fail with the field named', () => {
     const d = clean();

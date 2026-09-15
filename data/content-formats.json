@@ -1,0 +1,15 @@
+{
+  "note": "Gate G1: the word-count range of each FORMAT per locale (tags stripped, FAQ included). The calendar's length_target names a format. Arabic runs ~25% shorter than French for the same content and English ~10%; the ranges follow. G2–G4 (answer-first 40–55 words, ≥4 question H2s, FAQ 5–6 items with 30–90-word answers) apply to every format.",
+  "formats": {
+    "explainer": { "fr": [1100, 1900], "ar": [850, 1700], "en": [950, 1750], "h2_min": 4, "faq": [5, 6] },
+    "guide": { "fr": [1400, 2400], "ar": [1050, 2100], "en": [1200, 2200], "h2_min": 5, "faq": [5, 6] },
+    "series_part": { "fr": [1300, 2300], "ar": [1000, 2000], "en": [1100, 2100], "h2_min": 4, "faq": [5, 6] },
+    "comparison": { "fr": [1100, 1900], "ar": [850, 1700], "en": [950, 1750], "h2_min": 4, "faq": [5, 6] },
+    "checklist": { "fr": [900, 1700], "ar": [700, 1500], "en": [800, 1550], "h2_min": 4, "faq": [5, 6] },
+    "month_support": { "fr": [1000, 1700], "ar": [750, 1500], "en": [850, 1550], "h2_min": 4, "faq": [5, 6] },
+    "faq_post": { "fr": [1300, 2400], "ar": [1000, 2100], "en": [1100, 2200], "h2_min": 4, "faq": [5, 6] },
+    "mega": { "fr": [2000, 3400], "ar": [1500, 3000], "en": [1700, 3100], "h2_min": 6, "faq": [5, 6] },
+    "story": { "fr": [900, 1600], "ar": [700, 1400], "en": [800, 1450], "h2_min": 4, "faq": [5, 6] }
+  },
+  "default": "explainer"
+}

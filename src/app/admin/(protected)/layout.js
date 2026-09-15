@@ -15,6 +15,12 @@ const NAV = [
   { href: '/admin/e/faqs', label: 'FAQs' },
   { href: '/admin/e/articles', label: 'Articles' },
   { href: '/admin/e/plan-articles', label: 'Plan éditorial' },
+  // The content system (migrations 025 + 026): the year's calendar, the rules
+  // every article renders live, and the Hijri dates to correct after the
+  // official sighting.
+  { href: '/admin/e/calendrier', label: 'Calendrier éditorial' },
+  { href: '/admin/e/politiques', label: 'Règles (acompte, passeport)' },
+  { href: '/admin/e/hijri', label: 'Dates hégiriennes' },
   { href: '/admin/e/guides', label: 'Guide Omra' },
   { href: '/admin/e/glossaire', label: 'Glossaire' },
   // Two programmatic-SEO entities, two menu entries: the month landers

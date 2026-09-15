@@ -1,0 +1,21 @@
+{
+  "note": "Gate G10 (scripts/content-gate.mjs): a body, title, excerpt or description containing one of these fails. Three families: unverifiable superlatives and urgency (LAW §10, brand rulebook), AI filler that answer engines and readers both discount, and the forbidden spelling of the service line. Matching is case-insensitive, accent-insensitive, on word boundaries. Extend here, never in code.",
+  "fr": [
+    "meilleure agence", "la meilleure", "n°1", "numéro 1", "numero un", "leader du marché", "la moins chère", "le moins cher", "prix imbattable", "garanti", "100 %", "100%",
+    "dernières places", "places limitées", "offre limitée", "dépêchez-vous", "ne tardez pas", "vite", "avant qu'il ne soit trop tard",
+    "dans cet article, nous allons", "dans cet article nous allons", "il est important de noter", "il convient de noter", "en conclusion", "pour conclure", "n'hésitez pas à", "sans plus attendre", "plongeons", "découvrons ensemble", "que vous soyez", "il est essentiel de", "en fin de compte", "en somme", "force est de constater",
+    "bab makkah"
+  ],
+  "ar": [
+    "أفضل وكالة", "أحسن وكالة", "الوكالة رقم 1", "رقم واحد", "الأرخص", "أرخص عمرة", "ثمن لا يُنافَس", "مضمون", "مضمونة", "100٪", "100%",
+    "آخر الأماكن", "أماكن محدودة", "عرض محدود", "سارعوا", "لا تتأخروا", "قبل فوات الأوان",
+    "في هذا المقال سنتحدث", "في هذه المقالة سنتناول", "من الجدير بالذكر", "تجدر الإشارة إلى", "في الختام", "خلاصة القول", "لا تترددوا", "دعونا نتعرف", "سواء كنت", "من الضروري أن", "في نهاية المطاف",
+    "باب مكة المكرمة للأسفار"
+  ],
+  "en": [
+    "best agency", "the best", "number one", "no. 1", "market leader", "cheapest", "unbeatable price", "guaranteed", "100%", "100 %",
+    "last seats", "limited seats", "limited offer", "hurry", "don't wait", "before it's too late",
+    "in this article, we will", "in this article we will", "it is important to note", "it's important to note", "it is worth noting", "in conclusion", "to conclude", "don't hesitate to", "without further ado", "let's dive", "let's explore", "whether you are", "it is essential to", "at the end of the day", "all in all",
+    "bab makkah"
+  ]
+}

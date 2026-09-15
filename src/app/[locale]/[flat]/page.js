@@ -45,6 +45,18 @@ export async function generateStaticParams() {
 
 const nf = new Intl.NumberFormat('fr-MA');
 
+/**
+ * An occasion's H1 / fallback title in the page's language — « Omra {name} »,
+ * « عمرة {name} », « {name} Umrah » (dictionary `occasionPage.heading`). The
+ * year is appended only when the name does not already carry one: the
+ * template used to read « Omra Spécial Septembre 2026 2026 » and, on /ar,
+ * « Omra رمضان » with a Latin word on the Arabic page.
+ */
+function occasionHeading(t, name, year) {
+  const base = (t.occasionPage?.heading ?? 'Omra {name}').replace('{name}', name ?? '');
+  return year && !/\b(?:19|20)\d{2}\b/.test(String(name ?? '')) ? `${base} ${year}` : base;
+}
+
 /** Earliest departure year among matching offers (data-driven page year), or null. */
 function occasionYearOf(offers) {
   const years = offers.map((o) => o.date_start && new Date(o.date_start).getUTCFullYear()).filter(Boolean);
@@ -160,7 +172,7 @@ export async function generateMetadata({ params }) {
   return {
     title: {
       absolute: withBrand(
-        pickLang(resolved.occasion, 'seo_title', locale) ?? `Omra ${occName}${occYear ? ` ${occYear}` : ''}`,
+        pickLang(resolved.occasion, 'seo_title', locale) ?? occasionHeading(getDictionary(locale), occName, occYear),
       ),
     },
     // An admin-authored seo_description always wins (LAWS §4 — admin controls
@@ -359,7 +371,7 @@ export default async function FlatLandingPage({ params }) {
     // Year comes from the real departures (Ramadan 2027 is not the calendar
     // year), so the H1/title carry it while the URL stays evergreen.
     const occasionYear = occasionYearOf(matching);
-    heading = occasionYear ? `Omra ${occasionName} ${occasionYear}` : `Omra ${occasionName}`;
+    heading = occasionHeading(t, occasionName, occasionYear);
     // Answer-first (LAWS §5): admin description if any, else a computed line
     // when offers match, else the honest empty state — never a blank lede.
     const minPrice = Math.min(...matching.map((o) => o.starting_price).filter((p) => p != null));

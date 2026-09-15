@@ -1,0 +1,1246 @@
+{
+  "generated_at": "2026-09-14T10:22:41.939Z",
+  "note": "Pages that OWN a topic — a blog post never targets their query (hard constraint 4). Rebuilt by scripts/content-inventory.mjs from the DB + the build output; the h1/title/query per locale are the RENDERED ones.",
+  "landers": [
+    {
+      "kind": "home",
+      "path": "/",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Votre Omra, organisée comme un voyage d'exception",
+        "title": "Omra 2026 depuis le Maroc | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرتكم، منظمة كرحلة استثنائية",
+        "title": "عمرة 2026 من المغرب — باب مكة من ويكي تورز"
+      },
+      "en": {
+        "h1": "Your Umrah, organised like an exceptional journey",
+        "title": "Umrah 2026 from Morocco | Bab Makka"
+      }
+    },
+    {
+      "kind": "pillar",
+      "path": "/bab-makka",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Bab Makka — Programmes Omra depuis le Maroc",
+        "title": "Bab Makka — Omra depuis le Maroc : programmes & prix"
+      },
+      "ar": {
+        "h1": "باب مكة — برامج العمرة من المغرب",
+        "title": "باب مكة — برامج العمرة من المغرب وأثمنتها"
+      },
+      "en": {
+        "h1": "Bab Makka — Umrah programs from Morocco",
+        "title": "Bab Makka — Umrah from Morocco: programs & prices"
+      }
+    },
+    {
+      "kind": "hub",
+      "path": "/omra-pas-cher",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra pas cher depuis le Maroc",
+        "title": "Omra pas cher depuis le Maroc — prix réels | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة رخيصة من المغرب",
+        "title": "عمرة رخيصة من المغرب — أسعار حقيقية | باب مكة"
+      },
+      "en": {
+        "h1": "Cheap Umrah from Morocco",
+        "title": "Cheap Umrah from Morocco — real prices | Bab Makka"
+      }
+    },
+    {
+      "kind": "hub",
+      "path": "/hotels-omra",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Hôtels Omra à La Mecque et Médine — distances du Haram",
+        "title": "Hôtels Omra à La Mecque et Médine — distances du Haram"
+      },
+      "ar": {
+        "h1": "فنادق العمرة بمكة والمدينة — مقارنة المسافة إلى الحرم",
+        "title": "فنادق العمرة بمكة والمدينة — مقارنة المسافة إلى الحرم"
+      },
+      "en": {
+        "h1": "Omra hotels in Makkah and Madinah — Haram distances",
+        "title": "Omra hotels in Makkah and Madinah — Haram distances"
+      }
+    },
+    {
+      "kind": "local",
+      "path": "/agence-omra-casablanca",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Agence Omra à Casablanca",
+        "title": "Agence Omra à Casablanca — Wiki Tours International"
+      },
+      "ar": {
+        "h1": "وكالة عمرة في الدار البيضاء",
+        "title": "وكالة عمرة في الدار البيضاء — ويكي تورز إنترناشيونال"
+      },
+      "en": {
+        "h1": "Umrah agency in Casablanca",
+        "title": "Umrah agency in Casablanca — Wiki Tours International"
+      }
+    },
+    {
+      "kind": "hajj",
+      "path": "/hajj",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Hajj avec Wiki Tours",
+        "title": "Hajj depuis le Maroc avec Wiki Tours International"
+      },
+      "ar": {
+        "h1": "الحج مع ويكي تورز",
+        "title": "الحج من المغرب مع ويكي تورز إنترناشيونال"
+      },
+      "en": {
+        "h1": "Hajj with Wiki Tours",
+        "title": "Hajj from Morocco with Wiki Tours International"
+      }
+    },
+    {
+      "kind": "trust",
+      "path": "/agrement",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Notre agrément",
+        "title": "Notre agrément — Agence de voyages agréée | Bab Makka"
+      },
+      "ar": {
+        "h1": "ترخيصنا",
+        "title": "ترخيصنا — وكالة أسفار مرخصة | باب مكة"
+      },
+      "en": {
+        "h1": "Our license",
+        "title": "Our licence — Licensed travel agency | Bab Makka"
+      }
+    },
+    {
+      "kind": "trust",
+      "path": "/avis",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Avis de nos pèlerins",
+        "title": "Avis de nos pèlerins — témoignages Omra | Bab Makka"
+      },
+      "ar": {
+        "h1": "آراء معتمرينا",
+        "title": "آراء معتمرينا — شهادات العمرة | باب مكة"
+      },
+      "en": {
+        "h1": "Pilgrims' reviews",
+        "title": "Pilgrims' reviews — Umrah testimonials | Bab Makka"
+      }
+    },
+    {
+      "kind": "guide",
+      "path": "/guide-omra",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Guide complet de l'Omra depuis le Maroc",
+        "title": "Guide complet de l'Omra depuis le Maroc | Bab Makka"
+      },
+      "ar": {
+        "h1": "الدليل الشامل للعمرة انطلاقاً من المغرب",
+        "title": "الدليل الشامل للعمرة انطلاقاً من المغرب | باب مكة"
+      },
+      "en": {
+        "h1": "The complete Umrah guide from Morocco",
+        "title": "The complete Umrah guide from Morocco | Bab Makka"
+      }
+    },
+    {
+      "kind": "guide",
+      "path": "/glossaire-omra",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Glossaire de l'Omra",
+        "title": "Glossaire de l'Omra — 42 termes expliqués | Bab Makka"
+      },
+      "ar": {
+        "h1": "معجم العمرة",
+        "title": "معجم العمرة — 42 مصطلحاً بشرح مبسّط | باب مكة"
+      },
+      "en": {
+        "h1": "Omra glossary",
+        "title": "Omra glossary — 42 terms explained | Bab Makka"
+      }
+    },
+    {
+      "kind": "data",
+      "path": "/barometre-prix-omra",
+      "indexable": false,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Baromètre des prix Omra",
+        "title": "Baromètre des prix Omra | Bab Makka"
+      },
+      "ar": {
+        "h1": "مؤشر أسعار العمرة",
+        "title": "مؤشر أسعار العمرة | باب مكة"
+      },
+      "en": {
+        "h1": "Omra price barometer",
+        "title": "Omra price barometer | Bab Makka"
+      }
+    },
+    {
+      "kind": "guide-child",
+      "path": "/guide-omra/documents-visa",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Documents et visa Omra depuis le Maroc",
+        "title": "Documents et visa Omra depuis le Maroc | Bab Makka"
+      },
+      "ar": {
+        "h1": "وثائق وتأشيرة العمرة من المغرب",
+        "title": "وثائق وتأشيرة العمرة من المغرب | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah documents and visa from Morocco",
+        "title": "Umrah documents and visa from Morocco | Bab Makka"
+      }
+    },
+    {
+      "kind": "guide-child",
+      "path": "/guide-omra/femme-mahram",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra au féminin : la règle du mahram aujourd'hui",
+        "title": "Omra au féminin : la règle du mahram aujourd'hui | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة النساء: قاعدة المحرم اليوم",
+        "title": "عمرة النساء: قاعدة المحرم اليوم | باب مكة"
+      },
+      "en": {
+        "h1": "Women's Umrah: the mahram rule today",
+        "title": "Women's Umrah: the mahram rule today | Bab Makka"
+      }
+    },
+    {
+      "kind": "guide-child",
+      "path": "/guide-omra/budget",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Budget Omra : comprendre ce qui fait le prix",
+        "title": "Budget Omra : comprendre ce qui fait le prix | Bab Makka"
+      },
+      "ar": {
+        "h1": "ميزانية العمرة: فهم ما يصنع الثمن",
+        "title": "ميزانية العمرة: فهم ما يصنع الثمن | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah budget: what drives the price",
+        "title": "Umrah budget: what drives the price | Bab Makka"
+      }
+    },
+    {
+      "kind": "guide-child",
+      "path": "/guide-omra/rituels",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Les rites de l'Omra, pas à pas",
+        "title": "Les rites de l'Omra, pas à pas | Bab Makka"
+      },
+      "ar": {
+        "h1": "مناسك العمرة خطوة بخطوة",
+        "title": "مناسك العمرة خطوة بخطوة | باب مكة"
+      },
+      "en": {
+        "h1": "The Umrah rites, step by step",
+        "title": "The Umrah rites, step by step | Bab Makka"
+      }
+    },
+    {
+      "kind": "guide-child",
+      "path": "/guide-omra/checklist",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Checklist Omra : quoi emporter depuis le Maroc",
+        "title": "Checklist Omra : quoi emporter depuis le Maroc | Bab Makka"
+      },
+      "ar": {
+        "h1": "قائمة تحضير العمرة: ماذا تأخذون معكم من المغرب",
+        "title": "قائمة تحضير العمرة: ماذا تأخذون معكم من المغرب | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah checklist: what to pack from Morocco",
+        "title": "Umrah checklist: what to pack from Morocco | Bab Makka"
+      }
+    },
+    {
+      "kind": "guide-child",
+      "path": "/guide-omra/meilleure-periode",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Meilleure période pour l'Omra depuis le Maroc",
+        "title": "Meilleure période pour l'Omra depuis le Maroc | Bab Makka"
+      },
+      "ar": {
+        "h1": "أفضل فترة للعمرة انطلاقاً من المغرب",
+        "title": "أفضل فترة للعمرة انطلاقاً من المغرب | باب مكة"
+      },
+      "en": {
+        "h1": "Best time for Umrah from Morocco",
+        "title": "Best time for Umrah from Morocco | Bab Makka"
+      }
+    },
+    {
+      "kind": "month",
+      "path": "/omra-janvier",
+      "indexable": false,
+      "month": 1,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra janvier 2027 depuis le Maroc",
+        "title": "Omra janvier 2027 depuis le Maroc | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة يناير 2027 من المغرب",
+        "title": "عمرة يناير 2027 من المغرب — التواريخ والأسعار | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah January 2027 from Morocco",
+        "title": "Umrah January 2027 from Morocco | Bab Makka"
+      }
+    },
+    {
+      "kind": "month",
+      "path": "/omra-fevrier",
+      "indexable": false,
+      "month": 2,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra février 2027 depuis le Maroc",
+        "title": "Omra février 2027 depuis le Maroc | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة فبراير 2027 من المغرب",
+        "title": "عمرة فبراير 2027 من المغرب — التواريخ والأسعار | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah February 2027 from Morocco",
+        "title": "Umrah February 2027 from Morocco | Bab Makka"
+      }
+    },
+    {
+      "kind": "month",
+      "path": "/omra-mars",
+      "indexable": false,
+      "month": 3,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra mars 2027 depuis le Maroc",
+        "title": "Omra mars 2027 depuis le Maroc | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة مارس 2027 من المغرب",
+        "title": "عمرة مارس 2027 من المغرب — التواريخ والأسعار | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah March 2027 from Morocco",
+        "title": "Umrah March 2027 from Morocco | Bab Makka"
+      }
+    },
+    {
+      "kind": "month",
+      "path": "/omra-avril",
+      "indexable": false,
+      "month": 4,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra avril 2027 depuis le Maroc",
+        "title": "Omra avril 2027 depuis le Maroc | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة أبريل 2027 من المغرب",
+        "title": "عمرة أبريل 2027 من المغرب — التواريخ والأسعار | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah April 2027 from Morocco",
+        "title": "Umrah April 2027 from Morocco | Bab Makka"
+      }
+    },
+    {
+      "kind": "month",
+      "path": "/omra-mai",
+      "indexable": false,
+      "month": 5,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra mai 2027 depuis le Maroc",
+        "title": "Omra mai 2027 depuis le Maroc | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة ماي 2027 من المغرب",
+        "title": "عمرة ماي 2027 من المغرب — التواريخ والأسعار | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah May 2027 from Morocco",
+        "title": "Umrah May 2027 from Morocco | Bab Makka"
+      }
+    },
+    {
+      "kind": "month",
+      "path": "/omra-juin",
+      "indexable": false,
+      "month": 6,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra juin 2027 depuis le Maroc",
+        "title": "Omra juin 2027 depuis le Maroc | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة يونيو 2027 من المغرب",
+        "title": "عمرة يونيو 2027 من المغرب — التواريخ والأسعار | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah June 2027 from Morocco",
+        "title": "Umrah June 2027 from Morocco | Bab Makka"
+      }
+    },
+    {
+      "kind": "month",
+      "path": "/omra-juillet",
+      "indexable": false,
+      "month": 7,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra juillet 2027 depuis le Maroc",
+        "title": "Omra juillet 2027 depuis le Maroc | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة يوليوز 2027 من المغرب",
+        "title": "عمرة يوليوز 2027 من المغرب — التواريخ والأسعار | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah July 2027 from Morocco",
+        "title": "Umrah July 2027 from Morocco | Bab Makka"
+      }
+    },
+    {
+      "kind": "month",
+      "path": "/omra-aout",
+      "indexable": false,
+      "month": 8,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra août 2027 depuis le Maroc",
+        "title": "Omra août 2027 depuis le Maroc | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة غشت 2027 من المغرب",
+        "title": "عمرة غشت 2027 من المغرب — التواريخ والأسعار | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah August 2027 from Morocco",
+        "title": "Umrah August 2027 from Morocco | Bab Makka"
+      }
+    },
+    {
+      "kind": "month",
+      "path": "/omra-septembre",
+      "indexable": true,
+      "month": 9,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra septembre 2026 depuis le Maroc",
+        "title": "Omra septembre 2026 depuis le Maroc | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة شتنبر 2026 من المغرب",
+        "title": "عمرة شتنبر 2026 من المغرب — التواريخ والأسعار | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah September 2026 from Morocco",
+        "title": "Umrah September 2026 from Morocco | Bab Makka"
+      }
+    },
+    {
+      "kind": "month",
+      "path": "/omra-octobre",
+      "indexable": true,
+      "month": 10,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra octobre 2026 depuis le Maroc",
+        "title": "Omra octobre 2026 depuis le Maroc | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة أكتوبر 2026 من المغرب",
+        "title": "عمرة أكتوبر 2026 من المغرب — التواريخ والأسعار | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah October 2026 from Morocco",
+        "title": "Umrah October 2026 from Morocco | Bab Makka"
+      }
+    },
+    {
+      "kind": "month",
+      "path": "/omra-novembre",
+      "indexable": true,
+      "month": 11,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra novembre 2026 depuis le Maroc",
+        "title": "Omra novembre 2026 depuis le Maroc | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة نونبر 2026 من المغرب",
+        "title": "عمرة نونبر 2026 من المغرب — التواريخ والأسعار | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah November 2026 from Morocco",
+        "title": "Umrah November 2026 from Morocco | Bab Makka"
+      }
+    },
+    {
+      "kind": "month",
+      "path": "/omra-decembre",
+      "indexable": false,
+      "month": 12,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra décembre 2026 depuis le Maroc",
+        "title": "Omra décembre 2026 depuis le Maroc | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة دجنبر 2026 من المغرب",
+        "title": "عمرة دجنبر 2026 من المغرب — التواريخ والأسعار | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah December 2026 from Morocco",
+        "title": "Umrah December 2026 from Morocco | Bab Makka"
+      }
+    },
+    {
+      "kind": "occasion",
+      "path": "/omra-ete",
+      "indexable": true,
+      "month": null,
+      "occasion": "ete",
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra Été 2026",
+        "title": "Omra Été | Hôtels & Séjours à La Mecque | Bab Makka"
+      },
+      "ar": {
+        "h1": "Omra الصيفالصيف 2026",
+        "title": "عمرة الصيف | فنادق وإقامة في مكة | باب مكة"
+      },
+      "en": {
+        "h1": "Omra Summer 2026",
+        "title": "Summer Umrah | Hotels in Makkah | Bab Makka"
+      }
+    },
+    {
+      "kind": "occasion",
+      "path": "/omra-mawlid",
+      "indexable": true,
+      "month": null,
+      "occasion": "mawlid",
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra Mawlid",
+        "title": "Mawlid à La Mecque | Hôtels & Omra | Bab Makka"
+      },
+      "ar": {
+        "h1": "Omra المولد النبوي",
+        "title": "المولد النبوي | فنادق وعمرة | باب مكة"
+      },
+      "en": {
+        "h1": "Omra Mawlid",
+        "title": "Mawlid Umrah | Hotels in Makkah | Bab Makka"
+      }
+    },
+    {
+      "kind": "occasion",
+      "path": "/omra-ramadan",
+      "indexable": true,
+      "month": null,
+      "occasion": "ramadan",
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra Ramadan",
+        "title": "Omra Ramadan 2027 depuis le Maroc | Bab Makka"
+      },
+      "ar": {
+        "h1": "Omra رمضان",
+        "title": "عمرة رمضان 2027 من المغرب | باب مكة"
+      },
+      "en": {
+        "h1": "Omra Ramadan",
+        "title": "Ramadan 2027 Umrah from Morocco | Bab Makka"
+      }
+    },
+    {
+      "kind": "occasion",
+      "path": "/omra-special-septembre",
+      "indexable": true,
+      "month": null,
+      "occasion": "special-septembre",
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra Spécial Septembre 2026 2026",
+        "title": "Omra Spécial Septembre 2026 depuis le Maroc | Bab Makka"
+      },
+      "ar": {
+        "h1": "Omra عمرة شتنبر 2026 2026",
+        "title": "عمرة شتنبر 2026 من المغرب | باب مكة"
+      },
+      "en": {
+        "h1": "Omra September Special 2026 2026",
+        "title": "September 2026 Umrah from Morocco | Bab Makka"
+      }
+    },
+    {
+      "kind": "occasion",
+      "path": "/omra-rajab",
+      "indexable": false,
+      "month": null,
+      "occasion": "rajab",
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": null,
+      "ar": null,
+      "en": null
+    },
+    {
+      "kind": "occasion",
+      "path": "/omra-chaabane",
+      "indexable": false,
+      "month": null,
+      "occasion": "chaabane",
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": null,
+      "ar": null,
+      "en": null
+    },
+    {
+      "kind": "occasion",
+      "path": "/omra-chawal",
+      "indexable": false,
+      "month": null,
+      "occasion": "chawal",
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": null,
+      "ar": null,
+      "en": null
+    },
+    {
+      "kind": "occasion",
+      "path": "/omra-vacances-scolaires",
+      "indexable": false,
+      "month": null,
+      "occasion": "vacances-scolaires",
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": null,
+      "ar": null,
+      "en": null
+    },
+    {
+      "kind": "occasion",
+      "path": "/omra-5-etoiles",
+      "indexable": true,
+      "month": null,
+      "occasion": "5-etoiles",
+      "city": null,
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra 5 étoiles",
+        "title": "Omra 5 étoiles depuis le Maroc | Bab Makka"
+      },
+      "ar": {
+        "h1": "Omra 5 نجوم",
+        "title": "عمرة 5 نجوم من المغرب | باب مكة"
+      },
+      "en": {
+        "h1": "Omra 5 stars",
+        "title": "5-Star Umrah from Morocco | Bab Makka"
+      }
+    },
+    {
+      "kind": "city",
+      "path": "/omra-depuis-casablanca",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": "casablanca",
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra depuis Casablanca",
+        "title": "Omra depuis Casablanca 2026 — Départ Mohammed V | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة انطلاقاً من الدار البيضاء",
+        "title": "عمرة من الدار البيضاء 2026 — مطار محمد الخامس | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah from Casablanca",
+        "title": "Omra from Casablanca 2026 — Mohammed V Departure | Bab Makka"
+      }
+    },
+    {
+      "kind": "city",
+      "path": "/omra-depuis-rabat",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": "rabat",
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra depuis Rabat",
+        "title": "Omra depuis Rabat 2026 — Départ Mohammed V | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة انطلاقاً من الرباط",
+        "title": "عمرة من الرباط 2026 — انطلاق من مطار محمد الخامس | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah from Rabat",
+        "title": "Omra from Rabat 2026 — Mohammed V Departure | Bab Makka"
+      }
+    },
+    {
+      "kind": "city",
+      "path": "/omra-depuis-marrakech",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": "marrakech",
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra depuis Marrakech",
+        "title": "Omra depuis Marrakech 2026 — Départ Mohammed V | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة انطلاقاً من مراكش",
+        "title": "عمرة من مراكش 2026 — انطلاق من مطار محمد الخامس | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah from Marrakesh",
+        "title": "Omra from Marrakesh 2026 — Mohammed V Departure | Bab Makka"
+      }
+    },
+    {
+      "kind": "city",
+      "path": "/omra-depuis-fes",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": "fes",
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra depuis Fès",
+        "title": "Omra depuis Fès 2026 — Départ Mohammed V | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة انطلاقاً من فاس",
+        "title": "عمرة من فاس 2026 — انطلاق من مطار محمد الخامس | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah from Fez",
+        "title": "Omra from Fez 2026 — Mohammed V Departure | Bab Makka"
+      }
+    },
+    {
+      "kind": "city",
+      "path": "/omra-depuis-tanger",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": "tanger",
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra depuis Tanger",
+        "title": "Omra depuis Tanger 2026 — Départ Mohammed V | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة انطلاقاً من طنجة",
+        "title": "عمرة من طنجة 2026 — انطلاق من مطار محمد الخامس | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah from Tangier",
+        "title": "Omra from Tangier 2026 — Mohammed V Departure | Bab Makka"
+      }
+    },
+    {
+      "kind": "city",
+      "path": "/omra-depuis-agadir",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": "agadir",
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra depuis Agadir",
+        "title": "Omra depuis Agadir 2026 — Départ Mohammed V | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة انطلاقاً من أكادير",
+        "title": "عمرة من أكادير 2026 — انطلاق من مطار محمد الخامس | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah from Agadir",
+        "title": "Omra from Agadir 2026 — Mohammed V Departure | Bab Makka"
+      }
+    },
+    {
+      "kind": "city",
+      "path": "/omra-depuis-meknes",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": "meknes",
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra depuis Meknès",
+        "title": "Omra depuis Meknès 2026 — Départ Mohammed V | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة انطلاقاً من مكناس",
+        "title": "عمرة من مكناس 2026 — انطلاق من مطار محمد الخامس | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah from Meknes",
+        "title": "Omra from Meknes 2026 — Mohammed V Departure | Bab Makka"
+      }
+    },
+    {
+      "kind": "city",
+      "path": "/omra-depuis-oujda",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": "oujda",
+      "hotel": null,
+      "date_start": null,
+      "fr": {
+        "h1": "Omra depuis Oujda",
+        "title": "Omra depuis Oujda 2026 — Départ Mohammed V | Bab Makka"
+      },
+      "ar": {
+        "h1": "عمرة انطلاقاً من وجدة",
+        "title": "عمرة من وجدة 2026 — انطلاق من مطار محمد الخامس | باب مكة"
+      },
+      "en": {
+        "h1": "Umrah from Oujda",
+        "title": "Omra from Oujda 2026 — Mohammed V Departure | Bab Makka"
+      }
+    },
+    {
+      "kind": "hotel",
+      "path": "/hotel/abraj-al-kiswah",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": "makkah",
+      "hotel": "Abraj Al Kiswah",
+      "date_start": null,
+      "fr": {
+        "h1": "Abraj Al Kiswah ★★★",
+        "title": "Hôtel Abraj Al Kiswah à La Mecque | Bab Makka"
+      },
+      "ar": {
+        "h1": "Abraj Al Kiswah ★★★",
+        "title": "فندق أبراج الكسوة في مكة | باب مكة"
+      },
+      "en": {
+        "h1": "Abraj Al Kiswah ★★★",
+        "title": "Abraj Al Kiswah Hotel in Makkah | Bab Makka"
+      }
+    },
+    {
+      "kind": "hotel",
+      "path": "/hotel/anjum",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": "makkah",
+      "hotel": "Anjum",
+      "date_start": null,
+      "fr": {
+        "h1": "Anjum ★★★★★",
+        "title": "Hôtel Anjum Makkah à La Mecque | Bab Makka"
+      },
+      "ar": {
+        "h1": "Anjum ★★★★★",
+        "title": "فندق أنجم مكة | باب مكة"
+      },
+      "en": {
+        "h1": "Anjum ★★★★★",
+        "title": "Anjum Makkah Hotel | Bab Makka"
+      }
+    },
+    {
+      "kind": "hotel",
+      "path": "/hotel/dhiafat-al-rajaa-hotel",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": "makkah",
+      "hotel": "Dhiafat Al Rajaa Hotel",
+      "date_start": null,
+      "fr": {
+        "h1": "Dhiafat Al Rajaa Hotel ★★★",
+        "title": "Dhiafat Al Rajaa Hotel La Mecque | Hôtel 3 étoiles Omra"
+      },
+      "ar": {
+        "h1": "Dhiafat Al Rajaa Hotel ★★★",
+        "title": "فندق ضيافة الرجاء بمكة المكرمة | باب مكة"
+      },
+      "en": {
+        "h1": "Dhiafat Al Rajaa Hotel ★★★",
+        "title": "Dhiafat Al Rajaa Hotel Makkah | 3-Star Hotel for Umrah"
+      }
+    },
+    {
+      "kind": "hotel",
+      "path": "/hotel/emaar-grand-hotel",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": "makkah",
+      "hotel": "Emaar Grand",
+      "date_start": null,
+      "fr": {
+        "h1": "Emaar Grand ★★★★★",
+        "title": "Emaar Grand Hotel La Mecque | Hôtel 5 étoiles pour Omra"
+      },
+      "ar": {
+        "h1": "Emaar Grand ★★★★★",
+        "title": "فندق إعمار جراند مكة | فندق 5 نجوم للعمرة | باب مكة"
+      },
+      "en": {
+        "h1": "Emaar Grand ★★★★★",
+        "title": "Emaar Grand Hotel Makkah | 5-Star Hotel for Umrah"
+      }
+    },
+    {
+      "kind": "hotel",
+      "path": "/hotel/jayden-medina-hotel",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": "makkah",
+      "hotel": "Jayden Medina Hotel",
+      "date_start": null,
+      "fr": {
+        "h1": "Jayden Medina Hotel ★★★★",
+        "title": "Jayden Medina Hotel | Hôtel 4 étoiles à Médine pour Omra"
+      },
+      "ar": {
+        "h1": "Jayden Medina Hotel ★★★★",
+        "title": "فندق جايدن المدينة | فندق 4 نجوم للعمرة | باب مكة"
+      },
+      "en": {
+        "h1": "Jayden Medina Hotel ★★★★",
+        "title": "Jayden Medina Hotel | 4-Star Hotel in Madinah for Umrah"
+      }
+    },
+    {
+      "kind": "hotel",
+      "path": "/hotel/makarem-madinah",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": "makkah",
+      "hotel": "Makarem Madinah",
+      "date_start": null,
+      "fr": {
+        "h1": "Makarem Madinah ★★★★★",
+        "title": "Makarem Burj Al Madinah à Médine | Bab Makka"
+      },
+      "ar": {
+        "h1": "Makarem Madinah ★★★★★",
+        "title": "فندق مكارم برج المدينة بالمدينة المنورة | باب مكة"
+      },
+      "en": {
+        "h1": "Makarem Madinah ★★★★★",
+        "title": "Makarem Burj Al Madinah | Bab Makka"
+      }
+    },
+    {
+      "kind": "hotel",
+      "path": "/hotel/swiss-international",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": "makkah",
+      "hotel": "Swiss International",
+      "date_start": null,
+      "fr": {
+        "h1": "Swiss International ★★★★★",
+        "title": "Swissôtel Makkah à La Mecque | Bab Makka"
+      },
+      "ar": {
+        "h1": "Swiss International ★★★★★",
+        "title": "فندق سويس أوتيل مكة | باب مكة"
+      },
+      "en": {
+        "h1": "Swiss International ★★★★★",
+        "title": "Swiss International — Umrah hotel in Makkah | Bab Makka"
+      }
+    },
+    {
+      "kind": "hotel",
+      "path": "/hotel/taj-park",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": "makkah",
+      "hotel": "Taj Park",
+      "date_start": null,
+      "fr": {
+        "h1": "Taj Park ★★★",
+        "title": "Taj Park Hotel à La Mecque | Bab Makka"
+      },
+      "ar": {
+        "h1": "Taj Park ★★★",
+        "title": "فندق تاج بارك مكة | باب مكة"
+      },
+      "en": {
+        "h1": "Taj Park ★★★",
+        "title": "Taj Park Hotel Makkah | Bab Makka"
+      }
+    },
+    {
+      "kind": "departure",
+      "path": "/omra/omra-23-sept-au-7-octobre-2026",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": "2026-09-23",
+      "fr": {
+        "h1": "Omra Septembre 2026 — Départ 23 septembre",
+        "title": "Omra Septembre 2026 depuis le Maroc — 23 sept"
+      },
+      "ar": {
+        "h1": "عمرة شتنبر 2026 — انطلاق 23 شتنبر",
+        "title": "عمرة شتنبر 2026 من المغرب — انطلاق 23 شتنبر"
+      },
+      "en": {
+        "h1": "Umrah September 2026 — 23 Sept departure",
+        "title": "Umrah September 2026 from Morocco — 23 Sept"
+      }
+    },
+    {
+      "kind": "departure",
+      "path": "/omra/omra-octobre-2026-6-au-20",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": "2026-10-06",
+      "fr": {
+        "h1": "Omra Octobre 2026 — Départ 6 octobre",
+        "title": "Omra Octobre 2026 depuis le Maroc — dès 12 900 DH"
+      },
+      "ar": {
+        "h1": "عمرة أكتوبر 2026 — انطلاق 6 أكتوبر",
+        "title": "عمرة أكتوبر 2026 من المغرب — من 12.900 درهم"
+      },
+      "en": {
+        "h1": "October 2026 Umrah — 6 October departure",
+        "title": "October 2026 Umrah from Morocco — from 12,900 DH"
+      }
+    },
+    {
+      "kind": "departure",
+      "path": "/omra/omra-octobre-2026-vacances-scolaires-17-au-24",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": "2026-10-17",
+      "fr": {
+        "h1": "Omra Octobre 2026 — Spécial vacances scolaires",
+        "title": "Omra vacances scolaires octobre 2026 — dès 12 500 DH"
+      },
+      "ar": {
+        "h1": "عمرة أكتوبر 2026 — خاصة بالعطلة المدرسية",
+        "title": "عمرة العطلة المدرسية أكتوبر 2026 — من 12.500 درهم"
+      },
+      "en": {
+        "h1": "October 2026 Umrah — School holidays special",
+        "title": "School-holiday Umrah October 2026 — from 12,500 DH"
+      }
+    },
+    {
+      "kind": "departure",
+      "path": "/omra/omra-novembre-2026-4-au-18",
+      "indexable": true,
+      "month": null,
+      "occasion": null,
+      "city": null,
+      "hotel": null,
+      "date_start": "2026-11-04",
+      "fr": {
+        "h1": "Omra Novembre 2026 — Départ 4 novembre",
+        "title": "Omra Novembre 2026 — dès 13 500 DH"
+      },
+      "ar": {
+        "h1": "عمرة نونبر 2026 — انطلاق 4 نونبر",
+        "title": "عمرة نونبر 2026 — من 13.500 درهم"
+      },
+      "en": {
+        "h1": "November 2026 Umrah — 4 November departure",
+        "title": "November 2026 Umrah — from 13,500 DH"
+      }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-14T09:21:50.778Z",
-  "rule": "Only facts listed here may be stated in prose. A fact not listed is written WITHOUT the figure. Volatile facts render live via placeholder tags. No year other than fondee_en, no price, no currency amount, no departure date, no seat count in prose.",
+  "generated_at": "2026-09-14T13:06:05.346Z",
+  "rule": "Only facts listed here may be stated in prose. A fact not listed is written WITHOUT the figure. Volatile facts render live via placeholder tags. No year other than fondee_en, no price, no currency amount, no departure date, no seat count, no hotel distance in prose (gate G5); a number above 10 in prose must appear in this file.",
   "entity": [
     {
       "key": "organisation",
@@ -112,9 +112,15 @@
     {
       "key": "paiement",
       "value": "Aucun paiement en ligne : contrat écrit signé à l’agence, acompte versé à l’agence, reçu officiel.",
-      "source": "src/lib/server/article-drafter.js buildFactSheet · dictionaries meta.trustNoPayment",
+      "source": "dictionaries meta.trustNoPayment · faqs (paiement)",
       "as_of": "2026-09-14",
-      "note": "the amount of the deposit is NOT a fact here — <DepositPolicy /> renders the policy live"
+      "note": "the amount of the deposit is NOT a fact here — <PolicyFact key=\"deposit\" /> renders the policy live"
+    },
+    {
+      "key": "aeroport_depart",
+      "value": "Aéroport Mohammed V (Casablanca) — le point de rassemblement de tous les départs",
+      "source": "city_pages.logistics_fr (8 rows)",
+      "as_of": "2026-09-14"
     },
     {
       "key": "villes_de_depart",
@@ -251,6 +257,506 @@
       "source": "src/i18n/*.json months",
       "as_of": "2026-09-14",
       "note": "Moroccan Arabic month names — never the Levantine forms"
+    }
+  ],
+  "policies": [
+    {
+      "key": "deposit",
+      "value": {
+        "fr": "Un acompte de 50 % du montant total est demandé à la confirmation de la réservation, réglé directement auprès de l'agence — jamais en ligne. Le solde est versé ensuite selon les conditions indiquées sur la fiche de chaque offre, avant la date du départ.",
+        "ar": "يُطلب دفع 50٪ من المبلغ الإجمالي عند تأكيد الحجز وتوقيع العقد، ويتم الأداء مباشرة لدى الوكالة بالدار البيضاء مع وصل رسمي، وليس عبر الإنترنت أبداً. أما المبلغ المتبقي فيُدفع لاحقاً حسب الشروط المذكورة في صفحة كل عرض، وذلك قبل تاريخ الانطلاق المحدد للرحلة.",
+        "en": "A deposit of 50% of the total amount confirms your booking, paid directly at the Casablanca agency when the contract is signed, with an official receipt — never online. The balance is then settled according to the conditions shown on each offer page, before the departure date of your trip."
+      },
+      "source": "faqs/291929f0-a737-4e9b-83cd-7ea43894fcb9",
+      "as_of": "2026-09-07",
+      "note": "render with <PolicyFact key=\"…\" /> — quote the rule in prose only without figures"
+    },
+    {
+      "key": "payment",
+      "value": {
+        "fr": "Non. Aucun paiement n'est demandé sur ce site : votre réservation est une demande, pas un achat, et aucune carte bancaire ne vous est jamais demandée en ligne. Le règlement s'effectue directement auprès de l'agence de Casablanca, lors de la signature du contrat, avec un reçu officiel pour chaque montant versé.",
+        "ar": "لا. لا يُطلب منكم أي أداء عبر هذا الموقع، ولا تُطلب منكم أي بطاقة بنكية: حجزكم هنا هو مجرد طلب وليس عملية شراء أو دفع. يتم الأداء مباشرة لدى الوكالة بالدار البيضاء وبحضوركم عند توقيع العقد، وتحصلون مقابل ذلك على وصل رسمي بكل مبلغ مدفوع.",
+        "en": "No. No payment is requested on this website: your reservation is a request, not a purchase, and you are never asked for a bank card online. Payment is made directly at the Casablanca agency when the contract is signed, with an official receipt for every amount paid."
+      },
+      "source": "faqs/4b284c89-d057-4764-b5a7-acc4d80a5f91",
+      "as_of": "2026-09-07",
+      "note": "render with <PolicyFact key=\"…\" /> — quote the rule in prose only without figures"
+    },
+    {
+      "key": "passport_validity",
+      "value": {
+        "fr": "Un passeport valide au moins 6 mois après la date de retour et des photos d'identité récentes. Notre équipe s'occupe de toutes les démarches de visa Omra via les canaux officiels et vous communique la liste complète des pièces à fournir lors de la confirmation de votre réservation, par téléphone ou WhatsApp.",
+        "ar": "تحتاجون جواز سفر صالحاً لمدة 6 أشهر على الأقل بعد تاريخ العودة، بالإضافة إلى صور شخصية حديثة. يتكفل فريقنا بجميع إجراءات التأشيرة الخاصة بالعمرة عبر القنوات الرسمية، ويوافيكم بالقائمة الكاملة للوثائق المطلوبة بالتفصيل عند تأكيد الحجز، عبر الهاتف أو واتساب، حتى لا يفوتكم أي شيء.",
+        "en": "A passport valid at least 6 months after the return date, plus recent identity photos. Our team handles the whole Umrah visa process through official channels and sends you the full list of documents to provide when your booking is confirmed, by phone or WhatsApp, so nothing is missed."
+      },
+      "source": "faqs/87ca3c4a-e801-4dea-91f2-dca2d4505fe6",
+      "as_of": "2026-09-07",
+      "note": "render with <PolicyFact key=\"…\" /> — quote the rule in prose only without figures"
+    },
+    {
+      "key": "visa_included",
+      "value": {
+        "fr": "Oui. Les frais et les démarches du visa Omra sont inclus dans nos offres : notre équipe monte le dossier, le dépose via les canaux officiels et suit son traitement jusqu'à l'obtention. Vous fournissez seulement un passeport valide 6 mois et des photos d'identité récentes.",
+        "ar": "نعم. رسوم وإجراءات تأشيرة العمرة مشمولة في عروضنا: فريقنا يعدّ الملف كاملاً ويودعه عبر القنوات الرسمية ويتابع معالجته خطوة بخطوة حتى الحصول عليها، دون أي رسوم إضافية. أنتم تقدمون فقط جواز سفر صالحاً 6 أشهر بعد تاريخ العودة وصوراً شخصية حديثة.",
+        "en": "Yes. Umrah visa fees and processing are included in our offers: our team builds the complete file, submits it through official channels and tracks it step by step until issuance, with no extra fee. You only provide a passport valid for 6 months after the return date and recent ID photos."
+      },
+      "source": "faqs/db6dea89-c3d9-4e70-9eb5-99af22fd07e4",
+      "as_of": "2026-09-07",
+      "note": "render with <PolicyFact key=\"…\" /> — quote the rule in prose only without figures"
+    },
+    {
+      "key": "children",
+      "value": {
+        "fr": "Oui, nos groupes accueillent les familles. Les chambres triples, quadruples et quintuples réduisent le prix par personne, et chaque enfant doit disposer de son propre passeport en cours de validité. Les conditions par âge figurent sur la fiche de chaque départ — notre équipe vous conseille la meilleure configuration.",
+        "ar": "نعم، مجموعاتنا ترحب بالعائلات والأطفال. الغرف الثلاثية والرباعية والخماسية تخفض الثمن للشخص الواحد، ويجب أن يتوفر كل طفل على جواز سفر خاص به ساري الصلاحية. وتُذكر شروط الأعمار في صفحة كل رحلة — وفريقنا ينصحكم بأفضل تشكيلة للغرف حسب عدد أفراد أسرتكم وأعمارهم.",
+        "en": "Yes, our groups welcome families and children. Triple, quad and quint rooms lower the per-person price, and every child needs their own valid passport. Age conditions appear on each departure page — our team advises the best room configuration for the size and ages of your family."
+      },
+      "source": "faqs/5568a11d-2bef-4e4a-ac50-636b32508254",
+      "as_of": "2026-09-07",
+      "note": "render with <PolicyFact key=\"…\" /> — quote the rule in prose only without figures"
+    }
+  ],
+  "catalogue": [
+    {
+      "key": "durees_proposees_jours",
+      "value": [
+        8,
+        15
+      ],
+      "source": "offers (published, not returned) duration_days",
+      "as_of": "2026-09-14",
+      "note": "the durations currently on sale — say « des séjours de 8 ou 15 jours » only while they are; departures themselves render via <LiveDepartures>"
+    },
+    {
+      "key": "compagnies",
+      "value": [
+        "Saudia Airlines (الخطوط السعودية)",
+        "Saudia"
+      ],
+      "source": "offers.airline (published)",
+      "as_of": "2026-09-14",
+      "note": "name only — schedules and prices never in prose"
+    },
+    {
+      "key": "hotels_partenaires",
+      "value": [
+        {
+          "slug": "abraj-al-kiswah",
+          "name": "Abraj Al Kiswah",
+          "city": "makkah",
+          "stars": 3
+        },
+        {
+          "slug": "anjum",
+          "name": "Anjum",
+          "city": "makkah",
+          "stars": 5
+        },
+        {
+          "slug": "dhiafat-al-rajaa-hotel",
+          "name": "Dhiafat Al Rajaa Hotel",
+          "city": "makkah",
+          "stars": 3
+        },
+        {
+          "slug": "emaar-grand-hotel",
+          "name": "Emaar Grand",
+          "city": "makkah",
+          "stars": 5
+        },
+        {
+          "slug": "jayden-medina-hotel",
+          "name": "Jayden Medina Hotel",
+          "city": "makkah",
+          "stars": 4
+        },
+        {
+          "slug": "makarem-madinah",
+          "name": "Makarem Madinah",
+          "city": "makkah",
+          "stars": 5
+        },
+        {
+          "slug": "swiss-international",
+          "name": "Swiss International",
+          "city": "makkah",
+          "stars": 5
+        },
+        {
+          "slug": "taj-park",
+          "name": "Taj Park",
+          "city": "makkah",
+          "stars": 3
+        }
+      ],
+      "source": "hotels (published)",
+      "as_of": "2026-09-14",
+      "note": "names, city, stars — the distance renders via <HotelCard slug /> and is never in prose (gate G5)"
+    }
+  ],
+  "logistics": [
+    {
+      "key": "logistique_casablanca",
+      "value": {
+        "fr": "L'agence se trouve à l'Immeuble Anoual Capital Center, 418 angle Bd Abdelmoumen et Bd Anoual — passez pour comparer les gammes et signer votre contrat. Le jour du départ, rendez-vous directement à l'aéroport Mohammed V, où notre équipe rassemble le groupe et vous assiste aux formalités d'embarquement. Pour toute question avant le départ, WhatsApp et téléphone restent les canaux les plus rapides.",
+        "ar": "توجد الوكالة بإقامة أنوال كابيتال سنتر، 418 ملتقى شارعي عبد المومن وأنوال — زورونا لمقارنة الفئات وتوقيع العقد. يوم السفر، الموعد مباشرة بمطار محمد الخامس حيث يجمع فريقنا المجموعة ويساعدكم في إجراءات الصعود. ولأي سؤال قبل السفر، يبقى واتساب والهاتف أسرع قناتين.",
+        "en": "The agency is at Immeuble Anoual Capital Center, 418 corner of Bd Abdelmoumen and Bd Anoual — drop by to compare tiers and sign your contract. On departure day, meet directly at Mohammed V airport, where our team gathers the group and assists with boarding. For anything before departure, WhatsApp and phone remain the fastest channels."
+      },
+      "source": "city_pages/casablanca.logistics_*",
+      "as_of": "2026-07-23",
+      "note": "routes, operators and orders of magnitude (km, hours) as written there; no timetable, no fare"
+    },
+    {
+      "key": "logistique_rabat",
+      "value": {
+        "fr": "Rabat est à environ 90 km de Casablanca : autoroute directe, ou trains ONCF fréquents jusqu'à Casa Voyageurs avec liaison ferroviaire vers l'aéroport Mohammed V. Le jour du départ, le groupe se rassemble à l'aéroport, où notre équipe vous accueille et gère les formalités. La réservation se confirme par un contrat signé à notre agence de Casablanca — le reste (conseils, documents, choix de gamme) se règle par WhatsApp ou téléphone.",
+        "ar": "الرباط على بعد نحو 90 كلم من الدار البيضاء: طريق سيار مباشر، أو قطارات ONCF متواترة حتى محطة الدار البيضاء المسافرين مع ربط سككي نحو مطار محمد الخامس. يوم السفر تتجمع المجموعة بالمطار حيث يستقبلكم فريقنا ويتكفل بالإجراءات. يُؤكَّد الحجز بعقد يُوقَّع بوكالتنا بالدار البيضاء — والباقي (نصائح، وثائق، اختيار الفئة) يُنجَز عبر واتساب أو الهاتف.",
+        "en": "Rabat is about 90 km from Casablanca: a direct motorway, or frequent ONCF trains to Casa Voyageurs with a rail link on to Mohammed V airport. On departure day the group gathers at the airport, where our team welcomes you and handles formalities. The booking is confirmed with a contract signed at our Casablanca agency — everything else (advice, documents, tier choice) is settled by WhatsApp or phone."
+      },
+      "source": "city_pages/rabat.logistics_*",
+      "as_of": "2026-07-23",
+      "note": "routes, operators and orders of magnitude (km, hours) as written there; no timetable, no fare"
+    },
+    {
+      "key": "logistique_marrakech",
+      "value": {
+        "fr": "Comptez environ 240 km entre Marrakech et Casablanca : trains ONCF directs jusqu'à Casa Voyageurs (puis liaison ferroviaire vers l'aéroport Mohammed V) ou autoroute jusqu'à l'aéroport. Le rassemblement du groupe se fait à l'aéroport, avec notre équipe présente aux formalités. Le contrat de réservation se signe à notre agence de Casablanca ; tout le reste s'organise à distance via WhatsApp ou téléphone.",
+        "ar": "المسافة بين مراكش والدار البيضاء نحو 240 كلم: قطارات مباشرة حتى الدار البيضاء المسافرين (ثم ربط سككي نحو مطار محمد الخامس) أو الطريق السيار حتى المطار. تجمُّع المجموعة يكون بالمطار بحضور فريقنا في الإجراءات. عقد الحجز يُوقَّع بوكالتنا بالدار البيضاء؛ وكل الباقي يُنظَّم عن بُعد عبر واتساب أو الهاتف.",
+        "en": "Count about 240 km between Marrakech and Casablanca: direct ONCF trains to Casa Voyageurs (then a rail link to Mohammed V airport) or the motorway straight to the airport. The group gathers at the airport, with our team present for formalities. The booking contract is signed at our Casablanca agency; everything else is arranged remotely via WhatsApp or phone."
+      },
+      "source": "city_pages/marrakech.logistics_*",
+      "as_of": "2026-07-23",
+      "note": "routes, operators and orders of magnitude (km, hours) as written there; no timetable, no fare"
+    },
+    {
+      "key": "logistique_fes",
+      "value": {
+        "fr": "Fès est reliée à Casablanca par des trains ONCF directs (environ 290 km, via Meknès et Rabat) jusqu'à Casa Voyageurs, d'où une liaison ferroviaire rejoint l'aéroport Mohammed V ; l'autoroute est l'alternative en voiture. Le jour J, rendez-vous à l'aéroport où notre équipe rassemble le groupe et vous assiste à l'embarquement. Questions, documents et choix de gamme se traitent en amont par WhatsApp ou téléphone.",
+        "ar": "ترتبط فاس بالدار البيضاء بقطارات مباشرة (نحو 290 كلم عبر مكناس والرباط) حتى محطة المسافرين، ومنها ربط سككي نحو مطار محمد الخامس؛ والطريق السيار بديل بالسيارة. يوم السفر، الموعد بالمطار حيث يجمع فريقنا المجموعة ويساعدكم في الصعود. الأسئلة والوثائق واختيار الفئة تُعالَج مسبقاً عبر واتساب أو الهاتف.",
+        "en": "Fès is linked to Casablanca by direct ONCF trains (about 290 km, via Meknès and Rabat) to Casa Voyageurs, from where a rail link reaches Mohammed V airport; the motorway is the driving alternative. On the day, meet at the airport where our team gathers the group and assists with boarding. Questions, documents and tier choice are handled beforehand by WhatsApp or phone."
+      },
+      "source": "city_pages/fes.logistics_*",
+      "as_of": "2026-07-23",
+      "note": "routes, operators and orders of magnitude (km, hours) as written there; no timetable, no fare"
+    },
+    {
+      "key": "logistique_tanger",
+      "value": {
+        "fr": "Le train à grande vitesse Al Boraq relie Tanger à Casa Voyageurs en un peu plus de deux heures ; une liaison ferroviaire continue vers l'aéroport Mohammed V, et l'autoroute reste l'option en voiture (environ 340 km). À l'aéroport, notre équipe accueille le groupe et gère les formalités d'embarquement. Le contrat se signe à notre agence de Casablanca — le reste du dossier s'organise à distance.",
+        "ar": "قطار البراق الفائق السرعة يربط طنجة بمحطة الدار البيضاء المسافرين في ما يزيد قليلاً عن ساعتين؛ ثم ربط سككي نحو مطار محمد الخامس، ويبقى الطريق السيار خياراً بالسيارة (نحو 340 كلم). بالمطار، يستقبل فريقنا المجموعة ويتكفل بإجراءات الصعود. يُوقَّع العقد بوكالتنا بالدار البيضاء — وباقي الملف يُنظَّم عن بُعد.",
+        "en": "The Al Boraq high-speed train links Tangier to Casa Voyageurs in just over two hours; a rail link continues to Mohammed V airport, and the motorway remains the driving option (about 340 km). At the airport, our team welcomes the group and handles boarding formalities. The contract is signed at our Casablanca agency — the rest of the file is arranged remotely."
+      },
+      "source": "city_pages/tanger.logistics_*",
+      "as_of": "2026-07-23",
+      "note": "routes, operators and orders of magnitude (km, hours) as written there; no timetable, no fare"
+    },
+    {
+      "key": "logistique_agadir",
+      "value": {
+        "fr": "Agadir est à un peu moins de 500 km de Casablanca par l'autoroute ; sans ligne ferroviaire, les cars interurbains (CTM, Supratours) et la voiture sont les options routières, et des vols intérieurs relient aussi Agadir à Casablanca. Le rassemblement se fait à l'aéroport Mohammed V, notre équipe sur place. Contrat signé à l'agence de Casablanca ; conseils et dossier par WhatsApp ou téléphone.",
+        "ar": "أكادير على بعد أقل بقليل من 500 كلم من الدار البيضاء بالطريق السيار؛ وبدون خط سككي، تبقى الحافلات بين المدن (CTM، سوبراتور) والسيارة خيارات الطريق، وتوجد أيضاً رحلات داخلية تربط أكادير بالدار البيضاء. التجمع يكون بمطار محمد الخامس بحضور فريقنا. العقد يُوقَّع بوكالة الدار البيضاء؛ والنصائح والملف عبر واتساب أو الهاتف.",
+        "en": "Agadir is a little under 500 km from Casablanca by motorway; with no rail line, intercity coaches (CTM, Supratours) and car are the road options, and domestic flights also link Agadir to Casablanca. The group gathers at Mohammed V airport with our team on site. Contract signed at the Casablanca agency; advice and file handled by WhatsApp or phone."
+      },
+      "source": "city_pages/agadir.logistics_*",
+      "as_of": "2026-07-23",
+      "note": "routes, operators and orders of magnitude (km, hours) as written there; no timetable, no fare"
+    },
+    {
+      "key": "logistique_meknes",
+      "value": {
+        "fr": "Meknès est sur la ligne ONCF directe vers Casablanca (environ 230 km) : train jusqu'à Casa Voyageurs puis liaison ferroviaire vers l'aéroport Mohammed V, ou autoroute en voiture. Le jour du départ, le groupe se retrouve à l'aéroport, où notre équipe vous assiste aux formalités. Avant cela, tout le dossier s'organise à distance — WhatsApp et téléphone suffisent.",
+        "ar": "مكناس على الخط السككي المباشر نحو الدار البيضاء (نحو 230 كلم): القطار حتى محطة المسافرين ثم الربط السككي نحو مطار محمد الخامس، أو الطريق السيار بالسيارة. يوم السفر تلتقي المجموعة بالمطار حيث يساعدكم فريقنا في الإجراءات. وقبل ذلك، يُنظَّم الملف كله عن بُعد — يكفي واتساب والهاتف.",
+        "en": "Meknès sits on the direct ONCF line to Casablanca (about 230 km): train to Casa Voyageurs then the rail link to Mohammed V airport, or the motorway by car. On departure day the group meets at the airport, where our team assists with formalities. Before that, the whole file is arranged remotely — WhatsApp and phone are enough."
+      },
+      "source": "city_pages/meknes.logistics_*",
+      "as_of": "2026-07-23",
+      "note": "routes, operators and orders of magnitude (km, hours) as written there; no timetable, no fare"
+    },
+    {
+      "key": "logistique_oujda",
+      "value": {
+        "fr": "Oujda est à environ 600 km de Casablanca : le train ONCF direct rejoint Casa Voyageurs (liaison ensuite vers l'aéroport Mohammed V), et des vols intérieurs relient Oujda à Casablanca pour gagner du temps. À l'aéroport Mohammed V, notre équipe rassemble le groupe et gère l'embarquement. En amont, conseils, documents et choix de gamme se traitent par WhatsApp ou téléphone.",
+        "ar": "وجدة على بعد نحو 600 كلم من الدار البيضاء: القطار المباشر يصل محطة المسافرين (ثم الربط السككي نحو مطار محمد الخامس)، وتوجد رحلات داخلية تربط وجدة بالدار البيضاء لكسب الوقت. بمطار محمد الخامس، يجمع فريقنا المجموعة ويتكفل بالصعود. ومسبقاً، تُعالَج النصائح والوثائق واختيار الفئة عبر واتساب أو الهاتف.",
+        "en": "Oujda is about 600 km from Casablanca: the direct ONCF train reaches Casa Voyageurs (then the rail link to Mohammed V airport), and domestic flights link Oujda to Casablanca to save time. At Mohammed V airport, our team gathers the group and handles boarding. Beforehand, advice, documents and tier choice are handled by WhatsApp or phone."
+      },
+      "source": "city_pages/oujda.logistics_*",
+      "as_of": "2026-07-23",
+      "note": "routes, operators and orders of magnitude (km, hours) as written there; no timetable, no fare"
+    }
+  ],
+  "hijri": [
+    {
+      "key": "muharram_1448",
+      "value": "2026-06-16",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "ashura_1448",
+      "value": "2026-06-25",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "mawlid_1448",
+      "value": "2026-08-25",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "rajab_1448",
+      "value": "2026-12-10",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "shaban_1448",
+      "value": "2027-01-09",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "ramadan_1448",
+      "value": "2027-02-08",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "ramadan-last10_1448",
+      "value": "2027-02-28",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "laylat-al-qadr_1448",
+      "value": "2027-03-06",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "eid-al-fitr_1448",
+      "value": "2027-03-09",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "dhul-qada_1448",
+      "value": "2027-04-08",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "dhul-hijja_1448",
+      "value": "2027-05-07",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "arafat_1448",
+      "value": "2027-05-15",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "eid-al-adha_1448",
+      "value": "2027-05-16",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "muharram_1449",
+      "value": "2027-06-06",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "ashura_1449",
+      "value": "2027-06-15",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "mawlid_1449",
+      "value": "2027-08-14",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "rajab_1449",
+      "value": "2027-11-29",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "shaban_1449",
+      "value": "2027-12-29",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "ramadan_1449",
+      "value": "2028-01-28",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "ramadan-last10_1449",
+      "value": "2028-02-17",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "laylat-al-qadr_1449",
+      "value": "2028-02-23",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "eid-al-fitr_1449",
+      "value": "2028-02-26",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "dhul-qada_1449",
+      "value": "2028-03-27",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "dhul-hijja_1449",
+      "value": "2028-04-26",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "arafat_1449",
+      "value": "2028-05-04",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "eid-al-adha_1449",
+      "value": "2028-05-05",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "muharram_1450",
+      "value": "2028-05-25",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "ashura_1450",
+      "value": "2028-06-03",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "mawlid_1450",
+      "value": "2028-08-03",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "rajab_1450",
+      "value": "2028-11-18",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "shaban_1450",
+      "value": "2028-12-17",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "ramadan_1450",
+      "value": "2029-01-16",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "ramadan-last10_1450",
+      "value": "2029-02-05",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "laylat-al-qadr_1450",
+      "value": "2029-02-11",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "eid-al-fitr_1450",
+      "value": "2029-02-14",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "dhul-qada_1450",
+      "value": "2029-03-16",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "dhul-hijja_1450",
+      "value": "2029-04-15",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "arafat_1450",
+      "value": "2029-04-23",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
+    },
+    {
+      "key": "eid-al-adha_1450",
+      "value": "2029-04-24",
+      "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
+      "as_of": "2026-09-14",
+      "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     }
   ],
   "faq": [
@@ -1830,5 +2336,67 @@
       }
     }
   ],
-  "official": []
+  "official": [
+    {
+      "key": "hajj_ma_organisation",
+      "value": "Le Hajj des Marocains est organisé sous l'autorité de la Commission royale du Hajj ; deux canaux existent : l'organisation officielle (encadrée par le Ministère des Habous et des Affaires islamiques) et les agences de voyages touristiques agréées (sélectionnées par le Ministère du Tourisme).",
+      "value_ar": "يُنظَّم حج المغاربة تحت إشراف اللجنة الملكية للحج؛ وله تنظيمان: التنظيم الرسمي (تحت إشراف وزارة الأوقاف والشؤون الإسلامية) وتنظيم وكالات الأسفار السياحية المرخصة (تختارها وزارة السياحة).",
+      "source": "https://www.habous.gov.ma/pelerinage/",
+      "as_of": "2026-09-14",
+      "verification": "search-summary",
+      "note": "structure only"
+    },
+    {
+      "key": "hajj_ma_inscription",
+      "value": "L'inscription au Hajj se fait par voie électronique, pendant une fenêtre annoncée chaque année par le Ministère des Habous (pour la saison 1448/2027 : du lundi 8 au vendredi 19 décembre 2025). Conditions annoncées : être âgé de 18 ans ou plus et ne pas avoir accompli le Hajj au cours des dix dernières années ; aptitude physique ; une femme enceinte de plus de six mois ne peut pas participer.",
+      "value_ar": "يتم التسجيل في الحج إلكترونياً خلال فترة تعلنها وزارة الأوقاف كل سنة (بالنسبة لموسم 1448هـ/2027م: من الاثنين 8 إلى الجمعة 19 دجنبر 2025). الشروط المعلنة: بلوغ 18 سنة فأكثر وعدم أداء الحج خلال السنوات العشر الأخيرة؛ القدرة البدنية؛ ولا يمكن للمرأة الحامل بأكثر من ستة أشهر المشاركة.",
+      "source": "https://www.habous.gov.ma/component/content/article/22090-%D8%B9%D9%85%D9%84%D9%8A%D8%A9-%D8%A7%D9%84%D9%82%D8%B1%D8%B9%D8%A9-%D9%84%D9%85%D9%88%D8%B3%D9%85-%D8%A7%D9%84%D8%AD%D8%AC-1448%D9%87%D9%80-2027%D9%85.html",
+      "as_of": "2026-09-14",
+      "verification": "search-summary",
+      "note": "the dates are those of the 1448 season and change every year — prose says « une fenêtre annoncée chaque année » and never a date (gate G5); the age (18) and the ten-year rule may be stated"
+    },
+    {
+      "key": "hajj_ma_qura",
+      "value": "Le tirage au sort (القرعة) désigne les listes définitives et une liste d'attente pour remplacer les désistements ; pour la saison 1448/2027 il s'est tenu du 2 au 13 mars 2026. Il est organisé au niveau des caïdats et arrondissements pour les pèlerins de l'organisation officielle, et au niveau des préfectures et provinces pour ceux des agences de voyages. Les listes sont publiées par le ministère dès la fin de chaque opération.",
+      "value_ar": "تحدد القرعة اللوائح النهائية ولائحة انتظار لتعويض المعتذرين؛ وبالنسبة لموسم 1448هـ/2027م أُجريت من 2 إلى 13 مارس 2026. تُجرى على مستوى القيادات والمقاطعات بالنسبة لحجاج التنظيم الرسمي، وعلى مستوى العمالات والأقاليم بالنسبة لحجاج وكالات الأسفار. وتنشر الوزارة اللوائح فور انتهاء كل عملية.",
+      "source": "https://www.habous.gov.ma/component/content/article/22090-%D8%B9%D9%85%D9%84%D9%8A%D8%A9-%D8%A7%D9%84%D9%82%D8%B1%D8%B9%D8%A9-%D9%84%D9%85%D9%88%D8%B3%D9%85-%D8%A7%D9%84%D8%AD%D8%AC-1448%D9%87%D9%80-2027%D9%85.html",
+      "as_of": "2026-09-14",
+      "verification": "search-summary",
+      "note": "structure only in prose (levels, waiting list); the dates never"
+    },
+    {
+      "key": "hajj_ma_quota_1448",
+      "value": "Quota du Maroc pour la saison 1448/2027 tel que rapporté : 34 000 pèlerins, dont 22 400 dans l'organisation officielle et 11 600 par les agences de voyages.",
+      "value_ar": "حصة المغرب لموسم 1448هـ/2027م كما ورد: 34.000 حاج، منهم 22.400 في التنظيم الرسمي و11.600 عبر وكالات الأسفار.",
+      "source": "https://www.habous.gov.ma/pelerinage/ (reported by the press citing the Royal Hajj Commission)",
+      "as_of": "2026-09-14",
+      "verification": "search-summary",
+      "note": "season figure — NOT to be stated in prose until the owner marks it fetched; the split (two thirds official / one third agencies) may be described in words"
+    },
+    {
+      "key": "hajj_ma_cout_1447",
+      "value": "Coût annoncé du Hajj de l'organisation officielle pour la saison 1447/2025 : 63 221 dirhams.",
+      "source": "https://www.habous.gov.ma/ (minister's announcement, as reported)",
+      "as_of": "2026-09-14",
+      "verification": "search-summary",
+      "note": "an amount — never in prose (gate G5); kept for the owner's reference only"
+    },
+    {
+      "key": "nusuk_umrah_process",
+      "value": "Pour la Omra, le visa est demandé via la plateforme Nusuk du Ministère saoudien du Hajj et de la Omra ; les pèlerins des pays hors liste e-visa, dont le Maroc, passent par une agence agréée qui réserve le forfait (vol, hôtels, transferts) et dépose la demande de visa ; l'application Nusuk sert ensuite aux permis (Rawdah) sur place. Passeport valide au moins six mois.",
+      "value_ar": "بالنسبة للعمرة، تُطلب التأشيرة عبر منصة نسك التابعة لوزارة الحج والعمرة السعودية؛ ويمر معتمرو الدول غير المدرجة في التأشيرة الإلكترونية، ومنها المغرب، عبر وكالة مرخصة تحجز الباقة (طيران، فنادق، نقل) وتودع طلب التأشيرة؛ ثم يُستعمل تطبيق نسك للتصاريح (الروضة) في عين المكان. جواز السفر صالح ستة أشهر على الأقل.",
+      "source": "https://www.nusuk.sa/ · https://umrah.nusuk.sa/",
+      "as_of": "2026-09-14",
+      "verification": "search-summary",
+      "note": "the six-month passport rule is also the agency's own FAQ (policies.passport_validity) and may be stated; the rest as structure"
+    },
+    {
+      "key": "ecole_ma_calendrier_2026_2027",
+      "value": "Calendrier scolaire marocain 2026-2027 (décision ministérielle n° 047.26 du 3 juillet 2026, telle que relayée) : rentrée des élèves le 7 septembre 2026 ; vacances intermédiaires du 18 au 25 octobre 2026, du 6 au 13 décembre 2026, du 21 au 28 mars 2027 et du 9 au 16 mai 2027 ; vacances de mi-année du 24 au 31 janvier 2027.",
+      "source": "https://www.men.gov.ma/ (décision 047.26, relayée par moutamadris.ma, taalimprimaire.com, concoursonline.ma)",
+      "as_of": "2026-09-14",
+      "verification": "search-summary",
+      "note": "used to TIME the calendar's school-holiday slots only; the dates never appear in prose (gate G5) — a post says « pendant les vacances intermédiaires d'automne » and the live departures show the real dates"
+    }
+  ]
 }

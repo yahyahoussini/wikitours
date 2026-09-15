@@ -177,14 +177,20 @@ per-entity overrides under `blog/[slug]/` and `omra/[slug]/`.
 | Authors (E-E-A-T): people = `team_members` rows (+ profile columns, migration 024), article `author_id` / `reviewer_id`; the intake the client fills | `docs/authors-intake.md`, `/equipe` page, `personNode()` in `src/lib/seo.js` |
 | **Blog automation** | |
 | Quality gate, shared by both engines (no `@/` imports) | `src/lib/server/article-gate.mjs` |
-| Weekly writing contract | `content/ARTICLE-BRIEF.md` |
-| Build-time ingest (`prebuild`) | `scripts/ingest-articles.mjs` |
+| The content gate, G0–G16 (word count, answer-first, question H2s, FAQ, volatile facts, links, externals, query ownership, language purity, banned phrases, quotations, title/meta, schema, Hijri, similarity, rendered HTML) | `scripts/content-gate.mjs` — `npm run content:gate` |
+| Writing contract read by every generating session | `content/ARTICLE-BRIEF.md` |
+| Build-time ingest (`prebuild`) — schedules at the calendar slot, never < now + 24 h | `scripts/ingest-articles.mjs` |
 | Public grounding facts | `src/app/api/content/facts/route.js` |
 | Daily release cron (accelerator only: IndexNow + runway e-mails) | `src/app/api/cron/publish-articles/route.js` |
-| Placeholder tags in article bodies (parser + validator; the render map) | `src/lib/content-tags.js`, `src/components/content/ArticleBody.jsx` + `CommercialCTA` / `LiveDepartures` / `ReviewQuote` / `HijriCountdown` / `DepositPolicy` / `HotelList` |
-| Stable facts a session may state (source + date per fact) | `data/allowed-facts.json` ← `scripts/build-allowed-facts.mjs` (`npm run content:facts`) |
+| Placeholder tags in article bodies (parser + validator; both spellings `<Tag />` and `{{live:…}}`) | `src/lib/content-tags.js` → `src/components/content/ArticleBody.jsx` + `CommercialCTA` / `LiveDepartures` / `PriceRange` / `HotelCard` / `HotelList` / `ReviewQuote` / `HijriCountdown` / `PolicyFact` / `DepositPolicy` / `HajjBridgeCTA` / `RamadanNightsTable` |
+| Commercial INTENT → the best indexable lander at request time (a post never hard-codes a lander URL) | `resolveIntent()` — `src/lib/content-resolver.js` |
+| The article's BlogPosting + FAQPage nodes, built once for the page AND the gate | `src/lib/article-schema.js` |
+| Stable facts a session may state (source + date per fact) | `data/allowed-facts.json` ← `scripts/build-allowed-facts.mjs` (`npm run content:facts`); official ministry/Nusuk facts hand-kept in `data/official-facts.json` |
 | Hijri events (Umm al-Qura, admin-adjustable after the sighting) | `src/lib/hijri.js`, `public.hijri_events` (migration 025) ← `scripts/build-hijri-events.mjs` (`npm run content:hijri`) |
-| The content architecture: map, decisions, open items | `docs/content-system.md` |
+| The year's editorial calendar: spec → topic pool → slots | `data/content-calendar-spec.json` + `data/content-topics/*.json` → `scripts/build-content-calendar.mjs` (`npm run content:calendar`) → `data/content-calendar.json` + `public.content_calendar` (migration 026) |
+| The pages that OWN a query (a post never targets one) + the post inventory | `data/lander-registry.json`, `docs/content-system/inventory.json` ← `scripts/content-inventory.mjs` (`npm run content:inventory`) |
+| Proof that publish-by-time holds (past-dated appears, future-dated does not) | `scripts/content-publish-proof.mjs` — `npm run content:proof` |
+| The content architecture: state, map, gaps, plan, runbook, resume | `docs/content-system/` (`00-existing-state.md`, `01-coverage-map.md`, `02-gaps.md`, `03-dominance-plan.md`, `04-setup-report.md`, `RESUME.md`, `RUNBOOK.md`) |
 | **Admin** | |
 | Authorization (single authority, fails closed) | `src/lib/admin/authz.js` |
 | Entity/field registry | `src/lib/admin/registry.js` |
@@ -333,27 +339,57 @@ There is no `tailwind.config.js` (Tailwind v4) and no RTL plugin.
 - **All prose is written ahead of time in Claude Code sessions** following
   `content/ARTICLE-BRIEF.md` → `content/articles/*.json` → `scripts/ingest-articles.mjs`
   at `prebuild`. **No runtime model call exists**: `/api/cron/draft-article` is a
-  410 stub with no cron entry. Map + decisions: `docs/content-system.md`.
+  410 stub with no cron entry. Map + decisions: `docs/content-system/`
+  (`RESUME.md` is the entry point, `RUNBOOK.md` the operations).
+- **The plan is a calendar, not a queue.** `data/content-calendar-spec.json`
+  (cadence, phase weights, series, Hijri anchors) + `data/content-topics/*.json`
+  (the topic pool) → `scripts/build-content-calendar.mjs` → `data/content-calendar.json`
+  and `public.content_calendar`. Each slot carries its queries per locale, its
+  angle, its `closest_existing_url` + a mandatory `delta`, its outline, the facts
+  and components it needs, and what it must not say. A slot no topic can fill is
+  recorded `unfillable` with the reason — `docs/content-system/calendar-report.md`
+  lists every one. **Never fill a slot by loosening a rule.**
 - **Volatile facts are never in prose.** Prices, departures, dates, seats, hotel
-  lists, the deposit policy, review quotes, Hijri countdowns and CTAs render at
-  request time through placeholder tags (`src/lib/content-tags.js` →
-  `src/components/content/ArticleBody.jsx`): `<CommercialCTA to>`, `<LiveDepartures>`,
-  `<ReviewQuote id>`, `<HijriCountdown event>`, `<DepositPolicy>`, `<HotelList city>`.
-  Stable facts come from `data/allowed-facts.json` (`npm run content:facts`), each
-  with a source and a date.
-- **The strict gate fails** any year (except « depuis 2016 »), amount, departure
-  date or seat count in a title / excerpt / description / body; an unknown tag; a
-  `ReviewQuote` of an unpublished testimonial; a Levantine month name or a Latin
-  city name in the Arabic body; a `query_family` that is a lander's query. A
-  failing file is **skipped and logged** (build log + `article_plan.notes`), never
+  lists and distances, the policies, review quotes, Hijri countdowns and CTAs
+  render at request time through placeholder tags (`src/lib/content-tags.js` →
+  `src/components/content/ArticleBody.jsx`), written either `<Tag attr="v" />` or
+  `{{live:alias attr=v}}`: `<CommercialCTA intent|to>`, `<LiveDepartures filter>`,
+  `<PriceRange filter>`, `<HotelCard slug>`, `<HotelList city>`, `<ReviewQuote id>`,
+  `<HijriCountdown event>`, `<PolicyFact key>`, `<DepositPolicy>`, `<HajjBridgeCTA>`,
+  `<RamadanNightsTable>`. Stable facts come from `data/allowed-facts.json`
+  (`npm run content:facts`), each with a source and a date.
+- **A post never hard-codes a commercial URL.** It declares an INTENT
+  (`ramadan`, `hajj`, `pas_cher`, `premium`, `agency`, `guide`, `hotels`,
+  `month:n`, `city:x`, `occasion:x`) and `resolveIntent()`
+  (`src/lib/content-resolver.js`) maps it to the best existing **indexable**
+  lander at request time, through the same predicates the sitemap and the footer
+  use. A noindex month or an unpublished occasion falls back to `/bab-makka`, so
+  a post can never link into a page that should not rank.
+- **Two gates, one bar.** `scripts/content-gate.mjs` (G0–G16) runs on a draft
+  before it is ever scheduled: word count per format and locale, the 40–55-word
+  answer-first block, ≥ 4 question-form H2s, a 5–6 item FAQ with 30–90-word
+  answers, the volatile-fact rules (plus "places disponibles" and hotel
+  distances, and any number > 10 absent from allowed-facts), ≥ 4 internal links
+  with the pillar and 2 siblings and no hard-coded lander URL, the external
+  whitelist, query ownership and slug uniqueness, ≥ 95 % Arabic letters / no
+  French leak in `en` / no Arabic beyond religious terms in `fr`, the banned
+  phrases, quotations outside `<ReviewQuote>`, title 45–62 with the brand and
+  meta 120–160, the emitted schema, a Hijri component on every Ramadan/Hajj
+  slot, 3-gram similarity below the threshold, and the rendered body with
+  JavaScript disabled. The dependency-free `src/lib/server/article-gate.mjs`
+  then re-runs at `prebuild`; a failing file is **skipped and logged**, never
   inserted — cadence is a ceiling. Existing rows are never re-gated.
 - **Publish = `published_at` has passed**: the anon RLS policy
   (`is_published and published_at <= now()`) IS the brief's
-  `status='scheduled' AND publish_at <= now()`. The ingest assigns the next free
-  08:00 **Africa/Casablanca** slot (`nextMorningSlot`, zone-aware — Ramadan's
-  UTC+0 included). ISR ≤ 3600 on the article page, the sitemap and llms.txt makes
-  the 07:00 `publish-articles` cron an accelerator only (IndexNow + runway
-  e-mails), not the publishing mechanism.
+  `status='scheduled' AND publish_at <= now()`, proven by
+  `npm run content:proof`. The ingest schedules at the slot's `publish_at`
+  (never earlier than now + 24 h), else the next free 08:00 **Africa/Casablanca**
+  morning (`nextMorningSlot`, zone-aware — Ramadan's UTC+0 included). ISR ≤ 3600
+  on the article page, the sitemap and llms.txt makes the 07:00
+  `publish-articles` cron an accelerator only (IndexNow + runway e-mails), not
+  the publishing mechanism. `CONTENT_PREVIEW_SCHEDULED=1` makes a LOCAL build
+  prerender not-yet-due rows so the gate can check them — **never set it on
+  Vercel**.
 - Author: the `team_members` row `yahya-houssini` (`articles.author_id`), no
   reviewer ever. Never write his bio, years or credentials (constraint 9).
 - Hijri: `src/lib/hijri.js` (`@umalqura/core`) → `public.hijri_events`

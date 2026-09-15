@@ -326,6 +326,10 @@ export function personNode(member, locale, { image = null } = {}) {
     ...(image ? { image } : {}),
     ...(member.sameas_url ? { sameAs: [member.sameas_url] } : {}),
     ...(credentials ? { hasCredential: { '@type': 'EducationalOccupationalCredential', name: credentials } } : {}),
+    // Migration 026: the AUTHOR record's topics and affiliation, entered by the
+    // owner (docs/authors-intake.md) — never written by code.
+    ...(member.knows_about ? { knowsAbout: String(member.knows_about).split(/[,،;]/).map((s) => s.trim()).filter(Boolean) } : {}),
+    ...(member.affiliation ? { affiliation: { '@type': 'Organization', name: String(member.affiliation).trim() } } : {}),
     worksFor: { '@id': `${SITE_URL}/#organization` },
   };
 }

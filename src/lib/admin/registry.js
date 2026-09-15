@@ -663,6 +663,132 @@ export const ADMIN_ENTITIES = {
       { name: 'conditions', type: 'textarea3', label: 'Conditions' },
     ],
   },
+
+  // ── the content system (migrations 025 + 026) ────────────────────────────
+  // Three tables the OWNER edits; everything else the calendar needs
+  // (content_series, lander_registry, content_ops_events) is machine-written
+  // by scripts/build-content-calendar.mjs and has no admin surface on purpose.
+
+  hijri: {
+    table: 'hijri_events',
+    title: 'Dates hégiriennes',
+    // Computed with @umalqura/core (npm run content:hijri) and rendered by
+    // <HijriCountdown /> in every article. After the official moon sighting,
+    // correct « Date grégorienne » and flip the toggle — a CONFIRMED row is
+    // never recomputed by the seeding script, and the countdown drops the
+    // "± deux jours" caveat (never the moon-sighting one).
+    publishField: 'is_confirmed',
+    orderBy: 'gregorian_date',
+    listColumns: ['event', 'hijri_year', 'gregorian_date', 'is_confirmed'],
+    searchKeys: ['event', 'label_fr', 'label_ar'],
+    hasSeo: false,
+    hasGallery: false,
+    labelField: 'event',
+    duplicateDisabled: true,
+    fields: [
+      {
+        name: 'event',
+        type: 'select',
+        label: 'Événement',
+        required: true,
+        options: [
+          { value: 'muharram', label: 'Nouvel an hégirien (1 Muharram)' },
+          { value: 'ashura', label: 'Achoura' },
+          { value: 'mawlid', label: 'Mawlid' },
+          { value: 'rajab', label: 'Début de Rajab' },
+          { value: 'shaban', label: 'Début de Chaâbane' },
+          { value: 'ramadan', label: 'Début du Ramadan' },
+          { value: 'ramadan-last10', label: 'Dix dernières nuits (21 Ramadan)' },
+          { value: 'laylat-al-qadr', label: 'Laylat al-Qadr (27 Ramadan)' },
+          { value: 'eid-al-fitr', label: 'Aïd al-Fitr' },
+          { value: 'dhul-qada', label: 'Début de Dhou al-Qi`da' },
+          { value: 'dhul-hijja', label: 'Début de Dhou al-Hijja' },
+          { value: 'arafat', label: 'Jour de Arafat' },
+          { value: 'eid-al-adha', label: 'Aïd al-Adha' },
+        ],
+      },
+      { name: 'hijri_year', type: 'number', label: 'Année hégirienne', required: true },
+      { name: 'gregorian_date', type: 'date', label: 'Date grégorienne (corriger après l’annonce officielle)', required: true },
+      { name: 'tolerance_days', type: 'number', label: 'Marge affichée (jours) tant que la date n’est pas confirmée' },
+      { name: 'label', type: 'text3', label: 'Libellé affiché' },
+    ],
+  },
+
+  politiques: {
+    table: 'policies',
+    title: 'Règles (acompte, paiement, passeport)',
+    // Rendered live by <PolicyFact key="…" /> inside every article that speaks
+    // of money or documents: change the text here and every article changes at
+    // once. Seeded verbatim from the published FAQ by migration 026.
+    publishField: 'is_published',
+    orderBy: 'key',
+    listColumns: ['key', 'as_of', 'updated_at'],
+    searchKeys: ['key', 'text_fr', 'text_ar'],
+    hasSeo: false,
+    hasGallery: false,
+    labelField: 'key',
+    duplicateDisabled: true,
+    fields: [
+      {
+        name: 'key',
+        type: 'select',
+        label: 'Règle',
+        required: true,
+        options: [
+          { value: 'deposit', label: 'Acompte' },
+          { value: 'payment', label: 'Paiement (aucun paiement en ligne)' },
+          { value: 'passport_validity', label: 'Validité du passeport' },
+          { value: 'visa_included', label: 'Visa inclus' },
+          { value: 'children', label: 'Enfants et familles' },
+        ],
+      },
+      { name: 'text', type: 'textarea3', label: 'Texte affiché (fr / ar / en)' },
+      { name: 'source', type: 'text', label: 'Source (ex. faqs/<id>)' },
+      { name: 'as_of', type: 'date', label: 'Vérifiée le' },
+    ],
+  },
+
+  calendrier: {
+    table: 'content_calendar',
+    title: 'Calendrier éditorial',
+    // The year's plan, seeded by scripts/build-content-calendar.mjs. The owner
+    // reads it and, at most, changes a STATUS: « planned » → « skipped » to
+    // drop a slot (with the reason), or moves a publish_at. The brief fields
+    // (angle, outline, queries) are shown for reading — the generating session
+    // takes them from data/content-calendar.json, which the script owns, so an
+    // edit here informs a human, not the writer. The toggle is « actif » : off
+    // and the slot is ignored by the generator without losing its row.
+    publishField: 'is_active',
+    orderBy: 'publish_at',
+    listColumns: ['slot_index', 'publish_at', 'track', 'status', 'primary_query_fr'],
+    searchKeys: ['primary_query_fr', 'primary_query_ar', 'angle', 'slug', 'cluster'],
+    hasSeo: false,
+    hasGallery: false,
+    labelField: 'primary_query_fr',
+    duplicateDisabled: true,
+    fields: [
+      { name: 'slot_index', type: 'number', label: 'Créneau' },
+      { name: 'publish_at', type: 'datetime', label: 'Publication prévue' },
+      {
+        name: 'status',
+        type: 'select',
+        label: 'Statut',
+        options: [
+          { value: 'planned', label: 'Planifié' },
+          { value: 'generating', label: 'En cours de rédaction' },
+          { value: 'scheduled', label: 'Programmé (article écrit)' },
+          { value: 'published', label: 'Publié' },
+          { value: 'skipped', label: 'Abandonné' },
+          { value: 'unfillable', label: 'Sans sujet distinct' },
+        ],
+      },
+      { name: 'primary_query_fr', type: 'text', label: 'Requête principale (fr) — lecture' },
+      { name: 'primary_query_ar', type: 'text', label: 'Requête principale (ar) — lecture' },
+      { name: 'angle', type: 'textarea', label: 'Angle — lecture' },
+      { name: 'slug', type: 'text', label: 'Slug de l’article (rempli à l’ingestion)' },
+      { name: 'skip_reason', type: 'textarea', label: 'Motif d’abandon' },
+    ],
+  },
 };
 
 /** Compute cheapest price across all tiers of an offer. */

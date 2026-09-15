@@ -307,7 +307,8 @@
   },
   "occasionPage": {
     "empty": "Programme in preparation — leave your details to be notified first.",
-    "answerWithOffers": "{n} Umrah {occasion} programme(s) from Morocco, from {min} MAD per person."
+    "answerWithOffers": "{n} Umrah {occasion} programme(s) from Morocco, from {min} MAD per person.",
+    "heading": "{name} Umrah"
   },
   "cityPage": {
     "title": "Umrah from {city}",
@@ -553,7 +554,26 @@
     "hijriPastLine": "{label}: {date}",
     "hijriCaveat": "subject to the sighting of the moon",
     "hotelsIn": "Our partner hotels in {city}",
-    "depositTitle": "Booking and payment"
+    "depositTitle": "Booking and payment",
+    "hajjNoPackage": "Hajj is not sold online: the Hajj page records your interest and our team calls you back.",
+    "priceFrom": "From {min} MAD per person right now.",
+    "priceRange": "{n} departures open right now: from {min} to {max} MAD per person.",
+    "priceNote": "Real prices of the published departures, read at the time of viewing.",
+    "policyTitle": "What our policy says today",
+    "policyDeposit": "A deposit of 50% of the total is requested when the booking is confirmed, paid directly at the agency — never online. The balance is paid before departure, at the agency.",
+    "policyPayment": "No payment is requested on this site: your booking is a request, not a purchase, and no bank card is ever asked for online.",
+    "policyPassport": "A passport valid for at least 6 months after the return date and recent ID photos. Our team handles every Umrah visa step through the official channels.",
+    "policyVisa": "Umrah visa fees and formalities are included in our offers: our team prepares the file, submits it through the official channels and follows it up.",
+    "policyChildren": "Our groups welcome families. Triple, quadruple and quintuple rooms lower the price per person, and every child needs their own passport.",
+    "nightsTitle": "The last ten nights of Ramadan {year}",
+    "nightsNight": "Night",
+    "nightsEvening": "Evening of",
+    "nightsNote": "Note",
+    "nightsRow": "Night of {n} Ramadan",
+    "nightsOdd": "Odd night — Laylat al-Qadr is sought among them",
+    "nightsTolerance": "computed dates (Umm al-Qura), may move by two days",
+    "nightsConfirmed": "dates confirmed after the official announcement",
+    "dataBasis": "Data basis: the departures, prices, availability and hotels shown in this article are read live from our catalogue at the time of viewing; stable facts are checked as of the update date shown."
   },
   "seoTitles": {
     "home": "Umrah {year} from Morocco | Bab Makka",

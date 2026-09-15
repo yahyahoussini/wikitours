@@ -3,15 +3,18 @@
 // `@/lib/months`; bare Node needs `months.js`) and the JSON dictionaries
 // `src/lib/i18n.js` imports without an import attribute.
 import { readFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { statSync } from 'node:fs';
 
 const SRC = new URL('../src/', import.meta.url);
 const EXTENSIONS = ['', '.js', '.jsx', '.mjs', '/index.js'];
+// A FILE, never a directory: `@/lib/seo` must resolve to src/lib/seo.js even
+// though src/lib/seo/ (health.js) exists beside it — the way Next resolves it.
+const isFile = (href) => { try { return statSync(new URL(href)).isFile(); } catch { return false; } };
 
 export async function resolve(specifier, context, next) {
   if (specifier.startsWith('@/')) {
     const base = new URL(specifier.slice(2), SRC).href;
-    const found = EXTENSIONS.map((ext) => base + ext).find((candidate) => existsSync(new URL(candidate)) && !candidate.endsWith('/'));
+    const found = EXTENSIONS.map((ext) => base + ext).find(isFile);
     return next(found ?? base, context);
   }
   return next(specifier, context);

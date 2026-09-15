@@ -307,7 +307,8 @@
   },
   "occasionPage": {
     "empty": "Programme en préparation — laissez vos coordonnées pour être averti en premier.",
-    "answerWithOffers": "{n} programme(s) Omra {occasion} au départ du Maroc, dès {min} MAD par personne."
+    "answerWithOffers": "{n} programme(s) Omra {occasion} au départ du Maroc, dès {min} MAD par personne.",
+    "heading": "Omra {name}"
   },
   "cityPage": {
     "title": "Omra depuis {city}",
@@ -553,7 +554,26 @@
     "hijriPastLine": "{label} : {date}",
     "hijriCaveat": "sous réserve de l'observation de la lune",
     "hotelsIn": "Nos hôtels partenaires à {city}",
-    "depositTitle": "Réservation et paiement"
+    "depositTitle": "Réservation et paiement",
+    "hajjNoPackage": "Le Hajj n'est pas vendu en ligne : la page Hajj recueille votre intérêt et notre équipe vous rappelle.",
+    "priceFrom": "Dès {min} MAD par personne en ce moment.",
+    "priceRange": "{n} départs ouverts en ce moment : de {min} à {max} MAD par personne.",
+    "priceNote": "Prix réels des départs publiés, lus au moment de la consultation.",
+    "policyTitle": "Ce que dit notre politique aujourd'hui",
+    "policyDeposit": "Un acompte de 50 % du montant total est demandé à la confirmation de la réservation, réglé directement auprès de l'agence — jamais en ligne. Le solde est versé avant le départ, à l'agence.",
+    "policyPayment": "Aucun paiement n'est demandé sur ce site : votre réservation est une demande, pas un achat, et aucune carte bancaire ne vous est jamais demandée en ligne.",
+    "policyPassport": "Un passeport valide au moins 6 mois après la date de retour et des photos d'identité récentes. Notre équipe s'occupe de toutes les démarches de visa Omra via les canaux officiels.",
+    "policyVisa": "Les frais et les démarches du visa Omra sont inclus dans nos offres : notre équipe monte le dossier, le dépose via les canaux officiels et suit son traitement.",
+    "policyChildren": "Nos groupes accueillent les familles. Les chambres triples, quadruples et quintuples réduisent le prix par personne, et chaque enfant doit disposer de son propre passeport.",
+    "nightsTitle": "Les dix dernières nuits du Ramadan {year}",
+    "nightsNight": "Nuit",
+    "nightsEvening": "Soirée du",
+    "nightsNote": "Repère",
+    "nightsRow": "Nuit du {n} Ramadan",
+    "nightsOdd": "Nuit impaire — Laylat al-Qadr est recherchée parmi elles",
+    "nightsTolerance": "dates calculées (Umm al-Qura), susceptibles de bouger de deux jours",
+    "nightsConfirmed": "dates confirmées après l'annonce officielle",
+    "dataBasis": "Base des données : les départs, prix, disponibilités et hôtels affichés dans cet article sont lus en direct depuis notre catalogue au moment de la consultation ; les faits stables sont vérifiés à la date de mise à jour indiquée."
   },
   "seoTitles": {
     "home": "Omra {year} depuis le Maroc | Bab Makka",

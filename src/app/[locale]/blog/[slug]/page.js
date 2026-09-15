@@ -2,13 +2,14 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
 import { BRAND } from '@/lib/brand';
-import { SITE_URL, absoluteUrl, hreflangAlternates, SPEAKABLE, personNode } from '@/lib/seo';
+import { SITE_URL, absoluteUrl, hreflangAlternates, personNode } from '@/lib/seo';
 import { authoredOr, pageDescription, trustClauses } from '@/lib/page-seo';
 import { getArticleBySlug, getArticles, getCovers, getTeam } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { getGallerySlides } from '@/lib/data/gallery';
 import { findAuthor, authorName, isOrganisationByline } from '@/lib/authors';
 import { publicMediaUrl } from '@/lib/media';
+import { blogPostingJsonLd, faqPageJsonLd, extractFaq, articleModifiedAt } from '@/lib/article-schema';
 import ArticleBody from '@/components/content/ArticleBody';
 import { withBrand } from '@/lib/titles';
 import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
@@ -100,31 +101,21 @@ export default async function ArticlePage({ params }) {
   // scheduled article's "updated" stamp can PRECEDE its publication. The
   // modification date shown and emitted is the later of the two — never
   // an update older than the publication.
-  const modifiedAt = [article.updated_at, article.published_at].filter(Boolean).sort().at(-1) ?? null;
+  const modifiedAt = articleModifiedAt(article);
 
-  const articleJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    headline: pickLang(article, 'title', locale),
-    ...(pickLang(article, 'excerpt', locale) ? { description: pickLang(article, 'excerpt', locale) } : {}),
-    ...(coverUrl ? { image: coverUrl } : {}),
-    inLanguage: locale,
-    mainEntityOfPage: absoluteUrl(locale, `/blog/${article.slug}`),
-    author: authorNode,
-    ...(reviewerNode ? { reviewedBy: reviewerNode } : {}),
-    ...(article.published_at ? { datePublished: article.published_at } : {}),
-    ...(modifiedAt ? { dateModified: modifiedAt } : {}),
-    publisher: { '@id': `${SITE_URL}/#organization` },
-    // Names the H1 and the answer-first lede as THE answer, like every other
-    // page type here (hubs, guide, glossary, home). Without it the blog — the
-    // site's largest surface — was the only content type answer engines had to
-    // guess at.
-    speakable: SPEAKABLE,
-  };
+  // BlogPosting + FAQPage from ONE builder (src/lib/article-schema.js) — the
+  // same nodes the content gate (G13) checks before a post is scheduled. The
+  // hero image: the gallery cover, else the typographic card the sibling
+  // /hero route draws (title + cluster label + the Bab Makka mark).
+  const body = pickLang(article, 'body', locale);
+  const heroUrl = coverUrl ?? absoluteUrl(locale, `/blog/${article.slug}/hero`);
+  const articleJsonLd = blogPostingJsonLd({ article, locale, authorNode, reviewerNode, coverUrl: heroUrl });
+  const faqJsonLd = faqPageJsonLd(extractFaq(body));
   return (
     <main className="mx-auto max-w-3xl px-6 pb-24 pt-8">
       <div className="scroll-progress" data-progress aria-hidden="true" suppressHydrationWarning />
       <JsonLd data={articleJsonLd} />
+      {faqJsonLd ? <JsonLd data={faqJsonLd} /> : null}
 
       <BreadcrumbTrail locale={locale}
         items={[
@@ -189,16 +180,37 @@ export default async function ArticlePage({ params }) {
           </p>
         ) : null}
 
-        <div className="mt-6 overflow-hidden rounded-panel empty:hidden">
-          <SmartGallery entityType="articles" entityId={article.id} locale={locale} aspect="16 / 9" sizes="(min-width: 768px) 768px, 100vw" />
-        </div>
+        {coverUrl ? (
+          <div className="mt-6 overflow-hidden rounded-panel empty:hidden">
+            <SmartGallery entityType="articles" entityId={article.id} locale={locale} aspect="16 / 9" sizes="(min-width: 768px) 768px, 100vw" />
+          </div>
+        ) : (
+          // No gallery cover: the typographic hero card (1600×900) drawn by the
+          // sibling /hero route — free, cached, alt in the page's language.
+          // A plain <img>: the card is already the right size and format.
+          <img
+            src={`/${locale}/blog/${article.slug}/hero`}
+            alt={pickLang(article, 'title', locale) ?? ''}
+            width={1600}
+            height={900}
+            loading="lazy"
+            decoding="async"
+            className="mt-6 aspect-video w-full rounded-panel object-cover"
+          />
+        )}
 
-        {pickLang(article, 'body', locale) ? (
+        {body ? (
           // Markdown prose + placeholder tags rendered as request-time server
           // components (src/lib/content-tags.js): prices, departures, quotes,
           // Hijri countdowns and CTAs are never in the prose.
-          <ArticleBody body={pickLang(article, 'body', locale)} locale={locale} />
+          <ArticleBody body={body} locale={locale} />
         ) : null}
+
+        {/* The DATA-BASIS line (content brief B7): what in this article is live
+            and what is checked, under every post, in every locale. */}
+        <p className="mt-10 border-t border-bm-black/10 pt-4 text-xs leading-relaxed text-bm-black/55" data-data-basis>
+          {t.content.dataBasis}
+        </p>
       </article>
 
       {/* The Hajj → Omra bridge on the four lottery articles, then the
