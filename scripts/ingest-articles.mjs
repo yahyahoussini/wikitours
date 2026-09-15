@@ -103,6 +103,14 @@ async function main() {
     try { draft = JSON.parse(await readFile(path.join(DIR, file), 'utf8')); } catch (e) { invalid++; log(`SKIP ${file}: invalid JSON (${e.message})`); continue; }
     const missing = REQUIRED.filter((k) => !String(draft?.[k] ?? '').trim());
     if (missing.length) { invalid++; log(`SKIP ${file}: missing ${missing.join(', ')}`); continue; }
+    // A draft the reviewers SKIPPED stays in the repo as the record of why, and
+    // is never inserted. Before this check the ingest ignored `status`, so a
+    // skipped file that still passed the mechanical gate became a scheduled row
+    // — public the moment its slot passed — on the next deploy.
+    if (draft.status === 'skipped') {
+      log(`SKIP ${file} (${draft.slug}) — skipped after review, not ingested: ${String(draft.skip_reason ?? '').slice(0, 140)}`);
+      continue;
+    }
     if (existingSlugs.has(draft.slug)) {
       const row = existingBySlug.get(draft.slug);
       const stillScheduled = row?.published_at && row.published_at > now.toISOString();

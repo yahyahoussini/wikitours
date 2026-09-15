@@ -92,6 +92,17 @@ export const PROSE_RULES = [
 ];
 // Levantine / MSA month names: Moroccan Arabic writes شتنبر، غشت، نونبر، دجنبر
 // (hard constraint 8) — the others fail the Arabic body.
+/**
+ * Levantine / MSA month names present in an Arabic text, as whole words. A raw
+ * substring test flagged « آب » (August) inside « الآباء » (the parents) — a
+ * word every family post uses — so a month only counts when no letter touches
+ * it, apart from the proclitics Arabic attaches to a word (و ف ب ل ك) and the
+ * article « ال ».
+ */
+export function nonMoroccanMonthsIn(text) {
+  const s = String(text ?? '');
+  return NON_MOROCCAN_MONTHS.filter((m) => new RegExp(String.raw`(?<![\p{L}])(?:[وفبلك])?(?:ال)?${m}(?![\p{L}])`, 'u').test(s));
+}
 export const NON_MOROCCAN_MONTHS = ['أيلول', 'تشرين الأول', 'تشرين الثاني', 'كانون الأول', 'كانون الثاني', 'شباط', 'آذار', 'نيسان', 'أيار', 'حزيران', 'تموز', 'آب', 'سبتمبر', 'أغسطس', 'نوفمبر', 'ديسمبر'];
 // Latin-script city names in Arabic prose (the CITY_SLUGS-instead-of-cityName trap).
 const LATIN_CITIES = ['Casablanca', 'Rabat', 'Marrakech', 'Marrakesh', 'Fès', 'Fes', 'Fez', 'Tanger', 'Tangier', 'Agadir', 'Meknès', 'Meknes', 'Oujda'];
@@ -284,7 +295,7 @@ export function qualityGate(draft, { ownerPath, existingSlugs, priceSet, strict 
     }
     // Moroccan Arabic register: month names and city names (hard constraints 5 and 8).
     const ar = `${draft.title_ar ?? ''}\n${draft.excerpt_ar ?? ''}\n${prose('ar')}`;
-    for (const m of NON_MOROCCAN_MONTHS) if (ar.includes(m)) problems.push(`body_ar : nom de mois non marocain « ${m} » (écrire شتنبر، غشت، نونبر، دجنبر…)`);
+    for (const m of nonMoroccanMonthsIn(ar)) problems.push(`body_ar : nom de mois non marocain « ${m} » (écrire شتنبر، غشت، نونبر، دجنبر…)`);
     for (const c of LATIN_CITIES) if (new RegExp(`(?<![\\p{L}])${c}(?![\\p{L}])`, 'u').test(ar)) problems.push(`body_ar : nom de ville en caractères latins « ${c} » (الدار البيضاء، الرباط، مراكش، فاس، طنجة، أكادير، مكناس، وجدة)`);
     // Anti-cannibalisation is mechanical: the query family must not be a lander's.
     const hit = targetsLanderQuery(draft.query_family);

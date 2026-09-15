@@ -502,7 +502,7 @@
       "date": "2026-09-27",
       "publish_at": "2026-09-27T07:30:00.000Z",
       "phase": "P1",
-      "status": "planned",
+      "status": "skipped",
       "how": "series:premiere-omra",
       "track": "omra",
       "pillar": "preparation",
@@ -610,7 +610,8 @@
       ],
       "length_target": "series_part",
       "topic_id": "premiere-omra-p1",
-      "slug": null
+      "slug": "premiere-omra-etre-pret-a-partir",
+      "skip_reason": "Relecteur FR 6,6 puis 7,0 après l'unique réécriture autorisée ; relecteur AR 6,8 puis 7,4 (seuil 8). Défauts restants : une phrase non sourcée sur les modalités de paiement (« ne change pas d'un départ à l'autre ») qui contredit policies.deposit ; un jugement religieux sans source sur l'intention ; des FAQ qui répètent le corps ; en arabe, une définition imprécise du miqat et une cellule de tableau qui a perdu sa condition (« pour une femme »). Le contrôle mécanique passe une fois corrigé le faux positif « آب » dans « الآباء »."
     },
     {
       "slot_index": 6,

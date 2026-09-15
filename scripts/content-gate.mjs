@@ -249,7 +249,15 @@ function G6(draft, ctx) {
       if (rel.startsWith('/blog/') && !ctx.existingSlugs.has(rel.slice(6)) && !calendar.slots?.some((s) => s.slug === rel.slice(6))) details.push(`body_${l} : lien vers un article inexistant « ${h} »`);
       if (hasBuild) {
         const page = builtPage(h);
-        if (!page) details.push(`body_${l} : « ${h} » n'est pas une page construite (404 ou redirection)`);
+        // A sibling post that is scheduled — so not built yet — but goes live no
+        // later than this one is not a broken link: by the time a reader can
+        // reach this page, it answers 200. Series parts link their previous part
+        // all the time; without this every series failed until a rebuild.
+        const target = !page && rel.startsWith('/blog/') ? ctx.existing.find((r) => r.slug === rel.slice(6)) : null;
+        const ownRelease = draft.published_at ?? planned?.publish_at ?? null;
+        const liveFirst = Boolean(target?.is_published && ownRelease && target.published_at && Date.parse(target.published_at) <= Date.parse(ownRelease));
+        if (!page && liveFirst) { /* live before this post is — fine */ }
+        else if (!page) details.push(`body_${l} : « ${h} » n'est pas une page construite (404 ou redirection)`);
         else if (page.status !== 200) details.push(`body_${l} : « ${h} » répond ${page.status}`);
         else if (page.noindex) details.push(`body_${l} : « ${h} » est noindex`);
       }
