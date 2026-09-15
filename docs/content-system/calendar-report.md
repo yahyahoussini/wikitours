@@ -1,15 +1,15 @@
-# Calendar report — generated 2026-09-15T08:43Z
+# Calendar report — generated 2026-09-15T08:51Z
 
 Slots: **243** (2026-09-21 → 2027-09-19, 2 posts every 3 days at 08:30 / 18:00 Africa/Casablanca).
-Filled: **80** · unfillable: **163** · topics in the pool: 80 (valid 80, rejected 0, unused valid 0).
+Filled: **88** · unfillable: **155** · topics in the pool: 88 (valid 88, rejected 0, unused valid 0).
 
 ## Phases (assigned ramadan / omra / hajj vs the brief's weights)
 
 | Phase | Slots | Assigned R / O / H | Weights | Unfillable |
 |---|---|---|---|---|
-| P1 2026-09-13 → 2026-10-31 | 28 | 14 / 10 / 4 | 35/50/15 | 0 |
-| P2 2026-11-01 → 2026-12-31 | 40 | 8 / 14 / 1 | 50/35/15 | 17 |
-| P3 2027-01-01 → 2027-02-07 | 26 | 0 / 1 / 2 | 60/25/15 | 23 |
+| P1 2026-09-13 → 2026-10-31 | 28 | 9 / 15 / 4 | 35/50/15 | 0 |
+| P2 2026-11-01 → 2026-12-31 | 40 | 7 / 17 / 1 | 50/35/15 | 15 |
+| P3 2027-01-01 → 2027-02-07 | 26 | 6 / 1 / 2 | 60/25/15 | 17 |
 | P4 2027-02-08 → 2027-03-09 | 20 | 0 / 1 / 2 | 60/20/20 | 17 |
 | P5 2027-03-10 → 2027-04-30 | 34 | 0 / 2 / 12 | 25/35/40 | 20 |
 | P6 2027-05-01 → 2027-06-15 | 31 | 0 / 1 / 3 | 10/40/50 | 27 |
@@ -20,7 +20,7 @@ Filled: **80** · unfillable: **163** · topics in the pool: 80 (valid 80, rejec
 
 - ramadan-1448: 12/12 parts placed
 - hajj-1448: 8/8 parts placed
-- premiere-omra: 0/8 parts placed
+- premiere-omra: 8/8 parts placed
 - mois-par-mois: 12/12 parts placed
 - villes: 0/7 parts placed
 
@@ -29,17 +29,17 @@ Filled: **80** · unfillable: **163** · topics in the pool: 80 (valid 80, rejec
 | Part | Slot | Date | Query |
 |---|---|---|---|
 | 1 | 1 | 2026-09-21 | omra ramadan : comment se passe le mois à la mecque |
-| 2 | 5 | 2026-09-27 | pourquoi les places d'omra ramadan partent si tôt et pourquoi le séjour revient plus cher |
-| 3 | 9 | 2026-10-03 | laylat al-qadr au haram : comment se déroule la nuit de la maghrib au fajr |
-| 4 | 13 | 2026-10-09 | itikaf au haram : conditions, inscription et réalités pour un pèlerin en groupe |
-| 5 | 17 | 2026-10-15 | rukhsa du voyageur pendant le ramadan : les positions des écoles et la pratique malikite marocaine |
-| 6 | 21 | 2026-10-21 | souhour et iftar à la mecque et à médine : à l'hôtel ou au haram |
-| 7 | 25 | 2026-10-27 | tarawih au haram : quand partir de l'hôtel, où se placer, sections des femmes |
-| 8 | 29 | 2026-11-02 | permis nusuk et gestion des flux pendant le ramadan : qui fait quoi |
-| 9 | 33 | 2026-11-08 | pourquoi la distance de l'hôtel au haram pèse beaucoup plus en ramadan |
-| 10 | 37 | 2026-11-14 | omra ramadan avec des parents âgés, des enfants, et pour les femmes : à qui convient quoi |
-| 11 | 41 | 2026-11-20 | tenir le rythme d'un ramadan au haram : hydratation, médicaments, sommeil, chaleur |
-| 12 | 45 | 2026-11-26 | aïd al-fitr à la mecque et garder l'élan après le mois |
+| 2 | 14 | 2026-10-10 | pourquoi les places d'omra ramadan partent si tôt et pourquoi le séjour revient plus cher |
+| 3 | 28 | 2026-10-31 | laylat al-qadr au haram : comment se déroule la nuit de la maghrib au fajr |
+| 4 | 42 | 2026-11-21 | itikaf au haram : conditions, inscription et réalités pour un pèlerin en groupe |
+| 5 | 55 | 2026-12-11 | rukhsa du voyageur pendant le ramadan : les positions des écoles et la pratique malikite marocaine |
+| 6 | 68 | 2026-12-30 | souhour et iftar à la mecque et à médine : à l'hôtel ou au haram |
+| 7 | 72 | 2027-01-05 | tarawih au haram : quand partir de l'hôtel, où se placer, sections des femmes |
+| 8 | 76 | 2027-01-11 | permis nusuk et gestion des flux pendant le ramadan : qui fait quoi |
+| 9 | 81 | 2027-01-19 | pourquoi la distance de l'hôtel au haram pèse beaucoup plus en ramadan |
+| 10 | 85 | 2027-01-25 | omra ramadan avec des parents âgés, des enfants, et pour les femmes : à qui convient quoi |
+| 11 | 89 | 2027-01-31 | tenir le rythme d'un ramadan au haram : hydratation, médicaments, sommeil, chaleur |
+| 12 | 93 | 2027-02-06 | aïd al-fitr à la mecque et garder l'élan après le mois |
 
 ### hajj-1448
 
@@ -58,7 +58,14 @@ Filled: **80** · unfillable: **163** · topics in the pool: 80 (valid 80, rejec
 
 | Part | Slot | Date | Query |
 |---|---|---|---|
-
+| 1 | 5 | 2026-09-27 | première omra : comment savoir si je suis prêt à partir |
+| 2 | 9 | 2026-10-03 | que doit contenir le contrat d'une agence omra avant de signer |
+| 3 | 13 | 2026-10-09 | quels papiers préparer soi-même pour une première omra |
+| 4 | 17 | 2026-10-15 | comment choisir la période et la durée de sa première omra |
+| 5 | 21 | 2026-10-21 | première omra : quelle gamme et quel type de chambre choisir |
+| 6 | 25 | 2026-10-27 | comment se préparer physiquement à sa première omra |
+| 7 | 29 | 2026-11-02 | quels rites de l'omra faut-il connaître par cœur avant de partir |
+| 8 | 33 | 2026-11-08 | comment se passe le jour du départ pour une première omra |
 
 ### mois-par-mois
 
@@ -83,13 +90,12 @@ Filled: **80** · unfillable: **163** · topics in the pool: 80 (valid 80, rejec
 |---|---|---|---|
 
 
-## Unfillable slots (163)
+## Unfillable slots (155)
 
 - #51 2026-12-05 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-05
 - #52 2026-12-06 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-06
 - #53 2026-12-08 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-08
 - #54 2026-12-09 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-09
-- #55 2026-12-11 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-11
 - #56 2026-12-12 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-12
 - #57 2026-12-14 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-14
 - #58 2026-12-15 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-15
@@ -101,29 +107,22 @@ Filled: **80** · unfillable: **163** · topics in the pool: 80 (valid 80, rejec
 - #65 2026-12-26 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-26
 - #66 2026-12-27 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-27
 - #67 2026-12-29 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-29
-- #68 2026-12-30 (P2) — no distinct topic left for P2 (ramadan > hajj > omra) on 2026-12-30
 - #69 2027-01-01 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-01
 - #70 2027-01-02 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-02
 - #71 2027-01-04 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-04
-- #72 2027-01-05 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-05
 - #73 2027-01-07 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-07
 - #74 2027-01-08 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-08
 - #75 2027-01-10 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-10
-- #76 2027-01-11 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-11
 - #77 2027-01-13 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-13
 - #78 2027-01-14 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-14
-- #82 2027-01-20 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-20
 - #83 2027-01-22 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-22
 - #84 2027-01-23 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-23
-- #85 2027-01-25 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-25
 - #86 2027-01-26 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-26
 - #87 2027-01-28 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-28
 - #88 2027-01-29 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-29
-- #89 2027-01-31 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-01-31
 - #90 2027-02-01 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-02-01
 - #91 2027-02-03 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-02-03
 - #92 2027-02-04 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-02-04
-- #93 2027-02-06 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-02-06
 - #94 2027-02-07 (P3) — no distinct topic left for P3 (ramadan > omra > hajj) on 2027-02-07
 - #95 2027-02-09 (P4) — no distinct topic left for P4 (ramadan > omra > hajj) on 2027-02-09
 - #96 2027-02-10 (P4) — no distinct topic left for P4 (ramadan > omra > hajj) on 2027-02-10

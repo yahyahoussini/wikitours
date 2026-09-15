@@ -1,0 +1,116 @@
+{
+  "slug": "omra-en-novembre-meteo-affluence-conseils",
+  "file": "content/articles/2026-09-14-omra-en-novembre-meteo-affluence-conseils.json",
+  "row": false,
+  "format": "month_support",
+  "checked_at": "2026-09-15T08:52:18.890Z",
+  "ok": true,
+  "failed": [],
+  "pending": [
+    "G13",
+    "G16"
+  ],
+  "words": {
+    "fr": 1529,
+    "ar": 1114,
+    "en": 1382
+  },
+  "checks": {
+    "G1": {
+      "ok": true,
+      "details": [],
+      "format": "month_support"
+    },
+    "G2": {
+      "ok": true,
+      "details": []
+    },
+    "G3": {
+      "ok": true,
+      "details": []
+    },
+    "G4": {
+      "ok": true,
+      "details": []
+    },
+    "G5": {
+      "ok": true,
+      "details": []
+    },
+    "G6": {
+      "ok": true,
+      "details": []
+    },
+    "G7": {
+      "ok": true,
+      "details": [],
+      "warnings": []
+    },
+    "G8": {
+      "ok": true,
+      "details": []
+    },
+    "G9": {
+      "ok": true,
+      "details": [],
+      "arabicShare": 99.9
+    },
+    "G10": {
+      "ok": true,
+      "details": []
+    },
+    "G11": {
+      "ok": true,
+      "details": []
+    },
+    "G12": {
+      "ok": true,
+      "details": []
+    },
+    "G13": {
+      "ok": true,
+      "details": [
+        "BlogPosting.datePublished : attribué à l'ingestion (créneau) — vérifié après build",
+        "nœuds émis non vérifiés : pas de build de la page (ingérer puis construire)"
+      ],
+      "pending": true
+    },
+    "G14": {
+      "ok": true,
+      "details": [
+        "créneau omra : règle non applicable"
+      ]
+    },
+    "G15": {
+      "ok": true,
+      "details": [],
+      "closest": {
+        "fr": {
+          "slug": "omra-8-jours-ou-15-jours",
+          "score": 0.018
+        },
+        "ar": {
+          "slug": "omra-8-jours-ou-15-jours",
+          "score": 0.008
+        },
+        "en": {
+          "slug": "omra-8-jours-ou-15-jours",
+          "score": 0.014
+        }
+      },
+      "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
+    },
+    "G16": {
+      "ok": null,
+      "pending": true,
+      "details": [
+        "rendu non vérifié : ingérer puis construire (NEXT_DIST_DIR=.next-audit CONTENT_PREVIEW_SCHEDULED=1)"
+      ]
+    },
+    "G0": {
+      "ok": true,
+      "details": [],
+      "flags": []
+    }
+  }
+}

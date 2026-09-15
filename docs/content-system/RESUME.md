@@ -31,7 +31,7 @@ nothing costs money.
 | Topic pool | `data/content-topics/*.json` — one file per batch |
 | Series | `ramadan-1448` 12 parts (AR co-master) · `hajj-1448` 8 (AR co-master) · `premiere-omra` 8 · `mois-par-mois` 12 · `villes` 7 |
 | Posts written and gated | `content/articles/2026-09-14-*.json`, one gate report each in `gate-reports/` |
-| Existing posts | 36 rows: 28 live, 8 scheduled to 22 Oct 2026. 28 of the 36 are under 450 French words and 34 have no FAQ block — they keep their URLs and become sibling links, they are not rewritten |
+| Existing posts | 36 rows: 28 live, 8 scheduled to 22 Oct 2026. 25 of the 36 are under 450 French words and 34 have no FAQ block — they keep their URLs and become sibling links, they are not rewritten by this run |
 | Landers | 58, of which 44 indexable (`data/lander-registry.json`) |
 | Honest ceiling | `02-gaps.md` gives the number of distinct angles the map supports without duplicating an existing URL. It is **lower than 243**. Cadence is a ceiling, not a target |
 | Database | migrations 025 + 026 are written and committed; **applying them is the owner's step** (`RUNBOOK.md` § Apply the database side). Everything works without them: the components fall back to dictionary copy and the repo's JSON files are the record |

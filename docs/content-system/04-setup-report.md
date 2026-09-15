@@ -1,0 +1,193 @@
+# 04 — Setup report
+
+What this run found, reused, built and replaced; where the brief and the
+codebase disagreed and what was decided; the slots that cannot be filled; and
+the questions only the owner can answer. Written 2026-09-15.
+
+Read `RESUME.md` for the state and the procedure, `RUNBOOK.md` for operations.
+
+---
+
+## Found
+
+Discovery reused run 1's `00-existing-state.md` and diffed it against the
+database rather than re-deriving it. The inventory is generated, not asserted:
+`npm run content:inventory` reads every row and every prerendered page into
+`docs/content-system/inventory.json`, `inventory-posts.csv` and
+`data/lander-registry.json`.
+
+| | |
+|---|---|
+| Blog posts | **36** rows — 28 live, 8 scheduled to 22 Oct 2026, 0 drafts. All 36 trilingual |
+| Their depth | **25 of 36 are under 450 French words** (7 under 350, only 2 over 1 000); **34 of 36 carry no FAQ block**; 3 have a year in the slug; 11 carry a year in the French body and 3 carry MAD amounts |
+| Pages that own a topic | **58** — 44 indexable. 12 month landers (3 indexable), 9 occasion hubs (5 published), 8 city pages (all indexable), 7 guide pages, the glossary, the barometer (noindex by its own ≥3-departures rule), 8 hotels, 4 live departures, plus home / pillar / hubs / trust |
+| Live-renderable data | 4 published departures with 4 tiers each (28 tier rows), 8 hotels, 8 authored city logistics blocks, 7 published text testimonials, 53 FAQ, 42 glossary terms, the settings record |
+| The author record | `team_members.yahya-houssini` exists and is **empty** — `role_fr` is literally `[À COMPLÉTER] rôle`, `is_placeholder` true, every bio null. So no byline, no `/equipe` card, no `Person` node renders today; articles are signed with the organisation |
+| Images | Already free: `next/og` (Satori) renders the OG card on the Vercel function. No paid service anywhere |
+| Publishing | Already publish-by-time: the anon RLS policy on `articles` is `is_published and (published_at is null or published_at <= now())`. Nothing "publishes" a post |
+
+Two defects worth naming, both in the coverage map's footnotes: four occasion
+hubs render a broken Arabic H1 (`Omra رمضان`, `Omra الصيفالصيف 2026`,
+`Omra عمرة شتنبر 2026 2026` — a Latin word on the Arabic page and a doubled
+year), and the two Madinah hotels are still tagged `city = makkah`, so their
+schema locality is wrong and `<HotelList city="madinah" />` renders nothing.
+The first is fixed in this run; the second is a data edit only the owner can
+make.
+
+---
+
+## Reused, not rebuilt
+
+- The whole `$0` pipeline: `content/ARTICLE-BRIEF.md` → `content/articles/*.json`
+  → `scripts/ingest-articles.mjs` at `prebuild` → the `articles` table.
+- `is_published` / `published_at` as the schedule. They ARE the brief's
+  `status='scheduled' AND publish_at <= now()`.
+- The tag → server-component renderer from run 1 (`ArticleBody`), extended
+  rather than replaced.
+- The existing live components the new tags wrap: `OfferCard`, `CtaBlock`,
+  `HajjBridge`, the testimonial figure, `getHotels()`, `getTestimonials()`.
+- The cluster map (`src/lib/clusters.js`) as the sibling-link source.
+- `next/og` and the existing `OgCard` for hero images — scaled, not rewritten.
+- The SEO suite and the schema gate as the build's existing gate.
+
+---
+
+## Built
+
+| | |
+|---|---|
+| Resolver | `src/lib/content-resolver.js` — `resolveIntent()` maps an INTENT to the best existing **indexable** lander at request time, through the same predicates the sitemap and footer use; anything that no longer qualifies falls back to `/bab-makka` |
+| Live components | `<PriceRange>`, `<HotelCard>`, `<PolicyFact>`, `<HajjBridgeCTA>`, `<RamadanNightsTable>`, and `<CommercialCTA intent>`; the parser now accepts `{{live:alias attr=v}}` as well as `<Tag attr="v" />`, and an unknown `{{live:…}}` renders nothing and logs |
+| Gate | `scripts/content-gate.mjs`, G0–G16, one JSON report per post, committed |
+| Calendar | `data/content-calendar-spec.json` + `data/content-topics/*.json` → `scripts/build-content-calendar.mjs` → **243 slots**, 21 Sep 2026 → 19 Sep 2027, plus `calendar-report.md` |
+| Tables | migration 026: `content_ops_settings`, `content_series`, `content_calendar`, `lander_registry`, `content_ops_events`, `policies` (seeded verbatim from the published FAQ), `team_members.knows_about` / `.affiliation`. 025 gains five month-start Hijri events and a tolerance column |
+| Admin | three entities — Calendrier éditorial, Règles (acompte, passeport), Dates hégiriennes |
+| Hero images | `/{locale}/blog/{slug}/hero` draws a 1600×900 typographic card when a post has no gallery cover; the article page uses it and the share card scales from the same component |
+| Schema | `src/lib/article-schema.js` builds BlogPosting + FAQPage once, for the page **and** the gate (G13), plus the DATA-BASIS line under every article in all three locales |
+| Proof | `npm run content:proof` — the anon client sees exactly the rows whose `published_at` has passed, the prerendered sitemap included |
+| Reviewers | `docs/content-system/reviewers/{fr,ar}-reviewer.md`, threshold 8, one rewrite then skip |
+| Facts | `data/allowed-facts.json` gains policies, catalogue, city logistics and the Hijri anchors; official ministry/Nusuk facts live hand-kept in `data/official-facts.json` with a `verification` field |
+
+---
+
+## Replaced, and why
+
+- **`<CommercialCTA to="/path">` → `<CommercialCTA intent="…">`.** A hard-coded
+  lander URL survives neither a month going noindex nor an occasion being
+  unpublished. `to=` still parses, so run 1's files keep working.
+- **Any external link was a hard blocker → an off-whitelist link is.** The old
+  rule came from the API drafter, which could invent a URL. The contract now
+  requires a « Sources » section citing the ministry or Nusuk on Hajj and visa
+  content, and G7 already whitelists nine official domains.
+- **The owner-link rule accepted only `to=`.** It forced every post using the
+  intent form to carry a second, duplicate CTA block purely to pass. It now
+  resolves an intent through `intentPath()`.
+- **`article_plan` → `content_calendar` as the plan.** The plan table stays (the
+  admin still edits it) but it holds one line per topic; the calendar holds one
+  row per slot with its date, its delta, its outline and its forbidden topics.
+
+The last two were found by the first gated posts, not by inspection — both are
+recorded in the commit that fixed them.
+
+---
+
+## Contradictions between the brief and the repo
+
+1. **`status='scheduled' AND publish_at <= now()`** — the repo has
+   `is_published` + `published_at`, enforced by RLS on every anon read.
+   **Decision: keep them.** They are the same model; renaming would touch RLS,
+   the admin, the ingest, the queue and the sitemap for no behaviour change.
+   `npm run content:proof` demonstrates the semantics the brief asked for.
+2. **"cycle_days=3, posts_per_cycle=2, start_date=today+7"** gives **243** slots
+   to 19 Sep 2027, not the brief's "~244". The figure is arithmetic, not a
+   target.
+3. **`<HijriCountdown event="ramadan_1448_start">`** — run 1 shipped bare keys
+   (`ramadan`). **Decision: accept both.** A bare key means the next occurrence;
+   a dated key pins the Hijri year so a post written for 1448 keeps saying 1448
+   after it has passed.
+4. **"Body = markdown + tags like `{{live:departures filter=ramadan}}`"** — run 1
+   shipped `<Tag />`. **Decision: accept both spellings**, one registry, one
+   renderer.
+5. **The AUTHOR RECORD block was not supplied.** The brief's header reads
+   `[AUTHOR RECORD — paste the block from above]` with nothing above it.
+   **Decision: invent nothing** (hard constraint 9). The row is untouched, the
+   columns the block would fill are added by migration 026, and the byline,
+   `/equipe` card and `Person` node light up the moment the owner fills a bio in
+   fr and ar.
+6. **"Similarity: Supabase gte-small if available, else transformers.js, else
+   n-gram Jaccard."** Neither embedding path exists here and adding
+   transformers.js would be a ~90 MB dependency for one check.
+   **Decision: 3-gram word Jaccard**, and the gate says so in its report
+   (`method` field) rather than implying an embedding ran.
+7. **"web-search the official Moroccan Hajj timeline"** — done, but
+   `habous.gov.ma` cannot be fetched from this machine: its certificate chain
+   does not verify here. **Decision: the facts are recorded with
+   `verification: "search-summary"` and are usable as STRUCTURE only** — who
+   organises, the two channels, the levels of the draw, the waiting list, the
+   age and the ten-year rule. No date, quota or amount from them may enter
+   prose, and the gate refuses those anyway. The owner promotes a fact to
+   `fetched` after checking it in a browser.
+8. **Migrations cannot be applied from here.** PostgREST exposes no DDL and the
+   service key cannot run SQL. **Decision: 026 is written, committed and
+   documented; applying it is the owner's step.** Everything works without it —
+   the components fall back to dictionary copy and the repo's JSON files are the
+   record.
+9. **"enabled=false … then set enabled=true"** — the brief asks for both.
+   **Decision: `enabled: true`** in `data/content-calendar-spec.json`, since
+   stage E is explicitly "go live". It reaches `content_ops_settings` on the
+   first `--seed` after 026 is applied.
+10. **Ten `article_plan` rows target a month lander's own query**
+    (`omra janvier` … `omra decembre`). The gate refuses them mechanically. The
+    month series in the calendar now covers those months with long-tail angles,
+    so the ten rows are redundant; deactivating them is an owner action.
+
+---
+
+## The honest number of slots
+
+The calendar has **243** slots. The gap analysis (`02-gaps.md`) counts the
+distinct angles the map supports without duplicating an existing URL and lands
+on **109** — 45 % of the year. Counting the 28 floor rows that a thin existing
+post already occupies and that therefore deserve a rewrite in place rather than
+a second URL, the usable total is **137**, still a 44 % shortfall.
+
+The topic pool written in this run holds more entries than 109 because it
+contains series parts that split one subject across several pages on purpose;
+the calendar builder rejects any topic whose angle is within 0.6 similarity of
+an existing post or of another topic in the same cluster, and every slot it
+cannot fill is recorded `unfillable` with its reason in
+`docs/content-system/calendar-report.md`.
+
+**The gap does not close by inventing angles.** It closes three ways, in this
+order: rewriting the 25 thin posts in place (no new URL, no cannibalisation);
+letting the live data grow, since a month with real departures supports a
+support post that an empty month does not; and a Search Console export in
+`data/gsc/`, which turns "what could we write" into "what are we already
+ranking 5–15 for". Until then, cadence is a ceiling and the calendar will show
+unfilled slots — which is the correct behaviour, not a failure.
+
+---
+
+## Open questions for the owner
+
+1. **The AUTHOR RECORD.** It was not in the brief. Without it nothing about
+   Yahya Houssini can be written (hard constraint 9). Fill Admin → Équipe:
+   role, bio fr + ar, languages, `sameas_url`, and the new `knows_about` /
+   `affiliation`.
+2. **Is Wiki Tours International among the agencies selected by the Ministry of
+   Tourism for the Hajj agency channel?** The Hajj post deliberately does not
+   say so and presents `/hajj` as an interest page. If the answer is yes, that
+   changes the article and the page.
+3. **The official facts.** Confirm each entry of `data/official-facts.json` in a
+   browser and flip `verification` to `fetched`; only then may a figure from it
+   be quoted.
+4. **May a relative in Morocco sign the contract and pay the deposit on a
+   pilgrim's behalf?** Flagged `[À VÉRIFIER]` in the diaspora post, which says
+   the agency settles it case by case.
+5. **Umrah visa conditions for a non-Moroccan passport** — same, flagged, not
+   asserted.
+6. **Deposit, cancellation and waiting-list terms in Ramadan specifically.** The
+   `policies` table holds the general rule; the Ramadan series will need the
+   Ramadan variant if one exists.
+7. **The two Madinah hotels' city** — a one-field edit that unblocks
+   `<HotelList city="madinah" />` and their schema locality.

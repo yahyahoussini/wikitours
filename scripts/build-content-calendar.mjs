@@ -134,6 +134,21 @@ const nearestFree = (date, from = 0, to = 10) => {
   }
   return null;
 };
+/**
+ * The free slot closest to `date` WITHOUT going past it when there is one —
+ * a deadline ("parts 1–6 before 1 January") is a ceiling, so landing a day
+ * late to find a free slot defeats it. Falls forward only when nothing is free
+ * in the `back` days before the target.
+ */
+const nearestFreeBefore = (date, back = 4, forward = 14, floor = null) => {
+  for (let d = 0; d <= back; d++) {
+    const day = addDays(date, -d);
+    if (floor && day < floor) break;
+    const s = slots.find((x) => x.date === day && isFree(x));
+    if (s) return s;
+  }
+  return nearestFree(date, 1, forward);
+};
 
 // 1. frozen rows come back as they were
 for (const [i, row] of frozen) Object.assign(byIndex.get(i) ?? {}, row);
@@ -148,10 +163,31 @@ for (const series of spec.series) {
   const parts = valid.filter((t) => t.series_id === series.id && !used.has(t.id)).sort((a, b) => a.series_part - b.series_part);
   const placed = valid.filter((t) => t.series_id === series.id && used.has(t.id)).map((t) => ({ part: t.series_part, slot: slots.find((s) => s.topic_id === t.id) }));
   let lastDate = placed.length ? placed.sort((a, b) => a.part - b.part).at(-1).slot.date : null;
+  // A series with deadlines is SPREAD to them rather than packed at the
+  // minimum spacing. Without this the twelve Ramadan parts all landed inside
+  // ten weeks and part 12 — Eid al-Fitr in Makkah — published three months
+  // before Eid. Parts up to `deadline_part6` are spread from the series start
+  // to that date, the rest from there to `deadline_part12`; the minimum gap
+  // still wins if the interpolated step would be tighter.
+  const firstStart = series.start_date ?? S.start_date;
+  const anchorPart = series.deadline_part6 ? Math.ceil(series.parts / 2) : null;
+  const targetDate = (part) => {
+    if (!series.deadline_part6 || !series.deadline_part12) return null;
+    const [from, to, lo, hi] = part <= anchorPart
+      ? [firstStart, series.deadline_part6, 1, anchorPart]
+      : [series.deadline_part6, series.deadline_part12, anchorPart, series.parts];
+    const span = daysBetween(from, to);
+    return addDays(from, Math.round((span * (part - lo)) / Math.max(1, hi - lo)));
+  };
   for (const t of parts) {
     let slot = null;
     if (series.placement === 'windows' && t.window_from) {
       slot = nearestFree(t.window_from, 0, Math.max(0, daysBetween(t.window_from, t.window_to ?? t.window_from)) + 3);
+    } else if (targetDate(t.series_part)) {
+      const [minGap] = series.spacing_days ?? [6, 9];
+      const earliest = lastDate ? addDays(lastDate, minGap) : firstStart;
+      const wanted = targetDate(t.series_part);
+      slot = wanted > earliest ? nearestFreeBefore(wanted, 4, 14, earliest) : nearestFree(earliest, 0, 14);
     } else {
       const [minGap, maxGap] = series.spacing_days ?? [6, 9];
       const from = lastDate ? addDays(lastDate, minGap) : (series.start_date ?? S.start_date);
