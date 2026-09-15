@@ -80,6 +80,18 @@ for (let c = 0, idx = 1; ; c++) {
 }
 log(`${slots.length} slots from ${S.start_date} to ${S.end_date} (${S.posts_per_cycle} per ${S.cycle_days} days)`);
 
+// Owner-requested EXTRA slots (spec.extra_slots): a date outside the cadence,
+// asked for by the owner. They are indexed from 1001 in declaration order, so
+// no cadence slot's index ever shifts — frozen (scheduled / published /
+// skipped) rows are matched by index. An extra slot takes only the topic the
+// spec names; the series and the phase weights never fill it. Append new
+// requests at the end of the list: reordering it would renumber them.
+for (const [k, x] of (spec.extra_slots ?? []).entries()) {
+  const phase = spec.phases.find((p) => x.date >= p.from && x.date <= p.to) ?? spec.phases.at(-1);
+  slots.push({ slot_index: 1001 + k, date: x.date, publish_at: zonedInstant(x.date, x.time ?? '08:00', S.timezone), phase: phase.id, weights: phase.weights, status: 'planned', extra: true, required_track: x.track ?? null, requested: x.note ?? null, requested_topic: x.topic_id ?? null });
+}
+if (spec.extra_slots?.length) log(`${spec.extra_slots.length} owner-requested extra slot(s), indexed from #1001`);
+
 // Slots already scheduled / published / skipped in the previous calendar keep their row.
 const frozen = new Map((previous.slots ?? []).filter((s) => ['scheduled', 'published', 'skipped'].includes(s.status)).map((s) => [s.slot_index, s]));
 
@@ -125,7 +137,7 @@ const assign = (slot, topic, how) => {
   });
   used.add(topic.id);
 };
-const isFree = (slot) => slot.status === 'planned' && !slot.topic_id && !frozen.has(slot.slot_index);
+const isFree = (slot) => slot.status === 'planned' && !slot.topic_id && !frozen.has(slot.slot_index) && !slot.extra;
 /**
  * A Hijri anchor is a CONSTRAINT, not a label. A topic anchored to an event
  * has to be live — and found — before that event, so its slot must sit at
@@ -187,6 +199,16 @@ const nearestFreeBefore = (date, back = 4, forward = 14, floor = null) => {
 for (const [i, row] of frozen) {
   Object.assign(byIndex.get(i) ?? {}, row);
   if (row.topic_id) used.add(row.topic_id);
+}
+// 1 bis. owner extra slots take exactly the topic the spec names, before
+// anything else can claim it.
+for (const slot of slots.filter((x) => x.extra && !frozen.has(x.slot_index))) {
+  const t = slot.requested_topic ? valid.find((x) => x.id === slot.requested_topic) : null;
+  if (!slot.requested_topic) { slot.status = 'unfillable'; slot.skip_reason = `owner extra slot for ${slot.date}: no topic named yet in spec.extra_slots`; continue; }
+  if (!t) { slot.status = 'unfillable'; slot.skip_reason = `owner extra slot for ${slot.date} names ${slot.requested_topic}, which is not a valid topic`; continue; }
+  if (slot.required_track && t.track !== slot.required_track) { slot.status = 'unfillable'; slot.skip_reason = `owner extra slot for ${slot.date} wants track ${slot.required_track}; ${t.id} is ${t.track}`; continue; }
+  if (used.has(t.id)) { slot.status = 'unfillable'; slot.skip_reason = `owner extra slot for ${slot.date}: ${t.id} is already placed`; continue; }
+  assign(slot, t, 'extra');
 }
 // 2. pinned topics
 for (const t of valid.filter((t) => t.pinned_slot_index)) {

@@ -3,7 +3,10 @@
   "settings": {
     "cycle_days": 3,
     "posts_per_cycle": 2,
-    "slot_times": ["08:30", "18:00"],
+    "slot_times": [
+      "08:30",
+      "18:00"
+    ],
     "start_date": "2026-09-21",
     "end_date": "2027-09-19",
     "buffer_days": 60,
@@ -12,46 +15,311 @@
     "enabled": true
   },
   "phases": [
-    { "id": "P1", "from": "2026-09-13", "to": "2026-10-31", "weights": { "ramadan": 35, "omra": 50, "hajj": 15 }, "note": "early Ramadan research; Hajj registration content" },
-    { "id": "P2", "from": "2026-11-01", "to": "2026-12-31", "weights": { "ramadan": 50, "omra": 35, "hajj": 15 }, "note": "Ramadan booking decision; series 1–6 land" },
-    { "id": "P3", "from": "2027-01-01", "to": "2027-02-07", "weights": { "ramadan": 60, "omra": 25, "hajj": 15 }, "note": "final Ramadan prep; series 7–12; lottery-season Hajj" },
-    { "id": "P4", "from": "2027-02-08", "to": "2027-03-09", "weights": { "ramadan": 60, "omra": 20, "hajj": 20 }, "note": "Ramadan live; lottery results → Omra bridge" },
-    { "id": "P5", "from": "2027-03-10", "to": "2027-04-30", "weights": { "ramadan": 25, "omra": 35, "hajj": 40 }, "note": "post-Ramadan; rejected-to-Omra peak; Hajj prep" },
-    { "id": "P6", "from": "2027-05-01", "to": "2027-06-15", "weights": { "ramadan": 10, "omra": 40, "hajj": 50 }, "note": "Hajj live and post-Hajj" },
-    { "id": "P7", "from": "2027-06-16", "to": "2027-08-31", "weights": { "ramadan": 20, "omra": 60, "hajj": 20 }, "note": "summer/Mawlid Omra; Hajj 1449 registration opens" },
-    { "id": "P8", "from": "2027-09-01", "to": "2027-09-19", "weights": { "ramadan": 45, "omra": 40, "hajj": 15 }, "note": "Ramadan 1449 early cycle" }
+    {
+      "id": "P1",
+      "from": "2026-09-13",
+      "to": "2026-10-31",
+      "weights": {
+        "ramadan": 35,
+        "omra": 50,
+        "hajj": 15
+      },
+      "note": "early Ramadan research; Hajj registration content"
+    },
+    {
+      "id": "P2",
+      "from": "2026-11-01",
+      "to": "2026-12-31",
+      "weights": {
+        "ramadan": 50,
+        "omra": 35,
+        "hajj": 15
+      },
+      "note": "Ramadan booking decision; series 1–6 land"
+    },
+    {
+      "id": "P3",
+      "from": "2027-01-01",
+      "to": "2027-02-07",
+      "weights": {
+        "ramadan": 60,
+        "omra": 25,
+        "hajj": 15
+      },
+      "note": "final Ramadan prep; series 7–12; lottery-season Hajj"
+    },
+    {
+      "id": "P4",
+      "from": "2027-02-08",
+      "to": "2027-03-09",
+      "weights": {
+        "ramadan": 60,
+        "omra": 20,
+        "hajj": 20
+      },
+      "note": "Ramadan live; lottery results → Omra bridge"
+    },
+    {
+      "id": "P5",
+      "from": "2027-03-10",
+      "to": "2027-04-30",
+      "weights": {
+        "ramadan": 25,
+        "omra": 35,
+        "hajj": 40
+      },
+      "note": "post-Ramadan; rejected-to-Omra peak; Hajj prep"
+    },
+    {
+      "id": "P6",
+      "from": "2027-05-01",
+      "to": "2027-06-15",
+      "weights": {
+        "ramadan": 10,
+        "omra": 40,
+        "hajj": 50
+      },
+      "note": "Hajj live and post-Hajj"
+    },
+    {
+      "id": "P7",
+      "from": "2027-06-16",
+      "to": "2027-08-31",
+      "weights": {
+        "ramadan": 20,
+        "omra": 60,
+        "hajj": 20
+      },
+      "note": "summer/Mawlid Omra; Hajj 1449 registration opens"
+    },
+    {
+      "id": "P8",
+      "from": "2027-09-01",
+      "to": "2027-09-19",
+      "weights": {
+        "ramadan": 45,
+        "omra": 40,
+        "hajj": 15
+      },
+      "note": "Ramadan 1449 early cycle"
+    }
   ],
   "series": [
-    { "id": "ramadan-1448", "title_fr": "Omra Ramadan 1448 — le guide complet", "title_ar": "عمرة رمضان 1448 — الدليل الكامل", "title_en": "Ramadan 1448 Umrah — the complete guide", "parts": 12, "track": "ramadan", "master_locale": "ar_co_master", "pillar_path": "/omra-ramadan", "commercial_intent": "ramadan", "spacing_days": [6, 9], "deadline_part6": "2026-12-31", "deadline_part12": "2027-02-06", "format": "series_part" },
-    { "id": "hajj-1448", "title_fr": "Hajj 1448 depuis le Maroc", "title_ar": "الحج 1448 من المغرب", "title_en": "Hajj 1448 from Morocco", "parts": 8, "track": "hajj", "master_locale": "ar_co_master", "pillar_path": "/hajj", "commercial_intent": "hajj", "spacing_days": [6, 9], "placement": "windows", "format": "series_part" },
-    { "id": "premiere-omra", "title_fr": "Préparer sa première Omra", "title_ar": "الاستعداد لأول عمرة", "title_en": "Preparing your first Umrah", "parts": 8, "track": "omra", "master_locale": "fr", "pillar_path": "/guide-omra", "commercial_intent": "guide", "spacing_days": [6, 9], "format": "series_part" },
-    { "id": "mois-par-mois", "title_fr": "Omra mois par mois", "title_ar": "العمرة شهراً بشهر", "title_en": "Umrah month by month", "parts": 12, "track": "omra", "master_locale": "fr", "pillar_path": "/bab-makka", "commercial_intent": "month", "spacing_days": [6, 9], "placement": "windows", "format": "month_support" },
-    { "id": "villes", "title_fr": "Rejoindre le départ depuis votre ville", "title_ar": "الوصول إلى الرحلة من مدينتكم", "title_en": "Reaching the departure from your city", "parts": 7, "track": "omra", "master_locale": "fr", "pillar_path": "/bab-makka", "commercial_intent": "city", "spacing_days": [9, 14], "format": "guide" }
+    {
+      "id": "ramadan-1448",
+      "title_fr": "Omra Ramadan 1448 — le guide complet",
+      "title_ar": "عمرة رمضان 1448 — الدليل الكامل",
+      "title_en": "Ramadan 1448 Umrah — the complete guide",
+      "parts": 12,
+      "track": "ramadan",
+      "master_locale": "ar_co_master",
+      "pillar_path": "/omra-ramadan",
+      "commercial_intent": "ramadan",
+      "spacing_days": [
+        6,
+        9
+      ],
+      "deadline_part6": "2026-12-31",
+      "deadline_part12": "2027-02-06",
+      "format": "series_part"
+    },
+    {
+      "id": "hajj-1448",
+      "title_fr": "Hajj 1448 depuis le Maroc",
+      "title_ar": "الحج 1448 من المغرب",
+      "title_en": "Hajj 1448 from Morocco",
+      "parts": 8,
+      "track": "hajj",
+      "master_locale": "ar_co_master",
+      "pillar_path": "/hajj",
+      "commercial_intent": "hajj",
+      "spacing_days": [
+        6,
+        9
+      ],
+      "placement": "windows",
+      "format": "series_part"
+    },
+    {
+      "id": "premiere-omra",
+      "title_fr": "Préparer sa première Omra",
+      "title_ar": "الاستعداد لأول عمرة",
+      "title_en": "Preparing your first Umrah",
+      "parts": 8,
+      "track": "omra",
+      "master_locale": "fr",
+      "pillar_path": "/guide-omra",
+      "commercial_intent": "guide",
+      "spacing_days": [
+        6,
+        9
+      ],
+      "format": "series_part"
+    },
+    {
+      "id": "mois-par-mois",
+      "title_fr": "Omra mois par mois",
+      "title_ar": "العمرة شهراً بشهر",
+      "title_en": "Umrah month by month",
+      "parts": 12,
+      "track": "omra",
+      "master_locale": "fr",
+      "pillar_path": "/bab-makka",
+      "commercial_intent": "month",
+      "spacing_days": [
+        6,
+        9
+      ],
+      "placement": "windows",
+      "format": "month_support"
+    },
+    {
+      "id": "villes",
+      "title_fr": "Rejoindre le départ depuis votre ville",
+      "title_ar": "الوصول إلى الرحلة من مدينتكم",
+      "title_en": "Reaching the departure from your city",
+      "parts": 7,
+      "track": "omra",
+      "master_locale": "fr",
+      "pillar_path": "/bab-makka",
+      "commercial_intent": "city",
+      "spacing_days": [
+        9,
+        14
+      ],
+      "format": "guide"
+    }
   ],
   "hijri_anchors": {
-    "rajab_1448": "2026-12-10", "shaban_1448": "2027-01-09", "ramadan_1448_start": "2027-02-08", "ramadan_1448_last10": "2027-02-28", "laylat_al_qadr_1448": "2027-03-06", "eid_al_fitr_1448": "2027-03-09",
-    "dhul_hijja_1448": "2027-05-07", "arafah_1448": "2027-05-15", "eid_al_adha_1448": "2027-05-16", "muharram_1449": "2027-06-06", "ashura_1449": "2027-06-15", "mawlid_1449": "2027-08-14", "ramadan_1449_start": "2028-01-28",
+    "rajab_1448": "2026-12-10",
+    "shaban_1448": "2027-01-09",
+    "ramadan_1448_start": "2027-02-08",
+    "ramadan_1448_last10": "2027-02-28",
+    "laylat_al_qadr_1448": "2027-03-06",
+    "eid_al_fitr_1448": "2027-03-09",
+    "dhul_hijja_1448": "2027-05-07",
+    "arafah_1448": "2027-05-15",
+    "eid_al_adha_1448": "2027-05-16",
+    "muharram_1449": "2027-06-06",
+    "ashura_1449": "2027-06-15",
+    "mawlid_1449": "2027-08-14",
+    "ramadan_1449_start": "2028-01-28",
     "tolerance_days": 2,
     "lead_days": 7
   },
   "school_holidays_2026_2027": [
-    { "id": "autumn", "from": "2026-10-18", "to": "2026-10-25" },
-    { "id": "december", "from": "2026-12-06", "to": "2026-12-13" },
-    { "id": "midyear", "from": "2027-01-24", "to": "2027-01-31" },
-    { "id": "spring", "from": "2027-03-21", "to": "2027-03-28" },
-    { "id": "may", "from": "2027-05-09", "to": "2027-05-16" }
+    {
+      "id": "autumn",
+      "from": "2026-10-18",
+      "to": "2026-10-25"
+    },
+    {
+      "id": "december",
+      "from": "2026-12-06",
+      "to": "2026-12-13"
+    },
+    {
+      "id": "midyear",
+      "from": "2027-01-24",
+      "to": "2027-01-31"
+    },
+    {
+      "id": "spring",
+      "from": "2027-03-21",
+      "to": "2027-03-28"
+    },
+    {
+      "id": "may",
+      "from": "2027-05-09",
+      "to": "2027-05-16"
+    }
   ],
   "hajj_cycle_1448": {
-    "registration": { "from": "2025-12-08", "to": "2025-12-19", "verification": "search-summary" },
-    "lottery": { "from": "2026-03-02", "to": "2026-03-13", "verification": "search-summary" },
-    "hajj": { "arafah": "2027-05-15" },
+    "registration": {
+      "from": "2025-12-08",
+      "to": "2025-12-19",
+      "verification": "search-summary"
+    },
+    "lottery": {
+      "from": "2026-03-02",
+      "to": "2026-03-13",
+      "verification": "search-summary"
+    },
+    "hajj": {
+      "arafah": "2027-05-15"
+    },
     "registration_1449_expected": "late 2026 (structure only — unpublished)"
   },
   "rules": {
     "no_consecutive_same_cluster": true,
-    "series_spacing_days": [6, 9],
+    "series_spacing_days": [
+      6,
+      9
+    ],
     "query_not_in_lander_registry": true,
     "query_not_equal_existing_post": true,
     "angle_unique_in_cluster": true
-  }
+  },
+  "extra_slots": [
+    {
+      "date": "2026-10-02",
+      "time": "08:00",
+      "track": "ramadan",
+      "note": "owner request 2026-09-15: an extra Ramadan post on this day, written to serve the internal linking of cluster D"
+    },
+    {
+      "date": "2026-10-04",
+      "time": "08:00",
+      "track": "ramadan",
+      "note": "owner request 2026-09-15: an extra Ramadan post on this day, written to serve the internal linking of cluster D"
+    },
+    {
+      "date": "2026-10-09",
+      "time": "08:00",
+      "track": "ramadan",
+      "note": "owner request 2026-09-15: an extra Ramadan post on this day, written to serve the internal linking of cluster D"
+    },
+    {
+      "date": "2026-10-11",
+      "time": "08:00",
+      "track": "ramadan",
+      "note": "owner request 2026-09-15: an extra Ramadan post on this day, written to serve the internal linking of cluster D"
+    },
+    {
+      "date": "2026-10-12",
+      "time": "08:00",
+      "track": "ramadan",
+      "note": "owner request 2026-09-15: an extra Ramadan post on this day, written to serve the internal linking of cluster D"
+    },
+    {
+      "date": "2026-10-14",
+      "time": "08:00",
+      "track": "ramadan",
+      "note": "owner request 2026-09-15: an extra Ramadan post on this day, written to serve the internal linking of cluster D"
+    },
+    {
+      "date": "2026-10-17",
+      "time": "08:00",
+      "track": "ramadan",
+      "note": "owner request 2026-09-15: an extra Ramadan post on this day, written to serve the internal linking of cluster D"
+    },
+    {
+      "date": "2026-10-18",
+      "time": "08:00",
+      "track": "ramadan",
+      "note": "owner request 2026-09-15: an extra Ramadan post on this day, written to serve the internal linking of cluster D"
+    },
+    {
+      "date": "2026-10-20",
+      "time": "08:00",
+      "track": "ramadan",
+      "note": "owner request 2026-09-15: an extra Ramadan post on this day, written to serve the internal linking of cluster D"
+    },
+    {
+      "date": "2026-10-23",
+      "time": "08:00",
+      "track": "ramadan",
+      "note": "owner request 2026-09-15: an extra Ramadan post on this day, written to serve the internal linking of cluster D"
+    }
+  ]
 }

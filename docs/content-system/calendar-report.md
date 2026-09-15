@@ -1,13 +1,13 @@
-# Calendar report — generated 2026-09-15T10:57Z
+# Calendar report — generated 2026-09-15T13:00Z
 
-Slots: **243** (2026-09-21 → 2027-09-19, 2 posts every 3 days at 08:30 / 18:00 Africa/Casablanca).
-Filled: **169** · unfillable: **74** · topics in the pool: 172 (valid 172, rejected 0, unused valid 3).
+Slots: **253** (2026-09-21 → 2027-09-19, 2 posts every 3 days at 08:30 / 18:00 Africa/Casablanca).
+Filled: **169** · unfillable: **84** · topics in the pool: 172 (valid 172, rejected 0, unused valid 3).
 
 ## Phases (assigned ramadan / omra / hajj vs the brief's weights)
 
 | Phase | Slots | Assigned R / O / H | Weights | Unfillable |
 |---|---|---|---|---|
-| P1 2026-09-13 → 2026-10-31 | 28 | 6 / 18 / 4 | 35/50/15 | 0 |
+| P1 2026-09-13 → 2026-10-31 | 38 | 6 / 18 / 4 | 35/50/15 | 10 |
 | P2 2026-11-01 → 2026-12-31 | 40 | 10 / 29 / 1 | 50/35/15 | 0 |
 | P3 2027-01-01 → 2027-02-07 | 26 | 6 / 18 / 2 | 60/25/15 | 0 |
 | P4 2027-02-08 → 2027-03-09 | 20 | 0 / 18 / 2 | 60/20/20 | 0 |
@@ -96,7 +96,7 @@ Filled: **169** · unfillable: **74** · topics in the pool: 172 (valid 172, rej
 | 6 | 36 | 2026-11-12 | omra depuis meknès : comment rejoindre le départ de casablanca |
 | 7 | 43 | 2026-11-23 | omra depuis oujda : comment rejoindre le départ de casablanca |
 
-## Unfillable slots (74)
+## Unfillable slots (84)
 
 - #163 2027-05-22 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-22
 - #164 2027-05-23 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-23
@@ -172,6 +172,16 @@ Filled: **169** · unfillable: **74** · topics in the pool: 172 (valid 172, rej
 - #241 2027-09-16 (P8) — no distinct topic left for P8 (ramadan > omra > hajj) on 2027-09-16
 - #242 2027-09-17 (P8) — no distinct topic left for P8 (ramadan > omra > hajj) on 2027-09-17
 - #243 2027-09-19 (P8) — no distinct topic left for P8 (ramadan > omra > hajj) on 2027-09-19
+- #1001 2026-10-02 (P1) — owner extra slot for 2026-10-02: no topic named yet in spec.extra_slots
+- #1002 2026-10-04 (P1) — owner extra slot for 2026-10-04: no topic named yet in spec.extra_slots
+- #1003 2026-10-09 (P1) — owner extra slot for 2026-10-09: no topic named yet in spec.extra_slots
+- #1004 2026-10-11 (P1) — owner extra slot for 2026-10-11: no topic named yet in spec.extra_slots
+- #1005 2026-10-12 (P1) — owner extra slot for 2026-10-12: no topic named yet in spec.extra_slots
+- #1006 2026-10-14 (P1) — owner extra slot for 2026-10-14: no topic named yet in spec.extra_slots
+- #1007 2026-10-17 (P1) — owner extra slot for 2026-10-17: no topic named yet in spec.extra_slots
+- #1008 2026-10-18 (P1) — owner extra slot for 2026-10-18: no topic named yet in spec.extra_slots
+- #1009 2026-10-20 (P1) — owner extra slot for 2026-10-20: no topic named yet in spec.extra_slots
+- #1010 2026-10-23 (P1) — owner extra slot for 2026-10-23: no topic named yet in spec.extra_slots
 
 ## Rejected topics (0)
 
