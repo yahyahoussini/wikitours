@@ -31,8 +31,8 @@ nothing costs money.
 | Topic pool | **172 topics** in `data/content-topics/*.json` — one file per batch. Add a batch file to extend it; the builder rejects a topic whose query is a lander's or whose angle is within 0.6 of an existing post |
 | Series | `ramadan-1448` 12 (AR co-master) · `hajj-1448` 8 (AR co-master) · `premiere-omra` 8 · `mois-par-mois` 12 · `villes` 7 — each placed exactly once |
 | Phase weights | **Not met, deliberately.** See `04-setup-report.md` § "The phase weights are not met, and forcing them would be wrong" — the Ramadan track has 22 distinct angles against a target needing ~60, because 19 of its floor rows are already held by a thin existing post that deserves a rewrite, not a duplicate |
-| Posts written and gated | 4, `content/articles/2026-09-14-*.json`, one gate report each in `gate-reports/`. **3 scheduled** (slots 1, 2, 4 — 21, 22 and 25 Sep 2026) and **1 skipped** (slot 3, the November month post: 7.4 then 6.6 after its one rewrite). Its row is unpublished, not deleted, and carries a `skip_reason` |
-| Why slot 3 was skipped | `month_pages` is empty and `allowed-facts` has no climate or crowd section, so an article titled "météo, affluence et conseils" cannot source either half of its title. **The same gap blocks the eleven remaining month posts** — fill `month_pages` (weather + crowds, fr **and** ar) in the admin before the month series resumes |
+| Posts written and gated | 4, `content/articles/2026-09-14-*.json`, one gate report each in `gate-reports/`. **2 scheduled** (slots 2 and 4 — Hajj registration, 22 Sep; booking from Europe, 25 Sep) and **2 skipped** (slots 1 and 3 — Ramadan part 1 and the November month post). Skipped rows are **unpublished, never deleted**, and carry a `skip_reason` on the row, the slot and the file |
+| Why both were skipped — read this before writing another | They promise **experience** ("comment se passe vraiment le mois", "météo, affluence"); the two that passed describe a **procedure**. `data/allowed-facts.json` holds business data only, and `month_pages` is empty, so there is no source for the experiential layer. Both reviewers rejected every way of faking it. **Roughly half the calendar — the month series, most of the Ramadan series, the seasonal block — is blocked the same way.** See `04-setup-report.md` § "The single most useful thing this run found" |
 | Existing posts | 36 rows: 28 live, 8 scheduled to 22 Oct 2026. 25 of the 36 are under 450 French words and 34 have no FAQ block — they keep their URLs and become sibling links, they are not rewritten by this run |
 | Landers | 58, of which 44 indexable (`data/lander-registry.json`) |
 | Honest ceiling | `02-gaps.md` gives the number of distinct angles the map supports without duplicating an existing URL. It is **lower than 243**. Cadence is a ceiling, not a target |
@@ -118,12 +118,18 @@ Run this, exactly, and stop cleanly.
 
 ## What is waiting on the owner
 
-0. **Write the `month_pages` blocks** (Admin → Pages mois): "Météo et affluence"
-   and "À qui convient ce mois", in French **and** Arabic, for each month you
-   sell. Two things depend on it — the month landers index only when those
-   blocks exist (`monthLanderIndexable()`), and the twelve-part month series
-   cannot honestly describe a month until the lander it supports carries the
-   authored blocks. This is what skipped slot 3.
+0. **Unblock the experiential content — this is what skipped two of the first
+   four posts, and it blocks about half the calendar.** Two steps, either of
+   which helps, both of which together close it:
+   - **Write the `month_pages` blocks** (Admin → Pages mois): "Météo et
+     affluence" and "À qui convient ce mois", in French **and** Arabic, for each
+     month you sell. The month landers also index only when those blocks exist
+     (`monthLanderIndexable()`), so this pays twice.
+   - **Decide whether the agency's own observation is a citable source.** If it
+     is, it belongs in `data/allowed-facts.json` as dated, owner-validated
+     entries (what your groups actually see at the Haram in Ramadan, in a normal
+     month, at the hotel), each with an `as_of`. Rule 1 bis already says how to
+     write from such a source; today there is no source to write from.
 1. **Apply migrations 025 and 026**, then run the four seeding commands
    (`RUNBOOK.md` § Apply the database side). Until then the calendar lives in
    `data/content-calendar.json` and the policies fall back to dictionary copy.

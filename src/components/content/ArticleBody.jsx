@@ -44,7 +44,15 @@ export default function ArticleBody({ body, locale, className = '' }) {
           return null;
         }
         const Tag = COMPONENTS[seg.name];
-        return Tag ? <Tag key={i} {...seg.attrs} locale={locale} /> : null;
+        if (!Tag) return null;
+        // `key` is reserved by React: spreading an attribute called `key` sets
+        // the list key and the component never receives it, so
+        // `<PolicyFact key="deposit" />` rendered nothing at all. The authoring
+        // syntax keeps `key=` (it is what the brief documents); the prop is
+        // renamed here. Caught by gate G16 — the rendered HTML — after every
+        // other rule passed it.
+        const { key: attrKey, ...attrs } = seg.attrs;
+        return <Tag key={i} {...attrs} {...(attrKey === undefined ? {} : { policyKey: attrKey })} locale={locale} />;
       })}
     </div>
   );

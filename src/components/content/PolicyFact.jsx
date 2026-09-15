@@ -11,7 +11,12 @@ import { getPolicies } from '@/lib/data/content';
  */
 const FALLBACK_KEYS = { deposit: 'policyDeposit', payment: 'policyPayment', passport_validity: 'policyPassport', visa_included: 'policyVisa', children: 'policyChildren' };
 
-export default async function PolicyFact({ key: policyKey, locale }) {
+/**
+ * The tag is authored `<PolicyFact key="deposit" />`, but `key` is reserved by
+ * React and never reaches a component — ArticleBody renames it to `policyKey`
+ * on the way in. Do not restore `key` here.
+ */
+export default async function PolicyFact({ policyKey, locale }) {
   const t = getDictionary(locale);
   const rows = await getPolicies();
   const row = rows.find((r) => r.key === policyKey && r.is_published !== false);

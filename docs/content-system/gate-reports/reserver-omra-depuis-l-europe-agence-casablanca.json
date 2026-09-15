@@ -1,15 +1,12 @@
 {
   "slug": "reserver-omra-depuis-l-europe-agence-casablanca",
-  "file": "content/articles/2026-09-14-reserver-omra-depuis-l-europe-agence-casablanca.json",
-  "row": false,
+  "file": null,
+  "row": true,
   "format": "guide",
-  "checked_at": "2026-09-15T09:08:29.444Z",
+  "checked_at": "2026-09-15T09:46:49.678Z",
   "ok": true,
   "failed": [],
-  "pending": [
-    "G13",
-    "G16"
-  ],
+  "pending": [],
   "words": {
     "fr": 2059,
     "ar": 1426,
@@ -69,11 +66,7 @@
     },
     "G13": {
       "ok": true,
-      "details": [
-        "BlogPosting.datePublished : attribué à l'ingestion (créneau) — vérifié après build",
-        "nœuds émis non vérifiés : pas de build de la page (ingérer puis construire)"
-      ],
-      "pending": true
+      "details": []
     },
     "G14": {
       "ok": true,
@@ -87,7 +80,7 @@
       "closest": {
         "fr": {
           "slug": "omra-en-novembre-meteo-affluence-conseils",
-          "score": 0.033
+          "score": 0.032
         },
         "ar": {
           "slug": "omra-en-novembre-meteo-affluence-conseils",
@@ -101,11 +94,8 @@
       "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
     },
     "G16": {
-      "ok": null,
-      "pending": true,
-      "details": [
-        "rendu non vérifié : ingérer puis construire (NEXT_DIST_DIR=.next-audit CONTENT_PREVIEW_SCHEDULED=1)"
-      ]
+      "ok": true,
+      "details": []
     },
     "G0": {
       "ok": true,

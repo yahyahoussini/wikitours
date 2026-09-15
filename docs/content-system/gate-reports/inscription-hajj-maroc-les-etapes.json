@@ -1,15 +1,12 @@
 {
   "slug": "inscription-hajj-maroc-les-etapes",
-  "file": "content/articles/2026-09-14-inscription-hajj-maroc-les-etapes.json",
-  "row": false,
+  "file": null,
+  "row": true,
   "format": "series_part",
-  "checked_at": "2026-09-15T09:08:28.894Z",
+  "checked_at": "2026-09-15T09:46:49.174Z",
   "ok": true,
   "failed": [],
-  "pending": [
-    "G13",
-    "G16"
-  ],
+  "pending": [],
   "words": {
     "fr": 1908,
     "ar": 1338,
@@ -44,7 +41,9 @@
     "G7": {
       "ok": true,
       "details": [],
-      "warnings": []
+      "warnings": [
+        "body_fr : « https://www.habous.gov.ma/pelerinage/ » injoignable d'ici (UNABLE_TO_VERIFY_LEAF_SIGNATURE) — vérifier dans un navigateur"
+      ]
     },
     "G8": {
       "ok": true,
@@ -69,11 +68,7 @@
     },
     "G13": {
       "ok": true,
-      "details": [
-        "BlogPosting.datePublished : attribué à l'ingestion (créneau) — vérifié après build",
-        "nœuds émis non vérifiés : pas de build de la page (ingérer puis construire)"
-      ],
-      "pending": true
+      "details": []
     },
     "G14": {
       "ok": true,
@@ -89,21 +84,18 @@
         },
         "ar": {
           "slug": "guide-omra-ramadan-1-vivre-le-mois",
-          "score": 0.025
+          "score": 0.027
         },
         "en": {
           "slug": "guide-omra-ramadan-1-vivre-le-mois",
-          "score": 0.021
+          "score": 0.022
         }
       },
       "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
     },
     "G16": {
-      "ok": null,
-      "pending": true,
-      "details": [
-        "rendu non vérifié : ingérer puis construire (NEXT_DIST_DIR=.next-audit CONTENT_PREVIEW_SCHEDULED=1)"
-      ]
+      "ok": true,
+      "details": []
     },
     "G0": {
       "ok": true,

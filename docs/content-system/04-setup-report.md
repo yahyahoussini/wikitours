@@ -137,7 +137,58 @@ mechanical and catches what is countable; it cannot tell a sourced sentence from
 a plausible one. Two of the four posts were rejected by a reviewer after passing
 every automated rule.
 
-### One of the four was skipped, and that is the system working
+### The single most useful thing this run found
+
+Two of the four posts were scheduled. **Two were skipped**, and they split along
+one line that nobody designed for:
+
+| Post | Promise | Reviewer | Outcome |
+|---|---|---|---|
+| Hajj registration, part 1 | **how a process works** | FR 8.6 · AR 8.4 | scheduled |
+| Booking from Europe | **how a process works** | FR 8.2 · AR 8.6 | scheduled |
+| Ramadan series, part 1 | **what the month is really like** | FR 7.2 → 7.2 · AR 8.2 | skipped |
+| November month support | **météo, affluence** | FR 7.4 → 6.6 · AR 8.2 | skipped |
+
+Both survivors describe a **procedure** — who does what, in what order, under
+which rule. That is sourceable: the ministry's structure, the `policies` table,
+the licence, the city logistics, the catalogue. Both casualties describe
+**experience** — how full the Haram gets, how a Ramadan day feels, whether a
+month is mild. `data/allowed-facts.json` contains business data and nothing
+else, so there is no honest way to write the very thing those articles promise
+in their titles. Each rewrite could only attribute the claim, thin it out, or
+point at a `month_pages` block that is not written — and the reviewer rejected
+all three, correctly.
+
+**This is a capacity limit of the fact base, not a writing problem**, and it is
+not small: the twelve-part month series, most of the twelve-part Ramadan series
+and the seasonal block all promise experience. On today's sources roughly half
+the calendar cannot clear the bar.
+
+Two things unblock it, both the owner's:
+
+1. **Fill the `month_pages` blocks** (Admin → Pages mois) — "Météo et affluence"
+   and "À qui convient ce mois", fr **and** ar. The lander then carries the
+   authored answer, and a support article can cite it instead of guessing. It
+   also flips those landers to indexable.
+2. **Decide whether the agency's own observation is a citable source.** If yes,
+   it belongs in `allowed-facts` as dated, owner-validated entries — "ce que nos
+   groupes constatent au Haram en Ramadan", with an `as_of` — and the reviewers
+   will accept it. Rule 1 bis already defines how to write it; what is missing
+   is a source to write it *from*.
+
+Until then the honest move is the one the calendar already takes: schedule the
+process content, and let the experiential slots wait rather than publish a
+plausible sentence nobody can stand behind.
+
+### Both skips, and why that is the system working
+
+**Ramadan series part 1** scored **7.2**, was rewritten once, and came back at
+**7.2** (the Arabic reviewer passed it at 8.2 both times — the threshold is per
+reviewer). The rewrite cleaned all three metadata sets, the key-facts box and
+the table, and linked both live sibling posts where they help — but four
+unattributed crowd claims survived, one of them inside a FAQ answer, which is
+emitted as a `FAQPage` node and is therefore the most authoritative form an
+unsourced sentence can take on the page.
 
 `omra-en-novembre-meteo-affluence-conseils` scored **7.4**, was rewritten once —
 the single rewrite the process allows — and came back at **6.6**. The rewrite
@@ -161,8 +212,23 @@ written. That is a data gap the owner closes in the admin, not something a
 better draft would fix — and it is the same gap that will block the eleven
 remaining month posts.
 
-Three of four scheduled, one skipped, for a stated reason, with nothing invented
-to save it. A pipeline that published all four would have been the worse result.
+Two of four scheduled, two skipped, each for a stated reason, with nothing
+invented to save either. A pipeline that published all four would have been the
+worse result — and a 50 % pass rate on the first batch is the correct reading of
+a fact base that cannot yet support half of what the calendar plans.
+
+### A build gotcha worth knowing
+
+The first clean-looking verification build reported three sitemap failures and
+three link failures, all on the post that had just been withdrawn. The database
+was right and the page was correctly not prerendered; the **sitemap came from
+Next's persisted ISR cache** in `.next-audit/cache`, because the route carries
+`revalidate = 3600` and the previous build was minutes old. Deleting that cache
+and rebuilding gave 0 failures. In production this self-corrects within the hour
+by design, but a local audit build can assert against a stale sitemap — so
+**clear `$NEXT_DIST_DIR/cache` before a verification build** that follows a
+database change. `npm run content:proof` now detects a preview build from the
+build output rather than from the shell, for the same class of reason.
 
 ---
 

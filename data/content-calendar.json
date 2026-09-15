@@ -20,7 +20,7 @@
       "date": "2026-09-21",
       "publish_at": "2026-09-21T07:30:00.000Z",
       "phase": "P1",
-      "status": "scheduled",
+      "status": "skipped",
       "how": "pinned",
       "track": "ramadan",
       "pillar": "omra_ramadan",
@@ -130,8 +130,9 @@
       "length_target": "series_part",
       "topic_id": "ramadan-1448-p1",
       "slug": "guide-omra-ramadan-1-vivre-le-mois",
-      "article_id": "8e645327-34f6-4c73-9cb0-4b068ccd50c9",
-      "generated_at": "2026-09-15T09:26:03.080Z"
+      "article_id": null,
+      "generated_at": "2026-09-15T09:26:03.080Z",
+      "skip_reason": "Relecteur FR 7,2 puis 7,2 après l’unique réécriture autorisée (seuil 8) ; relecteur AR 8,2. La réécriture a bien nettoyé les trois métadonnées, la boîte de faits clés et le tableau, et lié les deux articles frères vivants — mais quatre affirmations d’affluence non attribuées ont survécu (§1, §4, FAQ 5, et l’intensificateur « de loin » dans le tableau), dont une émise en nœud FAQPage. Cause de fond, commune au créneau 3 : data/allowed-facts.json ne contient aucune source sur l’EXPÉRIENCE vécue (affluence, rythme du Haram, météo). Un article dont la promesse est « comment se passe vraiment le mois » ne peut pas être sourcé depuis une base qui ne contient que des données d’entreprise. À reprendre quand une source d’observation existe (bloc authorisé, ou entrée allowed-facts « observations terrain » datée et validée par le propriétaire)."
     },
     {
       "slot_index": 2,

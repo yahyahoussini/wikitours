@@ -75,5 +75,7 @@
     "[À VÉRIFIER] Existe-t-il aujourd'hui un départ Ramadan publié ? La phrase qui introduit <LiveDepartures filter=\"ramadan\" limit=\"2\" /> a été rendue conditionnelle dans les trois langues, mais <CommercialCTA intent=\"ramadan\" /> retombera sur /bab-makka tant que l'inventaire est vide.",
     "[À VÉRIFIER] Les deux articles frères liés — /blog/omra-ramadan-2027-quand-reserver et /blog/omra-10-derniers-jours-ramadan-2027 — doivent être publiés et indexables dans les trois langues avant le créneau de ce texte.",
     "[À VÉRIFIER] Les parties restantes de la série (i'tikaf, rukhsa, suhoor/iftar, tarawih, permis Nusuk, distance de l'hôtel, familles, santé, Aïd) doivent exister avant que cette partie ne soit liée depuis elles : vérifier que le calendrier éditorial couvre bien les douze créneaux."
-  ]
+  ],
+  "status": "skipped",
+  "skip_reason": "Relecteur FR 7,2 puis 7,2 après l’unique réécriture autorisée (seuil 8) ; relecteur AR 8,2. La réécriture a bien nettoyé les trois métadonnées, la boîte de faits clés et le tableau, et lié les deux articles frères vivants — mais quatre affirmations d’affluence non attribuées ont survécu (§1, §4, FAQ 5, et l’intensificateur « de loin » dans le tableau), dont une émise en nœud FAQPage. Cause de fond, commune au créneau 3 : data/allowed-facts.json ne contient aucune source sur l’EXPÉRIENCE vécue (affluence, rythme du Haram, météo). Un article dont la promesse est « comment se passe vraiment le mois » ne peut pas être sourcé depuis une base qui ne contient que des données d’entreprise. À reprendre quand une source d’observation existe (bloc authorisé, ou entrée allowed-facts « observations terrain » datée et validée par le propriétaire)."
 }
