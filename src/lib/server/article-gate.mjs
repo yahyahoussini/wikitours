@@ -140,6 +140,29 @@ export function targetsLanderQuery(queryFamily) {
 }
 
 /**
+ * The ONLY external domains an article may link to — official sources and the
+ * carriers the catalogue names. Same list as gate G7
+ * (scripts/content-gate.mjs), exported from here so the dependency-free gate
+ * the build runs and the pre-flight gate agree on one whitelist.
+ *
+ * Until 2026-09-15 ANY external link was a hard blocker, a rule inherited from
+ * the API drafter (which could invent a URL). The content architecture requires
+ * the opposite for Hajj and visa content: a « Sources » section citing the
+ * ministry or Nusuk. So an OFF-whitelist link is now a blocking problem and an
+ * on-whitelist one is simply allowed; G7 additionally checks it responds.
+ */
+export const EXTERNAL_WHITELIST = Object.freeze([
+  'nusuk.sa', 'haj.gov.sa', 'mofa.gov.sa', 'tourisme.gov.ma', 'habous.gov.ma',
+  'saudia.com', 'royalairmaroc.com', 'hhr.sa', 'who.int',
+]);
+/** The host of an external URL when it is NOT on the whitelist, else null. */
+export function offWhitelistHost(url) {
+  let host;
+  try { host = new URL(url).hostname.replace(/^www\./, '').toLowerCase(); } catch { return String(url).slice(0, 60); }
+  return EXTERNAL_WHITELIST.some((d) => host === d || host.endsWith(`.${d}`)) ? null : host;
+}
+
+/**
  * A `<CommercialCTA intent="…">` INTENT → the lander path it resolves to, as a
  * pure map — the same table `resolveIntent()` (src/lib/content-resolver.js)
  * applies at request time, minus the indexability check, which needs live data
@@ -269,7 +292,13 @@ export function qualityGate(draft, { ownerPath, existingSlugs, priceSet, strict 
   const all = `${draft.body_fr ?? ''}\n${draft.body_ar ?? ''}\n${draft.body_en ?? ''}`;
   if (/bab makkah/i.test(`${draft.body_fr ?? ''}\n${draft.body_en ?? ''}`)) problems.push('graphie « Bab Makkah » interdite dans le texte');
   if (/\[À VÉRIFIER\]/i.test(all)) problems.push('marqueur [À VÉRIFIER] dans le corps — il doit rester dans needs_review');
-  if (/https?:\/\//i.test(all)) flags.push('lien externe présent — à vérifier par le relecteur');
+  // External links: the whitelist decides. An official source (ministry, Nusuk,
+  // a carrier the catalogue names) is expected on Hajj and visa content and is
+  // NOT a flag; anything else is a blocking problem.
+  for (const m of new Set([...all.matchAll(/(https?:\/\/[^\s)\]"']+)/gi)].map((x) => x[1]))) {
+    const host = offWhitelistHost(m);
+    if (host) problems.push(`lien externe hors liste blanche « ${host} » — sources autorisées : ${EXTERNAL_WHITELIST.join(', ')}`);
+  }
 
   // Legacy (non-strict) rule: every MAD amount must exist in the fact sheet.
   // Unsourced ⇒ flagged, never silently accepted (LAW §10). In strict mode any
@@ -295,7 +324,9 @@ export function publishDecision({ settings, gate }) {
   if (!settings?.blog_autopublish) reasons.push('publication automatique désactivée (Réglages → Blog automatique)');
   if (!settings?.blog_author_name?.trim()) reasons.push('aucun auteur configuré (Réglages → Blog automatique)');
   if (!gate.ok) reasons.push(`contrôle qualité : ${gate.problems.length} problème(s) bloquant(s)`);
-  const hard = (gate.flags ?? []).filter((f) => /prix NON sourcés|lien externe|lien propriétaire manquant/i.test(f));
+  // « lien externe » is no longer here: an off-whitelist link is a blocking
+  // PROBLEM above, and an on-whitelist source is required by the contract.
+  const hard = (gate.flags ?? []).filter((f) => /prix NON sourcés|lien propriétaire manquant/i.test(f));
   if (hard.length) reasons.push(`signalements bloquants : ${hard.join(' ; ')}`);
   return { publish: reasons.length === 0, reasons };
 }

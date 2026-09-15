@@ -1,6 +1,6 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
-import { qualityGate, proseViolations, targetsLanderQuery, nextMorningSlot, toArticleRow, sampleDrafts, intentPath, ctaTargets } from '@/lib/server/article-gate';
+import { qualityGate, publishDecision, proseViolations, targetsLanderQuery, nextMorningSlot, toArticleRow, sampleDrafts, intentPath, ctaTargets, offWhitelistHost } from '@/lib/server/article-gate';
 
 const para = 'Cette phrase de démonstration sert uniquement à vérifier le contrôle qualité automatique du blog et ne contient aucune information réelle. ';
 const filler = (n) => Array.from({ length: n }, () => para).join('');
@@ -98,6 +98,25 @@ describe('strict gate — no volatile fact in prose', () => {
     const d = clean();
     d.query_family = 'omra janvier';
     assert.match(gate(d).problems.join('|'), /est la requête d'une page commerciale/);
+  });
+  test('an official source is allowed and publishable; any other external link blocks', () => {
+    // The defect this covers: every external link used to be a hard blocker,
+    // so a Hajj post citing the ministry — which the contract REQUIRES — could
+    // never be scheduled.
+    assert.equal(offWhitelistHost('https://www.habous.gov.ma/pelerinage/'), null);
+    assert.equal(offWhitelistHost('https://umrah.nusuk.sa/'), null);
+    assert.equal(offWhitelistHost('https://example.com/x'), 'example.com');
+    const settings = { blog_autopublish: true, blog_author_name: 'Yahya Houssini' };
+    const ok = clean();
+    ok.body_fr = `${ok.body_fr}\n\n## Sources\n\n- [Ministère des Habous](https://www.habous.gov.ma/pelerinage/)\n`;
+    const gOk = gate(ok);
+    assert.deepEqual(gOk.problems, []);
+    assert.equal(publishDecision({ settings, gate: gOk }).publish, true, 'an official source must not block publication');
+    const bad = clean();
+    bad.body_fr = `${bad.body_fr}\n\n- [Un blog](https://example.com/omra)\n`;
+    const gBad = gate(bad);
+    assert.match(gBad.problems.join('|'), /hors liste blanche « example\.com »/);
+    assert.equal(publishDecision({ settings, gate: gBad }).publish, false);
   });
   test('non-strict mode keeps the legacy behaviour (sourced prices flagged, not failed)', () => {
     const { pass } = sampleDrafts({ sourcedPrice: 12900 });

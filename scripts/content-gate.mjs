@@ -26,7 +26,7 @@
 import { readFileSync, readdirSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { createClient } from '@supabase/supabase-js';
-import { qualityGate, proseViolations, targetsLanderQuery, brandedTitle, words } from '@/lib/server/article-gate';
+import { qualityGate, proseViolations, targetsLanderQuery, brandedTitle, words, EXTERNAL_WHITELIST, offWhitelistHost } from '@/lib/server/article-gate';
 import { validateContentTags, stripContentTags, contentTagsOf, CTA_TARGET_RE } from '@/lib/content-tags';
 import { extractFaq } from '@/lib/article-schema';
 import { CLUSTERS, clusterOfArticle } from '@/lib/clusters';
@@ -56,7 +56,6 @@ const banned = readJson('data/banned-phrases.json', { fr: [], ar: [], en: [] });
 const formats = readJson('data/content-formats.json', { formats: {}, default: 'explainer' });
 const registry = readJson('data/lander-registry.json', { landers: [] });
 const calendar = readJson('data/content-calendar.json', { slots: [] });
-const EXTERNAL_WHITELIST = ['nusuk.sa', 'haj.gov.sa', 'mofa.gov.sa', 'tourisme.gov.ma', 'habous.gov.ma', 'saudia.com', 'royalairmaroc.com', 'hhr.sa', 'who.int'];
 
 // ── helpers ─────────────────────────────────────────────────────────────────
 const norm = (s) => String(s ?? '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\p{L}\p{N} ]+/gu, ' ').replace(/\s+/g, ' ').trim();
@@ -229,9 +228,8 @@ async function G7(draft) {
       const u = m[1];
       if (seen.has(u)) continue;
       seen.add(u);
-      let host;
-      try { host = new URL(u).hostname.replace(/^www\./, ''); } catch { details.push(`body_${l} : URL externe invalide « ${u} »`); continue; }
-      if (!EXTERNAL_WHITELIST.some((d) => host === d || host.endsWith(`.${d}`))) { details.push(`body_${l} : domaine hors liste blanche « ${host} »`); continue; }
+      const off = offWhitelistHost(u);
+      if (off) { details.push(`body_${l} : domaine hors liste blanche « ${off} » — autorisés : ${EXTERNAL_WHITELIST.join(', ')}`); continue; }
       if (OFFLINE) continue;
       try {
         const res = await fetch(u, { method: 'GET', redirect: 'follow', signal: AbortSignal.timeout(15000), headers: { 'user-agent': 'Mozilla/5.0 (content-gate wikitours.ma)' } });
