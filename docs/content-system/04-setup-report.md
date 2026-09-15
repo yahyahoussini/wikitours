@@ -91,6 +91,54 @@ recorded in the commit that fixed them.
 
 ---
 
+## What the process caught, and where it was fixed
+
+None of these was found by reading the code. Each surfaced because a real post
+was put through the gate and then through two reviewers, and each was fixed at
+the rule rather than worked around in the article — which is the discipline the
+brief asks for, and the reason the list is worth keeping.
+
+### Rules that were wrong (fixed in the gate)
+
+| Defect | What it did | Fix |
+|---|---|---|
+| The owner-link rule accepted only `<CommercialCTA to="…">` | A post using the `intent` form — the one the architecture requires — had to carry a **second, duplicate CTA block** just to pass, because a markdown link to a commercial page is itself a G6 failure | `linksOwner` resolves an intent through `intentPath()` |
+| Any external link blocked publication | The Hajj post was skipped by the ingest for citing `habous.gov.ma` — **exactly the source the contract requires** | The nine-domain whitelist moved into the shared gate: off-whitelist is a blocking problem, an official source is allowed |
+| `clusterOfPath()` returned the first cluster whose pillar **or** pages matched | `/omra-ramadan` is the pillar of cluster D but sits in cluster A's `pages`, so a Ramadan article was asked for cluster A siblings — all commercial pages G6 forbids linking. **The rule was unsatisfiable.** It also made the live Ramadan hub render the wrong cluster's links | A pillar match wins; `tests/clusters.test.mjs` pins every pillar |
+| The prose rules read markdown link **targets** as prose | Linking one of the three existing posts whose slug carries a year — which the sibling rule asks for — failed "année en clair" | `proseText()` strips link targets, keeps the visible label |
+| A post already ingested counted as a duplicate of itself | Re-gating a correction failed G8 and G0 on its own slug, making **the review loop's one allowed rewrite ungateable** | A slug is exempt while its slot is still in the future |
+| The ingest was idempotent by slug with no way back | A post corrected after review could never reach its row | `--refresh` updates a row that is still scheduled, never a live one |
+
+### Things no rule can see (found by the reviewers)
+
+The mechanical gate passed all of these. Every one is a claim asserted in the
+present tense of general truth that only the agency could have observed.
+
+- A **health rule** — "les examens et les vaccinations fixés par les autorités
+  sanitaires compétentes" — with no source, and it had reached the answer-first
+  block that `speakable` points at.
+- A **fabricated statistic** — "c'est, de loin, la cause la plus fréquente de
+  dossiers retardés".
+- A **fiqh ruling** stated twice in juristic form with no named source.
+- A claim about the **origin-composition of crowds** at the Haram.
+- A claim that the **Rawdah is easier to reach** in a quiet month, which
+  contradicts the glossary key in the same fact file: access goes through a
+  Nusuk reservation, not a queue.
+
+They are one family, and the fix is one rule: `content/ARTICLE-BRIEF.md`
+**1 bis** — what the agency observes is written as an observation, in one of two
+forms only (attributed, or referred to the page that owns the question), never
+in the key-facts box, never in the answer-first block, and never as a table
+column unless a key supports it. That closes the family for the eleven
+remaining month posts and the eleven remaining Ramadan parts.
+
+**This is the argument for keeping both reviewers in the loop.** The gate is
+mechanical and catches what is countable; it cannot tell a sourced sentence from
+a plausible one. Two of the four posts were rejected by a reviewer after passing
+every automated rule.
+
+---
+
 ## Contradictions between the brief and the repo
 
 1. **`status='scheduled' AND publish_at <= now()`** — the repo has
