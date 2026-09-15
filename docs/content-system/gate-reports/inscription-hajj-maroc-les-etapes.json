@@ -3,7 +3,7 @@
   "file": "content/articles/2026-09-14-inscription-hajj-maroc-les-etapes.json",
   "row": false,
   "format": "series_part",
-  "checked_at": "2026-09-15T08:58:22.648Z",
+  "checked_at": "2026-09-15T09:08:28.894Z",
   "ok": true,
   "failed": [],
   "pending": [
@@ -88,12 +88,12 @@
           "score": 0.029
         },
         "ar": {
-          "slug": "hajj-maroc-inscription-quota",
-          "score": 0.01
+          "slug": "guide-omra-ramadan-1-vivre-le-mois",
+          "score": 0.025
         },
         "en": {
-          "slug": "hajj-maroc-inscription-quota",
-          "score": 0.014
+          "slug": "guide-omra-ramadan-1-vivre-le-mois",
+          "score": 0.021
         }
       },
       "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"

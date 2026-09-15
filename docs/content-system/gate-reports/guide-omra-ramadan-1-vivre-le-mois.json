@@ -3,7 +3,7 @@
   "file": "content/articles/2026-09-14-guide-omra-ramadan-1-vivre-le-mois.json",
   "row": false,
   "format": "series_part",
-  "checked_at": "2026-09-15T08:58:22.377Z",
+  "checked_at": "2026-09-15T09:08:34.654Z",
   "ok": true,
   "failed": [],
   "pending": [
@@ -84,16 +84,16 @@
       "details": [],
       "closest": {
         "fr": {
-          "slug": "difference-omra-hajj",
-          "score": 0.012
+          "slug": "inscription-hajj-maroc-les-etapes",
+          "score": 0.024
         },
         "ar": {
-          "slug": "prix-omra-maroc-par-gamme-et-mois",
-          "score": 0.006
+          "slug": "inscription-hajj-maroc-les-etapes",
+          "score": 0.025
         },
         "en": {
-          "slug": "omra-8-jours-ou-15-jours",
-          "score": 0.01
+          "slug": "inscription-hajj-maroc-les-etapes",
+          "score": 0.021
         }
       },
       "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"

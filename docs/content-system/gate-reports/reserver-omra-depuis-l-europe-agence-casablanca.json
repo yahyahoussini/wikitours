@@ -3,7 +3,7 @@
   "file": "content/articles/2026-09-14-reserver-omra-depuis-l-europe-agence-casablanca.json",
   "row": false,
   "format": "guide",
-  "checked_at": "2026-09-15T08:58:23.294Z",
+  "checked_at": "2026-09-15T09:08:29.444Z",
   "ok": true,
   "failed": [],
   "pending": [
@@ -86,16 +86,16 @@
       "details": [],
       "closest": {
         "fr": {
-          "slug": "prix-omra-maroc-par-gamme-et-mois",
-          "score": 0.017
+          "slug": "omra-en-novembre-meteo-affluence-conseils",
+          "score": 0.033
         },
         "ar": {
-          "slug": "prix-omra-maroc-par-gamme-et-mois",
-          "score": 0.009
+          "slug": "omra-en-novembre-meteo-affluence-conseils",
+          "score": 0.029
         },
         "en": {
-          "slug": "comment-verifier-agence-omra-agreee-maroc",
-          "score": 0.007
+          "slug": "omra-en-novembre-meteo-affluence-conseils",
+          "score": 0.028
         }
       },
       "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"

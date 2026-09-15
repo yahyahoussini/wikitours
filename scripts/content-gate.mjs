@@ -101,8 +101,14 @@ const jaccard = (a, b) => {
 
 // ── load what the rules compare against ─────────────────────────────────────
 async function loadContext() {
-  const ctx = { existing: [], existingSlugs: new Set(), testimonialIds: null, threshold: Number(opt('threshold')) || 0.85, hotels: [], airlines: [] };
+  // `refreshable` = a slug already in the table whose slot has NOT passed. A
+  // post corrected after a review, before it goes live, is the same post being
+  // improved — not a duplicate — so G8 and the shared gate must not fail it on
+  // its own slug. A slug whose slot HAS passed is a live URL and stays a
+  // genuine collision.
+  const ctx = { existing: [], existingSlugs: new Set(), refreshable: new Set(), testimonialIds: null, threshold: Number(opt('threshold')) || 0.85, hotels: [], airlines: [] };
   if (!sb) return ctx;
+  const now = new Date().toISOString();
   const [{ data: rows }, { data: tm }, { data: settings }, { data: hotels }, { data: offers }] = await Promise.all([
     sb.from('articles').select('slug, title_fr, title_ar, title_en, body_fr, body_ar, body_en, is_published, published_at, category, supports_path'),
     sb.from('testimonials').select('id').eq('is_published', true),
@@ -112,6 +118,7 @@ async function loadContext() {
   ]);
   ctx.existing = rows ?? [];
   ctx.existingSlugs = new Set(ctx.existing.map((r) => r.slug));
+  ctx.refreshable = new Set(ctx.existing.filter((r) => r.published_at && r.published_at > now).map((r) => r.slug));
   ctx.testimonialIds = new Set((tm ?? []).map((t) => t.id));
   if (!opt('threshold') && settings?.similarity_threshold) ctx.threshold = Number(settings.similarity_threshold);
   ctx.hotels = (hotels ?? []).map((h) => h.name);
@@ -260,7 +267,7 @@ function G8(draft, ctx, allDrafts) {
     }
   }
   for (const r of ctx.existing) {
-    if (r.slug === draft.slug) continue;
+    if (r.slug === draft.slug) continue; // never compare a post against its own row
     for (const loc of LOCALES) {
       const t = norm(r[`title_${loc}`]);
       if (t && (t === q || (qa && t === qa))) details.push(`query_family égale au titre de l'article existant /blog/${r.slug}`);
@@ -271,7 +278,9 @@ function G8(draft, ctx, allDrafts) {
     if (s.status === 'scheduled' && (norm(s.primary_query_fr) === q || (qa && norm(s.primary_query_ar) === qa))) details.push(`query_family égale à la requête du créneau ${s.slot_index} déjà programmé`);
   }
   for (const d of allDrafts) if (d !== draft && d.slug === draft.slug) details.push(`slug « ${draft.slug} » présent deux fois dans le lot`);
-  if (ctx.existingSlugs.has(draft.slug) && !draft.__row) details.push(`slug « ${draft.slug} » déjà dans la table articles`);
+  // A slug already in the table is a collision UNLESS this is the same post
+  // being corrected before its slot (see ctx.refreshable).
+  if (ctx.existingSlugs.has(draft.slug) && !draft.__row && !ctx.refreshable.has(draft.slug)) details.push(`slug « ${draft.slug} » déjà dans la table articles`);
   return { ok: !details.length, details };
 }
 function G9(draft, ctx) {
@@ -444,7 +453,12 @@ async function main() {
       G9: G9(draft, ctx), G10: G10(draft), G11: G11(draft), G12: G12(draft), G13: G13(draft, ctx), G14: G14(draft), G15: G15(draft, ctx), G16: G16(draft),
     };
     // The shared strict gate (tags, prose rules, month/city register, owner link) as G0.
-    const shared = qualityGate(draft, { ownerPath: draft.owner_path ?? null, existingSlugs: draft.__row ? [] : ctx.existingSlugs, strict: true, testimonialIds: ctx.testimonialIds });
+    // The shared gate's duplicate-slug check gets the same exemption: a post
+    // corrected before its slot is not competing with itself.
+    const otherSlugs = draft.__row || ctx.refreshable.has(draft.slug)
+      ? new Set([...ctx.existingSlugs].filter((s) => s !== draft.slug))
+      : ctx.existingSlugs;
+    const shared = qualityGate(draft, { ownerPath: draft.owner_path ?? null, existingSlugs: otherSlugs, strict: true, testimonialIds: ctx.testimonialIds });
     const tagProblems = LOCALES.flatMap((l) => validateContentTags(draft[`body_${l}`]).map((p) => `body_${l} : ${p}`));
     checks.G0 = { ok: shared.ok && !tagProblems.length, details: [...shared.problems, ...tagProblems], flags: shared.flags };
     const failed = Object.entries(checks).filter(([, c]) => c.ok === false).map(([k]) => k);
