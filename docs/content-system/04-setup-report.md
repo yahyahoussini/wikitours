@@ -217,6 +217,30 @@ invented to save either. A pipeline that published all four would have been the
 worse result — and a 50 % pass rate on the first batch is the correct reading of
 a fact base that cannot yet support half of what the calendar plans.
 
+### A regression this run created, and the live audit caught
+
+Adding `FAQPage` to the article page — which the brief asks for (G13) and which
+the page never emitted before — broke the production audit on two articles in
+three locales each. The 36 pre-contract posts end their last FAQ item with a
+closing WhatsApp CTA that has no heading of its own, so the extractor reads it
+as part of that answer and it runs to 81–116 words, outside the 25–75 window
+`scripts/seo-audit.js` has enforced all along. The long answers were always
+there; marking them up is what made them a failure.
+
+Fixed at the emitter, not by editing the legacy posts: `faqPageJsonLd()` now
+emits the node **only when every extracted answer is inside the window and there
+are at least two**. Marking up an answer is a promise that it is a good
+extractable answer; a 116-word answer is not. Those posts emit no `FAQPage`, as
+before; a post written to the contract earns one. The content gate's G4 ceiling
+also dropped from the brief's 90 to 75, because a gate must never pass what a
+later gate fails.
+
+Two lessons worth keeping: **`npm run seo:audit` against production is not
+optional after a change to what the pages emit** — the isolated build, the
+schema gate and 86 unit tests were all green while this was broken; and my first
+reading of the failure ("pre-existing") was wrong, which is why the commit that
+fixed it says so.
+
 ### A build gotcha worth knowing
 
 The first clean-looking verification build reported three sitemap failures and
