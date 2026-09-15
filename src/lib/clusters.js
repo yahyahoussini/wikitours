@@ -116,10 +116,17 @@ export const clusterById = (id) => CLUSTERS.find((c) => c.id === id) ?? null;
  * Four paths are both: `/omra-ramadan`, `/omra-pas-cher` and `/hotels-omra`
  * lead clusters D, C and F while also sitting in cluster A's `pages`, and
  * `/guide-omra/budget` leads nothing but sits in both C and E. Returning the
- * first array match gave all of them cluster A, so the Ramadan hub rendered
- * the generic departures cluster instead of its own, and an article whose
- * `supports_path` is `/omra-ramadan` was asked for cluster A siblings it has
- * no reason to carry.
+ * first array match gave all of them cluster A.
+ *
+ * What that actually broke — the hubs themselves are NOT affected, because
+ * `[flat]` renders `RelatedArticles`, not `ClusterLinks`. The damage was on
+ * ARTICLE pages, through `clusterOfArticle()` → `clusterOfPath(supports_path)`:
+ * `/blog/prix-omra-maroc-par-gamme-et-mois` (supports `/omra-pas-cher`)
+ * rendered cluster A's pillar and siblings instead of cluster C's. It also made
+ * the content gate ask a Ramadan-pillar article for cluster A siblings — every
+ * one of them a commercial page G6 forbids linking in markdown, so the rule was
+ * unsatisfiable. Verified on production after the fix: that article now renders
+ * `data-cluster="C"`.
  */
 export function clusterOfPath(path) {
   return CLUSTERS.find((c) => c.pillar === path) ?? CLUSTERS.find((c) => c.pages.includes(path)) ?? null;
