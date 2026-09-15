@@ -472,7 +472,11 @@ async function main() {
   if (selected) {
     if (!sb) { console.error('no Supabase env'); process.exit(2); }
     const { data } = await sb.from('articles').select('*').in('slug', selected);
-    drafts = (data ?? []).map((r) => ({ ...r, __row: true, __state: rowState.get(r.slug) ?? null, owner_path: r.supports_path, query_family: r.query_family ?? calendar.slots?.find((s) => s.slug === r.slug)?.primary_query_fr ?? null, query_family_ar: calendar.slots?.find((s) => s.slug === r.slug)?.primary_query_ar ?? null, slot: calendar.slots?.find((s) => s.slug === r.slug)?.track ?? null, format: calendar.slots?.find((s) => s.slug === r.slug)?.length_target ?? null }));
+    // Every loaded row knows its state, whichever flag loaded it — otherwise
+    // `--slug` judged a scheduled row by rules `--existing` correctly defers.
+    const stamp = new Date().toISOString();
+    const stateOfRow = (r) => (!r.is_published ? 'withdrawn' : r.published_at > stamp ? 'scheduled' : 'published');
+    drafts = (data ?? []).map((r) => ({ ...r, __row: true, __state: rowState.get(r.slug) ?? stateOfRow(r), owner_path: r.supports_path, query_family: r.query_family ?? calendar.slots?.find((s) => s.slug === r.slug)?.primary_query_fr ?? null, query_family_ar: calendar.slots?.find((s) => s.slug === r.slug)?.primary_query_ar ?? null, slot: calendar.slots?.find((s) => s.slug === r.slug)?.track ?? null, format: calendar.slots?.find((s) => s.slug === r.slug)?.length_target ?? null }));
     for (const s of selected) if (!drafts.some((d) => d.slug === s)) console.error(`row not found: ${s}`);
   } else {
     const files = FILES.length ? FILES : readdirSync('content/articles').filter((f) => f.endsWith('.json')).map((f) => path.join('content/articles', f));
@@ -507,7 +511,7 @@ async function main() {
     const failed = Object.entries(checks).filter(([, c]) => c.ok === false).map(([k]) => k);
     const pendingRules = Object.entries(checks).filter(([, c]) => c.pending && c.ok !== false).map(([k]) => k);
     const ok = !failed.length;
-    if (!ok) { failures++; if (draft.__state !== 'published') blocking++; else backlog.push(draft.slug); }
+    if (!ok) { failures++; if (EXISTING && draft.__state === 'published') backlog.push(draft.slug); else blocking++; }
     const report = { slug: draft.slug, file: draft.__file ?? null, row: Boolean(draft.__row), state: draft.__state ?? null, format: fmt, checked_at: new Date().toISOString(), ok, failed, pending: pendingRules, words: Object.fromEntries(LOCALES.map((l) => [l, wordCount(prose(draft, l))])), checks };
     writeFileSync(path.join(OUT, `${draft.slug}.json`), `${JSON.stringify(report, null, 2)}\n`);
     console.log(`[content-gate] ${ok ? 'PASS' : 'FAIL'} ${draft.slug} · ${fmt} · fr ${report.words.fr} / ar ${report.words.ar} / en ${report.words.en}${failed.length ? ` · failed ${failed.join(', ')}` : ''}${pendingRules.length ? ` · pending ${pendingRules.join(', ')}` : ''}`);
