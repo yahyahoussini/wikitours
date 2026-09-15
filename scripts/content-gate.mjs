@@ -211,9 +211,21 @@ function G5(draft) {
 }
 function G6(draft, ctx) {
   const details = [];
-  const cluster = clusterOfArticle({ slug: draft.slug, supports_path: draft.owner_path ?? null, category: draft.category });
+  // The calendar is the plan: each slot names its cluster and the sibling pages
+  // it should link. G6 used to re-derive the cluster from owner_path + category
+  // and ignore both, so 66 of 165 planned slots could not reach two siblings —
+  // every slot owned by /bab-makka resolves to cluster A, whose pages are all
+  // commercial landers a post may not link by hand, and the city guides resolved
+  // to the Ramadan cluster. The planned cluster and the planned sibling_paths now
+  // count; the derived cluster remains the fallback for a draft with no slot.
+  // The bar does not move: still ≥ 2 siblings, still no hand-linked lander.
+  const planned = calendar.slots?.find((s) => draft.slot_index != null && s.slot_index === Number(draft.slot_index))
+    ?? calendar.slots?.find((s) => s.slug && s.slug === draft.slug) ?? null;
+  const cluster = CLUSTERS.find((c) => c.id === (draft.cluster ?? planned?.cluster))
+    ?? clusterOfArticle({ slug: draft.slug, supports_path: draft.owner_path ?? null, category: draft.category });
   const pillar = draft.owner_path ?? cluster?.pillar ?? null;
   const landerPaths = new Set(registry.landers.filter((l) => ['home', 'pillar', 'hub', 'local', 'hajj', 'month', 'occasion', 'city'].includes(l.kind)).map((l) => l.path));
+  const plannedSiblings = (planned?.sibling_paths ?? []).filter((p) => !landerPaths.has(p));
   for (const l of LOCALES) {
     const body = String(draft[`body_${l}`] ?? '');
     const links = [...body.matchAll(/\]\((\/[a-z]{2}\/[^)\s]+|\/[^)\s]+)\)/g)].map((m) => m[1]);
@@ -224,7 +236,7 @@ function G6(draft, ctx) {
     const pillarLinked = ctas.some((t) => t.attrs.to === pillar || t.attrs.intent) || links.some((h) => h.replace(/^\/[a-z]{2}/, '') === pillar);
     if (!pillarLinked) details.push(`body_${l} : aucun lien vers le pilier ${pillar} (<CommercialCTA> ou lien markdown)`);
     // ≥ 2 siblings: posts of the same cluster or the cluster's pages.
-    const siblingPaths = new Set([...(cluster?.pages ?? []), ...(cluster?.articles ?? []).map((s) => `/blog/${s}`)]);
+    const siblingPaths = new Set([...(cluster?.pages ?? []), ...(cluster?.articles ?? []).map((s) => `/blog/${s}`), ...plannedSiblings]);
     const siblings = links.map((h) => h.replace(/^\/[a-z]{2}/, '')).filter((h) => siblingPaths.has(h) || (h.startsWith('/blog/') && ctx.existing.some((r) => r.slug === h.slice(6) && clusterOfArticle(r)?.id === cluster?.id)));
     if (new Set(siblings).size < 2) details.push(`body_${l} : ${new Set(siblings).size} lien(s) vers des pages sœurs du dossier ${cluster?.id ?? '?'}, minimum 2`);
     for (const h of links) {
