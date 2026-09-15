@@ -850,7 +850,7 @@
       "date": "2026-10-01",
       "publish_at": "2026-10-01T17:00:00.000Z",
       "phase": "P1",
-      "status": "planned",
+      "status": "skipped",
       "how": "series:hajj-1448",
       "track": "hajj",
       "pillar": "hajj",
@@ -958,7 +958,8 @@
       ],
       "length_target": "series_part",
       "topic_id": "hajj-1448-p2",
-      "slug": null
+      "slug": "conditions-hajj-maroc-age-aptitude",
+      "skip_reason": "Relecteur FR 6,2, relecteur AR (co-maître) 7,2 (seuil 8) ; réécriture non tentée, car aucune ne peut corriger la cause. Les faits disponibles sur les conditions (18 ans, règle des dix ans, aptitude, grossesse de plus de six mois, deux canaux, tirage) sont exactement ceux que la partie 1 énonce déjà ; tout ce que l'angle ajoute n'a aucune clé dans data/allowed-facts.json : qui évalue l'aptitude physique, les modalités d'un accompagnant, l'existence d'une priorité ou d'une ancienneté, le traitement du handicap, et si la règle des dix ans vaut aussi pour les inscriptions via une agence. Supprimer les doublons avec la partie 1 laisse trop peu de matière sourcée pour le format series_part ; ajouter ces règles serait les inventer. Déblocage : le propriétaire vérifie l'annonce Habous de la saison et ajoute ces règles à data/official-facts.json avec verification « fetched »."
     },
     {
       "slot_index": 9,
