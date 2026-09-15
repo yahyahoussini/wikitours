@@ -1,0 +1,117 @@
+{
+  "slug": "omra-rabat-rejoindre-aeroport-mohammed-v",
+  "file": "content/articles/2026-09-15-omra-rabat-rejoindre-aeroport-mohammed-v.json",
+  "row": false,
+  "state": null,
+  "format": "guide",
+  "checked_at": "2026-09-15T12:42:28.526Z",
+  "ok": true,
+  "failed": [],
+  "pending": [
+    "G13",
+    "G16"
+  ],
+  "words": {
+    "fr": 1466,
+    "ar": 1082,
+    "en": 1368
+  },
+  "checks": {
+    "G1": {
+      "ok": true,
+      "details": [],
+      "format": "guide"
+    },
+    "G2": {
+      "ok": true,
+      "details": []
+    },
+    "G3": {
+      "ok": true,
+      "details": []
+    },
+    "G4": {
+      "ok": true,
+      "details": []
+    },
+    "G5": {
+      "ok": true,
+      "details": []
+    },
+    "G6": {
+      "ok": true,
+      "details": []
+    },
+    "G7": {
+      "ok": true,
+      "details": [],
+      "warnings": []
+    },
+    "G8": {
+      "ok": true,
+      "details": []
+    },
+    "G9": {
+      "ok": true,
+      "details": [],
+      "arabicShare": 99.9
+    },
+    "G10": {
+      "ok": true,
+      "details": []
+    },
+    "G11": {
+      "ok": true,
+      "details": []
+    },
+    "G12": {
+      "ok": true,
+      "details": []
+    },
+    "G13": {
+      "ok": true,
+      "details": [
+        "BlogPosting.datePublished : attribué à l'ingestion (créneau) — vérifié après build",
+        "nœuds émis non vérifiés : pas de build de la page (ingérer puis construire)"
+      ],
+      "pending": true
+    },
+    "G14": {
+      "ok": true,
+      "details": [
+        "créneau omra : règle non applicable"
+      ]
+    },
+    "G15": {
+      "ok": true,
+      "details": [],
+      "closest": {
+        "fr": {
+          "slug": "reserver-omra-depuis-l-europe-agence-casablanca",
+          "score": 0.063
+        },
+        "ar": {
+          "slug": "reserver-omra-depuis-l-europe-agence-casablanca",
+          "score": 0.037
+        },
+        "en": {
+          "slug": "reserver-omra-depuis-l-europe-agence-casablanca",
+          "score": 0.028
+        }
+      },
+      "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
+    },
+    "G16": {
+      "ok": null,
+      "pending": true,
+      "details": [
+        "rendu non vérifié : ingérer puis construire (NEXT_DIST_DIR=.next-audit CONTENT_PREVIEW_SCHEDULED=1)"
+      ]
+    },
+    "G0": {
+      "ok": true,
+      "details": [],
+      "flags": []
+    }
+  }
+}

@@ -618,7 +618,7 @@
       "date": "2026-09-28",
       "publish_at": "2026-09-28T17:00:00.000Z",
       "phase": "P1",
-      "status": "planned",
+      "status": "skipped",
       "how": "series:villes",
       "track": "omra",
       "pillar": "audiences",
@@ -732,7 +732,8 @@
       ],
       "length_target": "guide",
       "topic_id": "ville-rabat",
-      "slug": null
+      "slug": "omra-rabat-rejoindre-aeroport-mohammed-v",
+      "skip_reason": "Relecteur FR 7,4 puis 7,6 après l'unique réécriture autorisée (seuil 8) ; relecteur AR 8,0 puis 8,4. Défauts FR restants : la validité du passeport (« six mois ») écrite en prose alors que la note de policies.passport_validity l'interdit ; une FAQ hors angle qui paraphrase faqs/5c4859bc ; deux passages qui reprennent presque mot pour mot les FAQ de /fr/omra-depuis-rabat ; « aucun paiement en ligne » répété cinq fois. Écart structurel : pour un habitant de Rabat, les faits sourcés (autoroute, ONCF, rassemblement, contrat à l'agence) sont déjà presque tous sur la page commerciale, et le plancher du format guide pousse à les redire."
     },
     {
       "slot_index": 7,

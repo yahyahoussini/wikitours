@@ -31,7 +31,7 @@ nothing costs money.
 | Topic pool | **172 topics** in `data/content-topics/*.json` — one file per batch. Add a batch file to extend it; the builder rejects a topic whose query is a lander's or whose angle is within 0.6 of an existing post |
 | Series | `ramadan-1448` 12 (AR co-master) · `hajj-1448` 8 (AR co-master) · `premiere-omra` 8 · `mois-par-mois` 12 · `villes` 7 — each placed exactly once |
 | Phase weights | **Not met, deliberately.** See `04-setup-report.md` § "The phase weights are not met, and forcing them would be wrong" — the Ramadan track has 22 distinct angles against a target needing ~60, because 19 of its floor rows are already held by a thin existing post that deserves a rewrite, not a duplicate |
-| Posts written and gated | 4, `content/articles/2026-09-14-*.json`, one gate report each in `gate-reports/`. **2 scheduled** (slots 2 and 4 — Hajj registration, 22 Sep; booking from Europe, 25 Sep) and **2 skipped** (slots 1 and 3 — Ramadan part 1 and the November month post). Skipped rows are **unpublished, never deleted**, and carry a `skip_reason` on the row, the slot and the file |
+| Posts written and gated | 7 contract-era drafts in `content/articles/2026-09-1[45]-*.json`, one gate report each in `gate-reports/`. **2 scheduled** (slots 2 and 4 — Hajj registration, 22 Sep; booking from Europe, 25 Sep) and **5 skipped** (slots 1, 3, 5, 6, 8). Every skipped draft carries `status: "skipped"` and a `skip_reason` on the file and the calendar slot, and the ingest refuses it |
 | Why both were skipped — read this before writing another | They promise **experience** ("comment se passe vraiment le mois", "météo, affluence"); the two that passed describe a **procedure**. `data/allowed-facts.json` holds business data only, and `month_pages` is empty, so there is no source for the experiential layer. Both reviewers rejected every way of faking it. **Roughly half the calendar — the month series, most of the Ramadan series, the seasonal block — is blocked the same way.** See `04-setup-report.md` § "The single most useful thing this run found" |
 | Existing posts | 36 rows: 28 live, 8 scheduled to 22 Oct 2026. 25 of the 36 are under 450 French words and 34 have no FAQ block — they keep their URLs and become sibling links, they are not rewritten by this run |
 | Landers | 58, of which 44 indexable (`data/lander-registry.json`) |
@@ -39,6 +39,7 @@ nothing costs money.
 | Database | migrations 025 + 026 are written and committed; **applying them is the owner's step** (`RUNBOOK.md` § Apply the database side). Everything works without them: the components fall back to dictionary copy and the repo's JSON files are the record |
 | `enabled` | `true` in `data/content-calendar-spec.json`; it reaches `content_ops_settings` on the first `npm run content:calendar -- --seed` after migration 026 |
 | Last audit | **2026-09-15** — `audit-2026-09.md`. Three system fixes: the drift re-gate (`content:gate -- --existing`), Hijri anchors as a real placement constraint, sitemap `lastmod` no longer predating publication. 28 published + 8 scheduled rows are below the current bar (all pre-contract); 0 link rot; **no Search Console export exists** |
+| Last generator run | **2026-09-15** — `batch-2026-09-15.md`. Slots #5, #6, #8 written, reviewed and skipped (no draft cleared both reviewers); #7, #9, #10, #11 blocked by facts missing from `allowed-facts` (listed per slot, with what unblocks each); #12 and #13 writable next. Five gate/ingest defects fixed on the way |
 
 ---
 
@@ -57,6 +58,13 @@ Run this, exactly, and stop cleanly.
 3. **Take the next 8 slots** — fewer if context is tight. Never start a slot you
    cannot finish. One subagent per slot if the repo supports them; review
    serially.
+   **3 bis. Check the facts before drafting a word.** For each slot, list every
+   claim its angle, outline and FAQ seeds need, and find the key for each in
+   `data/allowed-facts.json`. If a claim the angle depends on has no key, do not
+   draft: leave the slot `planned`, and record it as blocked with the missing
+   keys in the batch report. On 2026-09-15 this would have caught five of nine
+   slots before any writing (`batch-2026-09-15.md`); the reviewers fail exactly
+   those posts, and a rewrite cannot add a fact.
 4. **Per slot**, assemble the stable facts the slot names from
    `data/allowed-facts.json`, then write the master locale first — FR, or **AR
    for a slot whose `master_locale` is `ar_co_master`** (every Ramadan and Hajj
@@ -96,6 +104,9 @@ Run this, exactly, and stop cleanly.
   usable as structure only, never as a figure, until the owner marks them
   `fetched`.
 - **Never publish directly.** Scheduling is the only mechanism.
+- **A skipped draft stays in the repo, marked.** Set `status: "skipped"` and a
+  `skip_reason` on the file and the calendar slot. The ingest refuses such a
+  file (it did not before 2026-09-15, which is how skipped posts became rows).
 - **A wrong gate is fixed at the gate, not in the post — and reported.** If a
   rule is a false positive, change `scripts/content-gate.mjs`, say so in the
   commit, and re-run every post to see what the change now lets through.
