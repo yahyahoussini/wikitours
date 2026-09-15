@@ -20,7 +20,7 @@
       "date": "2026-09-21",
       "publish_at": "2026-09-21T07:30:00.000Z",
       "phase": "P1",
-      "status": "planned",
+      "status": "scheduled",
       "how": "pinned",
       "track": "ramadan",
       "pillar": "omra_ramadan",
@@ -129,14 +129,16 @@
       ],
       "length_target": "series_part",
       "topic_id": "ramadan-1448-p1",
-      "slug": null
+      "slug": "guide-omra-ramadan-1-vivre-le-mois",
+      "article_id": "8e645327-34f6-4c73-9cb0-4b068ccd50c9",
+      "generated_at": "2026-09-15T08:58:59.285Z"
     },
     {
       "slot_index": 2,
       "date": "2026-09-22",
       "publish_at": "2026-09-22T17:00:00.000Z",
       "phase": "P1",
-      "status": "planned",
+      "status": "scheduled",
       "how": "pinned",
       "track": "hajj",
       "pillar": "hajj",
@@ -248,14 +250,16 @@
       ],
       "length_target": "series_part",
       "topic_id": "hajj-1448-p1",
-      "slug": null
+      "slug": "inscription-hajj-maroc-les-etapes",
+      "article_id": "69f45327-96ff-47e4-b2ea-89f0abf81c55",
+      "generated_at": "2026-09-15T08:58:59.288Z"
     },
     {
       "slot_index": 3,
       "date": "2026-09-24",
       "publish_at": "2026-09-24T07:30:00.000Z",
       "phase": "P1",
-      "status": "planned",
+      "status": "scheduled",
       "how": "pinned",
       "track": "omra",
       "pillar": "seasonal",
@@ -363,7 +367,9 @@
       ],
       "length_target": "month_support",
       "topic_id": "mois-novembre",
-      "slug": null
+      "slug": "omra-en-novembre-meteo-affluence-conseils",
+      "article_id": "30f380ae-9080-4459-9a9a-cc3b6d04f58c",
+      "generated_at": "2026-09-15T08:58:59.288Z"
     },
     {
       "slot_index": 4,

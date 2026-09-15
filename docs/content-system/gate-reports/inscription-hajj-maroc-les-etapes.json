@@ -3,7 +3,7 @@
   "file": "content/articles/2026-09-14-inscription-hajj-maroc-les-etapes.json",
   "row": false,
   "format": "series_part",
-  "checked_at": "2026-09-15T08:55:23.301Z",
+  "checked_at": "2026-09-15T08:58:22.648Z",
   "ok": true,
   "failed": [],
   "pending": [
@@ -11,9 +11,9 @@
     "G16"
   ],
   "words": {
-    "fr": 1923,
-    "ar": 1353,
-    "en": 1681
+    "fr": 1908,
+    "ar": 1338,
+    "en": 1666
   },
   "checks": {
     "G1": {
@@ -85,15 +85,15 @@
       "closest": {
         "fr": {
           "slug": "hajj-maroc-inscription-quota",
-          "score": 0.03
+          "score": 0.029
         },
         "ar": {
           "slug": "hajj-maroc-inscription-quota",
-          "score": 0.012
+          "score": 0.01
         },
         "en": {
           "slug": "hajj-maroc-inscription-quota",
-          "score": 0.015
+          "score": 0.014
         }
       },
       "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"

@@ -26,7 +26,7 @@
 import { readFileSync, readdirSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { createClient } from '@supabase/supabase-js';
-import { qualityGate, proseViolations, targetsLanderQuery, brandedTitle, words, EXTERNAL_WHITELIST, offWhitelistHost } from '@/lib/server/article-gate';
+import { qualityGate, proseViolations, targetsLanderQuery, brandedTitle, words, EXTERNAL_WHITELIST, offWhitelistHost, proseText } from '@/lib/server/article-gate';
 import { validateContentTags, stripContentTags, contentTagsOf, CTA_TARGET_RE } from '@/lib/content-tags';
 import { extractFaq } from '@/lib/article-schema';
 import { CLUSTERS, clusterOfArticle } from '@/lib/clusters';
@@ -59,7 +59,9 @@ const calendar = readJson('data/content-calendar.json', { slots: [] });
 
 // ── helpers ─────────────────────────────────────────────────────────────────
 const norm = (s) => String(s ?? '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\p{L}\p{N} ]+/gu, ' ').replace(/\s+/g, ' ').trim();
-const prose = (draft, lang) => stripContentTags(draft[`body_${lang}`]);
+// The prose rules (G1, G2, G3, G5, G9, G10, G11, G15) read the body without
+// its tags AND without link targets — a URL is not prose (see proseText).
+const prose = (draft, lang) => proseText(draft[`body_${lang}`]);
 const wordCount = (s) => words(String(s ?? '').replace(/[#*_>|\-]+/g, ' '));
 const h2s = (body) => [...String(body ?? '').matchAll(/^##\s+(.+)$/gm)].map((m) => m[1].trim());
 const isQuestion = (h) => /[?؟]\s*$/.test(h) || /^(comment|pourquoi|quand|combien|quel|quelle|quels|quelles|est-ce|faut-il|peut-on|que |où|qu'|doit-on|how|when|why|what|which|can|should|is |are |do |does |where|كيف|متى|شنو|واش|هل|لماذا|علاش|ما |كم|أين|فين|ماذا|من )/i.test(h);

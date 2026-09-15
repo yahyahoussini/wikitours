@@ -94,6 +94,30 @@ balise — jamais « 3 départs à partir de 12 300 MAD ».
    jamais « selon une étude », jamais de règle administrative, religieuse ou
    sanitaire qui n'est pas sourcée. **Tout nombre > 10 dans la prose doit
    figurer dans allowed-facts** (G5).
+
+1 bis. **CE QUE L'AGENCE OBSERVE s'écrit comme une observation, jamais comme un
+   fait du monde.** Le climat d'un mois, l'affluence au Haram, la composition
+   des groupes, ce qui retarde un dossier, ce que les pèlerins disent au
+   retour : rien de tout cela n'a de clé dans `allowed-facts`, et rien de tout
+   cela ne s'écrit au présent de vérité générale. Deux formulations, et deux
+   seulement :
+   - **attribuée** — « ce que nos groupes constatent », « d'après les départs
+     que nous encadrons », « les familles nous disent souvent » ; la phrase
+     reste qualitative, sans chiffre, sans fréquence (« souvent » oui, « dans
+     la plupart des cas » non, « de loin le plus fréquent » jamais) ;
+   - **renvoyée** — la question appartient à une page qui la porte : le climat
+     et l'affluence d'un mois sont les blocs authorisés de `month_pages`, que
+     le lander `/omra-{mois}` rend ; l'article renvoie vers lui par
+     `<CommercialCTA intent="month:n" />` au lieu de les réécrire.
+   Une observation attribuée n'entre jamais dans la boîte de faits clés (elle
+   est réservée aux faits sourcés), jamais dans `excerpt_*` (le bloc
+   « réponse d'abord » est cité tel quel par les moteurs de réponse), et ne se
+   répète pas d'une section à l'autre. Un tableau est le format le plus
+   autoritaire d'une page : il ne contient que des colonnes que les clés
+   portent, ou des colonnes explicitement qualitatives (« à qui ce mois
+   convient », « contrainte scolaire », « position hégirienne »).
+   Le contrôle mécanique ne voit rien de tout cela — c'est le relecteur qui le
+   voit, et c'est la première cause d'échec sous le seuil de 8.
 2. **Aucun fait volatil dans la prose** — le contrôle échoue sur : toute année
    (« 2026 », « 1448 هـ ») sauf « depuis 2016 » ; tout montant (MAD, DH,
    dirhams, درهم, €, $, « à partir de 12 300 ») ; toute date (« 23 septembre »,

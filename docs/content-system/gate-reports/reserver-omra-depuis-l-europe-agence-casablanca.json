@@ -3,7 +3,7 @@
   "file": "content/articles/2026-09-14-reserver-omra-depuis-l-europe-agence-casablanca.json",
   "row": false,
   "format": "guide",
-  "checked_at": "2026-09-15T08:55:23.860Z",
+  "checked_at": "2026-09-15T08:58:23.294Z",
   "ok": true,
   "failed": [],
   "pending": [
@@ -11,9 +11,9 @@
     "G16"
   ],
   "words": {
-    "fr": 2067,
-    "ar": 1434,
-    "en": 1815
+    "fr": 2059,
+    "ar": 1426,
+    "en": 1807
   },
   "checks": {
     "G1": {
@@ -94,7 +94,7 @@
           "score": 0.009
         },
         "en": {
-          "slug": "hajj-ministere-ou-agence",
+          "slug": "comment-verifier-agence-omra-agreee-maroc",
           "score": 0.007
         }
       },

@@ -3,19 +3,17 @@
   "file": "content/articles/2026-09-14-guide-omra-ramadan-1-vivre-le-mois.json",
   "row": false,
   "format": "series_part",
-  "checked_at": "2026-09-15T08:56:16.457Z",
-  "ok": false,
-  "failed": [
-    "G6"
-  ],
+  "checked_at": "2026-09-15T08:58:22.377Z",
+  "ok": true,
+  "failed": [],
   "pending": [
     "G13",
     "G16"
   ],
   "words": {
-    "fr": 1775,
-    "ar": 1238,
-    "en": 1647
+    "fr": 1760,
+    "ar": 1223,
+    "en": 1632
   },
   "checks": {
     "G1": {
@@ -40,12 +38,8 @@
       "details": []
     },
     "G6": {
-      "ok": false,
-      "details": [
-        "body_fr : 0 lien(s) vers des pages sœurs du dossier A, minimum 2",
-        "body_ar : 0 lien(s) vers des pages sœurs du dossier A, minimum 2",
-        "body_en : 0 lien(s) vers des pages sœurs du dossier A, minimum 2"
-      ]
+      "ok": true,
+      "details": []
     },
     "G7": {
       "ok": true,
@@ -91,11 +85,11 @@
       "closest": {
         "fr": {
           "slug": "difference-omra-hajj",
-          "score": 0.014
+          "score": 0.012
         },
         "ar": {
           "slug": "prix-omra-maroc-par-gamme-et-mois",
-          "score": 0.008
+          "score": 0.006
         },
         "en": {
           "slug": "omra-8-jours-ou-15-jours",

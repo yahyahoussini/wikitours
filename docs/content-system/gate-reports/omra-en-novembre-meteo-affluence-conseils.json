@@ -3,17 +3,20 @@
   "file": "content/articles/2026-09-14-omra-en-novembre-meteo-affluence-conseils.json",
   "row": false,
   "format": "month_support",
-  "checked_at": "2026-09-15T08:52:18.890Z",
-  "ok": true,
-  "failed": [],
+  "checked_at": "2026-09-15T09:01:37.486Z",
+  "ok": false,
+  "failed": [
+    "G8",
+    "G0"
+  ],
   "pending": [
     "G13",
     "G16"
   ],
   "words": {
-    "fr": 1529,
-    "ar": 1114,
-    "en": 1382
+    "fr": 1519,
+    "ar": 1104,
+    "en": 1372
   },
   "checks": {
     "G1": {
@@ -47,8 +50,10 @@
       "warnings": []
     },
     "G8": {
-      "ok": true,
-      "details": []
+      "ok": false,
+      "details": [
+        "slug « omra-en-novembre-meteo-affluence-conseils » déjà dans la table articles"
+      ]
     },
     "G9": {
       "ok": true,
@@ -86,16 +91,16 @@
       "details": [],
       "closest": {
         "fr": {
-          "slug": "omra-8-jours-ou-15-jours",
-          "score": 0.018
+          "slug": "reserver-omra-depuis-l-europe-agence-casablanca",
+          "score": 0.033
         },
         "ar": {
-          "slug": "omra-8-jours-ou-15-jours",
-          "score": 0.008
+          "slug": "reserver-omra-depuis-l-europe-agence-casablanca",
+          "score": 0.029
         },
         "en": {
-          "slug": "omra-8-jours-ou-15-jours",
-          "score": 0.014
+          "slug": "reserver-omra-depuis-l-europe-agence-casablanca",
+          "score": 0.028
         }
       },
       "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
@@ -108,8 +113,10 @@
       ]
     },
     "G0": {
-      "ok": true,
-      "details": [],
+      "ok": false,
+      "details": [
+        "slug déjà utilisé : « omra-en-novembre-meteo-affluence-conseils »"
+      ],
       "flags": []
     }
   }

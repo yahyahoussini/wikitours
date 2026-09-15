@@ -211,18 +211,35 @@ export function ctaTargets(body) {
 }
 
 /**
+ * What the PROSE rules read: the body without its placeholder tags and without
+ * the TARGET of a markdown link — `[libellé](/fr/blog/xxx-2027)` becomes
+ * `libellé`.
+ *
+ * A URL is not prose. Three existing posts carry a year in their slug
+ * (`ramadan-2027-dates-calendrier`, `omra-10-derniers-jours-ramadan-2027`,
+ * `omra-ramadan-2027-quand-reserver`), so before this any new post that linked
+ * one of them — exactly what the sibling-link rule asks for — failed the
+ * "année en clair" rule on the link target. The visible label is still
+ * checked, so a year a reader can see is still caught.
+ */
+export function proseText(body) {
+  return stripContentTags(body).replace(/\[([^\]]*)\]\([^)\s]*\)/g, '$1');
+}
+
+/**
  * Code-side quality gate. `problems` block auto-publish; `flags` reach the
- * reviewer and three of them (unsourced price, external link, missing owner
- * link) also block. Prose accuracy is not checked here — that is the
- * fact-sheet grounding's job, and the human's.
+ * reviewer and two of them (unsourced price, missing owner link) also block.
+ * Prose accuracy is not checked here — that is the fact-sheet grounding's job,
+ * and the human's.
  */
 export function qualityGate(draft, { ownerPath, existingSlugs, priceSet, strict = true, testimonialIds = null } = {}) {
   const problems = [];
   const flags = [];
   const slugs = existingSlugs instanceof Set ? existingSlugs : new Set(existingSlugs ?? []);
   const prices = priceSet instanceof Set ? priceSet : new Set(priceSet ?? []);
-  // Prose = the body without its placeholder tags (the tags carry the volatile facts).
-  const prose = (lang) => stripContentTags(draft[`body_${lang}`]);
+  // Prose = the body without its placeholder tags (which carry the volatile
+  // facts) and without link targets (a URL is not prose — see proseText).
+  const prose = (lang) => proseText(draft[`body_${lang}`]);
 
   if (!SLUG_RE.test(draft.slug ?? '') || (draft.slug ?? '').length > 80) problems.push(`slug invalide : « ${draft.slug} »`);
   if (slugs.has(draft.slug)) problems.push(`slug déjà utilisé : « ${draft.slug} »`);

@@ -99,6 +99,17 @@ describe('strict gate — no volatile fact in prose', () => {
     d.query_family = 'omra janvier';
     assert.match(gate(d).problems.join('|'), /est la requête d'une page commerciale/);
   });
+  test('a link whose slug carries a year is not a year in prose; a visible year still fails', () => {
+    // Three existing posts have a year in their slug, and the sibling-link
+    // rule asks new posts to link them — the URL used to fire « année en clair ».
+    const d = clean();
+    d.body_fr = body('fr', ' Voir [notre calendrier](/fr/blog/ramadan-2027-dates-calendrier) et [les dix nuits](/fr/blog/omra-10-derniers-jours-ramadan-2027).');
+    assert.deepEqual(gate(d).problems, []);
+    // The label is still prose: a year a reader can see is still caught.
+    const v = clean();
+    v.body_fr = body('fr', ' Voir [le calendrier 2027](/fr/blog/ramadan-2027-dates-calendrier).');
+    assert.match(gate(v).problems.join('|'), /body_fr : année en clair « 2027 »/);
+  });
   test('an official source is allowed and publishable; any other external link blocks', () => {
     // The defect this covers: every external link used to be a hard blocker,
     // so a Hajj post citing the ministry — which the contract REQUIRES — could

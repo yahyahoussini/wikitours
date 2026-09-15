@@ -109,9 +109,20 @@ export const HAJJ_BRIDGE_SLUGS = ['loterie-hajj-maroc', 'hajj-maroc-inscription-
 
 export const clusterById = (id) => CLUSTERS.find((c) => c.id === id) ?? null;
 
-/** The cluster a non-article page belongs to (its pillar, or one of its pages). */
+/**
+ * The cluster a non-article page belongs to — the one it is the PILLAR of
+ * first, else one that lists it among its pages.
+ *
+ * Four paths are both: `/omra-ramadan`, `/omra-pas-cher` and `/hotels-omra`
+ * lead clusters D, C and F while also sitting in cluster A's `pages`, and
+ * `/guide-omra/budget` leads nothing but sits in both C and E. Returning the
+ * first array match gave all of them cluster A, so the Ramadan hub rendered
+ * the generic departures cluster instead of its own, and an article whose
+ * `supports_path` is `/omra-ramadan` was asked for cluster A siblings it has
+ * no reason to carry.
+ */
 export function clusterOfPath(path) {
-  return CLUSTERS.find((c) => c.pillar === path || c.pages.includes(path)) ?? null;
+  return CLUSTERS.find((c) => c.pillar === path) ?? CLUSTERS.find((c) => c.pages.includes(path)) ?? null;
 }
 
 /** Explicit entry → admin supports_path → category. Never null for a real row. */
