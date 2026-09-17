@@ -26,16 +26,16 @@ nothing costs money.
 
 | | |
 |---|---|
-| Calendar | **243 slots**, 21 Sep 2026 → 19 Sep 2027, 2 posts every 3 days at 08:30 and 18:00 Africa/Casablanca |
+| Calendar | **253 slots**: 243 cadence slots, 21 Sep 2026 → 19 Sep 2027, 2 posts every 3 days at 08:30 and 18:00 Africa/Casablanca, plus **10 owner-requested extra slots** (#1001–#1010, 2–23 Oct 2026, 08:00, Ramadan) from `spec.extra_slots`. The extra slots are `unfillable` until a topic is named for each — see RUNBOOK § Owner-requested extra slots |
 | Slots filled | **169 of 243**. Phases P1–P5 are 100 % filled (21 Sep 2026 → 30 Apr 2027, the whole Ramadan decision window, Ramadan itself and the Hajj lottery bridge); all 74 unfilled slots are May–Sep 2027. Re-read the head of `calendar-report.md` after every `npm run content:calendar` |
 | Topic pool | **172 topics** in `data/content-topics/*.json` — one file per batch. Add a batch file to extend it; the builder rejects a topic whose query is a lander's or whose angle is within 0.6 of an existing post |
 | Series | `ramadan-1448` 12 (AR co-master) · `hajj-1448` 8 (AR co-master) · `premiere-omra` 8 · `mois-par-mois` 12 · `villes` 7 — each placed exactly once |
 | Phase weights | **Not met, deliberately.** See `04-setup-report.md` § "The phase weights are not met, and forcing them would be wrong" — the Ramadan track has 22 distinct angles against a target needing ~60, because 19 of its floor rows are already held by a thin existing post that deserves a rewrite, not a duplicate |
-| Posts written and gated | 7 contract-era drafts in `content/articles/2026-09-1[45]-*.json`, one gate report each in `gate-reports/`. **2 scheduled** (slots 2 and 4 — Hajj registration, 22 Sep; booking from Europe, 25 Sep) and **5 skipped** (slots 1, 3, 5, 6, 8). Every skipped draft carries `status: "skipped"` and a `skip_reason` on the file and the calendar slot, and the ingest refuses it |
+| Posts written and gated | 7 contract-era drafts in `content/articles/2026-09-1[45]-*.json`, one gate report each in `gate-reports/`. **2 scheduled** (slots 2 and 4 — Hajj registration, 22 Sep; booking from Europe, 25 Sep) and **5 skipped** (slots 1, 3, 5, 6, 8). Every skipped draft carries `status: "skipped"` and a `skip_reason` on the file and the calendar slot, and the ingest refuses it. That guard covers FILES only: a skipped post that is already a row stays whatever the row says — two are published rows today (owner item 00) |
 | Why both were skipped — read this before writing another | They promise **experience** ("comment se passe vraiment le mois", "météo, affluence"); the two that passed describe a **procedure**. `data/allowed-facts.json` holds business data only, and `month_pages` is empty, so there is no source for the experiential layer. Both reviewers rejected every way of faking it. **Roughly half the calendar — the month series, most of the Ramadan series, the seasonal block — is blocked the same way.** See `04-setup-report.md` § "The single most useful thing this run found" |
-| Existing posts | 36 rows: 28 live, 8 scheduled to 22 Oct 2026. 25 of the 36 are under 450 French words and 34 have no FAQ block — they keep their URLs and become sibling links, they are not rewritten by this run |
+| Existing posts | 40 rows (2026-09-17): 29 live, 2 scheduled (the two contract posts that passed both reviewers, 22 and 25 Sep), **9 held** (`is_published = false`): the 2 posts the reviewers skipped (21 and 24 Sep) and the 7 pre-contract posts still queued (20 Sep → 22 Oct, 330–400 words, no FAQ, below the current bar). The 8th pre-contract post, `telephone-internet-arabie-saoudite`, went live on 16 Sep and stays live (pulling a live URL would 404 it). Held rows keep their slug and slot; a held pre-contract post is released again only after a rewrite that passes both gates and both reviewers (owner decision, 2026-09-17) |
 | Landers | 58, of which 44 indexable (`data/lander-registry.json`) |
-| Honest ceiling | `02-gaps.md` gives the number of distinct angles the map supports without duplicating an existing URL. It is **lower than 243**. Cadence is a ceiling, not a target |
+| Honest ceiling | `02-gaps.md` gives the number of distinct angles the map supports without duplicating an existing URL. It is **lower than the 243 cadence slots**. Cadence is a ceiling, not a target |
 | Database | migrations 025 + 026 are written and committed; **applying them is the owner's step** (`RUNBOOK.md` § Apply the database side). Everything works without them: the components fall back to dictionary copy and the repo's JSON files are the record |
 | `enabled` | `true` in `data/content-calendar-spec.json`; it reaches `content_ops_settings` on the first `npm run content:calendar -- --seed` after migration 026 |
 | Last audit | **2026-09-15** — `audit-2026-09.md`. Three system fixes: the drift re-gate (`content:gate -- --existing`), Hijri anchors as a real placement constraint, sitemap `lastmod` no longer predating publication. 28 published + 8 scheduled rows are below the current bar (all pre-contract); 0 link rot; **no Search Console export exists** |
@@ -71,7 +71,7 @@ Run this, exactly, and stop cleanly.
    slot), in which case the French is adapted from the Arabic afterwards and the
    English is lean. The quality spec is in the brief: answer-first 40–55 words ·
    a key-facts box using live components for anything volatile · ≥ 4
-   question-form H2s · a table where data compares · 5–6 FAQ items of 30–90
+   question-form H2s · a table where data compares · 5–6 FAQ items of 30–75
    words · sources · "Wiki Tours International (Bab Makka)" on first mention ·
    tags for departures, prices, CTA, countdown, policy and quotes · ≥ 4 internal
    links including the pillar and ≥ 2 siblings · `<CommercialCTA intent=…>` ·
@@ -87,7 +87,7 @@ Run this, exactly, and stop cleanly.
    `publish_at` (never earlier than now + 24 h) and marks the calendar row.
 7. **Stop** when 8 slots are processed, or context reaches ~70 %, or the buffer
    covers `buffer_days + 30`. End with ONE line:
-   `Scheduled X | Skipped Y | Total N/243 | Buffer until DATE | Ramadan series K/12 done | Hajj series K/8 done | Next run resumes at slot #Z`
+   `Scheduled X | Skipped Y | Total N/253 | Buffer until DATE | Ramadan series K/12 done | Hajj series K/8 done | Next run resumes at slot #Z`
 
 ---
 
@@ -119,6 +119,16 @@ Run this, exactly, and stop cleanly.
   least `lead_days + tolerance_days` before its event by
   `build-content-calendar.mjs`; an explicit `earliest` after the anchor is the
   only way to place one after it, and should mean the topic is about what follows.
+  The deadline binds series parts too, capped back to front so a part pulled
+  before its deadline keeps the series spacing, and an owner extra slot refuses a
+  topic whose window or deadline its date misses.
+- **"No two posts of one cluster in a row" looks both ways.** A weighted slot
+  avoids the cluster of the slot before AND of an already-placed slot after (a
+  series part, a pinned or frozen slot); the builder notes every slot where no
+  other topic fits.
+- **An owner extra slot takes only the topic the spec names**, never a series part
+  or a pinned topic. Append new requests to `spec.extra_slots`; never reorder it
+  (the list order is the slot numbering).
 
 ## Do not touch
 
@@ -138,6 +148,10 @@ Run this, exactly, and stop cleanly.
 ---
 
 ## What is waiting on the owner
+
+00. ~~Two posts the reviewers skipped were set to go public~~ — **done 2026-09-17**: `guide-omra-ramadan-1-vivre-le-mois` and `omra-en-novembre-meteo-affluence-conseils` are held again (`is_published = false`). They had been switched back to published on 2026-09-15 at 11:38 UTC by something outside the build (the ingest now skips `status: skipped` files and never refreshes a held row). If they come back a second time, look at who used Admin → Blog at that moment. The 7 pre-contract posts still queued are held too, by owner decision: each is rewritten to the contract and re-released only if it passes — see the Existing posts row.
+
+01. **Chaâbane-Ramadan 2027 is in the database, hidden (added 2026-09-16 from the two owner flyers).** Category `chaabane-ramadan` (`/omra-chaabane-ramadan`), hotel `abeer-al-fadila`, and two programmes with three tiers each: `omra-chaabane-ramadan-2027-15-jours` (1 → 15 Feb 2027, from 16 900 DH) and `omra-chaabane-ramadan-2027-25-jours` (22 Jan → 15 Feb 2027, from 16 500 DH). To put them live: (1) add the images; (2) set the city of Makarem Madinah and Jayden Medina Hotel to `madinah` (item 4 below) — every tier uses them as the Madinah hotel; (3) publish, in this order, the hotel, then the category, then the two programmes, in one sitting — a published programme must never point at a hidden category. Two things to confirm on the way: the flyers ask for a passport valid **8 months**, while the site-wide policy says 6 months after return (`policies.passport_validity`); and « بالإفطار » was entered as breakfast (`breakfast_included`), not iftar.
 
 **Added by the 2026-09-15 audit — read `audit-2026-09.md` § What remains for the owner.** Top of it: export Search Console into `data/gsc/` (none exists, so no ranking claim can be made); apply migrations 025 + 026; decide the 8 pre-contract queued posts.
 

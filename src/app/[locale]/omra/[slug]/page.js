@@ -122,10 +122,15 @@ function computedIntro(offer, t, locale, tiers) {
   }
 
   const minPrice = computeMinPrice(tiers) ?? offer.starting_price ?? null;
+  // Name the room the cheapest price actually belongs to. This always said
+  // « en chambre double », so a quint price read as a double-room price.
+  // A price that only comes from starting_price names no room.
+  const minRoom = minPrice != null ? allPrices(tiers).find((p) => p.price === minPrice)?.room ?? null : null;
   const priceStr = minPrice != null
     ? t.offer.introPrice
         .replace('{price}', nf.format(minPrice))
-        .replace('{room}', t.offer.priceInRoom.replace('{room}', t.offer.roomShort[ROOM_KEYS[0]]))
+        .replace('{room}', minRoom ? t.offer.priceInRoom.replace('{room}', t.offer.roomShort[minRoom]) : '')
+        .trim()
     : null;
 
   return `${fragments.join(locale === 'ar' ? '، ' : ', ')}${priceStr ? ` — ${priceStr}` : ''}.`;
@@ -258,13 +263,15 @@ export default async function OfferPage({ params }) {
     offerMonth
       ? {
           href: `/${locale}${monthPagePath(offerMonth.getUTCMonth())}`,
-          label: `Omra ${monthName(offerMonth.getUTCMonth(), locale)} ${monthYear}`,
+          // The hub's own heading template (« عمرة {name} », « {name} Umrah »),
+          // not a French « Omra » prefix on every locale.
+          label: (t.occasionPage?.heading ?? 'Omra {name}').replace('{name}', `${monthName(offerMonth.getUTCMonth(), locale)} ${monthYear}`),
         }
       : null,
     offer.occasion?.slug
       ? {
           href: `/${locale}/omra-${offer.occasion.slug}`,
-          label: `Omra ${pickLang(offer.occasion, 'name', locale)}`,
+          label: (t.occasionPage?.heading ?? 'Omra {name}').replace('{name}', pickLang(offer.occasion, 'name', locale) ?? offer.occasion.slug),
         }
       : null,
   ].filter(Boolean);

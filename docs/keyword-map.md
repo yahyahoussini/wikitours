@@ -62,6 +62,7 @@ States audited 2026-07-23. "live" = published, indexable, passing `seo:audit`.
 | perte passeport omra · imprévu · urgence | `/blog/imprevus-pendant-omra` (drip 28/09) | informational | [ADMIN DATA] |
 | {nom d'hôtel} distance haram (FAQ auto) | `/hotel/{slug}` (computed from DB fields) | informational long-tail | [ADMIN DATA] |
 | omra rajab · omra chaâbane · omra chawal | `/omra-{occasion}` (hubs hijri, gated) | seasonal commercial | [ADMIN DATA] |
+| omra chaâbane ramadan · omra chaâbane-ramadan · عمرة شعبان رمضان · sha'ban ramadan umrah | `/omra-chaabane-ramadan` (occasion hub, added 2026-09-16, unpublished until the owner adds images; programmes that start in Chaâbane and end in the first days of Ramadan). Distinct from `/omra-ramadan` (a stay IN Ramadan) and `/omra-chaabane` (a stay in Chaâbane only); linked from the footer and `/bab-makka` once published | seasonal commercial | [ADMIN DATA] |
 | omra 5 étoiles · omra de luxe · عمرة فاخرة · luxury umrah | `/omra-5-etoiles` (premium hub) + `/omra/omra-5-etoiles-sur-mesure` (offre à la carte, sans date) | commercial (premium) | [ADMIN DATA] |
 | hôtel proche du haram · hôtels omra | `/hotels-omra` | comparison | [ADMIN DATA] |
 | {nom d'hôtel} la mecque/médine | `/hotel/{slug}` | informational | [ADMIN DATA] |
@@ -205,6 +206,7 @@ Enforced mechanically by `targetsLanderQuery()` in `src/lib/server/article-gate.
 | `/omra-{mois}` ×12 | omra {mois} {année} |
 | `/omra-depuis-{ville}` ×8 | omra depuis {ville} |
 | `/omra-{occasion}` | omra rajab · chaâbane · chawal · mawlid · été |
+| `/omra-chaabane-ramadan` | omra chaâbane ramadan · عمرة شعبان رمضان |
 | `/omra-5-etoiles` | omra 5 étoiles · omra de luxe · عمرة فاخرة |
 | `/hajj` | hajj · hajj depuis le maroc · الحج من المغرب |
 | `/bab-makka` | départs / programmes omra (the pillar; posts support it, never own it) |
