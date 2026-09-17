@@ -150,10 +150,33 @@ npm run content:gate -- --existing=published --offline --quiet --out=docs/conten
 - In a normal build a scheduled row has no page, so G13 and G16 report `pending`
   for it rather than failing. To judge them, build with
   `CONTENT_PREVIEW_SCHEDULED=1` first (locally only).
-- A link to a still-scheduled sibling is fine when that sibling publishes first;
-  the naive "is it built?" check flags it anyway.
+- G6 accepts a link to a still-scheduled sibling when that sibling publishes no
+  later than the post linking to it (e5dfcd4), so a G6 link failure is real.
 
 Write the result up as `audit-YYYY-MM.md` beside this file.
+
+---
+
+## Owner-requested extra slots
+
+The owner can ask for a post on a date the cadence does not cover.
+
+1. Append an entry to `spec.extra_slots` in `data/content-calendar-spec.json` —
+   `{ "date": "2026-10-02", "time": "08:00", "track": "ramadan", "note": "…" }`.
+   Append only: the list order is the slot numbering (#1001, #1002, …), and
+   scheduled slots are matched by number.
+2. Name the topic for it with `"topic_id"`. The topic must match the track, be
+   unplaced, fit its own date window and Hijri deadline, and not be a series
+   part or a pinned topic — otherwise the slot stays `unfillable` with the reason.
+   A topic already placed in a cadence slot moves to the extra slot on rebuild.
+3. `npm run content:calendar`, then check `calendar-report.md`: the extra slot
+   shows its topic, and the scheduled / skipped slots are unchanged.
+4. The generator writes the post with `slot_index` set to the extra slot's
+   number; the ingest schedules it at that slot's `publish_at` (never earlier
+   than now + 24 h).
+
+The ten slots #1001–#1010 (2–23 Oct 2026, Ramadan) were requested on
+2026-09-15 and are waiting for their topics.
 
 ---
 

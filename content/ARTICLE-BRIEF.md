@@ -55,7 +55,7 @@ PUBLISH-BY-TIME.**
    `publish_at` du slot ; commit `content: N articles (slots a–b)` ; push. Ligne
    dans `content_ops_events` (ou dans RESUME.md si la table n'existe pas).
 7. Mettre à jour `docs/content-system/RESUME.md` et finir par UNE ligne :
-   `Scheduled X | Skipped Y | Total N/244 | Buffer until DATE | Ramadan series K/12 done | Hajj series K/8 done | Next run resumes at slot #Z`
+   `Scheduled X | Skipped Y | Total N/253 | Buffer until DATE | Ramadan series K/12 done | Hajj series K/8 done | Next run resumes at slot #Z`
 
 ## Les balises (RENDER-LIVE)
 
@@ -193,7 +193,7 @@ balise — jamais « 3 départs à partir de 12 300 MAD ».
 - Listes et étapes numérotées dès qu'elles rendent l'information extractible.
 - `## Questions fréquentes` (ar : `## الأسئلة الشائعة`, en : `## Frequently asked
   questions`) avec **5 ou 6** sous-titres `### ` (une question chacun), chacun
-  suivi d'une réponse de **30 à 90 mots**, réponse directe en premier (G4).
+  suivi d'une réponse de **30 à 75 mots**, réponse directe en premier (G4).
 - **Liens internes ≥ 4** (liens markdown + balises CTA), dont le pilier (par
   `<CommercialCTA intent>` ou lien markdown vers un pilier non commercial
   comme `/guide-omra`) et **≥ 2 pages sœurs** du même dossier (articles du

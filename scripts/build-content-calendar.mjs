@@ -207,6 +207,12 @@ for (const slot of slots.filter((x) => x.extra && !frozen.has(x.slot_index))) {
   if (!slot.requested_topic) { slot.status = 'unfillable'; slot.skip_reason = `owner extra slot for ${slot.date}: no topic named yet in spec.extra_slots`; continue; }
   if (!t) { slot.status = 'unfillable'; slot.skip_reason = `owner extra slot for ${slot.date} names ${slot.requested_topic}, which is not a valid topic`; continue; }
   if (slot.required_track && t.track !== slot.required_track) { slot.status = 'unfillable'; slot.skip_reason = `owner extra slot for ${slot.date} wants track ${slot.required_track}; ${t.id} is ${t.track}`; continue; }
+  // A series part or a pinned topic keeps its own placement: an extra slot would
+  // publish part 5 before parts 2–4. A topic whose window or Hijri deadline the
+  // date misses is refused the same way the weights loop would refuse it.
+  if (t.series_id) { slot.status = 'unfillable'; slot.skip_reason = `owner extra slot for ${slot.date}: ${t.id} is part ${t.series_part} of the ${t.series_id} series and keeps its place in the series`; continue; }
+  if (t.pinned_slot_index) { slot.status = 'unfillable'; slot.skip_reason = `owner extra slot for ${slot.date}: ${t.id} is pinned to slot #${t.pinned_slot_index}`; continue; }
+  if (!fits(t, slot)) { slot.status = 'unfillable'; slot.skip_reason = `owner extra slot for ${slot.date}: outside ${t.id}'s window (earliest ${t.earliest ?? '—'}, latest ${effectiveLatest(t) ?? '—'})`; continue; }
   if (used.has(t.id)) { slot.status = 'unfillable'; slot.skip_reason = `owner extra slot for ${slot.date}: ${t.id} is already placed`; continue; }
   assign(slot, t, 'extra');
 }
@@ -239,22 +245,44 @@ for (const series of spec.series) {
     const span = daysBetween(from, to);
     return addDays(from, Math.round((span * (part - lo)) / Math.max(1, hi - lo)));
   };
+  const [minGap, maxGap] = series.spacing_days ?? [6, 9];
+  // The Hijri deadline binds a series part as well: the spread can fall forward
+  // past it (ramadan-1448-p11 landed a day inside its margin). Each part's cap
+  // is computed back to front — its own deadline, or the next part's cap less
+  // the minimum spacing, whichever is earlier — so pulling one part back never
+  // squeezes it against the part before (capping p11 alone put it 4 days after p10).
+  const caps = new Map();
+  let nextCap = null;
+  for (const t of [...parts].reverse()) {
+    const cap = [effectiveLatest(t), nextCap ? addDays(nextCap, -minGap) : null].filter(Boolean).sort()[0] ?? null;
+    caps.set(t.id, cap);
+    nextCap = cap;
+  }
   for (const t of parts) {
     let slot = null;
+    const cap = caps.get(t.id);
+    const floor = lastDate ? addDays(lastDate, minGap) : null;
     if (series.placement === 'windows' && t.window_from) {
-      slot = nearestFree(t.window_from, 0, Math.max(0, daysBetween(t.window_from, t.window_to ?? t.window_from)) + 3);
+      // The window says where a part belongs; the spacing still holds inside it
+      // (hajj-1448 p7 used to open its window 5 days after p6).
+      const from = floor && floor > t.window_from ? floor : t.window_from;
+      slot = nearestFree(from, 0, Math.max(0, daysBetween(from, t.window_to ?? t.window_from)) + 3)
+        ?? nearestFree(t.window_from, 0, Math.max(0, daysBetween(t.window_from, t.window_to ?? t.window_from)) + 3);
     } else if (targetDate(t.series_part)) {
-      const [minGap] = series.spacing_days ?? [6, 9];
-      const earliest = lastDate ? addDays(lastDate, minGap) : firstStart;
-      const wanted = targetDate(t.series_part);
+      const earliest = floor ?? firstStart;
+      const wanted = [targetDate(t.series_part), cap].filter(Boolean).sort()[0];
       slot = wanted > earliest ? nearestFreeBefore(wanted, 4, 14, earliest) : nearestFree(earliest, 0, 14);
     } else {
-      const [minGap, maxGap] = series.spacing_days ?? [6, 9];
-      const from = lastDate ? addDays(lastDate, minGap) : (series.start_date ?? S.start_date);
+      const from = floor ?? (series.start_date ?? S.start_date);
       slot = nearestFree(from, 0, lastDate ? maxGap - minGap + 2 : 14);
     }
+    if (slot && cap && slot.date > cap) {
+      slot = (floor && floor <= cap ? nearestFreeBefore(cap, daysBetween(floor, cap), 0, floor) : null)
+        ?? nearestFreeBefore(cap, 14, 0, lastDate ? addDays(lastDate, 1) : null);
+      if (slot && floor && slot.date < floor) seriesReport.push(`${series.id} part ${t.series_part}: ${daysBetween(lastDate, slot.date)} days after the previous part — its Hijri deadline ${cap} leaves no room for the ${minGap}-day spacing`);
+    }
     if (slot) { assign(slot, t, `series:${series.id}`); lastDate = slot.date; }
-    else seriesReport.push(`${series.id} part ${t.series_part}: no free slot in its window`);
+    else seriesReport.push(`${series.id} part ${t.series_part}: no free slot in its window${cap ? ` before its Hijri deadline ${cap}` : ''}`);
   }
   seriesReport.push(`${series.id}: ${valid.filter((x) => x.series_id === series.id && used.has(x.id)).length}/${series.parts} parts placed`);
 }
@@ -266,11 +294,27 @@ for (const slot of slots) {
   if (!isFree(slot)) { prevCluster = slot.cluster ?? prevCluster; continue; }
   const c = (counters[slot.phase] ??= { ramadan: 0, omra: 0, hajj: 0, total: 0 });
   const order = ['ramadan', 'omra', 'hajj'].sort((a, b) => (c[a] / Math.max(1, c.total) - expected(slot, a)) - (c[b] / Math.max(1, c.total) - expected(slot, b)));
+  // "No two posts of one cluster in a row" looks both ways. Series, pinned and
+  // frozen slots are placed before this loop, so the slot AFTER this one may
+  // already carry a cluster; checking only the slot before put a weighted post
+  // the day before a series part of its own cluster (#27 → #28, #41 → #42).
+  // A following slot that is still free checks back against this one itself.
+  let nextCluster = null;
+  for (let j = slots.indexOf(slot) + 1; j < slots.length && !slots[j].extra; j++) {
+    if (isFree(slots[j])) break;
+    if (slots[j].cluster) { nextCluster = slots[j].cluster; break; }
+  }
+  const byPriority = (a, b) => (a.priority ?? 2) - (b.priority ?? 2) || (effectiveLatest(a) ?? '9999').localeCompare(effectiveLatest(b) ?? '9999');
   let chosen = null;
   for (const track of order) {
-    const pool = valid.filter((t) => t.track === track && !used.has(t.id) && !t.series_id && !t.pinned_slot_index && fits(t, slot) && t.cluster !== prevCluster)
-      .sort((a, b) => (a.priority ?? 2) - (b.priority ?? 2) || (effectiveLatest(a) ?? '9999').localeCompare(effectiveLatest(b) ?? '9999'));
+    const pool = valid.filter((t) => t.track === track && !used.has(t.id) && !t.series_id && !t.pinned_slot_index && fits(t, slot) && t.cluster !== prevCluster && t.cluster !== nextCluster).sort(byPriority);
     if (pool.length) { chosen = pool[0]; break; }
+  }
+  if (!chosen && nextCluster) {
+    for (const track of order) {
+      const pool = valid.filter((t) => t.track === track && !used.has(t.id) && !t.series_id && !t.pinned_slot_index && fits(t, slot) && t.cluster !== prevCluster).sort(byPriority);
+      if (pool.length) { chosen = pool[0]; slot.note = `same cluster as the next slot (no other topic fits)`; break; }
+    }
   }
   if (!chosen) {
     // relax the cluster rule before giving up

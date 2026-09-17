@@ -99,9 +99,13 @@ export const PROSE_RULES = [
  * it, apart from the proclitics Arabic attaches to a word (و ف ب ل ك) and the
  * article « ال ».
  */
+// Arabic vowel marks and the tatweel are not letters: left in the text they
+// fake a word boundary (« حُسْنُ مَآبٍ » read as the month « آب ») or break a
+// month's spelling (« تشرينَ الأول » missed). They are stripped before matching.
+const ARABIC_MARKS = /[ؐ-ًؚ-ٰٟۖ-ۭـ]/g;
 export function nonMoroccanMonthsIn(text) {
-  const s = String(text ?? '');
-  return NON_MOROCCAN_MONTHS.filter((m) => new RegExp(String.raw`(?<![\p{L}])(?:[وفبلك])?(?:ال)?${m}(?![\p{L}])`, 'u').test(s));
+  const s = String(text ?? '').replace(ARABIC_MARKS, '');
+  return NON_MOROCCAN_MONTHS.filter((m) => new RegExp(String.raw`(?<![\p{L}\p{M}])(?:[وفبلك])?(?:ال)?${m}(?![\p{L}\p{M}])`, 'u').test(s));
 }
 export const NON_MOROCCAN_MONTHS = ['أيلول', 'تشرين الأول', 'تشرين الثاني', 'كانون الأول', 'كانون الثاني', 'شباط', 'آذار', 'نيسان', 'أيار', 'حزيران', 'تموز', 'آب', 'سبتمبر', 'أغسطس', 'نوفمبر', 'ديسمبر'];
 // Latin-script city names in Arabic prose (the CITY_SLUGS-instead-of-cityName trap).

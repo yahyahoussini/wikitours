@@ -28,7 +28,7 @@ justification chacun :
    paraphrase, pas de doublon d'angle.
 4. STRUCTURE vs LA SPÉCIFICATION (content/ARTICLE-BRIEF.md) — réponse d'abord
    40–55 mots, boîte de faits clés, ≥ 4 H2 en question, tableau si des données
-   se comparent, FAQ 5–6 × 30–90 mots, ≥ 4 liens internes dont pilier + 2 sœurs,
+   se comparent, FAQ 5–6 × 30–75 mots, ≥ 4 liens internes dont pilier + 2 sœurs,
    <CommercialCTA intent>, balise hégirienne si Ramadan/Hajj, <HajjBridgeCTA/>
    si Hajj, « Wiki Tours International (Bab Makka) » à la première mention.
 5. ABSENCE DE REMPLISSAGE — pas de phrase qui n'apprend rien, pas de

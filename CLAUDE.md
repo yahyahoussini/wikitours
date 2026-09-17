@@ -367,7 +367,7 @@ There is no `tailwind.config.js` (Tailwind v4) and no RTL plugin.
   a post can never link into a page that should not rank.
 - **Two gates, one bar.** `scripts/content-gate.mjs` (G0–G16) runs on a draft
   before it is ever scheduled: word count per format and locale, the 40–55-word
-  answer-first block, ≥ 4 question-form H2s, a 5–6 item FAQ with 30–90-word
+  answer-first block, ≥ 4 question-form H2s, a 5–6 item FAQ with 30–75-word
   answers, the volatile-fact rules (plus "places disponibles" and hotel
   distances, and any number > 10 absent from allowed-facts), ≥ 4 internal links
   with the pillar and 2 siblings and no hard-coded lander URL, the external

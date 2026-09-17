@@ -18,3 +18,14 @@ test('an ordinary word that merely contains a month name is not a month', () => 
 test('the Moroccan month names are never flagged', () => {
   assert.deepEqual(nonMoroccanMonthsIn('شتنبر وغشت ونونبر ودجنبر ويوليوز'), []);
 });
+
+test('vowel marks neither fake a word boundary nor hide a month', () => {
+  // « مآب » (a return, as in « حسن مآب ») and « الآباء » written with harakat were flagged as « آب ».
+  assert.deepEqual(nonMoroccanMonthsIn('حُسْنُ مَآبٍ'), []);
+  assert.deepEqual(nonMoroccanMonthsIn('الآبَاءِ'), []);
+  assert.deepEqual(nonMoroccanMonthsIn('لِآبَائِهِمْ'), []);
+  // …and a Levantine month written with harakat or a tatweel is still caught.
+  assert.deepEqual(nonMoroccanMonthsIn('تشرينَ الأول'), ['تشرين الأول']);
+  assert.deepEqual(nonMoroccanMonthsIn('فِي آبَ'), ['آب']);
+  assert.deepEqual(nonMoroccanMonthsIn('شبـــاط'), ['شباط']);
+});

@@ -33,18 +33,23 @@ export function lastModifiedOf(...sources) {
       for (const child of item) visit(child);
       return;
     }
-    const value =
-      typeof item === 'string'
-        ? item
-        : item instanceof Date
-          ? item.toISOString()
-          : (item.updated_at ?? item.published_at ?? null);
-    if (!value) return;
-    const time = Date.parse(value);
-    if (Number.isFinite(time) && time > bestTime) {
-      bestTime = time;
-      best = value;
-    }
+    const consider = (value) => {
+      if (!value) return;
+      const time = Date.parse(value);
+      if (Number.isFinite(time) && time > bestTime) {
+        bestTime = time;
+        best = value;
+      }
+    };
+    if (typeof item === 'string') return consider(item);
+    if (item instanceof Date) return consider(item.toISOString());
+    // A row can be RELEASED after it was last written: an article scheduled
+    // ahead goes public when its published_at passes, and that is when its page
+    // — and every listing that shows it — changed for readers. So a row counts
+    // at the later of updated_at and a published_at that has passed. A future
+    // published_at is not a change yet.
+    consider(item.updated_at);
+    if (item.published_at && Date.parse(item.published_at) <= Date.now()) consider(item.published_at);
   };
 
   visit(sources);

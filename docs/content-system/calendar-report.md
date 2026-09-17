@@ -1,4 +1,4 @@
-# Calendar report — generated 2026-09-15T13:00Z
+# Calendar report — generated 2026-09-15T17:08Z
 
 Slots: **253** (2026-09-21 → 2027-09-19, 2 posts every 3 days at 08:30 / 18:00 Africa/Casablanca).
 Filled: **169** · unfillable: **84** · topics in the pool: 172 (valid 172, rejected 0, unused valid 3).
@@ -36,9 +36,9 @@ Filled: **169** · unfillable: **84** · topics in the pool: 172 (valid 172, rej
 | 6 | 68 | 2026-12-30 | souhour et iftar à la mecque et à médine : à l'hôtel ou au haram |
 | 7 | 72 | 2027-01-05 | tarawih au haram : quand partir de l'hôtel, où se placer, sections des femmes |
 | 8 | 76 | 2027-01-11 | permis nusuk et gestion des flux pendant le ramadan : qui fait quoi |
-| 9 | 81 | 2027-01-19 | pourquoi la distance de l'hôtel au haram pèse beaucoup plus en ramadan |
-| 10 | 85 | 2027-01-25 | omra ramadan avec des parents âgés, des enfants, et pour les femmes : à qui convient quoi |
-| 11 | 89 | 2027-01-31 | tenir le rythme d'un ramadan au haram : hydratation, médicaments, sommeil, chaleur |
+| 9 | 80 | 2027-01-17 | pourquoi la distance de l'hôtel au haram pèse beaucoup plus en ramadan |
+| 10 | 84 | 2027-01-23 | omra ramadan avec des parents âgés, des enfants, et pour les femmes : à qui convient quoi |
+| 11 | 88 | 2027-01-29 | tenir le rythme d'un ramadan au haram : hydratation, médicaments, sommeil, chaleur |
 | 12 | 93 | 2027-02-06 | aïd al-fitr à la mecque et garder l'élan après le mois |
 
 ### hajj-1448
@@ -51,7 +51,7 @@ Filled: **169** · unfillable: **84** · topics in the pool: 172 (valid 172, rej
 | 4 | 115 | 2027-03-11 | contrat et paiement du hajj : ce que couvre l'organisateur et comment ça se règle |
 | 5 | 129 | 2027-04-01 | préparation physique et formalités sanitaires avant le hajj |
 | 6 | 146 | 2027-04-26 | les rites du hajj jour par jour : mina, arafat, muzdalifa, jamarat, tawaf al-ifada |
-| 7 | 149 | 2027-05-01 | hajj des aînés et des femmes : adaptations, accompagnement et délégation |
+| 7 | 150 | 2027-05-02 | hajj des aînés et des femmes : adaptations, accompagnement et délégation |
 | 8 | 165 | 2027-05-25 | après le hajj : ce qui change, et comment aborder le cycle suivant |
 
 ### premiere-omra
@@ -75,7 +75,7 @@ Filled: **169** · unfillable: **84** · topics in the pool: 172 (valid 172, rej
 | 2 | 19 | 2026-10-18 | partir en omra en décembre : fin d'année, nuits fraîches et affluence |
 | 3 | 39 | 2026-11-17 | partir en omra en janvier : plein hiver et coupure scolaire de mi-année |
 | 4 | 60 | 2026-12-18 | partir en omra en février : fin de chaabane puis premiers jours du ramadan |
-| 5 | 80 | 2027-01-17 | partir en omra en mars : dernières nuits du ramadan puis aïd al-fitr |
+| 5 | 81 | 2027-01-19 | partir en omra en mars : dernières nuits du ramadan puis aïd al-fitr |
 | 6 | 99 | 2027-02-15 | partir en omra en avril : un haram dégagé après le pic du ramadan |
 | 7 | 119 | 2027-03-17 | partir en omra en mai : chaleur croissante, journées longues et fin de saison |
 | 8 | 140 | 2027-04-17 | partir en omra en juin : la reprise des départs après la saison du hajj |
