@@ -13,6 +13,7 @@ import { lastModifiedOf } from '@/lib/freshness';
 import { pageDescription, trustClauses, authoredOr } from '@/lib/page-seo';
 import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc, SPEAKABLE } from '@/lib/seo';
 import { routeTitle, withBrand } from '@/lib/titles';
+import { OCCASION_BRIDGES } from '@/lib/clusters';
 import RelatedArticles from '@/components/site/RelatedArticles';
 import BrandLockup from '@/components/site/BrandLockup';
 import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
@@ -328,6 +329,7 @@ export default async function FlatLandingPage({ params }) {
   let answer = null;
   let alertSource = `landing_${flat}`;
   let monthCtx = null;
+  let bridges = [];
 
   if (resolved.kind === 'month') {
     const m = resolved.monthIndex;
@@ -382,6 +384,18 @@ export default async function FlatLandingPage({ params }) {
             .replace('{n}', matching.length)
             .replace('{occasion}', occasionName)
             .replace('{min}', Number.isFinite(minPrice) ? nf.format(minPrice) : '—'));
+    // Bridged occasions (OCCASION_BRIDGES): their live programmes are listed
+    // below this hub's own. Only a published occasion with live offers
+    // qualifies, so the section never links to a hidden or empty hub.
+    const bridgedSlugs = OCCASION_BRIDGES[resolved.occasion.slug] ?? [];
+    if (bridgedSlugs.length) {
+      const occasions = await getOccasions();
+      bridges = bridgedSlugs
+        .map((slug) => occasions.find((o) => o.slug === slug && o.is_published !== false))
+        .filter(Boolean)
+        .map((occasion) => ({ occasion, offers: offers.filter((o) => o.occasion?.slug === occasion.slug) }))
+        .filter((b) => b.offers.length > 0);
+    }
   } else {
     heading = t.cityPage.title.replace('{city}', cityName(resolved.citySlug, locale));
     // Unique local intro when the admin wrote it; the generic line otherwise
@@ -399,7 +413,7 @@ export default async function FlatLandingPage({ params }) {
   const updated = lastModifiedOf(matching);
   const dateFmt = new Intl.DateTimeFormat(locale === 'ar' ? 'ar-MA' : `${locale}-MA`, { dateStyle: 'long' });
 
-  const covers = await getCovers('offers', matching.map((o) => o.id));
+  const covers = await getCovers('offers', [...matching, ...bridges.flatMap((b) => b.offers)].map((o) => o.id));
 
   const cardT = {
     ...t.offer,
@@ -534,6 +548,32 @@ export default async function FlatLandingPage({ params }) {
             </Link>
           </section>
         )}
+
+        {bridges.map(({ occasion, offers: bridged }) => {
+          const name = pickLang(occasion, 'name', locale);
+          const lead = t.occasionPage.bridgeLead?.[occasion.slug];
+          return (
+            <section key={occasion.slug} data-occasion-bridge={occasion.slug} className="mt-14">
+              <h2 className="text-2xl font-bold">{t.occasionPage.bridgeTitle.replace('{name}', name)}</h2>
+              {lead ? <p className="mt-3 max-w-2xl leading-relaxed text-white/75">{lead}</p> : null}
+              <div className="mt-6">
+                <PackagesSection
+                  offers={bridged.map((offer) => toOfferCard(offer, covers.get(offer.id), locale))}
+                  occasions={[]}
+                  locale={locale}
+                  t={cardT}
+                  whatsappHref={whatsappHref}
+                />
+              </div>
+              <Link
+                href={`/${locale}/omra-${occasion.slug}`}
+                className="mt-4 inline-block text-sm font-semibold text-bm-gold underline-offset-4 hover:underline"
+              >
+                {t.occasionPage.heading.replace('{name}', name)} →
+              </Link>
+            </section>
+          );
+        })}
 
         {monthCtx ? <MonthEvergreen ctx={monthCtx} t={t} locale={locale} /> : null}
 

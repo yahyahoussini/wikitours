@@ -7,11 +7,12 @@ import WhatsAppIcon from '@/components/WhatsAppIcon';
  * Global floating WhatsApp button — bottom-end of every public page
  * (LAWS §9). Hidden when no number is configured (LAWS §10).
  * `offsetClass` lets pages with their own fixed bottom bar (offer page's
- * mobile reserve bar) lift the button clear of it.
+ * mobile reserve bar) lift the button clear of it. `text` (optional)
+ * pre-fills the message, e.g. the programme on an offer page.
  */
-export default async function WhatsAppFloat({ locale, offsetClass = 'bottom-6' }) {
+export default async function WhatsAppFloat({ locale, text, offsetClass = 'bottom-6' }) {
   const settings = await getSettings();
-  const href = waLink(settings?.whatsapp_number);
+  const href = waLink(settings?.whatsapp_number, text);
   if (!href) return null;
 
   const t = getDictionary(locale);

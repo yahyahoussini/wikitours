@@ -1,6 +1,5 @@
-import { ImageResponse } from 'next/og';
 import { getDictionary, isLocale, FALLBACK_LOCALE } from '@/lib/i18n';
-import { OgCard, ogSize, ogContentType, ogAlt } from '@/lib/og';
+import { ogResponse, ogSize, ogContentType, ogAlt } from '@/lib/og';
 
 /** Site-wide OG card. Nested routes with their own opengraph-image override it. */
 export const revalidate = false;
@@ -10,9 +9,7 @@ export const alt = ogAlt;
 
 export default async function Image({ params }) {
   const { locale } = await params;
-  const t = getDictionary(isLocale(locale) ? locale : FALLBACK_LOCALE);
-  return new ImageResponse(
-    <OgCard title={t.home.metaTitle} meta={t.brand.premiumService} />,
-    ogSize,
-  );
+  const loc = isLocale(locale) ? locale : FALLBACK_LOCALE;
+  const t = getDictionary(loc);
+  return ogResponse({ locale: loc, title: t.home.metaTitle, meta: t.brand.premiumService });
 }

@@ -10,6 +10,9 @@ import { CITY_SLUGS, cityPageIndexable } from '@/lib/months';
 export const runtime = 'nodejs';
 export const revalidate = 3600; // hourly, like every listing — publish-by-time needs no cron
 
+// Same order as the offer page's gamme cards.
+const ROOM_KEYS = ['double', 'triple', 'quad', 'quint'];
+
 /**
  * /llms.txt — the emerging convention for handing AI answer engines a curated,
  * factual map of the site. Generated from the DB (same source as the sitemap)
@@ -105,6 +108,16 @@ export async function GET() {
     out.push('');
   }
 
+  // « La Mecque : {hôtel} (à {m} m du Haram, {n} nuits) » — the gamme card's hotel line.
+  const stay = (city, hotel, nights, dist) => {
+    if (!hotel) return null;
+    const meta = [
+      dist != null ? t.offer.distanceToHaram.replace('{m}', dist) : null,
+      nights ? t.offer.nightsCount.replace('{n}', nights) : null,
+    ].filter(Boolean);
+    return `${city} : ${hotel.name}${meta.length ? ` (${meta.join(', ')})` : ''}`;
+  };
+
   if (offers.length) {
     out.push(`## Offres Omra publiées (${offers.length})`, '');
     for (const o of offers) {
@@ -118,6 +131,29 @@ export async function GET() {
         o.status === 'full' ? 'complet' : o.status === 'few_left' ? 'dernières places' : 'ouvert',
       ].filter(Boolean);
       out.push(`- [${title}](${url(`/omra/${o.slug}`)}) — ${bits.join(', ')}.`);
+      // Per-gamme facts, exactly the fields the offer page's gamme cards render
+      // (same tier rows, same distance fallback) — an assistant asked "which
+      // hotel, how far, how much in a triple" can answer from here. An offer
+      // with no tier rows keeps its single line.
+      if (!o.tiers?.length) continue;
+      const flight = o.land_only ? t.offer.landOnly.toLowerCase() : o.airline;
+      if (flight) out.push(`  - ${t.offer.airlineLabel} : ${flight}`);
+      for (const tier of o.tiers) {
+        const prices = ROOM_KEYS
+          .filter((k) => typeof tier[`price_${k}`] === 'number' && tier[`price_${k}`] > 0)
+          .map((k) => `${t.offer.room[k].toLowerCase()} ${nf.format(tier[`price_${k}`])} MAD`);
+        // The page hides a gamme with neither a price nor a hotel; so does this file.
+        if (!prices.length && !tier.hotel_makkah && !tier.hotel_madinah) continue;
+        const parts = [
+          stay(t.offer.makkah, tier.hotel_makkah, tier.nights_makkah, tier.distance_to_haram_m ?? tier.hotel_makkah?.distance_to_haram_m),
+          stay(t.offer.madinah, tier.hotel_madinah, tier.nights_madinah, null),
+          // Stated only when ticked, as on the page: an unticked box is not a
+          // statement that breakfast is excluded.
+          tier.breakfast_included ? t.offer.breakfastIncluded.toLowerCase() : null,
+          prices.length ? `${t.offer.pricesTitle.toLowerCase()} : ${prices.join(', ')}` : null,
+        ].filter(Boolean);
+        out.push(`  - Gamme ${t.offer.tier?.[tier.label] ?? tier.label} — ${parts.join(' ; ')}.`);
+      }
     }
     out.push('');
   }

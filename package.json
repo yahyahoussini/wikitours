@@ -9,7 +9,7 @@
     "postbuild": "npm run seo:suite && npm test",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --import ./tests/register.mjs --test tests/months.test.mjs tests/offers.test.mjs tests/authors.test.mjs tests/content-tags.test.mjs tests/hijri.test.mjs tests/articles.test.mjs tests/clusters.test.mjs tests/arabic-months.test.mjs tests/freshness.test.mjs",
+    "test": "node --import ./tests/register.mjs --test tests/months.test.mjs tests/offers.test.mjs tests/authors.test.mjs tests/content-tags.test.mjs tests/hijri.test.mjs tests/articles.test.mjs tests/clusters.test.mjs tests/arabic-months.test.mjs tests/freshness.test.mjs tests/edge-data.test.mjs",
     "content:facts": "node --env-file=.env.local --import ./tests/register.mjs scripts/build-allowed-facts.mjs",
     "content:hijri": "node --env-file=.env.local --import ./tests/register.mjs scripts/build-hijri-events.mjs",
     "content:inventory": "node --env-file=.env.local --import ./tests/register.mjs scripts/content-inventory.mjs",

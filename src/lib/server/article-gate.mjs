@@ -141,8 +141,14 @@ export const LANDER_QUERIES = [
   new RegExp(`^(?:omra|umrah|oumra) (?:${MONTHS_SLUGS})(?: \\d{4})?$`),
   new RegExp(`^(?:omra|umrah|oumra) depuis (?:${CITY_SLUGS})$`),
   /^(?:omra|umrah|oumra) (?:rajab|chaabane|chawal|mawlid|ete)$/,
+  // The Chaabane-Ramadan category hub (/omra-chaabane-ramadan) — the hyphen
+  // is already a space after normQuery.
+  /^(?:omra|umrah|oumra|3omra) chaabane (?:et )?ramadan(?: \d{4})?$/,
   /^(?:hajj|hadj|7ajj)(?: (?:depuis le )?maroc)?$/,
-  /^عمرة (?:رمضان|رخيصة|فاخرة|من المغرب)$/,
+  /^عمرة (?:رخيصة|فاخرة|من المغرب)$/,
+  // Ramadan and Chaabane-Ramadan heads, with the year (Latin or Arabic-Indic
+  // digits) and « من المغرب » that ads and searches append.
+  /^عمرة (?:شعبان (?:و ?)?)?رمضان(?: [0-9٠-٩]{4})?(?: من المغرب)?(?: [0-9٠-٩]{4})?$/,
   /^وكالة عمرة(?: بالدار البيضاء| في الدار البيضاء)?$/,
   /^الحج(?: من المغرب)?$/,
 ];

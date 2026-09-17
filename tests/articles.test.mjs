@@ -95,6 +95,24 @@ describe('strict gate — no volatile fact in prose', () => {
     assert.ok(targetsLanderQuery('عمرة رمضان'));
     assert.equal(targetsLanderQuery('omra ramadan quand reserver'), null);
     assert.equal(targetsLanderQuery('omra parents ages accessibilite'), null);
+    // The Chaabane-Ramadan category hub owns its head, in both scripts.
+    assert.ok(targetsLanderQuery('omra chaabane ramadan'));
+    assert.ok(targetsLanderQuery('Omra Chaâbane-Ramadan 2027'));
+    assert.ok(targetsLanderQuery('umrah chaabane ramadan'));
+    assert.ok(targetsLanderQuery('oumra chaabane et ramadan 2027'));
+    assert.ok(targetsLanderQuery('عمرة شعبان رمضان'));
+    assert.ok(targetsLanderQuery('عمرة شعبان ورمضان 2027'));
+    assert.ok(targetsLanderQuery('عمرة شعبان و رمضان'));
+    assert.ok(targetsLanderQuery('عمرة رمضان 2027'));
+    assert.ok(targetsLanderQuery('عمرة رمضان ٢٠٢٧'));
+    assert.ok(targetsLanderQuery('عمرة رمضان من المغرب'));
+    assert.ok(targetsLanderQuery('عمرة رمضان 2027 من المغرب'));
+    assert.ok(targetsLanderQuery('عمرة من المغرب'));
+    assert.equal(targetsLanderQuery('omra chaabane ramadan que emporter'), null);
+    assert.equal(targetsLanderQuery('omra chaabane ramadan 15 ou 25 jours'), null);
+    assert.equal(targetsLanderQuery('عمرة شعبان رمضان ماذا أحمل'), null);
+    assert.equal(targetsLanderQuery('عمرة رمضان مع الوالدين'), null);
+    assert.equal(targetsLanderQuery('عمرة شعبان وحدها رمضان'), null);
     const d = clean();
     d.query_family = 'omra janvier';
     assert.match(gate(d).problems.join('|'), /est la requête d'une page commerciale/);

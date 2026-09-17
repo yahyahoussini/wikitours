@@ -177,6 +177,7 @@
     "bookingArrivesTo": "Votre demande arrive directement chez {name}",
     "reassurance": "Aucun paiement en ligne — contrat écrit et reçu officiel à l'agence.",
     "testimonialsTitle": "Ils sont partis sur ce programme",
+    "testimonialsGeneric": "Avis de nos pèlerins",
     "landOnly": "Sans vol",
     "tier": {
       "economique": "Économique",
@@ -308,7 +309,11 @@
   "occasionPage": {
     "empty": "Programme en préparation — laissez vos coordonnées pour être averti en premier.",
     "answerWithOffers": "{n} programme(s) Omra {occasion} au départ du Maroc, dès {min} MAD par personne.",
-    "heading": "Omra {name}"
+    "heading": "Omra {name}",
+    "bridgeTitle": "Programmes {name}",
+    "bridgeLead": {
+      "chaabane-ramadan": "Départ pendant Chaâbane, séjour jusqu'aux premiers jours du Ramadan."
+    }
   },
   "cityPage": {
     "title": "Omra depuis {city}",

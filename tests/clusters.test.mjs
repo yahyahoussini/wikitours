@@ -1,6 +1,7 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
-import { CLUSTERS, clusterOfPath, clusterOfArticle, ownerPathOf } from '@/lib/clusters';
+import { CLUSTERS, clusterOfPath, clusterOfArticle, ownerPathOf, OCCASION_BRIDGES } from '@/lib/clusters';
+import { offersForFilter } from '@/lib/content-resolver';
 
 describe('clusterOfPath — a pillar wins over a page listing', () => {
   test('every pillar resolves to its own cluster, even when another cluster lists it as a page', () => {
@@ -30,5 +31,15 @@ describe('clusterOfPath — a pillar wins over a page listing', () => {
     assert.equal(clusterOfArticle({ slug: 'loterie-hajj-maroc', supports_path: '/bab-makka', category: 'omra' }).id, 'G');
     // No supports_path and no entry: the category decides.
     assert.equal(clusterOfArticle({ slug: 'inconnu', category: 'hotels' }).id, 'F');
+  });
+});
+
+describe('OCCASION_BRIDGES — Ramadan and Chaâbane-Ramadan show each other', () => {
+  test('the bridge runs both ways, and the ramadan filter lists the bridged programmes', () => {
+    assert.deepEqual(OCCASION_BRIDGES.ramadan, ['chaabane-ramadan']);
+    assert.deepEqual(OCCASION_BRIDGES['chaabane-ramadan'], ['ramadan']);
+    const list = [{ occasion: { slug: 'ramadan' } }, { occasion: { slug: 'chaabane-ramadan' } }, { occasion: { slug: 'ete' } }];
+    assert.equal(offersForFilter(list, 'ramadan').length, 2);
+    assert.equal(offersForFilter(list, 'occasion:ramadan').length, 1);
   });
 });

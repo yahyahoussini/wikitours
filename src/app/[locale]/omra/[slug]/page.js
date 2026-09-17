@@ -213,7 +213,15 @@ export default async function OfferPage({ params }) {
   const inclusions = pickLang(offer, 'inclusions', locale);
   const exclusions = pickLang(offer, 'exclusions', locale);
   const conditions = pickLang(offer, 'conditions', locale);
-  const whatsappHref = waLink(settings?.whatsapp_number, title ? `${t.cta.reserve} — ${title}` : undefined);
+  // A programme's own conditions REPLACE the house defaults: showing both put
+  // « 6 mois après la date de retour » next to a programme's own passport rule.
+  const conditionLines = conditions
+    ? conditions.split(/\r?\n/).map((line) => line.replace(/^[\s•*-]+/, '').trim()).filter(Boolean)
+    : [t.offer.condPassport, t.offer.depositLine, t.offer.condPhoto];
+  // One pre-filled message for every WhatsApp entry point on this page
+  // (booking card, mobile bar, similar offers, floating button).
+  const whatsappText = title ? `${t.cta.reserve} — ${title}` : undefined;
+  const whatsappHref = waLink(settings?.whatsapp_number, whatsappText);
 
   const tiers = offer.tiers ?? [];
   const { tierLabel: defaultTier, roomKey: defaultRoom, minPrice: tierMinPrice } = defaults(tiers);
@@ -237,6 +245,8 @@ export default async function OfferPage({ params }) {
   const textTestimonials = allTestimonials.filter((x) => x.kind === 'text');
   const forThisOffer = textTestimonials.filter((x) => x.offer_id === offer.id);
   const testimonials = (forThisOffer.length ? forThisOffer : textTestimonials).slice(0, 4);
+  // "They travelled on this programme" only when the reviews really are about it.
+  const testimonialsHeading = forThisOffer.length ? t.offer.testimonialsTitle : t.offer.testimonialsGeneric;
 
   // Key-facts bar
   const keyFacts = [
@@ -661,22 +671,13 @@ export default async function OfferPage({ params }) {
             <section id="conditions" className="mt-12 max-w-prose scroll-mt-28 rounded-card border border-bm-gold/25 bg-bm-gold/5 p-5">
               <h2 className="text-xl font-bold text-bm-black">{t.offer.conditionsTitle}</h2>
               <ul className="mt-3 flex flex-col gap-2 text-sm font-semibold text-bm-black/80">
-                <li className="flex items-start gap-2.5">
-                  <Icon name="dot" className="mt-1 size-2.5 shrink-0 text-bm-gold" />
-                  {t.offer.condPassport}
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <Icon name="dot" className="mt-1 size-2.5 shrink-0 text-bm-gold" />
-                  {t.offer.depositLine}
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <Icon name="dot" className="mt-1 size-2.5 shrink-0 text-bm-gold" />
-                  {t.offer.condPhoto}
-                </li>
+                {conditionLines.map((line, i) => (
+                  <li key={i} className="flex items-start gap-2.5">
+                    <Icon name="dot" className="mt-1 size-2.5 shrink-0 text-bm-gold" />
+                    {line}
+                  </li>
+                ))}
               </ul>
-              {conditions ? (
-                <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-bm-black/70">{conditions}</p>
-              ) : null}
             </section>
 
             {/* Reciprocal links — the month and occasion hubs link down to this
@@ -708,7 +709,7 @@ export default async function OfferPage({ params }) {
             {/* AVIS */}
             {testimonials.length > 0 ? (
               <section id="avis" className="mt-12 scroll-mt-28">
-                <h2 className="text-xl font-bold text-bm-black">{t.offer.testimonialsTitle}</h2>
+                <h2 className="text-xl font-bold text-bm-black">{testimonialsHeading}</h2>
                 <div className="mt-4 grid gap-4 sm:grid-cols-2">
                   {testimonials.map((item) => (
                     <figure key={item.id} className="rounded-card border border-bm-black/10 bg-white p-4">
@@ -840,7 +841,7 @@ export default async function OfferPage({ params }) {
       </div>
 
       {/* Lifted above the mobile sticky reserve bar so it never covers the CTA */}
-      <WhatsAppFloat locale={locale} offsetClass="bottom-[86px] lg:bottom-6" />
+      <WhatsAppFloat locale={locale} text={whatsappText} offsetClass="bottom-[86px] lg:bottom-6" />
     </div>
   );
 }

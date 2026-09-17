@@ -177,6 +177,7 @@
     "bookingArrivesTo": "Your request goes directly to {name}",
     "reassurance": "No online payment — written contract and official receipt at the agency.",
     "testimonialsTitle": "They travelled on this programme",
+    "testimonialsGeneric": "What our pilgrims say",
     "landOnly": "Land only",
     "tier": {
       "economique": "Economy",
@@ -308,7 +309,11 @@
   "occasionPage": {
     "empty": "Programme in preparation — leave your details to be notified first.",
     "answerWithOffers": "{n} Umrah {occasion} programme(s) from Morocco, from {min} MAD per person.",
-    "heading": "{name} Umrah"
+    "heading": "{name} Umrah",
+    "bridgeTitle": "{name} programmes",
+    "bridgeLead": {
+      "chaabane-ramadan": "Departure during Sha'ban, stay into the first days of Ramadan."
+    }
   },
   "cityPage": {
     "title": "Umrah from {city}",

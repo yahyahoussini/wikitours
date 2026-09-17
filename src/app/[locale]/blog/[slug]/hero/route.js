@@ -1,8 +1,7 @@
-import { ImageResponse } from 'next/og';
 import { getDictionary, isLocale, pickLang, FALLBACK_LOCALE } from '@/lib/i18n';
 import { getArticleBySlug } from '@/lib/data/content';
 import { clusterOfArticle } from '@/lib/clusters';
-import { OgCard } from '@/lib/og';
+import { ogResponse } from '@/lib/og';
 
 /**
  * /{locale}/blog/{slug}/hero — the article's typographic hero card (1600×900)
@@ -23,8 +22,8 @@ export async function GET(_request, { params }) {
   if (!article) return new Response('Not found', { status: 404 });
   const cluster = clusterOfArticle(article);
   const badge = cluster ? t.clusters.names[cluster.id] : t.articleCategory?.[article.category] ?? article.category;
-  return new ImageResponse(
-    <OgCard title={pickLang(article, 'title', loc) ?? article.slug} badge={badge} meta={null} scale={SIZE.width / 1200} />,
-    { ...SIZE, headers: { 'cache-control': 'public, s-maxage=86400, stale-while-revalidate=604800' } },
+  return ogResponse(
+    { locale: loc, title: pickLang(article, 'title', loc) ?? article.slug, badge, meta: null, scale: SIZE.width / 1200 },
+    { size: SIZE, headers: { 'cache-control': 'public, s-maxage=86400, stale-while-revalidate=604800' } },
   );
 }

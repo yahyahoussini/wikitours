@@ -61,6 +61,12 @@ const nextConfig = {
   // and Montserrat/Inter/Tajawal never applied. The stylesheet is ~18KB over
   // the wire, immutable-cached across every page; the inline copy also sat
   // twice in every HTML (the <style> and the RSC payload), ~280KB per page.
+  // src/lib/og.jsx reads the Arabic OG fonts with readFile(process.cwd() + …),
+  // which file tracing cannot see: without this the files are not shipped
+  // with the image routes and every /ar share card falls back to Latin.
+  outputFileTracingIncludes: {
+    '/**/*': ['./src/assets/fonts/*.ttf'],
+  },
   images: {
     // AVIF first (~30% smaller than WebP) with WebP fallback — Next defaults to
     // WebP only, and these are photo-heavy pages where LCP is the image.

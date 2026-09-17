@@ -1,5 +1,6 @@
 import { MONTH_SLUGS, CITY_SLUGS, monthLanderIndexable, cityPageIndexable, departuresInMonth } from '@/lib/months';
 import { guideIndexable, GUIDE_PILLAR_SLUG } from '@/lib/guides';
+import { OCCASION_BRIDGES } from '@/lib/clusters';
 
 /**
  * The commercial-intent RESOLVER — pure. An article names an INTENT
@@ -62,7 +63,12 @@ export function offersForScope(offers, scope, { today = new Date() } = {}) {
 /** The offers a `filter` names: ramadan | hajj | next | all | month:n | occasion:x. */
 export function offersForFilter(offers, filter, { today = new Date() } = {}) {
   const f = String(filter ?? 'all').trim().toLowerCase();
-  if (f === 'ramadan') return (offers ?? []).filter((o) => o.occasion?.slug === 'ramadan');
+  // Ramadan posts also list the bridged Chaâbane-Ramadan programmes: they run
+  // into the first days of Ramadan (OCCASION_BRIDGES, src/lib/clusters.js).
+  if (f === 'ramadan') {
+    const slugs = ['ramadan', ...(OCCASION_BRIDGES.ramadan ?? [])];
+    return (offers ?? []).filter((o) => slugs.includes(o.occasion?.slug));
+  }
   if (f === 'hajj') return []; // the agency sells no Hajj package online (the /hajj page registers interest)
   if (f === 'next') return (offers ?? []).slice(0, 1);
   const month = f.match(/^month:(\d{1,2})$/);

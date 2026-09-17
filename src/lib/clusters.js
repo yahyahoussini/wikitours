@@ -107,6 +107,15 @@ export const MANDATORY_LINKS = {
 /** The Hajj → Omra bridge: rejected lottery applicants have budget and intent. */
 export const HAJJ_BRIDGE_SLUGS = ['loterie-hajj-maroc', 'hajj-maroc-inscription-quota', 'pas-tire-au-sort-hajj-omra', 'hajj-ministere-ou-agence'];
 
+/**
+ * Occasion hubs that show each other's live programmes. The Chaâbane-Ramadan
+ * departures leave during Sha'ban and stay into the first days of Ramadan, so
+ * a reader on /omra-ramadan (no Ramadan-only departure yet) is looking for them,
+ * and the reverse. Read by the [flat] occasion branch and the `ramadan`
+ * live-departures filter (content-resolver.js).
+ */
+export const OCCASION_BRIDGES = { ramadan: ['chaabane-ramadan'], 'chaabane-ramadan': ['ramadan'] };
+
 export const clusterById = (id) => CLUSTERS.find((c) => c.id === id) ?? null;
 
 /**

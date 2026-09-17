@@ -177,6 +177,7 @@
     "bookingArrivesTo": "طلبكم يصل مباشرة إلى {name}",
     "reassurance": "لا أداء عبر الإنترنت — عقد مكتوب ووصل رسمي بالوكالة.",
     "testimonialsTitle": "سافروا في هذا البرنامج",
+    "testimonialsGeneric": "آراء معتمرينا",
     "landOnly": "بدون طيران",
     "tier": {
       "economique": "اقتصادية",
@@ -308,7 +309,11 @@
   "occasionPage": {
     "empty": "البرنامج قيد الإعداد — اتركوا معلوماتكم لنخبركم أولاً.",
     "answerWithOffers": "{n} برنامج عمرة {occasion} انطلاقاً من المغرب، ابتداءً من {min} درهم للشخص.",
-    "heading": "عمرة {name}"
+    "heading": "عمرة {name}",
+    "bridgeTitle": "برامج {name}",
+    "bridgeLead": {
+      "chaabane-ramadan": "الانطلاق خلال شعبان والإقامة إلى الأيام الأولى من رمضان."
+    }
   },
   "cityPage": {
     "title": "عمرة انطلاقاً من {city}",

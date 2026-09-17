@@ -6,9 +6,36 @@ import { fireLeadPixels } from '@/lib/pixels';
 import WhatsAppIcon from '@/components/WhatsAppIcon';
 import Icon from '@/components/site/Icon';
 
+const ATTR_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'gclid', 'fbclid'];
+// public/wt.js stores the first touch in the wt_ft cookie as
+// encodeURIComponent(JSON) with these one-letter keys.
+const FT_KEYS = { utm_source: 's', utm_medium: 'm', utm_campaign: 'c', utm_content: 't', gclid: 'g', fbclid: 'f' };
+
+/**
+ * Campaign attribution for the lead: the current URL's tags when it has any,
+ * else the first-touch tags wt.js kept (30 days) — a visitor who landed on a
+ * tagged hub and then opened a programme still carries the campaign. The two
+ * sources are never mixed, so one lead never pairs a campaign with a click id
+ * from another visit.
+ */
+function attribution() {
+  const params = new URLSearchParams(window.location.search);
+  if (ATTR_KEYS.some((k) => params.get(k))) {
+    return Object.fromEntries(ATTR_KEYS.map((k) => [k, params.get(k)]));
+  }
+  let ft = null;
+  try {
+    const raw = document.cookie.match(/(?:^|; )wt_ft=([^;]*)/)?.[1];
+    ft = raw ? JSON.parse(decodeURIComponent(raw)) : null;
+  } catch {
+    ft = null; // malformed cookie — send no attribution rather than fail the lead
+  }
+  return Object.fromEntries(ATTR_KEYS.map((k) => [k, ft?.[FT_KEYS[k]] ?? null]));
+}
+
 /**
  * Public lead form (the request pattern, LAWS §6: never a purchase).
- * Captures UTM/click ids from the URL at submit time. Labels come from the
+ * Captures UTM/click ids at submit time (URL first, else wt.js first touch). Labels come from the
  * dictionary via props (server-passed) so the form stays SSR-friendly.
  *
  * The 3 visible fields never grow: the room selector enriches the lead via
@@ -46,7 +73,7 @@ export default function LeadForm({
     event.preventDefault();
     setState('sending');
     const form = new FormData(event.currentTarget);
-    const params = new URLSearchParams(window.location.search);
+    const attr = attribution();
     const name = form.get('full_name');
     const city = form.get('city');
     const phone = form.get('phone');
@@ -67,12 +94,7 @@ export default function LeadForm({
           tier_label: offerId ? (roomStore.get()?.tierLabel ?? null) : null,
           source,
           event_id: eventId,
-          utm_source: params.get('utm_source'),
-          utm_medium: params.get('utm_medium'),
-          utm_campaign: params.get('utm_campaign'),
-          utm_content: params.get('utm_content'),
-          gclid: params.get('gclid'),
-          fbclid: params.get('fbclid'),
+          ...attr, // utm_source … fbclid
         }),
       });
       if (res.ok) {

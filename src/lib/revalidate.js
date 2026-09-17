@@ -10,9 +10,10 @@ import { pingIndexNow } from '@/lib/server/indexnow';
  *   '/foo'            locale-relative — expanded to every locale
  *   '/[locale]/…'     dynamic-segment — one revalidatePath(p, 'page') call
  *                     invalidates ALL params of that segment, all locales
- *   'raw:/foo'        absolute, no locale prefix (llms.txt)
+ *   'raw:/foo'        absolute, no locale prefix (llms.txt, sitemap.xml)
  * 'layout' revalidates the whole tree (site-wide surfaces: header menus,
- * announcement bar, settings).
+ * announcement bar, settings) — as a table's whole spec, or as one entry in
+ * a path list when the table also has concrete URLs worth an IndexNow ping.
  */
 const TABLE_PATHS = {
   offers: (row) => [
@@ -26,8 +27,15 @@ const TABLE_PATHS = {
   offer_tiers: () => [
     '/', '/bab-makka', '/omra-pas-cher', '/barometre-prix-omra',
     '/[locale]/omra/[slug]', '/[locale]/[flat]', '/[locale]/hotel/[slug]',
+    'raw:/llms.txt', // per-gamme hotels and prices are listed there
   ],
-  occasions: () => ['/', '/bab-makka', '/[locale]/[flat]'],
+  // Publishing a category flips its hub on in the footer (every page), the
+  // offer pages' hub links, the sitemap and llms.txt (occasion names).
+  occasions: () => [
+    'layout',
+    '/', '/bab-makka', '/[locale]/[flat]', '/[locale]/omra/[slug]',
+    'raw:/sitemap.xml', 'raw:/llms.txt',
+  ],
   hotels: (row) => [
     '/', '/hotels-omra',
     row?.slug ? `/hotel/${row.slug}` : '/[locale]/hotel/[slug]',
@@ -86,6 +94,10 @@ export function revalidateForTable(table, row) {
   }
   const literalPaths = [];
   for (const path of spec(row).filter(Boolean)) {
+    if (path === 'layout') {
+      revalidatePath('/', 'layout');
+      continue;
+    }
     if (path.startsWith('/[locale]')) {
       revalidatePath(path, 'page');
       continue;
