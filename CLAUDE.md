@@ -723,7 +723,7 @@ All titles ≤ 60, all descriptions ≤ 155.
 | Blog articles | 27 live | 36 rows; 9 scheduled ahead, runway to 2026-10-22 |
 | Hotels | 8 published | `city` is `'makkah'` on all 8 rows while Jayden Medina Hotel and Makarem Madinah are Madinah properties (their own `address_*` say Madinah; tiers reference them only as `hotel_madinah_id`). Corrected by the data section of migration 022 / the bundle — until applied, the admin's "Hôtel Médine" dropdown (`relFilter city='madinah'`) is empty and their schema locality reads Makkah |
 | City pages | 8, all indexable | |
-| Month hubs | 12 routes, 3 indexable | September / October / November have a departure this cycle; the other nine index once their authored `month_pages` blocks exist in fr + ar (2026-09-13: none written yet, and no month has public history — every derived block is empty until departures accumulate) |
+| Month hubs | 12 routes | Indexable when a departure falls this cycle or the authored `month_pages` blocks exist in fr + ar. 2026-09-17: février and mars have their authored blocks (fr/ar/en; sources in `docs/content-system/month-pages-sources.md`), janvier and février also have Chaâbane-Ramadan departures, and the other ten months have no authored text yet |
 | Offers | 4 live departures (2026-09-13) | Sept ×1 (23 → 7 Oct), Oct ×2, Nov ×1; `omra-9-au-23-septembre-2026` departed and was **unpublished** — it 301s via the lifecycle rule |
 | Guide pages | 7 rows | 1 pillar + **6** children |
 | Glossary terms | 42 | |

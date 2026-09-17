@@ -161,7 +161,12 @@ Run this, exactly, and stop cleanly.
    - **Write the `month_pages` blocks** (Admin → Pages mois): "Météo et
      affluence" and "À qui convient ce mois", in French **and** Arabic, for each
      month you sell. The month landers also index only when those blocks exist
-     (`monthLanderIndexable()`), so this pays twice.
+     (`monthLanderIndexable()`), so this pays twice. **Février and mars done
+     2026-09-17** (all four blocks, fr/ar/en, toggle on). Every statement is
+     sourced in `month-pages-sources.md`, and two independent reviews
+     (facts, language) checked them. The other ten months are still empty.
+     Follow the same method: WMO normals, official crowd sources, no agency
+     observation, and the pre-Hajj closure caveat wherever it applies.
    - **Decide whether the agency's own observation is a citable source.** If it
      is, it belongs in `data/allowed-facts.json` as dated, owner-validated
      entries (what your groups actually see at the Haram in Ramadan, in a normal
