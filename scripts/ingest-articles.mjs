@@ -37,7 +37,11 @@ import {
   words,
 } from '../src/lib/server/article-gate.mjs';
 
-const DRY = process.argv.includes('--dry');
+// The GitHub Actions gate runs `npm run build` with the production database
+// secrets, at the same time as Vercel's own build. Only Vercel may insert: two
+// real ingests racing each other can schedule the same draft twice (the second
+// under a suffixed slug). So a build inside GitHub Actions always ingests dry.
+const DRY = process.argv.includes('--dry') || process.env.GITHUB_ACTIONS === 'true';
 // --refresh: re-gate every file whose slug is already in the table and UPDATE
 // the row when it is still scheduled (published_at in the future). A post
 // corrected after a review but before its slot must be correctable — that is
