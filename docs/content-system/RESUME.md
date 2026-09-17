@@ -151,7 +151,7 @@ Run this, exactly, and stop cleanly.
 
 00. ~~Two posts the reviewers skipped were set to go public~~ — **done 2026-09-17**: `guide-omra-ramadan-1-vivre-le-mois` and `omra-en-novembre-meteo-affluence-conseils` are held again (`is_published = false`). They had been switched back to published on 2026-09-15 at 11:38 UTC by something outside the build (the ingest now skips `status: skipped` files and never refreshes a held row). If they come back a second time, look at who used Admin → Blog at that moment. The 7 pre-contract posts still queued are held too, by owner decision: each is rewritten to the contract and re-released only if it passes — see the Existing posts row.
 
-01. **Chaâbane-Ramadan 2027 is in the database, hidden (added 2026-09-16 from the two owner flyers).** Category `chaabane-ramadan` (`/omra-chaabane-ramadan`), hotel `abeer-al-fadila`, and two programmes with three tiers each: `omra-chaabane-ramadan-2027-15-jours` (1 → 15 Feb 2027, from 16 900 DH) and `omra-chaabane-ramadan-2027-25-jours` (22 Jan → 15 Feb 2027, from 16 500 DH). To put them live: (1) add the images; (2) set the city of Makarem Madinah and Jayden Medina Hotel to `madinah` (item 4 below) — every tier uses them as the Madinah hotel; (3) publish, in this order, the hotel, then the category, then the two programmes, in one sitting — a published programme must never point at a hidden category. Two things to confirm on the way: the flyers ask for a passport valid **8 months**, while the site-wide policy says 6 months after return (`policies.passport_validity`); and « بالإفطار » was entered as breakfast (`breakfast_included`), not iftar.
+01. **Chaâbane-Ramadan 2027 is in the database, hidden (added 2026-09-16 from the two owner flyers).** Category `chaabane-ramadan` (`/omra-chaabane-ramadan`), hotel `abeer-al-fadila`, and two programmes with three tiers each: `omra-chaabane-ramadan-2027-15-jours` (1 → 15 Feb 2027, from 16 900 DH) and `omra-chaabane-ramadan-2027-25-jours` (22 Jan → 15 Feb 2027, from 16 500 DH). To put them live: (1) add the images; (2) ~~set the city of Makarem Madinah and Jayden Medina Hotel to `madinah`~~ (done 2026-09-17); (3) publish, in this order, the hotel, then the category, then the two programmes, in one sitting — a published programme must never point at a hidden category. Two things to confirm on the way: the flyers ask for a passport valid **8 months**, while the site-wide policy says 6 months after return (`policies.passport_validity`); and « بالإفطار » was entered as breakfast (`breakfast_included`), not iftar.
 
 **Added by the 2026-09-15 audit — read `audit-2026-09.md` § What remains for the owner.** Top of it: export Search Console into `data/gsc/` (none exists, so no ranking claim can be made); apply migrations 025 + 026; decide the 8 pre-contract queued posts.
 
@@ -170,7 +170,7 @@ Run this, exactly, and stop cleanly.
 1. **Apply migrations 025 and 026**, then run the four seeding commands
    (`RUNBOOK.md` § Apply the database side). Until then the calendar lives in
    `data/content-calendar.json` and the policies fall back to dictionary copy.
-2. **Complete the author record** — the AUTHOR RECORD block was not supplied
+2. ~~Complete the author record~~ — **done 2026-09-17** (role + bio fr/ar/en from the owner's own words: full-stack developer, expert Omra and Hajj guide; profile published). Still open: the Arabic spelling of the name (`name_ar`), languages and a profile link (`sameas_url`) — never guessed. Original item: — the AUTHOR RECORD block was not supplied
    with the brief, so nothing about Yahya Houssini was invented. Fill
    `team_members.yahya-houssini` in Admin → Équipe (role, bio fr + ar, languages,
    `sameas_url`, and the new `knows_about` / `affiliation` from migration 026).
@@ -182,11 +182,11 @@ Run this, exactly, and stop cleanly.
    not be fetched from this machine (its certificate chain does not verify
    here). Open each source in a browser, confirm, and change the field to
    `fetched`; only then may a session quote a figure from it.
-4. **Set the two Madinah hotels' city** to `madinah` (Admin → Hôtels): Jayden
+4. ~~Set the two Madinah hotels' city~~ — **done 2026-09-17** (both are `madinah`). Original item: to `madinah` (Admin → Hôtels): Jayden
    Medina Hotel and Makarem Madinah are still tagged `makkah`, so
    `<HotelList city="madinah" />` renders nothing and their schema locality is
    wrong.
-5. **Re-angle the ten `omra {mois}` rows** in Admin → Plan éditorial: their
+5. ~~Re-angle the ten `omra {mois}` rows~~ — **done 2026-09-17**: the ten rows are deactivated (`is_active = false`). Original item: in Admin → Plan éditorial: their
    `query_family` is a month lander's own query, which the gate refuses by
    design. The month series in the calendar already covers those months with
    long-tail angles, so the simplest move is to deactivate those ten rows.

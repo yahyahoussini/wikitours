@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
 import { SITE_URL, absoluteUrl, hreflangAlternates, SPEAKABLE, personNode } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
-import { withBrand } from '@/lib/titles';
+import { routeTitle } from '@/lib/titles';
 import { getTeam, getArticles } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { getGallerySlides } from '@/lib/data/gallery';
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }) {
   const [team, settings] = await Promise.all([getTeam(), getSettings()]);
   const trust = trustClauses(locale, { license: settings?.license_number ?? null });
   return {
-    title: { absolute: withBrand(t.pages.teamTitle) },
+    title: { absolute: routeTitle('equipe', locale) },
     description: pageDescription(locale, 'equipe', { extra: [trust.licence, trust.noPayment] }),
     alternates: hreflangAlternates(locale, '/equipe'),
     // noindex-until-filled (the scaffold law): indexes once one complete

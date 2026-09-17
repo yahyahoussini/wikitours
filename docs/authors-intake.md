@@ -22,7 +22,7 @@ profile is published).
 | 3 | Aya Tahiri | Responsable Omra & Hajj | `aya-tahiri` | see list |
 | 4 | Mustapha Elkhaoui | Encadrant Technique & Religieux | `mustapha-elkhaoui` | see list |
 | 5 | Hassan Elasyly | Encadrant Technique & Religieux | `hassan-elasyly` | see list |
-| 6 | Yahya Houssini | **[À COMPLÉTER]** (placeholder profile — the name signs two articles) | `yahya-houssini` | role + everything below |
+| 6 | Yahya Houssini | Développeur full-stack et guide expert Omra et Hajj (owner's own words, 2026-09-17; profile published) | `yahya-houssini` | Arabic spelling of the name, languages, profile link |
 
 For **each** of the six:
 

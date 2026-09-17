@@ -393,7 +393,10 @@ There is no `tailwind.config.js` (Tailwind v4) and no RTL plugin.
   prerender not-yet-due rows so the gate can check them — **never set it on
   Vercel**.
 - Author: the `team_members` row `yahya-houssini` (`articles.author_id`), no
-  reviewer ever. Never write his bio, years or credentials (constraint 9).
+  reviewer ever. Its role and bio (fr/ar/en) were filled on 2026-09-17 from the
+  owner's own words — full-stack developer, expert Omra and Hajj guide — and the
+  profile is published. Never add years, credentials, languages, a link or an
+  Arabic spelling of the name that the owner has not given (constraint 9).
 - Hijri: `src/lib/hijri.js` (`@umalqura/core`) → `public.hijri_events`
   (migration 025, `npm run content:hijri`), always rendered with the
   moon-sighting caveat. **Never loosen the gate to raise the publish rate** —

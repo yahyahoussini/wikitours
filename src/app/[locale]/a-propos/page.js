@@ -6,7 +6,7 @@ import { pageDescription, trustClauses } from '@/lib/page-seo';
 import { routeTitle } from '@/lib/titles';
 import { getSettings } from '@/lib/data/settings';
 import { getTeam, getFaqs } from '@/lib/data/content';
-import { authorRenderable, teamIndexable } from '@/lib/authors';
+import { authorRenderable, teamIndexable, authorName, languagesOf } from '@/lib/authors';
 import JsonLd from '@/components/site/JsonLd';
 import BrandLockup from '@/components/site/BrandLockup';
 import SectionBridge from '@/components/site/SectionBridge';
@@ -49,10 +49,8 @@ export default async function AProposPage({ params }) {
   // Person schema for the real, published team (E-E-A-T + GEO entity graph) —
   // the SAME node builder and @id as /equipe and the article bylines
   // (personNode), renderable profiles only; never a placeholder.
-  const teamJsonLd =
-    settings?.team_enabled && team.length
-      ? team.filter(authorRenderable).map((m) => ({ '@context': 'https://schema.org', ...personNode(m, locale) }))
-      : [];
+  const authors = settings?.team_enabled ? team.filter(authorRenderable) : [];
+  const teamJsonLd = authors.map((m) => ({ '@context': 'https://schema.org', ...personNode(m, locale) }));
 
   return (
     <>
@@ -68,6 +66,30 @@ export default async function AProposPage({ params }) {
           <p className="mt-3 max-w-2xl leading-relaxed text-bm-black/60">{t.home.intro}</p>
           {/* The people page — linked once it is indexable (one complete
               published profile), never into a noindex page. */}
+          {/* The people the Person nodes above describe, VISIBLY: structured
+              data must match what the page shows, and StorySection shows a
+              single team photo when team_display = 'photo', never names. */}
+          {authors.length ? (
+            <ul className="mt-6 grid max-w-2xl gap-4 sm:grid-cols-2">
+              {authors.map((m) => {
+                const languages = languagesOf(m);
+                const credentials = pickLang(m, 'credentials', locale);
+                return (
+                  <li key={m.id} className="rounded-card border border-bm-black/10 bg-white p-4 shadow-hairline">
+                    <p className="font-semibold text-bm-black">{authorName(m, locale)}</p>
+                    {pickLang(m, 'role', locale) ? <p className="text-sm text-bm-black/60">{pickLang(m, 'role', locale)}</p> : null}
+                    {pickLang(m, 'bio', locale) ? <p className="mt-2 text-sm leading-relaxed text-bm-black/70">{pickLang(m, 'bio', locale)}</p> : null}
+                    {languages.length ? <p className="mt-2 text-xs text-bm-black/55">{t.pages.speaks.replace('{langs}', languages.join(', '))}</p> : null}
+                    {credentials ? (
+                      <p className="mt-1 text-xs text-bm-black/55">
+                        <span className="font-semibold">{t.pages.credentialsTitle} :</span> {credentials}
+                      </p>
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ul>
+          ) : null}
           {teamIndexable(team) ? (
             <p className="mt-3 text-sm font-semibold">
               <Link href={`/${locale}/equipe`} className="text-wiki-blue underline-offset-4 hover:underline">
