@@ -15,7 +15,15 @@ import ClusterLinks from '@/components/site/ClusterLinks';
 import JsonLd from '@/components/site/JsonLd';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
-export const revalidate = 3600;
+// ISR window (2026-09-21): 6 h, not 1 h. Vercel free-plan ISR writes were
+// at 178k/200k because ~258 prerendered pages each regenerated hourly
+// (24 x 258 = ~186k/month). Every source behind this page already calls
+// revalidateForTable() on an admin write (src/lib/revalidate.js), so the
+// timer only has to catch what changes with the CLOCK: the departure
+// lifecycle (live -> archived -> retired) and the month-lander year
+// rollover, both of which move at day boundaries. The publish-by-time
+// listings (home, /blog, sitemap, llms.txt) stay at 3600.
+export const revalidate = 21600;
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }));

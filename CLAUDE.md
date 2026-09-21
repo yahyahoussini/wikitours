@@ -387,9 +387,13 @@ There is no `tailwind.config.js` (Tailwind v4) and no RTL plugin.
   `npm run content:proof`. The ingest schedules at the slot's `publish_at`
   (never earlier than now + 24 h), else the next free 08:00 **Africa/Casablanca**
   morning (`nextMorningSlot`, zone-aware — Ramadan's UTC+0 included). ISR ≤ 3600
-  on the article page, the sitemap and llms.txt makes the 07:00
-  `publish-articles` cron an accelerator only (IndexNow + runway e-mails), not
-  the publishing mechanism. `CONTENT_PREVIEW_SCHEDULED=1` makes a LOCAL build
+  on the **listings that surface a new post** — the home, `/blog`, the sitemap
+  and llms.txt — makes the 07:00 `publish-articles` cron an accelerator only
+  (IndexNow + runway e-mails), not the publishing mechanism. A scheduled post's
+  own URL is not prerendered at build (it is not published yet), so it renders
+  fresh on its first request whatever its `revalidate` is — which is why the
+  article page could move to the 6 h window below without weakening
+  publish-by-time. `CONTENT_PREVIEW_SCHEDULED=1` makes a LOCAL build
   prerender not-yet-due rows so the gate can check them — **never set it on
   Vercel**.
 - Author: the `team_members` row `yahya-houssini` (`articles.author_id`), no
@@ -561,6 +565,28 @@ message. Run `--self-test` after editing the gate. Legal pages that 404 (no admi
 are skipped, not audited. `npm test` (node:test, `tests/`) runs right after it in the
 same `postbuild`: month rollover boundaries, the departure lifecycle transitions, the
 author-profile rules.
+
+## ISR windows — the hosting bill is a design constraint (2026-09-21)
+
+Vercel's free plan counts an **ISR write** every time a prerendered page
+regenerates. With `revalidate = 3600` on ~258 of the 304 prerendered pages the
+site was generating ~186k writes a month against a 200k allowance (observed:
+178k, plus Fluid Active CPU over its 4 h allowance), because every page
+regenerates on the first request after its window and bots request everything.
+
+Two tiers now, and a new page must pick one deliberately:
+
+| Window | Pages | Why |
+|---|---|---|
+| `3600` | home, `/blog`, `sitemap.xml`, `llms.txt`, `/api/content/facts` | These are what makes **publish-by-time** work: a post that becomes due must appear in a listing within the hour with no cron |
+| `21600` (6 h) | `[flat]` month / city / occasion hubs, `omra/[slug]`, `hotel/[slug]`, `blog/[slug]`, `bab-makka`, `omra-pas-cher`, `equipe`, `barometre-prix-omra` | Every source behind them calls `revalidateForTable()` on an admin write, so the timer only has to catch what moves with the CLOCK: the departure lifecycle (`live → archived → retired`) and the month-lander year rollover, both of which turn at day boundaries |
+| `false` | legal, guides, glossary, `/a-propos`, `/contact`, `/voyages`, OG images | Content changes only on deploy or on an admin write that revalidates |
+
+Consequences to remember: a **direct database write** (a script, not the admin)
+now takes up to 6 h to appear on those pages instead of 1 h — call
+`revalidateForTable()` or accept the delay. And a full crawl of the live site
+(282 pages) costs real origin transfer: crawl with `--max`, and not twice in a
+day.
 
 ## Migrations
 Numbered SQL in `supabase/migrations/`. Apply in order on staging, run
