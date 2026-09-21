@@ -1,0 +1,8 @@
+week,prompt_id,engine,google_position,snippet_owner,ai_overview_cited,cited_domains,brand_named,brand_position,third_party_names_us,map_pack,notes
+2026-W40,C1,Google,7,competitor.ma,no,,,,,,"listicle SERP; local pack present"
+2026-W40,C1,AI Overview,,,no,competitor.ma;youtube.com,no,,,,
+2026-W40,C1,ChatGPT,,,,competitor.ma;annuaire.ma,no,,no,,
+2026-W40,C1,Perplexity,,,,competitor.ma;wikitours.ma,no,2,,,
+2026-W40,C1,Gemini,,,,,yes,,,,"named without link"
+2026-W40,C1,Claude,,,,,no,,,,
+2026-W40,L1,Google,3,,,,,,,yes,"map pack: we are 2nd of 3"

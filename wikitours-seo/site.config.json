@@ -1,0 +1,263 @@
+{
+  "$comment": "rank-first site config. Every value here is public and must match the site, Google Business Profile and every directory character for character (Layer 8).",
+  "site": "https://wikitours.ma",
+  "root": "site",
+  "brand": {
+    "name": "Bab Makka",
+    "nameAr": "باب مكة",
+    "legalName": "Wiki Tours International",
+    "logo": "/img/logo.png",
+    "image": "/img/facade.jpg",
+    "founded": "2016",
+    "ice": "[[FACT NEEDED: ICE de Wiki Tours International]]",
+    "rc": "[[FACT NEEDED: RC de Wiki Tours International]]",
+    "if": "[[FACT NEEDED: IF de Wiki Tours International]]",
+    "founder": {
+      "name": "[[FACT NEEDED: nom du fondateur — la fiche « Directrice Générale » existe (Soumaya Guerssel) mais le fondateur n’est pas déclaré]]",
+      "nameAr": "[[FACT NEEDED: nom du fondateur en arabe]]",
+      "role": "[[FACT NEEDED: rôle exact du fondateur]]",
+      "roleAr": "[[FACT NEEDED: rôle du fondateur en arabe]]",
+      "url": "https://wikitours.ma/fr/equipe",
+      "image": "[[FACT NEEDED: photo du fondateur]]",
+      "bio": "[[FACT NEEDED: bio du fondateur, 60–120 mots, faits vérifiables]]",
+      "credentials": [],
+      "sameAs": []
+    }
+  },
+  "type": "TravelAgency",
+  "category": {
+    "sentence": {
+      "fr": "Bab Makka est l’agence de voyages spécialisée Omra de Wiki Tours International pour les pèlerins marocains, à Casablanca.",
+      "ar": "باب مكة هي وكالة الأسفار المتخصصة في العمرة التابعة لويكي تورز إنترناشيونال، للمعتمرين المغاربة، بالدار البيضاء."
+    },
+    "service": {
+      "fr": "agence de voyages spécialisée Omra",
+      "ar": "وكالة أسفار متخصصة في العمرة"
+    },
+    "city": {
+      "fr": "Casablanca",
+      "ar": "الدار البيضاء"
+    },
+    "quartiers": [],
+    "knowsAbout": [
+      "Omra depuis le Maroc",
+      "Hajj",
+      "hôtels proches du Haram",
+      "visa Omra",
+      "Omra Ramadan",
+      "Omra Chaâbane-Ramadan",
+      "vols Casablanca – Djeddah / Médine"
+    ]
+  },
+  "nap": {
+    "street": "Immeuble Anoual Capital Center, 418 Angle Bd Abdelmoumen et Bd Anoual, Magasin N°1 RDC",
+    "streetAr": "عمارة أنوال كابيتال سنتر، 418 ملتقى شارع عبد المومن وشارع أنوال، محل رقم 1 الطابق الأرضي",
+    "city": "Casablanca",
+    "postalCode": "[[FACT NEEDED: code postal de l’agence]]",
+    "region": "Casablanca-Settat",
+    "country": "MA",
+    "phone": "+212634845177",
+    "phoneAlt": [
+      "+212660655655",
+      "+212694139494"
+    ],
+    "whatsapp": "+212601351105",
+    "email": "contact@wikitours.ma"
+  },
+  "geo": {
+    "lat": 33.5673,
+    "lng": -7.6256
+  },
+  "mapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJKRVa253Npw0RTaL7Ivaxc-Y",
+  "hours": [
+    {
+      "days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "opens": "08:30",
+      "closes": "21:30"
+    },
+    {
+      "days": [
+        "Saturday"
+      ],
+      "opens": "08:30",
+      "closes": "14:30"
+    }
+  ],
+  "priceRange": "13 100 – 33 900 MAD",
+  "areaServed": [
+    "Maroc",
+    "Casablanca",
+    "Rabat",
+    "Marrakech",
+    "Fès",
+    "Tanger",
+    "Agadir",
+    "Meknès",
+    "Oujda"
+  ],
+  "sameAs": [
+    "https://www.google.com/maps/place/?q=place_id:ChIJKRVa253Npw0RTaL7Ivaxc-Y",
+    "https://www.facebook.com/wikitours.ma/",
+    "https://www.instagram.com/wikitours.intl/",
+    "https://web.facebook.com/babmakka.ma/",
+    "https://www.instagram.com/babmakka.ma/",
+    "https://www.tiktok.com/@babmakka1"
+  ],
+  "languages": {
+    "default": "fr",
+    "others": [
+      "ar",
+      "en"
+    ],
+    "hreflang": {
+      "fr": "fr",
+      "ar": "ar",
+      "en": "en"
+    },
+    "xDefault": "fr"
+  },
+  "urlPolicy": {
+    "trailingSlash": false,
+    "www": false,
+    "localePrefix": true
+  },
+  "robots": {
+    "disallow": [
+      "/admin",
+      "/api/"
+    ]
+  },
+  "contentSignal": {
+    "search": "yes",
+    "ai-input": "yes",
+    "ai-train": "yes"
+  },
+  "indexnow": {
+    "key": "bd8d103eb3fdf7cf0e28400a77bc8cfd"
+  },
+  "llmsTxt": false,
+  "redirects": [],
+  "pages": [
+    {
+      "path": "/",
+      "type": "home",
+      "title": {
+        "fr": "Bab Makka : agence de voyages spécialisée Omra à Casablanca",
+        "ar": "باب مكة: وكالة أسفار متخصصة في العمرة في الدار البيضاء"
+      },
+      "h1": {
+        "fr": "Bab Makka, agence de voyages spécialisée Omra à Casablanca",
+        "ar": "باب مكة، وكالة أسفار متخصصة في العمرة في الدار البيضاء"
+      },
+      "published": "2026-09-21",
+      "updated": "2026-09-21",
+      "alt": {
+        "ar": "/ar/"
+      }
+    },
+    {
+      "path": "/agence-de-voyages-specialisee-omra-casablanca/",
+      "type": "pillar",
+      "nav": true,
+      "navLabel": {
+        "fr": "Agence de voyages spécialisée Omra",
+        "ar": "وكالة أسفار متخصصة في العمرة"
+      },
+      "title": {
+        "fr": "Agence de voyages spécialisée Omra à Casablanca | Bab Makka",
+        "ar": "وكالة أسفار متخصصة في العمرة في الدار البيضاء | باب مكة"
+      },
+      "h1": {
+        "fr": "Agence de voyages spécialisée Omra à Casablanca",
+        "ar": "وكالة أسفار متخصصة في العمرة في الدار البيضاء"
+      },
+      "published": "2026-09-21",
+      "updated": "2026-09-21",
+      "alt": {
+        "ar": "/ar/agence-de-voyages-specialisee-omra-casablanca/"
+      }
+    },
+    {
+      "path": "/prix/",
+      "type": "cluster",
+      "nav": true,
+      "navLabel": {
+        "fr": "Prix",
+        "ar": "الأسعار"
+      },
+      "title": {
+        "fr": "Prix agence de voyages spécialisée Omra Casablanca | Bab Makka",
+        "ar": "أسعار وكالة أسفار متخصصة في العمرة الدار البيضاء | باب مكة"
+      },
+      "h1": {
+        "fr": "Combien coûte agence de voyages spécialisée Omra à Casablanca ?",
+        "ar": "كم تكلفة وكالة أسفار متخصصة في العمرة في الدار البيضاء؟"
+      },
+      "published": "2026-09-21",
+      "updated": "2026-09-21",
+      "alt": {
+        "ar": "/ar/prix/"
+      }
+    },
+    {
+      "path": "/a-propos/",
+      "type": "about",
+      "nav": true,
+      "navLabel": {
+        "fr": "À propos",
+        "ar": "من نحن"
+      },
+      "title": {
+        "fr": "À propos de Bab Makka, Casablanca",
+        "ar": "عن باب مكة، الدار البيضاء"
+      },
+      "published": "2026-09-21",
+      "updated": "2026-09-21",
+      "alt": {
+        "ar": "/ar/a-propos/"
+      }
+    },
+    {
+      "path": "/contact/",
+      "type": "contact",
+      "nav": true,
+      "navLabel": {
+        "fr": "Contact",
+        "ar": "اتصل بنا"
+      },
+      "title": {
+        "fr": "Contact Bab Makka Casablanca",
+        "ar": "اتصل بـباب مكة الدار البيضاء"
+      },
+      "published": "2026-09-21",
+      "updated": "2026-09-21",
+      "alt": {
+        "ar": "/ar/contact/"
+      }
+    },
+    {
+      "path": "/mentions-legales/",
+      "type": "legal",
+      "title": {
+        "fr": "Mentions légales"
+      }
+    },
+    {
+      "path": "/confidentialite/",
+      "type": "legal",
+      "title": {
+        "fr": "Politique de confidentialité"
+      }
+    }
+  ],
+  "hoursNote": {
+    "fr": "Dimanche fermé. WhatsApp et service en ligne 24h/24, 7j/7.",
+    "ar": "الأحد مغلق. واتساب والخدمة عبر الإنترنت على مدار الساعة طوال أيام الأسبوع."
+  }
+}

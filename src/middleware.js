@@ -206,6 +206,16 @@ export async function middleware(request, event) {
   const preferred = detectLocale(request);
   const url = request.nextUrl.clone();
 
+  // Wrong CASE on a supported locale (/FR/bab-makka, /AR/omra-ramadan) — an old
+  // link, a typed URL or a directory listing. Without this it fell through to
+  // the bare-path branch below and became /fr/FR/bab-makka → 404 (measured
+  // 2026-09-21). One 301 to the lowercase form, no chain.
+  const lower = first.toLowerCase();
+  if (first !== lower && LOCALES.includes(lower)) {
+    url.pathname = `/${lower}${pathname.slice(first.length + 1)}`;
+    return NextResponse.redirect(url, 301);
+  }
+
   // Invalid locale (e.g. /es/..., /en-us/...) — 404, keep the URL.
   // Rewriting under a supported locale lands in the [...rest] catch-all,
   // which renders the localized not-found page with a 404 status.

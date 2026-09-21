@@ -1,0 +1,12 @@
+# The deliverables of this folder are docs/ and scoreboard/ — those are versioned.
+# Everything below is either a copy of the rank-first scripts or measurement
+# output that can be regenerated, and it has no business in the site's history.
+tools/
+crawl/
+reports/
+node_modules/
+*.log
+audit-before.json
+url-report.json
+crawler-report.json
+.env

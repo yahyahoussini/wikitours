@@ -23,6 +23,7 @@ profile is published).
 | 4 | Mustapha Elkhaoui | Encadrant Technique & Religieux | `mustapha-elkhaoui` | see list |
 | 5 | Hassan Elasyly | Encadrant Technique & Religieux | `hassan-elasyly` | see list |
 | 6 | Yahya Houssini | Développeur full-stack et guide expert Omra et Hajj (owner's own words, 2026-09-17; profile published) | `yahya-houssini` | Arabic spelling of the name, languages, profile link |
+| 7 | Yassine Hmaidouch | Expert en publicité (owner's words, 2026-09-17: "advertising expert"; row published, so the home story section shows him) | `yassine-hmaidouch` | bio facts, Arabic spelling of the name, languages, photo — no `/equipe` card and no `Person` node until a bio exists |
 
 For **each** of the six:
 

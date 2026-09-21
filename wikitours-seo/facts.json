@@ -1,0 +1,623 @@
+{
+  "$comment": "Every number, price, date and quote used on the site lives here with its source. Pages reference facts with data-fact=\"id\". Never invent a fact; ask the client or find a public source with a URL.",
+  "facts": [
+    {
+      "id": "licence",
+      "value": "ODV-25012",
+      "text": {
+        "fr": "Wiki Tours International est une agence de voyages agréée sous la licence ODV-25012.",
+        "ar": "ويكي تورز إنترناشيونال وكالة أسفار مرخصة تحت رقم الاعتماد ODV-25012."
+      },
+      "source": "Client — table settings (license_number), affiché sur /fr/agrement",
+      "date": "2026-09-21",
+      "status": "confirmed"
+    },
+    {
+      "id": "founded",
+      "value": "2016",
+      "text": {
+        "fr": "Wiki Tours International opère depuis 2016.",
+        "ar": "تعمل ويكي تورز إنترناشيونال منذ سنة 2016."
+      },
+      "source": "Client — CLAUDE.md et page /fr/a-propos",
+      "date": "2026-09-21",
+      "status": "to-confirm",
+      "note": "Date de création juridique à confirmer par le RC."
+    },
+    {
+      "id": "address",
+      "value": "Immeuble Anoual Capital Center, 418 Angle Bd Abdelmoumen et Bd Anoual, Magasin N°1 RDC, Casablanca.",
+      "text": {
+        "fr": "Immeuble Anoual Capital Center, 418 Angle Bd Abdelmoumen et Bd Anoual, Magasin N°1 RDC, Casablanca.",
+        "ar": "عمارة أنوال كابيتال سنتر، 418 ملتقى شارع عبد المومن وشارع أنوال، محل رقم 1 الطابق الأرضي، الدار البيضاء."
+      },
+      "source": "Client — table settings (address_fr/ar), affiché sur /fr/contact",
+      "date": "2026-09-21",
+      "status": "confirmed"
+    },
+    {
+      "id": "geo",
+      "value": "33.5673,-7.6256",
+      "text": {
+        "fr": "Agence située à l’angle du boulevard Abdelmoumen et du boulevard Anoual, à Casablanca.",
+        "ar": "تقع الوكالة عند ملتقى شارع عبد المومن وشارع أنوال بالدار البيضاء."
+      },
+      "source": "Client — table settings (latitude/longitude) + fiche Google",
+      "date": "2026-09-21",
+      "status": "confirmed"
+    },
+    {
+      "id": "hours",
+      "value": "Du lundi au vendredi : 08:30 – 21:30 · Samedi : 08:30 – 14:30 · Dimanche : fermé · WhatsApp et service en ligne : 24h/24, 7j/7 — réponse en moins de 5 minutes",
+      "text": {
+        "fr": "L’agence reçoit du lundi au vendredi de 08:30 à 21:30 et le samedi de 08:30 à 14:30 ; elle est fermée le dimanche.",
+        "ar": "تستقبل الوكالة من الإثنين إلى الجمعة من 08:30 إلى 21:30، والسبت من 08:30 إلى 14:30، وتغلق يوم الأحد."
+      },
+      "source": "Client — table settings (opening_hours_fr), affiché sur /fr/contact",
+      "date": "2026-09-21",
+      "status": "confirmed"
+    },
+    {
+      "id": "whatsapp_24_7",
+      "value": "+212601351105",
+      "text": {
+        "fr": "Le WhatsApp +212 601 351 105 répond 24h/24 et 7j/7.",
+        "ar": "رقم واتساب +212 601 351 105 يجيب على مدار الساعة طوال أيام الأسبوع."
+      },
+      "source": "Client — déclaration du propriétaire (21/09/2026) et mention publiée dans les horaires du site",
+      "date": "2026-09-21",
+      "status": "confirmed",
+      "note": "Le site annonce aussi une réponse en moins de 5 minutes : engagement commercial, à tenir ou à retirer."
+    },
+    {
+      "id": "reply_time",
+      "value": "moins de 5 minutes",
+      "text": {
+        "fr": "Le site annonce une réponse en moins de 5 minutes sur WhatsApp.",
+        "ar": "يعلن الموقع عن الرد في أقل من 5 دقائق عبر واتساب."
+      },
+      "source": "Client — table settings (opening_hours_fr)",
+      "date": "2026-09-21",
+      "status": "to-confirm",
+      "note": "Promesse publiée : à mesurer, sinon à reformuler."
+    },
+    {
+      "id": "gbp_rating",
+      "value": "4.8 / 5",
+      "text": {
+        "fr": "La fiche Google de l’agence affiche une note de 4.8 sur 5.",
+        "ar": "تعرض بطاقة جوجل للوكالة تقييماً قدره 4.8 من 5."
+      },
+      "source": "Fiche Google Business Profile — https://www.google.com/maps/place/?q=place_id:ChIJKRVa253Npw0RTaL7Ivaxc-Y",
+      "date": "2026-09-21",
+      "status": "confirmed",
+      "note": "Contenu visible et llms.txt uniquement : ne jamais rattacher à un nœud schema (règle du projet)."
+    },
+    {
+      "id": "gbp_reviews",
+      "value": "141",
+      "text": {
+        "fr": "141 avis Google au 21/09/2026.",
+        "ar": "141 تقييماً على جوجل بتاريخ 21/09/2026."
+      },
+      "source": "Fiche Google Business Profile — https://share.google/jksbawfwAQyRYkZ01",
+      "date": "2026-09-21",
+      "status": "confirmed",
+      "note": "Chiffre daté : à re-mesurer chaque mois."
+    },
+    {
+      "id": "press",
+      "value": "https://en.yabiladi.com/articles/details/189517/middle-east-disruptions-direct-umrah.html",
+      "text": {
+        "fr": "Wiki Tours International a été citée par Yabiladi au sujet des perturbations des vols directs vers l’Omra.",
+        "ar": "استُشهد بويكي تورز إنترناشيونال في يابلادي بخصوص اضطرابات الرحلات المباشرة للعمرة."
+      },
+      "source": "Yabiladi — https://en.yabiladi.com/articles/details/189517/middle-east-disruptions-direct-umrah.html",
+      "date": "2026-09-21",
+      "status": "confirmed",
+      "note": "Date de publication de l’article à relever pour la page « Qui parle de nous »."
+    },
+    {
+      "id": "hotels_count",
+      "value": "9",
+      "text": {
+        "fr": "Les programmes s’appuient sur 9 hôtels référencés, dont le plus proche du Haram est à 50 m.",
+        "ar": "تعتمد البرامج على 9 فنادق مرجعية، أقربها إلى الحرم على بُعد 50 متراً."
+      },
+      "source": "Client — table hotels",
+      "date": "2026-09-21",
+      "status": "confirmed"
+    },
+    {
+      "id": "hotel_makarem_madinah",
+      "value": "600 m",
+      "text": {
+        "fr": "Makarem Madinah : Médine, à 600 m de la mosquée du Prophète, 5 étoiles.",
+        "ar": "Makarem Madinah: المدينة المنورة، على بُعد 600 متراً من المسجد النبوي، 5 نجوم."
+      },
+      "source": "Client — table hotels (distance_to_haram_m, stars)",
+      "date": "2026-09-21",
+      "status": "confirmed"
+    },
+    {
+      "id": "hotel_abraj_al_kiswah",
+      "value": "900 m",
+      "text": {
+        "fr": "Abraj Al Kiswah : La Mecque, à 900 m du Haram, 3 étoiles.",
+        "ar": "Abraj Al Kiswah: مكة المكرمة، على بُعد 900 متراً من الحرم، 3 نجوم."
+      },
+      "source": "Client — table hotels (distance_to_haram_m, stars)",
+      "date": "2026-09-21",
+      "status": "confirmed"
+    },
+    {
+      "id": "hotel_swiss_international",
+      "value": "600 m",
+      "text": {
+        "fr": "Swiss International : La Mecque, à 600 m du Haram, 5 étoiles.",
+        "ar": "Swiss International: مكة المكرمة، على بُعد 600 متراً من الحرم، 5 نجوم."
+      },
+      "source": "Client — table hotels (distance_to_haram_m, stars)",
+      "date": "2026-09-21",
+      "status": "confirmed"
+    },
+    {
+      "id": "hotel_taj_park",
+      "value": "700 m",
+      "text": {
+        "fr": "Taj Park : La Mecque, à 700 m du Haram, 3 étoiles.",
+        "ar": "Taj Park: مكة المكرمة، على بُعد 700 متراً من الحرم، 3 نجوم."
+      },
+      "source": "Client — table hotels (distance_to_haram_m, stars)",
+      "date": "2026-09-21",
+      "status": "confirmed"
+    },
+    {
+      "id": "hotel_anjum",
+      "value": "50 m",
+      "text": {
+        "fr": "Anjum : La Mecque, à 50 m du Haram, 5 étoiles.",
+        "ar": "Anjum: مكة المكرمة، على بُعد 50 متراً من الحرم، 5 نجوم."
+      },
+      "source": "Client — table hotels (distance_to_haram_m, stars)",
+      "date": "2026-09-21",
+      "status": "confirmed"
+    },
+    {
+      "id": "hotel_emaar_grand_hotel",
+      "value": "750 m",
+      "text": {
+        "fr": "Emaar Grand : La Mecque, à 750 m du Haram, 5 étoiles.",
+        "ar": "Emaar Grand: مكة المكرمة، على بُعد 750 متراً من الحرم، 5 نجوم."
+      },
+      "source": "Client — table hotels (distance_to_haram_m, stars)",
+      "date": "2026-09-21",
+      "status": "confirmed"
+    },
+    {
+      "id": "hotel_dhiafat_al_rajaa_hotel",
+      "value": "4500 m",
+      "text": {
+        "fr": "Dhiafat Al Rajaa Hotel : La Mecque, à 4500 m du Haram, 3 étoiles.",
+        "ar": "Dhiafat Al Rajaa Hotel: مكة المكرمة، على بُعد 4500 متراً من الحرم، 3 نجوم."
+      },
+      "source": "Client — table hotels (distance_to_haram_m, stars)",
+      "date": "2026-09-21",
+      "status": "confirmed"
+    },
+    {
+      "id": "hotel_jayden_medina_hotel",
+      "value": "600 m",
+      "text": {
+        "fr": "Jayden Medina Hotel : Médine, à 600 m de la mosquée du Prophète, 4 étoiles.",
+        "ar": "Jayden Medina Hotel: المدينة المنورة، على بُعد 600 متراً من المسجد النبوي، 4 نجوم."
+      },
+      "source": "Client — table hotels (distance_to_haram_m, stars)",
+      "date": "2026-09-21",
+      "status": "confirmed"
+    },
+    {
+      "id": "hotel_abeer_al_fadila",
+      "value": "1300 m",
+      "text": {
+        "fr": "Abeer Al Fadila : La Mecque, à 1300 m du Haram.",
+        "ar": "Abeer Al Fadila: مكة المكرمة، على بُعد 1300 متراً من الحرم."
+      },
+      "source": "Client — table hotels (distance_to_haram_m, stars)",
+      "date": "2026-09-21",
+      "status": "to-confirm",
+      "note": "Classement en étoiles manquant."
+    },
+    {
+      "id": "depart_omra_23_sept_au_7_octobre_2026",
+      "value": "2026-09-23 → 2026-10-07",
+      "text": {
+        "fr": "Départ « Omra Septembre 2026 — Départ 23 septembre » : du 23/09/2026 au 07/10/2026, 15 jours, avec Saudia Airlines (الخطوط السعودية), à partir de 12 900 MAD par personne.",
+        "ar": "رحلة « Omra Septembre 2026 — Départ 23 septembre »: من 23/09/2026 إلى 07/10/2026، 15 يوماً، مع Saudia Airlines (الخطوط السعودية)، ابتداءً من 12 900 درهم للشخص."
+      },
+      "source": "Client — table offers (date_start, date_end, airline, starting_price)",
+      "date": "2026-09-21",
+      "status": "volatile",
+      "note": "Prix et dates changent : sur le site ils s’affichent en direct, jamais écrits dans le texte."
+    },
+    {
+      "id": "prix_omra_23_sept_au_7_octobre_2026_nonamecolumn",
+      "value": "15900/14900/13900 MAD",
+      "text": {
+        "fr": "Omra Septembre 2026 — Départ 23 septembre — gamme (no name column) : Abraj Al Kiswah (900 m, 3★) à La Mecque et Makarem Madinah (600 m, 5★) à Médine ; 15 900 MAD en chambre double, 14 900 en triple, 13 900 en quadruple ; petit-déjeuner non inclus.",
+        "ar": "Omra Septembre 2026 — Départ 23 septembre — فئة (no name column): Abraj Al Kiswah (900 m, 3★) بمكة المكرمة وMakarem Madinah (600 m, 5★) بالمدينة المنورة؛ 15 900 درهم في الغرفة المزدوجة، و14 900 في الثلاثية، و13 900 في الرباعية؛ الفطور غير مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "prix_omra_23_sept_au_7_octobre_2026_nonamecolumn",
+      "value": "17300/16000/14900 MAD",
+      "text": {
+        "fr": "Omra Septembre 2026 — Départ 23 septembre — gamme (no name column) : Taj Park (700 m, 3★) à La Mecque et Makarem Madinah (600 m, 5★) à Médine ; 17 300 MAD en chambre double, 16 000 en triple, 14 900 en quadruple ; petit-déjeuner non inclus.",
+        "ar": "Omra Septembre 2026 — Départ 23 septembre — فئة (no name column): Taj Park (700 m, 3★) بمكة المكرمة وMakarem Madinah (600 m, 5★) بالمدينة المنورة؛ 17 300 درهم في الغرفة المزدوجة، و16 000 في الثلاثية، و14 900 في الرباعية؛ الفطور غير مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "prix_omra_23_sept_au_7_octobre_2026_nonamecolumn",
+      "value": "21500/19400/18600 MAD",
+      "text": {
+        "fr": "Omra Septembre 2026 — Départ 23 septembre — gamme (no name column) : Dhiafat Al Rajaa Hotel (4500 m, 3★) à La Mecque et Jayden Medina Hotel (600 m, 4★) à Médine ; 21 500 MAD en chambre double, 19 400 en triple, 18 600 en quadruple ; petit-déjeuner inclus.",
+        "ar": "Omra Septembre 2026 — Départ 23 septembre — فئة (no name column): Dhiafat Al Rajaa Hotel (4500 m, 3★) بمكة المكرمة وJayden Medina Hotel (600 m, 4★) بالمدينة المنورة؛ 21 500 درهم في الغرفة المزدوجة، و19 400 في الثلاثية، و18 600 في الرباعية؛ الفطور مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "prix_omra_23_sept_au_7_octobre_2026_nonamecolumn",
+      "value": "27300/24700/23200 MAD",
+      "text": {
+        "fr": "Omra Septembre 2026 — Départ 23 septembre — gamme (no name column) : Anjum (50 m, 5★) à La Mecque et Jayden Medina Hotel (600 m, 4★) à Médine ; 27 300 MAD en chambre double, 24 700 en triple, 23 200 en quadruple ; petit-déjeuner non inclus.",
+        "ar": "Omra Septembre 2026 — Départ 23 septembre — فئة (no name column): Anjum (50 m, 5★) بمكة المكرمة وJayden Medina Hotel (600 m, 4★) بالمدينة المنورة؛ 27 300 درهم في الغرفة المزدوجة، و24 700 في الثلاثية، و23 200 في الرباعية؛ الفطور غير مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "depart_omra_octobre_2026_6_au_20",
+      "value": "2026-10-06 → 2026-10-20",
+      "text": {
+        "fr": "Départ « Omra Octobre 2026 — Départ 6 octobre » : du 06/10/2026 au 20/10/2026, 15 jours, avec Saudia, à partir de 12 300 MAD par personne.",
+        "ar": "رحلة « Omra Octobre 2026 — Départ 6 octobre »: من 06/10/2026 إلى 20/10/2026، 15 يوماً، مع Saudia، ابتداءً من 12 300 درهم للشخص."
+      },
+      "source": "Client — table offers (date_start, date_end, airline, starting_price)",
+      "date": "2026-09-21",
+      "status": "volatile",
+      "note": "Prix et dates changent : sur le site ils s’affichent en direct, jamais écrits dans le texte."
+    },
+    {
+      "id": "prix_omra_octobre_2026_6_au_20_nonamecolumn",
+      "value": "15900/14900/13900 MAD",
+      "text": {
+        "fr": "Omra Octobre 2026 — Départ 6 octobre — gamme (no name column) : Abraj Al Kiswah (900 m, 3★) à La Mecque et Makarem Madinah (600 m, 5★) à Médine ; 15 900 MAD en chambre double, 14 900 en triple, 13 900 en quadruple ; petit-déjeuner non inclus.",
+        "ar": "Omra Octobre 2026 — Départ 6 octobre — فئة (no name column): Abraj Al Kiswah (900 m, 3★) بمكة المكرمة وMakarem Madinah (600 m, 5★) بالمدينة المنورة؛ 15 900 درهم في الغرفة المزدوجة، و14 900 في الثلاثية، و13 900 في الرباعية؛ الفطور غير مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "prix_omra_octobre_2026_6_au_20_nonamecolumn",
+      "value": "17300/15900/14900 MAD",
+      "text": {
+        "fr": "Omra Octobre 2026 — Départ 6 octobre — gamme (no name column) : Taj Park (700 m, 3★) à La Mecque et Makarem Madinah (600 m, 5★) à Médine ; 17 300 MAD en chambre double, 15 900 en triple, 14 900 en quadruple ; petit-déjeuner non inclus.",
+        "ar": "Omra Octobre 2026 — Départ 6 octobre — فئة (no name column): Taj Park (700 m, 3★) بمكة المكرمة وMakarem Madinah (600 m, 5★) بالمدينة المنورة؛ 17 300 درهم في الغرفة المزدوجة، و15 900 في الثلاثية، و14 900 في الرباعية؛ الفطور غير مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "prix_omra_octobre_2026_6_au_20_nonamecolumn",
+      "value": "22300/19900/18700 MAD",
+      "text": {
+        "fr": "Omra Octobre 2026 — Départ 6 octobre — gamme (no name column) : Emaar Grand (750 m, 5★) à La Mecque et Jayden Medina Hotel (600 m, 4★) à Médine ; 22 300 MAD en chambre double, 19 900 en triple, 18 700 en quadruple ; petit-déjeuner inclus.",
+        "ar": "Omra Octobre 2026 — Départ 6 octobre — فئة (no name column): Emaar Grand (750 m, 5★) بمكة المكرمة وJayden Medina Hotel (600 m, 4★) بالمدينة المنورة؛ 22 300 درهم في الغرفة المزدوجة، و19 900 في الثلاثية، و18 700 في الرباعية؛ الفطور مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "prix_omra_octobre_2026_6_au_20_nonamecolumn",
+      "value": "26300/23700/22200 MAD",
+      "text": {
+        "fr": "Omra Octobre 2026 — Départ 6 octobre — gamme (no name column) : Anjum (50 m, 5★) à La Mecque et Jayden Medina Hotel (600 m, 4★) à Médine ; 26 300 MAD en chambre double, 23 700 en triple, 22 200 en quadruple ; petit-déjeuner inclus.",
+        "ar": "Omra Octobre 2026 — Départ 6 octobre — فئة (no name column): Anjum (50 m, 5★) بمكة المكرمة وJayden Medina Hotel (600 m, 4★) بالمدينة المنورة؛ 26 300 درهم في الغرفة المزدوجة، و23 700 في الثلاثية، و22 200 في الرباعية؛ الفطور مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "depart_omra_octobre_2026_vacances_scolaires_17_au_24",
+      "value": "2026-10-17 → 2026-10-24",
+      "text": {
+        "fr": "Départ « Omra Octobre 2026 — Spécial vacances scolaires » : du 17/10/2026 au 24/10/2026, 8 jours, avec Saudia, à partir de 12 500 MAD par personne.",
+        "ar": "رحلة « Omra Octobre 2026 — Spécial vacances scolaires »: من 17/10/2026 إلى 24/10/2026، 8 يوماً، مع Saudia، ابتداءً من 12 500 درهم للشخص."
+      },
+      "source": "Client — table offers (date_start, date_end, airline, starting_price)",
+      "date": "2026-09-21",
+      "status": "volatile",
+      "note": "Prix et dates changent : sur le site ils s’affichent en direct, jamais écrits dans le texte."
+    },
+    {
+      "id": "prix_omra_octobre_2026_vacances_scolaires_17_au_24_nonamecolumn",
+      "value": "14100/13600/13100 MAD",
+      "text": {
+        "fr": "Omra Octobre 2026 — Spécial vacances scolaires — gamme (no name column) : Abraj Al Kiswah (900 m, 3★) à La Mecque et Makarem Madinah (600 m, 5★) à Médine ; 14 100 MAD en chambre double, 13 600 en triple, 13 100 en quadruple ; petit-déjeuner inclus.",
+        "ar": "Omra Octobre 2026 — Spécial vacances scolaires — فئة (no name column): Abraj Al Kiswah (900 m, 3★) بمكة المكرمة وMakarem Madinah (600 m, 5★) بالمدينة المنورة؛ 14 100 درهم في الغرفة المزدوجة، و13 600 في الثلاثية، و13 100 في الرباعية؛ الفطور مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "prix_omra_octobre_2026_vacances_scolaires_17_au_24_nonamecolumn",
+      "value": "14900/14200/13600 MAD",
+      "text": {
+        "fr": "Omra Octobre 2026 — Spécial vacances scolaires — gamme (no name column) : Taj Park (700 m, 3★) à La Mecque et Makarem Madinah (600 m, 5★) à Médine ; 14 900 MAD en chambre double, 14 200 en triple, 13 600 en quadruple ; petit-déjeuner inclus.",
+        "ar": "Omra Octobre 2026 — Spécial vacances scolaires — فئة (no name column): Taj Park (700 m, 3★) بمكة المكرمة وMakarem Madinah (600 m, 5★) بالمدينة المنورة؛ 14 900 درهم في الغرفة المزدوجة، و14 200 في الثلاثية، و13 600 في الرباعية؛ الفطور مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "prix_omra_octobre_2026_vacances_scolaires_17_au_24_nonamecolumn",
+      "value": "15600/14900/14300 MAD",
+      "text": {
+        "fr": "Omra Octobre 2026 — Spécial vacances scolaires — gamme (no name column) : Taj Park (700 m, 3★) à La Mecque et Makarem Madinah (600 m, 5★) à Médine ; 15 600 MAD en chambre double, 14 900 en triple, 14 300 en quadruple ; petit-déjeuner inclus.",
+        "ar": "Omra Octobre 2026 — Spécial vacances scolaires — فئة (no name column): Taj Park (700 m, 3★) بمكة المكرمة وMakarem Madinah (600 m, 5★) بالمدينة المنورة؛ 15 600 درهم في الغرفة المزدوجة، و14 900 في الثلاثية، و14 300 في الرباعية؛ الفطور مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "prix_omra_octobre_2026_vacances_scolaires_17_au_24_nonamecolumn",
+      "value": "20900/19300/17900 MAD",
+      "text": {
+        "fr": "Omra Octobre 2026 — Spécial vacances scolaires — gamme (no name column) : Anjum (50 m, 5★) à La Mecque et Jayden Medina Hotel (600 m, 4★) à Médine ; 20 900 MAD en chambre double, 19 300 en triple, 17 900 en quadruple ; petit-déjeuner inclus.",
+        "ar": "Omra Octobre 2026 — Spécial vacances scolaires — فئة (no name column): Anjum (50 m, 5★) بمكة المكرمة وJayden Medina Hotel (600 m, 4★) بالمدينة المنورة؛ 20 900 درهم في الغرفة المزدوجة، و19 300 في الثلاثية، و17 900 في الرباعية؛ الفطور مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "depart_omra_novembre_2026_4_au_18",
+      "value": "2026-11-04 → 2026-11-18",
+      "text": {
+        "fr": "Départ « Omra Novembre 2026 — Départ 4 novembre » : du 04/11/2026 au 18/11/2026, 15 jours, avec Saudia, à partir de 13 500 MAD par personne.",
+        "ar": "رحلة « Omra Novembre 2026 — Départ 4 novembre »: من 04/11/2026 إلى 18/11/2026، 15 يوماً، مع Saudia، ابتداءً من 13 500 درهم للشخص."
+      },
+      "source": "Client — table offers (date_start, date_end, airline, starting_price)",
+      "date": "2026-09-21",
+      "status": "volatile",
+      "note": "Prix et dates changent : sur le site ils s’affichent en direct, jamais écrits dans le texte."
+    },
+    {
+      "id": "prix_omra_novembre_2026_4_au_18_nonamecolumn",
+      "value": "16400/15100/14250 MAD",
+      "text": {
+        "fr": "Omra Novembre 2026 — Départ 4 novembre — gamme (no name column) : Abraj Al Kiswah (900 m, 3★) à La Mecque et Makarem Madinah (600 m, 5★) à Médine ; 16 400 MAD en chambre double, 15 100 en triple, 14 250 en quadruple ; petit-déjeuner non inclus.",
+        "ar": "Omra Novembre 2026 — Départ 4 novembre — فئة (no name column): Abraj Al Kiswah (900 m, 3★) بمكة المكرمة وMakarem Madinah (600 m, 5★) بالمدينة المنورة؛ 16 400 درهم في الغرفة المزدوجة، و15 100 في الثلاثية، و14 250 في الرباعية؛ الفطور غير مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "prix_omra_novembre_2026_4_au_18_nonamecolumn",
+      "value": "17600/15900/15100 MAD",
+      "text": {
+        "fr": "Omra Novembre 2026 — Départ 4 novembre — gamme (no name column) : Taj Park (700 m, 3★) à La Mecque et Makarem Madinah (600 m, 5★) à Médine ; 17 600 MAD en chambre double, 15 900 en triple, 15 100 en quadruple ; petit-déjeuner non inclus.",
+        "ar": "Omra Novembre 2026 — Départ 4 novembre — فئة (no name column): Taj Park (700 m, 3★) بمكة المكرمة وMakarem Madinah (600 m, 5★) بالمدينة المنورة؛ 17 600 درهم في الغرفة المزدوجة، و15 900 في الثلاثية، و15 100 في الرباعية؛ الفطور غير مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "prix_omra_novembre_2026_4_au_18_nonamecolumn",
+      "value": "22900/20300/19200 MAD",
+      "text": {
+        "fr": "Omra Novembre 2026 — Départ 4 novembre — gamme (no name column) : Emaar Grand (750 m, 5★) à La Mecque et Jayden Medina Hotel (600 m, 4★) à Médine ; 22 900 MAD en chambre double, 20 300 en triple, 19 200 en quadruple ; petit-déjeuner inclus.",
+        "ar": "Omra Novembre 2026 — Départ 4 novembre — فئة (no name column): Emaar Grand (750 m, 5★) بمكة المكرمة وJayden Medina Hotel (600 m, 4★) بالمدينة المنورة؛ 22 900 درهم في الغرفة المزدوجة، و20 300 في الثلاثية، و19 200 في الرباعية؛ الفطور مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "prix_omra_novembre_2026_4_au_18_nonamecolumn",
+      "value": "27500/24500/22800 MAD",
+      "text": {
+        "fr": "Omra Novembre 2026 — Départ 4 novembre — gamme (no name column) : Anjum (50 m, 5★) à La Mecque et Jayden Medina Hotel (600 m, 4★) à Médine ; 27 500 MAD en chambre double, 24 500 en triple, 22 800 en quadruple ; petit-déjeuner inclus.",
+        "ar": "Omra Novembre 2026 — Départ 4 novembre — فئة (no name column): Anjum (50 m, 5★) بمكة المكرمة وJayden Medina Hotel (600 m, 4★) بالمدينة المنورة؛ 27 500 درهم في الغرفة المزدوجة، و24 500 في الثلاثية، و22 800 في الرباعية؛ الفطور مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "depart_omra_chaabane_ramadan_2027_25_jours",
+      "value": "2027-01-22 → 2027-02-15",
+      "text": {
+        "fr": "Départ « Omra Chaâbane-Ramadan 2027 — 25 jours, du 22 janvier au 15 février » : du 22/01/2027 au 15/02/2027, 25 jours, avec Saudia, à partir de 16 500 MAD par personne.",
+        "ar": "رحلة « Omra Chaâbane-Ramadan 2027 — 25 jours, du 22 janvier au 15 février »: من 22/01/2027 إلى 15/02/2027، 25 يوماً، مع Saudia، ابتداءً من 16 500 درهم للشخص."
+      },
+      "source": "Client — table offers (date_start, date_end, airline, starting_price)",
+      "date": "2026-09-21",
+      "status": "volatile",
+      "note": "Prix et dates changent : sur le site ils s’affichent en direct, jamais écrits dans le texte."
+    },
+    {
+      "id": "prix_omra_chaabane_ramadan_2027_25_jours_nonamecolumn",
+      "value": "19500/18100/17300 MAD",
+      "text": {
+        "fr": "Omra Chaâbane-Ramadan 2027 — 25 jours, du 22 janvier au 15 février — gamme (no name column) : Abeer Al Fadila (1300 m, ?★) à La Mecque et Makarem Madinah (600 m, 5★) à Médine ; 19 500 MAD en chambre double, 18 100 en triple, 17 300 en quadruple ; petit-déjeuner non inclus.",
+        "ar": "Omra Chaâbane-Ramadan 2027 — 25 jours, du 22 janvier au 15 février — فئة (no name column): Abeer Al Fadila (1300 m, ?★) بمكة المكرمة وMakarem Madinah (600 m, 5★) بالمدينة المنورة؛ 19 500 درهم في الغرفة المزدوجة، و18 100 في الثلاثية، و17 300 في الرباعية؛ الفطور غير مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "prix_omra_chaabane_ramadan_2027_25_jours_nonamecolumn",
+      "value": "22500/19900/18800 MAD",
+      "text": {
+        "fr": "Omra Chaâbane-Ramadan 2027 — 25 jours, du 22 janvier au 15 février — gamme (no name column) : Taj Park (700 m, 3★) à La Mecque et Makarem Madinah (600 m, 5★) à Médine ; 22 500 MAD en chambre double, 19 900 en triple, 18 800 en quadruple ; petit-déjeuner non inclus.",
+        "ar": "Omra Chaâbane-Ramadan 2027 — 25 jours, du 22 janvier au 15 février — فئة (no name column): Taj Park (700 m, 3★) بمكة المكرمة وMakarem Madinah (600 m, 5★) بالمدينة المنورة؛ 22 500 درهم في الغرفة المزدوجة، و19 900 في الثلاثية، و18 800 في الرباعية؛ الفطور غير مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "prix_omra_chaabane_ramadan_2027_25_jours_nonamecolumn",
+      "value": "33900/28900/26500 MAD",
+      "text": {
+        "fr": "Omra Chaâbane-Ramadan 2027 — 25 jours, du 22 janvier au 15 février — gamme (no name column) : Emaar Grand (750 m, 5★) à La Mecque et Jayden Medina Hotel (600 m, 4★) à Médine ; 33 900 MAD en chambre double, 28 900 en triple, 26 500 en quadruple ; petit-déjeuner inclus.",
+        "ar": "Omra Chaâbane-Ramadan 2027 — 25 jours, du 22 janvier au 15 février — فئة (no name column): Emaar Grand (750 m, 5★) بمكة المكرمة وJayden Medina Hotel (600 m, 4★) بالمدينة المنورة؛ 33 900 درهم في الغرفة المزدوجة، و28 900 في الثلاثية، و26 500 في الرباعية؛ الفطور مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "depart_omra_chaabane_ramadan_2027_15_jours",
+      "value": "2027-02-01 → 2027-02-15",
+      "text": {
+        "fr": "Départ « Omra Chaâbane-Ramadan 2027 — 15 jours, du 1er au 15 février » : du 01/02/2027 au 15/02/2027, 15 jours, avec Saudia, à partir de 16 900 MAD par personne.",
+        "ar": "رحلة « Omra Chaâbane-Ramadan 2027 — 15 jours, du 1er au 15 février »: من 01/02/2027 إلى 15/02/2027، 15 يوماً، مع Saudia، ابتداءً من 16 900 درهم للشخص."
+      },
+      "source": "Client — table offers (date_start, date_end, airline, starting_price)",
+      "date": "2026-09-21",
+      "status": "volatile",
+      "note": "Prix et dates changent : sur le site ils s’affichent en direct, jamais écrits dans le texte."
+    },
+    {
+      "id": "prix_omra_chaabane_ramadan_2027_15_jours_nonamecolumn",
+      "value": "19900/18500/17700 MAD",
+      "text": {
+        "fr": "Omra Chaâbane-Ramadan 2027 — 15 jours, du 1er au 15 février — gamme (no name column) : Abeer Al Fadila (1300 m, ?★) à La Mecque et Makarem Madinah (600 m, 5★) à Médine ; 19 900 MAD en chambre double, 18 500 en triple, 17 700 en quadruple ; petit-déjeuner non inclus.",
+        "ar": "Omra Chaâbane-Ramadan 2027 — 15 jours, du 1er au 15 février — فئة (no name column): Abeer Al Fadila (1300 m, ?★) بمكة المكرمة وMakarem Madinah (600 m, 5★) بالمدينة المنورة؛ 19 900 درهم في الغرفة المزدوجة، و18 500 في الثلاثية، و17 700 في الرباعية؛ الفطور غير مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "prix_omra_chaabane_ramadan_2027_15_jours_nonamecolumn",
+      "value": "22300/19600/18500 MAD",
+      "text": {
+        "fr": "Omra Chaâbane-Ramadan 2027 — 15 jours, du 1er au 15 février — gamme (no name column) : Taj Park (700 m, 3★) à La Mecque et Makarem Madinah (600 m, 5★) à Médine ; 22 300 MAD en chambre double, 19 600 en triple, 18 500 en quadruple ; petit-déjeuner non inclus.",
+        "ar": "Omra Chaâbane-Ramadan 2027 — 15 jours, du 1er au 15 février — فئة (no name column): Taj Park (700 m, 3★) بمكة المكرمة وMakarem Madinah (600 m, 5★) بالمدينة المنورة؛ 22 300 درهم في الغرفة المزدوجة، و19 600 في الثلاثية، و18 500 في الرباعية؛ الفطور غير مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "prix_omra_chaabane_ramadan_2027_15_jours_nonamecolumn",
+      "value": "26800/23800/22400 MAD",
+      "text": {
+        "fr": "Omra Chaâbane-Ramadan 2027 — 15 jours, du 1er au 15 février — gamme (no name column) : Emaar Grand (750 m, 5★) à La Mecque et Jayden Medina Hotel (600 m, 4★) à Médine ; 26 800 MAD en chambre double, 23 800 en triple, 22 400 en quadruple ; petit-déjeuner inclus.",
+        "ar": "Omra Chaâbane-Ramadan 2027 — 15 jours, du 1er au 15 février — فئة (no name column): Emaar Grand (750 m, 5★) بمكة المكرمة وJayden Medina Hotel (600 m, 4★) بالمدينة المنورة؛ 26 800 درهم في الغرفة المزدوجة، و23 800 في الثلاثية، و22 400 في الرباعية؛ الفطور مشمول."
+      },
+      "source": "Client — tables offer_tiers + hotels",
+      "date": "2026-09-21",
+      "status": "volatile"
+    },
+    {
+      "id": "articles_live",
+      "value": "31",
+      "text": {
+        "fr": "31 articles publiés sur le blog au 21/09/2026.",
+        "ar": "31 مقالاً منشوراً في المدونة بتاريخ 21/09/2026."
+      },
+      "source": "Client — table articles",
+      "date": "2026-09-21",
+      "status": "confirmed"
+    },
+    {
+      "id": "community",
+      "value": "919K",
+      "text": {
+        "fr": "[[FACT NEEDED: ce que représentent exactement les 919K : abonnés cumulés ? vues ? sur quelles plateformes et à quelle date ?]]",
+        "ar": "[[FACT NEEDED: نفس السؤال بالعربية]]"
+      },
+      "source": "Client — table settings (community_count)",
+      "date": "2026-09-21",
+      "status": "needed",
+      "note": "Chiffre présent dans la base sans définition : inutilisable tel quel."
+    },
+    {
+      "id": "pilgrims_served",
+      "value": "[[FACT NEEDED: nombre de pèlerins accompagnés depuis 2016, et depuis quelle date il est compté]]",
+      "text": {
+        "fr": "[[FACT NEEDED: nombre de pèlerins]]",
+        "ar": "[[FACT NEEDED: عدد المعتمرين]]"
+      },
+      "source": "À fournir par le client",
+      "date": "2026-09-21",
+      "status": "needed",
+      "note": "Demandé par la commande : introuvable dans la base."
+    },
+    {
+      "id": "passport_validity_policy",
+      "value": "[[FACT NEEDED: règle passeport définitive de l’agence]]",
+      "text": {
+        "fr": "Les programmes Chaâbane-Ramadan exigent un passeport valide au moins 6 mois à compter de la date de départ ; la FAQ du site dit « 6 mois après la date de retour ». Une seule règle doit rester.",
+        "ar": "تشترط برامج شعبان رمضان جواز سفر صالحاً 6 أشهر على الأقل ابتداءً من تاريخ السفر، بينما تقول الأسئلة الشائعة في الموقع « 6 أشهر بعد تاريخ العودة ». يجب توحيد القاعدة."
+      },
+      "source": "Client — conditions des offres vs FAQ du site",
+      "date": "2026-09-21",
+      "status": "needed",
+      "note": "Contradiction interne relevée le 17/09/2026, toujours ouverte."
+    }
+  ],
+  "quotes": [
+    {
+      "id": "q-founder-1",
+      "text": {
+        "fr": "[[FACT NEEDED: une phrase signée du fondateur ou de la directrice générale]]",
+        "ar": "[[FACT NEEDED: اقتباس بالعربية]]"
+      },
+      "person": "[[FACT NEEDED: nom]]",
+      "role": "[[FACT NEEDED: rôle]]",
+      "status": "needed"
+    }
+  ],
+  "sources": [
+    {
+      "id": "settings",
+      "label": "Base de l’agence (table settings), lue le 21/09/2026"
+    },
+    {
+      "id": "offers",
+      "label": "Base de l’agence (tables offers, offer_tiers, hotels), lue le 21/09/2026"
+    },
+    {
+      "id": "gbp",
+      "label": "Fiche Google Business Profile — https://www.google.com/maps/place/?q=place_id:ChIJKRVa253Npw0RTaL7Ivaxc-Y"
+    },
+    {
+      "id": "press",
+      "label": "Yabiladi — https://en.yabiladi.com/articles/details/189517/middle-east-disruptions-direct-umrah.html"
+    }
+  ]
+}

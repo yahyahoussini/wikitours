@@ -184,8 +184,11 @@ export function OfferCard({ offer, locale, t, whatsappHref, compact = false }) {
         {makkahHotel ? (
           <p className="flex flex-wrap items-center gap-2 text-sm text-bm-black/70">
             {logoUrl ? (
+              // loading="lazy" keeps this 8 KB brand mark OUT of the head preload
+              // list, where it was competing with the LCP card image on the same
+              // connection (2026-09-21).
               // eslint-disable-next-line @next/next/no-img-element -- tiny brand mark
-              <img src={logoUrl} alt="" width={96} height={20} className="h-5 w-auto rounded-[4px] bg-white/90 px-1 py-0.5" />
+              <img src={logoUrl} alt="" width={96} height={20} loading="lazy" decoding="async" className="h-5 w-auto rounded-[4px] bg-white/90 px-1 py-0.5" />
             ) : null}
             <span className="truncate">{makkahHotel.name}</span>
             {distance != null ? (

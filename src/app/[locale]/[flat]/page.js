@@ -211,7 +211,11 @@ export async function generateMetadata({ params }) {
  */
 function MonthEvergreen({ ctx, t, locale }) {
   const { month, year, monthPage, historic, lastSeason, hijri } = ctx;
-  const fill = (s) => s.replace('{month}', month).replace('{year}', String(year));
+  // replaceAll, not replace: the evergreen lede names the month TWICE and
+  // String.replace() swaps only the first hit — /en/omra-mars shipped
+  // « plan an Umrah in {month} » in its visible data-answer lede and in the
+  // WebPage JSON-LD description (observed live, 2026-09-21).
+  const fill = (s) => s.replaceAll('{month}', month).replaceAll('{year}', String(year));
   const shortDate = new Intl.DateTimeFormat(locale === 'ar' ? 'ar-MA' : `${locale}-MA`, { day: 'numeric', month: 'short', timeZone: 'UTC' });
   const weather = pickLang(monthPage, 'weather', locale);
   const crowds = pickLang(monthPage, 'crowds', locale);
@@ -350,7 +354,7 @@ export default async function FlatLandingPage({ params }) {
     // departures are that year's; indexability is the shared predicate.
     const year = targetYearFor(m, { offers });
     const month = monthName(m, locale);
-    const fill = (s) => s.replace('{month}', month).replace('{year}', String(year));
+    const fill = (s) => s.replaceAll('{month}', month).replaceAll('{year}', String(year));
     matching = departuresInMonth(offers, m);
     const indexable = monthLanderIndexable(m, { offers, monthPage });
     heading = fill(t.months.pageTitle);
