@@ -335,6 +335,13 @@ export default async function FlatLandingPage({ params }) {
   // City pages carry admin-authored unique content + their own FAQ category.
   const cityRow = resolved.kind === 'city' ? await getCityPage(resolved.citySlug) : null;
   const cityFaqs = resolved.kind === 'city' ? await getFaqs(`ville-${resolved.citySlug}`) : [];
+  // Occasion hubs can carry their OWN questions (category `occasion-{slug}`),
+  // the way city pages and month landers already do. Ramadan does not raise the
+  // same objections as a cheap-Omra search — visa, vaccination, travelling
+  // without a mahram, children, paying in instalments — and the generic set
+  // below answers none of them. No rows for an occasion → the generic set still
+  // renders, so nothing changes for a hub nobody has written questions for.
+  const occasionFaqs = resolved.kind === 'occasion' ? await getFaqs(`occasion-${resolved.occasion.slug}`) : [];
 
   let matching = offers;
   let heading;
@@ -457,7 +464,9 @@ export default async function FlatLandingPage({ params }) {
   // admin-authored, month-specific — never the home set). Normalized to {q, a}.
   const faq =
     resolved.kind === 'occasion'
-      ? t.pages.pasCherFaq
+      ? occasionFaqs.length
+        ? occasionFaqs.map((f) => ({ q: pickLang(f, 'question', locale), a: pickLang(f, 'answer', locale) }))
+        : t.pages.pasCherFaq
       : monthCtx?.faqs.length
         ? monthCtx.faqs
         : cityFaqs.length
