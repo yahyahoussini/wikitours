@@ -1,0 +1,173 @@
+{
+  "slug": "gammes-omra-economique-vip",
+  "file": null,
+  "row": true,
+  "state": "published",
+  "format": "explainer",
+  "checked_at": "2026-09-21T18:01:45.303Z",
+  "ok": false,
+  "failed": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6",
+    "G10",
+    "G12",
+    "G13",
+    "G0"
+  ],
+  "pending": [],
+  "words": {
+    "fr": 355,
+    "ar": 253,
+    "en": 303
+  },
+  "checks": {
+    "G1": {
+      "ok": false,
+      "details": [
+        "body_fr : 355 mots, attendu 1100–1900 (format explainer)",
+        "body_ar : 253 mots, attendu 850–1700 (format explainer)",
+        "body_en : 303 mots, attendu 950–1750 (format explainer)"
+      ],
+      "format": "explainer"
+    },
+    "G2": {
+      "ok": false,
+      "details": [
+        "excerpt_fr (bloc réponse d'abord) : 58 mots, attendu 40–55",
+        "excerpt_ar (bloc réponse d'abord) : 38 mots, attendu 40–55"
+      ]
+    },
+    "G3": {
+      "ok": false,
+      "details": [
+        "body_fr : 1 H2 en forme de question sur 5, minimum 4",
+        "body_ar : 2 H2 en forme de question sur 5, minimum 4",
+        "body_en : 2 H2 en forme de question sur 5, minimum 4"
+      ]
+    },
+    "G4": {
+      "ok": false,
+      "details": [
+        "body_fr : FAQ de 0 question(s), attendu 5–6",
+        "body_ar : FAQ de 0 question(s), attendu 5–6",
+        "body_en : FAQ de 0 question(s), attendu 5–6"
+      ]
+    },
+    "G5": {
+      "ok": false,
+      "details": [
+        "body_fr : distance hôtel en clair « 50 m »",
+        "body_fr : nombre « 900 » absent de data/allowed-facts.json",
+        "body_fr : nombre « 34 » absent de data/allowed-facts.json",
+        "body_fr : nombre « 700 » absent de data/allowed-facts.json",
+        "body_ar : nombre « 900 » absent de data/allowed-facts.json",
+        "body_ar : nombre « 700 » absent de data/allowed-facts.json",
+        "body_en : distance hôtel en clair « 50 metres »",
+        "body_en : nombre « 900 » absent de data/allowed-facts.json",
+        "body_en : nombre « 34 » absent de data/allowed-facts.json",
+        "body_en : nombre « 700 » absent de data/allowed-facts.json"
+      ]
+    },
+    "G6": {
+      "ok": false,
+      "details": [
+        "body_fr : 3 lien(s) interne(s) (liens markdown + CTA), minimum 4",
+        "body_fr : aucun lien vers le pilier /omra-pas-cher (<CommercialCTA> ou lien markdown)",
+        "body_fr : 0 lien(s) vers des pages sœurs du dossier C, minimum 2",
+        "body_fr : lien en dur vers la page commerciale « /hotels-omra » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_fr : lien en dur vers la page commerciale « /bab-makka » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_ar : 3 lien(s) interne(s) (liens markdown + CTA), minimum 4",
+        "body_ar : aucun lien vers le pilier /omra-pas-cher (<CommercialCTA> ou lien markdown)",
+        "body_ar : 0 lien(s) vers des pages sœurs du dossier C, minimum 2",
+        "body_ar : lien en dur vers la page commerciale « /hotels-omra » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_ar : lien en dur vers la page commerciale « /bab-makka » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_en : 3 lien(s) interne(s) (liens markdown + CTA), minimum 4",
+        "body_en : aucun lien vers le pilier /omra-pas-cher (<CommercialCTA> ou lien markdown)",
+        "body_en : 0 lien(s) vers des pages sœurs du dossier C, minimum 2",
+        "body_en : lien en dur vers la page commerciale « /hotels-omra » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_en : lien en dur vers la page commerciale « /bab-makka » — utiliser <CommercialCTA intent=\"…\" />"
+      ]
+    },
+    "G7": {
+      "ok": true,
+      "details": [],
+      "warnings": []
+    },
+    "G8": {
+      "ok": true,
+      "details": []
+    },
+    "G9": {
+      "ok": true,
+      "details": [],
+      "arabicShare": 99.1
+    },
+    "G10": {
+      "ok": false,
+      "details": [
+        "fr : expression interdite « n°1 »"
+      ]
+    },
+    "G11": {
+      "ok": true,
+      "details": []
+    },
+    "G12": {
+      "ok": false,
+      "details": [
+        "seo_description_fr : 110 caractères, attendu 120–155",
+        "seo_description_ar : 111 caractères, attendu 120–155"
+      ]
+    },
+    "G13": {
+      "ok": false,
+      "details": [
+        "FAQPage : 0 question(s) extraites de body_fr, minimum 5",
+        "/fr : nœud FAQPage absent",
+        "/ar : nœud FAQPage absent",
+        "/en : nœud FAQPage absent"
+      ]
+    },
+    "G14": {
+      "ok": true,
+      "details": [
+        "créneau omra : règle non applicable"
+      ]
+    },
+    "G15": {
+      "ok": true,
+      "details": [],
+      "closest": {
+        "fr": {
+          "slug": "omra-en-famille-enfants-parents-ages",
+          "score": 0.033
+        },
+        "ar": {
+          "slug": "omra-en-famille-enfants-parents-ages",
+          "score": 0.017
+        },
+        "en": {
+          "slug": "omra-en-famille-enfants-parents-ages",
+          "score": 0.027
+        }
+      },
+      "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
+    },
+    "G16": {
+      "ok": true,
+      "details": []
+    },
+    "G0": {
+      "ok": false,
+      "details": [
+        "body_fr trop court : 359 mots (minimum 800)",
+        "bloc « Questions fréquentes » absent ou avec 0 question(s) (minimum 3)"
+      ],
+      "flags": []
+    }
+  }
+}

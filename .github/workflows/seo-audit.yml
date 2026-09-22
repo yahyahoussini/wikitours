@@ -45,6 +45,28 @@ jobs:
         if: ${{ inputs.base_url == '' }}
         run: npm ci
 
+      # Every run of this job has failed ~10 s into the Build step, before Next
+      # prints a single page — the signature of the Supabase client refusing to
+      # start with an empty URL. The build reads published rows at
+      # generateStaticParams, so the three secrets are not optional. This step
+      # turns a silent exit 1 into a message that names what is missing.
+      - name: Check the Supabase secrets exist
+        if: ${{ inputs.base_url == '' }}
+        env:
+          SB_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SB_ANON: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SB_SERVICE: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          missing=""
+          [ -z "$SB_URL" ] && missing="$missing NEXT_PUBLIC_SUPABASE_URL"
+          [ -z "$SB_ANON" ] && missing="$missing NEXT_PUBLIC_SUPABASE_ANON_KEY"
+          [ -z "$SB_SERVICE" ] && missing="$missing SUPABASE_SERVICE_ROLE_KEY"
+          if [ -n "$missing" ]; then
+            echo "::error::Repository secrets missing:$missing — add them in GitHub → Settings → Secrets and variables → Actions (the values are the ones in .env.local)."
+            exit 1
+          fi
+          echo "Supabase secrets present"
+
       - name: Build (postbuild runs scripts/seo-suite.mjs + scripts/schema-audit.mjs + npm test)
         if: ${{ inputs.base_url == '' }}
         run: npm run build

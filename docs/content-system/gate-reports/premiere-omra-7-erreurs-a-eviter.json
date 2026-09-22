@@ -1,0 +1,160 @@
+{
+  "slug": "premiere-omra-7-erreurs-a-eviter",
+  "file": null,
+  "row": true,
+  "state": "published",
+  "format": "explainer",
+  "checked_at": "2026-09-21T18:01:47.426Z",
+  "ok": false,
+  "failed": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6",
+    "G10",
+    "G12",
+    "G13",
+    "G0"
+  ],
+  "pending": [],
+  "words": {
+    "fr": 537,
+    "ar": 390,
+    "en": 494
+  },
+  "checks": {
+    "G1": {
+      "ok": false,
+      "details": [
+        "body_fr : 537 mots, attendu 1100–1900 (format explainer)",
+        "body_ar : 390 mots, attendu 850–1700 (format explainer)",
+        "body_en : 494 mots, attendu 950–1750 (format explainer)"
+      ],
+      "format": "explainer"
+    },
+    "G2": {
+      "ok": false,
+      "details": [
+        "excerpt_ar (bloc réponse d'abord) : 37 mots, attendu 40–55"
+      ]
+    },
+    "G3": {
+      "ok": false,
+      "details": [
+        "body_fr : 0 H2 en forme de question sur 9, minimum 4",
+        "body_ar : 0 H2 en forme de question sur 9, minimum 4",
+        "body_en : 0 H2 en forme de question sur 9, minimum 4"
+      ]
+    },
+    "G4": {
+      "ok": false,
+      "details": [
+        "body_fr : FAQ de 0 question(s), attendu 5–6",
+        "body_ar : FAQ de 0 question(s), attendu 5–6",
+        "body_en : FAQ de 0 question(s), attendu 5–6"
+      ]
+    },
+    "G5": {
+      "ok": false,
+      "details": [
+        "body_fr : distance hôtel en clair « 700 m »",
+        "body_fr : nombre « 700 » absent de data/allowed-facts.json",
+        "body_ar : nombre « 700 » absent de data/allowed-facts.json",
+        "body_en : nombre « 700 » absent de data/allowed-facts.json"
+      ]
+    },
+    "G6": {
+      "ok": false,
+      "details": [
+        "body_fr : aucun lien vers le pilier /guide-omra (<CommercialCTA> ou lien markdown)",
+        "body_fr : lien en dur vers la page commerciale « /bab-makka » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_fr : lien en dur vers la page commerciale « /bab-makka » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_ar : aucun lien vers le pilier /guide-omra (<CommercialCTA> ou lien markdown)",
+        "body_ar : lien en dur vers la page commerciale « /bab-makka » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_ar : lien en dur vers la page commerciale « /bab-makka » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_en : aucun lien vers le pilier /guide-omra (<CommercialCTA> ou lien markdown)",
+        "body_en : lien en dur vers la page commerciale « /bab-makka » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_en : lien en dur vers la page commerciale « /bab-makka » — utiliser <CommercialCTA intent=\"…\" />"
+      ]
+    },
+    "G7": {
+      "ok": true,
+      "details": [],
+      "warnings": []
+    },
+    "G8": {
+      "ok": true,
+      "details": []
+    },
+    "G9": {
+      "ok": true,
+      "details": [],
+      "arabicShare": 100
+    },
+    "G10": {
+      "ok": false,
+      "details": [
+        "en : expression interdite « the best »"
+      ]
+    },
+    "G11": {
+      "ok": true,
+      "details": []
+    },
+    "G12": {
+      "ok": false,
+      "details": [
+        "seo_title_ar avec marque : 38 caractères, attendu 45–60 (« أول عمرة: 7 أخطاء يجب تجنبها | باب مكة »)",
+        "seo_title_en avec marque : 44 caractères, attendu 45–60 (« First Umrah: 7 mistakes to avoid | Bab Makka »)"
+      ]
+    },
+    "G13": {
+      "ok": false,
+      "details": [
+        "FAQPage : 0 question(s) extraites de body_fr, minimum 5",
+        "/fr : nœud FAQPage absent",
+        "/ar : nœud FAQPage absent",
+        "/en : nœud FAQPage absent"
+      ]
+    },
+    "G14": {
+      "ok": true,
+      "details": [
+        "créneau omra : règle non applicable"
+      ]
+    },
+    "G15": {
+      "ok": true,
+      "details": [],
+      "closest": {
+        "fr": {
+          "slug": "omra-en-famille-enfants-parents-ages",
+          "score": 0.014
+        },
+        "ar": {
+          "slug": "ramadan-2027-dates-calendrier",
+          "score": 0.013
+        },
+        "en": {
+          "slug": "omra-en-famille-enfants-parents-ages",
+          "score": 0.015
+        }
+      },
+      "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
+    },
+    "G16": {
+      "ok": true,
+      "details": []
+    },
+    "G0": {
+      "ok": false,
+      "details": [
+        "body_fr trop court : 540 mots (minimum 800)",
+        "bloc « Questions fréquentes » absent ou avec 0 question(s) (minimum 3)"
+      ],
+      "flags": []
+    }
+  }
+}

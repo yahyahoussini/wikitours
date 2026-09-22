@@ -2,11 +2,15 @@
   "slug": "reserver-omra-depuis-l-europe-agence-casablanca",
   "file": null,
   "row": true,
+  "state": "scheduled",
   "format": "guide",
-  "checked_at": "2026-09-15T10:11:36.407Z",
+  "checked_at": "2026-09-21T18:01:50.797Z",
   "ok": true,
   "failed": [],
-  "pending": [],
+  "pending": [
+    "G13",
+    "G16"
+  ],
   "words": {
     "fr": 2059,
     "ar": 1426,
@@ -66,7 +70,10 @@
     },
     "G13": {
       "ok": true,
-      "details": []
+      "details": [
+        "ligne programmée absente d'un build normal (publish-by-time) : rejouer avec CONTENT_PREVIEW_SCHEDULED=1"
+      ],
+      "pending": true
     },
     "G14": {
       "ok": true,
@@ -94,8 +101,11 @@
       "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
     },
     "G16": {
-      "ok": true,
-      "details": []
+      "ok": null,
+      "pending": true,
+      "details": [
+        "ligne programmée absente d'un build normal (publish-by-time) : rejouer avec CONTENT_PREVIEW_SCHEDULED=1"
+      ]
     },
     "G0": {
       "ok": true,

@@ -1,0 +1,170 @@
+{
+  "slug": "comment-verifier-agence-omra-agreee-maroc",
+  "file": null,
+  "row": true,
+  "state": "published",
+  "format": "explainer",
+  "checked_at": "2026-09-21T18:01:45.786Z",
+  "ok": false,
+  "failed": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6",
+    "G11",
+    "G12",
+    "G13",
+    "G0"
+  ],
+  "pending": [],
+  "words": {
+    "fr": 424,
+    "ar": 306,
+    "en": 382
+  },
+  "checks": {
+    "G1": {
+      "ok": false,
+      "details": [
+        "body_fr : 424 mots, attendu 1100–1900 (format explainer)",
+        "body_ar : 306 mots, attendu 850–1700 (format explainer)",
+        "body_en : 382 mots, attendu 950–1750 (format explainer)"
+      ],
+      "format": "explainer"
+    },
+    "G2": {
+      "ok": false,
+      "details": [
+        "excerpt_fr (bloc réponse d'abord) : 33 mots, attendu 40–55",
+        "excerpt_ar (bloc réponse d'abord) : 27 mots, attendu 40–55",
+        "excerpt_en (bloc réponse d'abord) : 34 mots, attendu 40–55"
+      ]
+    },
+    "G3": {
+      "ok": false,
+      "details": [
+        "body_fr : 0 H2 en forme de question sur 7, minimum 4",
+        "body_ar : 0 H2 en forme de question sur 7, minimum 4",
+        "body_en : 0 H2 en forme de question sur 7, minimum 4"
+      ]
+    },
+    "G4": {
+      "ok": false,
+      "details": [
+        "body_fr : FAQ de 0 question(s), attendu 5–6",
+        "body_ar : FAQ de 0 question(s), attendu 5–6",
+        "body_en : FAQ de 0 question(s), attendu 5–6"
+      ]
+    },
+    "G5": {
+      "ok": false,
+      "details": [
+        "body_fr : année en clair « 2026 »",
+        "body_ar : année en clair « 2026 »",
+        "body_en : année en clair « 2026 »"
+      ]
+    },
+    "G6": {
+      "ok": false,
+      "details": [
+        "body_fr : 3 lien(s) interne(s) (liens markdown + CTA), minimum 4",
+        "body_fr : aucun lien vers le pilier /agence-omra-casablanca (<CommercialCTA> ou lien markdown)",
+        "body_fr : 1 lien(s) vers des pages sœurs du dossier B, minimum 2",
+        "body_fr : lien en dur vers la page commerciale « /omra-juillet » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_fr : « /fr/omra-juillet » est noindex",
+        "body_ar : 3 lien(s) interne(s) (liens markdown + CTA), minimum 4",
+        "body_ar : aucun lien vers le pilier /agence-omra-casablanca (<CommercialCTA> ou lien markdown)",
+        "body_ar : 1 lien(s) vers des pages sœurs du dossier B, minimum 2",
+        "body_ar : lien en dur vers la page commerciale « /omra-juillet » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_ar : « /ar/omra-juillet » est noindex",
+        "body_en : 3 lien(s) interne(s) (liens markdown + CTA), minimum 4",
+        "body_en : aucun lien vers le pilier /agence-omra-casablanca (<CommercialCTA> ou lien markdown)",
+        "body_en : 1 lien(s) vers des pages sœurs du dossier B, minimum 2",
+        "body_en : lien en dur vers la page commerciale « /omra-juillet » — utiliser <CommercialCTA intent=\"…\" />",
+        "body_en : « /en/omra-juillet » est noindex"
+      ]
+    },
+    "G7": {
+      "ok": true,
+      "details": [],
+      "warnings": []
+    },
+    "G8": {
+      "ok": true,
+      "details": []
+    },
+    "G9": {
+      "ok": true,
+      "details": [],
+      "arabicShare": 99.8
+    },
+    "G10": {
+      "ok": true,
+      "details": []
+    },
+    "G11": {
+      "ok": false,
+      "details": [
+        "body_fr : citation hors <ReviewQuote> «  payer aujourd'hui, sinon le prix monte … »",
+        "body_en : citation hors <ReviewQuote> « pay today or the price goes up… »"
+      ]
+    },
+    "G12": {
+      "ok": false,
+      "details": [
+        "seo_description_fr : 115 caractères, attendu 120–155"
+      ]
+    },
+    "G13": {
+      "ok": false,
+      "details": [
+        "FAQPage : 0 question(s) extraites de body_fr, minimum 5",
+        "/fr : nœud FAQPage absent",
+        "/ar : nœud FAQPage absent",
+        "/en : nœud FAQPage absent"
+      ]
+    },
+    "G14": {
+      "ok": true,
+      "details": [
+        "créneau omra : règle non applicable"
+      ]
+    },
+    "G15": {
+      "ok": true,
+      "details": [],
+      "closest": {
+        "fr": {
+          "slug": "comment-choisir-agence-omra",
+          "score": 0.019
+        },
+        "ar": {
+          "slug": "hajj-maroc-inscription-quota",
+          "score": 0.011
+        },
+        "en": {
+          "slug": "comment-choisir-agence-omra",
+          "score": 0.009
+        }
+      },
+      "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
+    },
+    "G16": {
+      "ok": true,
+      "details": []
+    },
+    "G0": {
+      "ok": false,
+      "details": [
+        "body_fr trop court : 430 mots (minimum 800)",
+        "body_fr : année en clair « 2026 » — les faits volatils passent par une balise",
+        "body_ar : année en clair « 2026 » — les faits volatils passent par une balise",
+        "body_en : année en clair « 2026 » — les faits volatils passent par une balise",
+        "bloc « Questions fréquentes » absent ou avec 0 question(s) (minimum 3)"
+      ],
+      "flags": []
+    }
+  }
+}
