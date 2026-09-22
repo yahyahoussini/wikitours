@@ -14,16 +14,64 @@ sitemap de 276 URL, une suite de tests au vert. Beaucoup de lignes A sont donc
 sans objet (`site/`, `npm run pages`, le déploiement) ou déjà faites. Ce bloc dit
 ce qui est vrai aujourd'hui ; en cas de contradiction, **c'est lui qui gagne**.
 
-### Les 6 actions qui bloquent le plan, par ordre de rendement
+### Tout ce qui reste, vérifié un par un le 22/09/2026
 
-| # | Action | Temps | Pourquoi elle est première |
+#### Groupe 1 — moins de 5 minutes chacune, et elles débloquent le reste
+
+| # | Action | Où | Vérifié aujourd'hui |
 |---|---|---|---|
-| 1 | **`bab-makka.com` → redirection permanente 301** (Vercel → Domains) | 2 min | ~9 URL de l'ancien domaine sont encore indexées et servies ; en 307 elles ne transmettent aucune autorité. C'est la seule action qui **récupère** de la valeur déjà acquise |
-| 2 | **Search Console — propriété Domaine** `wikitours.ma` (DNS TXT), puis export Requêtes 12 mois dans `data/gsc/` | 20 min | sans lui, la moitié de `docs/19` reste une hypothèse : on ne connaît ni les requêtes réelles, ni leur langue, ni les positions 4–15 |
-| 3 | **Corriger Telecontact** (`up.telecontact.ma`) : adresse, téléphone, site | 15 min | c'est la fiche que la recherche web recopie comme étant **l**'adresse de l'agence (docs/06 § 3.5) |
-| 4 | **Confirmer ou désavouer** `06 63 88 67 09` et `06 75 33 32 23` | 2 min | deux numéros attribués à l'agence par les moteurs, présents dans aucun réglage et sur aucune page |
-| 5 | **Clé API PageSpeed** (Google Cloud, gratuite) dans `wikitours-seo/.env` | 10 min | les Core Web Vitals ne sont **pas mesurés** : l'API répond 429 sans clé. Ce n'est pas « ça passe », c'est « on ne sait pas » |
-| 6 | **Fiche Google** : retirer « Omra & Hajj » du nom, confirmer le code postal | 10 min | docs/05 ; le nom de la fiche doit être le nom légal |
+| 1 | **Publier les CGV et les Mentions légales** — les deux textes sont **déjà écrits** en français et en arabe, ils sont juste sur « non publié » | admin → Pages légales | `is_published = false` sur les deux ; `/fr/cgv` et `/fr/mentions-legales` renvoient **404**. La loi 11-16 impose le numéro de licence sur le site : c'est une obligation, pas une option |
+| 2 | **`bab-makka.com` → redirection permanente (301)** | Vercel → Domains | toujours **307** aujourd'hui (`https://bab-makka.com/` → 307). ~9 URL de l'ancien domaine restent indexées et ne transmettent rien |
+| 3 | **Confirmer ou désavouer** `06 63 88 67 09` et `06 75 33 32 23` | — | absents de tous les réglages et de toutes les pages ; les moteurs les attribuent pourtant à l'agence |
+| 4 | **Trois secrets GitHub Actions** : `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | GitHub → Settings → Secrets | l'intégration continue **échoue à chaque exécution** depuis des jours, exactement à l'étape « Check the Supabase secrets exist ». Tout le reste du job passe |
+
+#### Groupe 2 — 10 à 20 minutes, mesure et réputation
+
+| # | Action | Pourquoi |
+|---|---|---|
+| 5 | **Search Console — propriété Domaine** `wikitours.ma` (DNS TXT), puis export Requêtes 12 mois → `data/gsc/` | sans lui, la moitié de `docs/19` reste une hypothèse : ni les requêtes réelles, ni leur langue, ni les positions 4–15. Liste d'indexation à demander : `docs/12` § 1 ter |
+| 6 | **Corriger Telecontact** (`up.telecontact.ma`) : adresse, téléphone, site | c'est cette fiche que la recherche web recopie comme étant **l**'adresse de l'agence (docs/06 § 3.5) |
+| 7 | **Clé API PageSpeed** (Google Cloud, gratuite) → `wikitours-seo/.env` | les Core Web Vitals ne sont **pas mesurés** : 429 sans clé. « On ne sait pas », pas « ça passe » |
+| 8 | **Fiche Google** : retirer « Omra & Hajj » du nom, confirmer le code postal, coller le lien tagué (`docs/12` § 4) | le nom de la fiche doit être le nom légal |
+| 9 | **Signaler l'erreur** sur City-Info et `ma.arabplaces.com`, réclamer la fiche Yandex | les trois autres sources de l'adresse périmée |
+| 10 | **Appliquer les migrations 025 et 026** sur Supabase | vérifié : les tables `hijri_events` et `content_calendar` **n'existent pas**. Sans elles, le calendrier éditorial et les comptes à rebours Hijri ne tournent pas |
+| 11 | **Bing Webmaster Tools** : import depuis Search Console | alimente Copilot et une partie de ChatGPT Search |
+
+#### Groupe 3 — les faits que vous seul avez
+
+Rien de tout cela ne sera inventé. Tant qu'un fait manque, la page sort sans
+lui ou ne sort pas.
+
+| Fait | Ce qu'il débloque |
+|---|---|
+| Transport groupé Oujda → Casablanca pour Chaâbane-Ramadan ? Point de rendez-vous à Oujda ? | la page de la semaine (`docs/briefs/ar-omra-depuis-oujda.md`) |
+| Combien de pèlerins de l'Oriental sont partis la saison dernière | idem — un chiffre à nous, qu'aucun concurrent ne peut copier |
+| **Coordonnées GPS des 9 hôtels** | vérifié : **0 hôtel sur 9** a ses coordonnées. Le `geo` des nœuds `Hotel` reste vide |
+| **Biographies de l'équipe** (fr + ar) | vérifié : **1 profil sur 7** a ses deux biographies. Les 6 autres ne peuvent pas être publiés |
+| Questions propres à `/omra-chaabane-ramadan` | rendre son balisage FAQ à ce hub (`BORROWED_FAQ`) |
+| Le nom de la personne citée par Yabiladi (03/03/2026) | la demande de lien, et toute mention de cette personne |
+| ICE / RC / IF, nom du fondateur, code postal | `site.config.json`, mentions légales, fiche Google |
+| Passeport : « à compter de la date de départ » (offres) vs « après la date de retour » (FAQ) vs la source officielle (« 6 mois à l'entrée ») | trois formulations différentes en ligne — il en faut une |
+
+#### Groupe 4 — décisions, pas des tâches
+
+- **Le dépôt GitHub `yahyahoussini/wikitours` est public** et ressort 2ᵉ sur la
+  requête « wikitours.ma ». Le laisser ou le passer en privé — mais le choisir.
+- **Le blog** : 6 réécritures et 2 fusions proposées (`docs/22-audit-blog.md`),
+  29 articles sur 31 sous la barre de qualité. Dans quel ordre, et lesquels.
+- **`/voyages`** : le remplir ou le laisser `noindex`.
+- **Règle de signature** des articles : tout au nom de l'agence, ou des auteurs
+  nommés une fois leurs biographies écrites.
+
+#### Groupe 5 — la mesure manuelle, tant qu'il n'y a pas de clés
+
+| Quoi | Cadence |
+|---|---|
+| Relever les 33 prompts depuis un mobile **à Casablanca** → `scoreboard/runs/<semaine>.csv` | chaque lundi |
+| Vérifier le pack local sur 7 requêtes depuis Casablanca | une fois, puis mensuel |
+| Export Performances de la fiche Google (6 mois) → `scoreboard/gbp-baseline.csv` | une fois |
+| Publier le post de la fiche et répondre aux avis (textes prêts : `docs/23`) | chaque semaine |
+| Demander un avis à chaque groupe qui rentre (textes : `docs/03`) | à chaque retour |
 
 ### Décisions qui n'appartiennent qu'à vous
 
