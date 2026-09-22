@@ -3,7 +3,7 @@ import { SITE_URL, absoluteUrl, parseOpeningHours, postalAddress, brandNode } fr
 import { pickLang, getDictionary, FALLBACK_LOCALE } from '@/lib/i18n';
 import { toE164 } from '@/lib/pixels';
 import { getSettings } from '@/lib/data/settings';
-import { getPublishedOffers, computeMinPrice } from '@/lib/data/content';
+import { getPublishedOffers, computeMinPrice, computeMaxPrice } from '@/lib/data/content';
 import { CITY_SLUGS, cityName } from '@/lib/months';
 import { warnCriticalSettingsOnce } from '@/lib/seo/health';
 import JsonLd from '@/components/site/JsonLd';
@@ -68,14 +68,22 @@ export default async function OrgJsonLd({ locale }) {
   // raw prose is kept as a fallback so this can only improve the markup.
   const hoursSpec = parseOpeningHours(s?.opening_hours_fr);
 
-  // priceRange from the REAL published offers (never typed by hand): the span
-  // of per-offer minimum prices. Omitted when no priced offer exists.
-  const offerPrices = (await getPublishedOffers())
+  // priceRange from the REAL published offers (never typed by hand). It must
+  // span what the business actually charges: the CHEAPEST room of the cheapest
+  // gamme to the DEAREST room of the dearest one. Until 2026-09-22 both ends
+  // came from per-offer minima, so the node advertised 12.300–16.900 MAD while
+  // a premium double was 33.900 — a ceiling understated by half, repeated by
+  // every engine that reads this node. Omitted when no priced offer exists.
+  const published = await getPublishedOffers();
+  const lows = published
     .map((o) => computeMinPrice(o.tiers) ?? o.starting_price)
     .filter((p) => typeof p === 'number' && p > 0);
+  const highs = published
+    .map((o) => computeMaxPrice(o.tiers) ?? o.starting_price)
+    .filter((p) => typeof p === 'number' && p > 0);
   const nf = new Intl.NumberFormat('fr-MA');
-  const priceRange = offerPrices.length
-    ? `${nf.format(Math.min(...offerPrices))}–${nf.format(Math.max(...offerPrices))} MAD`
+  const priceRange = lows.length
+    ? `${nf.format(Math.min(...lows))}–${nf.format(Math.max(...highs))} MAD`
     : null;
 
   const data = {

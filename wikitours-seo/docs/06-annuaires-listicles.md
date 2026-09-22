@@ -62,13 +62,20 @@ c'est la **dérive** : quatre adresses différentes coexistent aujourd'hui.
 | hdaya.ma | ✗ absent | catégorie à 1 entrée, très mince | faible priorité |
 | annuaire-gratuit.ma · alapage.ma | ❓ invérifiable | URL de recherche en 404 ; DNS introuvable depuis cette machine | ne pas s'y attarder |
 
-**Deux vérifications qui n'appartiennent qu'au propriétaire :**
+> **Correction du 22/09/2026.** La version précédente de ce tableau disait que
+> le téléphone `06 01 35 11 05` de Waze/Google « ne figure pas dans les réglages
+> du site » et que celui de City-Info était périmé. **C'est faux dans les deux
+> cas**, et l'erreur venait d'un relevé partiel des réglages. Vérifié depuis :
+> `06 01 35 11 05` **est** le numéro WhatsApp officiel (`whatsapp_number`) et
+> `06 34 84 51 77` **est** `phone_1`. Ces deux fiches donnent le bon numéro ;
+> seule leur **adresse** est périmée. Le seul numéro réellement étranger aux
+> réglages est celui de Telecontact, `05 22 44 73 40`.
 
-1. Waze et Google affichent le téléphone **`06 01 35 11 05`**, que les réglages du
-   site ne portent pas. Est-il à vous ? S'il l'est, il rejoint les réglages ; sinon
-   il faut le faire retirer.
-2. Le nom sur la fiche Waze est `Bab Makka Omra & Hajj By Wiki Tours INTL` — c'est
+**Ce qui appartient au propriétaire :**
+
+1. Le nom sur la fiche Waze est `Bab Makka Omra & Hajj By Wiki Tours INTL` — c'est
    le « Omra & Hajj » que la fiche Google doit perdre (docs/05).
+2. Deux numéros circulent qui ne sont dans **aucun** réglage — voir § 3.5.
 
 > La cohérence NAP est ce qui fait qu'un moteur croit que ces fiches parlent d'un
 > seul et même commerce. Quatre adresses, c'est quatre commerces possibles.
@@ -123,6 +130,59 @@ la pile technique. C'est une place de SERP de marque prise par notre propre code
 Décision du propriétaire, pas une recommandation automatique : passer le dépôt en
 privé le fait disparaître du SERP ; le laisser public est un choix défendable
 (transparence, portfolio). Il faut juste que ce soit **un choix**.
+
+### 3.5 Ce que les moteurs racontent aujourd'hui sur Bab Makka — relevé du 22/09/2026
+
+> **Ce que ce relevé est, et n'est pas.** Nous n'avons aucune clé d'API pour
+> ChatGPT, Perplexity ou Gemini, et la règle du 0 $ interdit d'en acheter. On ne
+> peut donc pas interroger les moteurs directement. Ce qui suit est l'audit des
+> **sources qu'ils lisent**, plus une vraie recherche web menée le 22/09/2026 —
+> dont la réponse synthétique est reproduite telle quelle. C'est l'essentiel :
+> un moteur n'invente pas ces chiffres, il les recopie.
+
+**La réponse obtenue le 22/09/2026 sur « Bab Makka Wiki Tours Casablanca omra
+prix téléphone » contenait :**
+
+| Ce que la réponse donnait | Verdict | Réalité vérifiée dans `settings` |
+|---|---|---|
+| Adresse : « **52, bd Mohammed VI, 3e étage, 20490 Casablanca** » | ✗ **FAUX** | `Immeuble Anoual Capital Center, 418 Angle Bd Abdelmoumen et Bd Anoual, Magasin N°1 RDC`. C'est l'adresse périmée de Telecontact, reprise comme **l**'adresse |
+| Code postal 20490 | ✗ faux | vient de la même fiche ; le code postal réel reste à confirmer (docs/05) |
+| `+212 6 34 84 51 77` | ✅ correct | `phone_1` |
+| `+212 6 94 13 94 94` | ✅ correct | `phone_3` |
+| **`+212 6 63 88 67 09`** | ⚠️ **inconnu** | dans **aucun** réglage, et absent du site (vérifié sur `/fr`, `/fr/contact`, `/ar/contact`, `/llms.txt`) |
+| **`+212 6 75 33 32 23`** | ⚠️ **inconnu** | idem |
+| Prix | — | **aucun prix donné** : « Specific pricing information was not available » |
+
+Deux sources nouvelles sont apparues dans ce relevé, toutes deux avec une
+adresse périmée : [ma.arabplaces.com](https://ma.arabplaces.com/casablanca-settat/wiki-tours-international-358480)
+(« LILAH, Résidence AL MOULKOU ») et le domaine mort
+[m.bab-makka.com](http://m.bab-makka.com/), qui sert encore des pages et remonte
+comme « Home Page - Bab Makkah ».
+
+**Le prix faux, et il venait de nous.** Le nœud `TravelAgency` du site publiait
+`priceRange: "12.300–16.900 MAD"`. Le vrai écart des prix réellement vendus est
+**12 300 → 33 900 MAD** : le code construisait les deux bornes à partir du
+**minimum** de chaque départ, si bien que le plafond annoncé était le plus cher
+des prix d'entrée, pas le prix le plus cher. Tout moteur ayant lu ce nœud croit
+que la chose la plus chère que nous vendons coûte 16 900 DH, alors qu'une
+chambre double premium est à 33 900 DH. **Corrigé le 22/09/2026** ; le nœud
+publie désormais `12.300–33.900 MAD`.
+
+**Ce qu'il faut faire, dans l'ordre :**
+
+1. **Confirmer ou désavouer** `06 63 88 67 09` et `06 75 33 32 23`. S'ils sont à
+   vous, ils rejoignent les réglages pour que tout concorde ; sinon il faut
+   savoir d'où ils viennent — un numéro inconnu attribué à l'agence est le début
+   d'une confusion d'identité.
+2. **Corriger Telecontact** (§ 2) : c'est cette fiche que la réponse a recopiée.
+   Tant qu'elle porte l'ancienne adresse, les moteurs la répéteront.
+3. **Signaler arabplaces.com** et **passer bab-makka.com en 301** (§ 3.2) : ce
+   sont les deux autres sources de l'adresse périmée.
+
+Le site dit déjà la vérité — `/llms.txt` porte la bonne adresse, la licence et
+les prix par gamme. Le problème n'est pas ce que nous publions, c'est que les
+annuaires périmés pèsent plus lourd que nous dans la synthèse. On ne corrige pas
+cela en écrivant mieux : on le corrige en réparant les fiches.
 
 ### 3.4 Le reste
 

@@ -441,16 +441,35 @@ export const getIndexableLandingPages = cache(async function getIndexableLanding
   }
 });
 
-/** Compute the minimum price per person across all tiers and room types. */
-export function computeMinPrice(tiers) {
-  if (!tiers?.length) return null;
+const ROOM_PRICE_KEYS = ['price_double', 'price_triple', 'price_quad', 'price_quint'];
+
+/** Every per-person price across all tiers and room types, cheapest first. */
+function tierPrices(tiers) {
+  if (!tiers?.length) return [];
   const all = [];
   for (const tier of tiers) {
-    for (const key of ['price_double', 'price_triple', 'price_quad', 'price_quint']) {
+    for (const key of ROOM_PRICE_KEYS) {
       if (typeof tier[key] === 'number' && tier[key] > 0) all.push(tier[key]);
     }
   }
+  return all;
+}
+
+/** Compute the minimum price per person across all tiers and room types. */
+export function computeMinPrice(tiers) {
+  const all = tierPrices(tiers);
   return all.length ? Math.min(...all) : null;
+}
+
+/**
+ * The maximum price per person across all tiers and room types — the dearest
+ * room of the dearest gamme. Needed because a business `priceRange` built from
+ * per-offer MINIMA describes only what the entry rooms cost: it said the most
+ * expensive thing we sell was 16.900 MAD while a premium double was 33.900.
+ */
+export function computeMaxPrice(tiers) {
+  const all = tierPrices(tiers);
+  return all.length ? Math.max(...all) : null;
 }
 
 export const getDestinations = cache(async function getDestinations() {
