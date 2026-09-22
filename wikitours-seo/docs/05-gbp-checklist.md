@@ -13,10 +13,10 @@ gestionnaire. Un profil détenu par un compte personnel est un otage.
 
 | Champ | Valeur à saisir | Règle | Fait |
 |---|---|---|---|
-| Nom | `[[FACT NEEDED: le nom exactement tel qu'il figure aujourd'hui sur la fiche — « Wiki Tours International » ou « Bab Makka »]]` | Le vrai nom, sans aucun mot de catégorie (« omra », « agence ») : c'est un motif de suspension. Le site présente Bab Makka comme la marque et Wiki Tours International comme l'entreprise ; la fiche doit porter **un** de ces deux noms, jamais un mélange avec des mots-clés. | ☐ |
-| Catégorie principale | voir § 2 — celle qu'utilisent les 3 fiches du pack actuel | Premier facteur de pertinence ; ne changer qu'avec une raison mesurée. | ☐ |
-| Catégories secondaires | voir § 2 | Seulement ce qui est réellement vendu. **Pas** de catégorie Hajj tant que l'agence n'est pas sur la liste des agences labellisées Hajj (elle n'y figure pas en 2026, liste du ministère lue le 21/09/2026). | ☐ |
-| Adresse | Immeuble Anoual Capital Center, 418 Angle Bd Abdelmoumen et Bd Anoual, Magasin N°1 RDC, `[[FACT NEEDED: code postal]]` Casablanca | Caractère pour caractère comme sur `/fr/contact`. Vitrine avec personnel : adresse affichée. | ☐ |
+| Nom | Aujourd'hui : « Bab Makka By Wiki Tours INTL » (fr) et « Bab Makka **Omra & Hajj** By Wiki Tours INTL » (en, ar). **À corriger** : un seul nom, celui de l'enseigne, sans « Omra & Hajj » — annexe A § 3 | Le vrai nom, sans information de service : Google le nomme comme motif de suspension. Bab Makka est la marque, Wiki Tours International l'entreprise ; la fiche porte l'un des deux, jamais des mots de service. | ☐ |
+| Catégorie principale | **Agence de voyages** — déjà en place ; 9 des 10 fiches du résultat Omra l'utilisent (annexe A) | Premier facteur de pertinence ; ne pas changer. Aucune catégorie Hajj/Omra n'existe chez Google. | ☑ |
+| Catégories secondaires | Voyagiste, Agence de billets d'avion — déjà en place | Seulement ce qui est réellement vendu. **Pas** de catégorie Hajj ni « Organisation religieuse » : l'agence n'est pas sur la liste Hajj 2026 du ministère, et elle n'*est* pas une organisation religieuse. | ☑ |
+| Adresse | Immeuble Anoual Capital Center, 418 Angle Bd Abdelmoumen et Bd Anoual, Magasin N°1 RDC, 20340 Casablanca — le code postal est celui que la fiche affiche aujourd'hui (annexe A) ; `[[FACT NEEDED: le confirmer, puis le saisir dans Admin → Réglages]]` | Caractère pour caractère comme sur `/fr/contact`. Vitrine avec personnel : adresse affichée. | ☐ |
 | Horaires | Lun–ven 08:30–21:30 · Sam 08:30–14:30 · Dim fermé | Identiques au site. Des horaires faux produisent de mauvais avis. | ☐ |
 | Horaires spéciaux | `[[FACT NEEDED: horaires du Ramadan 1448 (≈ 8 fév.–9 mars 2027), Aïd al-Fitr, Aïd al-Adha, 1er Moharram, Mawlid]]` | À saisir **avant** chaque période : Google affiche « horaires susceptibles de varier » sinon. | ☐ |
 | Téléphone principal | +212 634 845 177 | Identique au site. | ☐ |
@@ -157,6 +157,66 @@ Performances du profil (recherches, appels, itinéraires, clics site, messages)
 
 ---
 
-## Annexe A — relevé des catégories (22/09/2026)
+## Annexe A — relevé des catégories et de la fiche (22/09/2026)
 
-*(à compléter après la recherche en cours ; voir § 2)*
+Relevé en lecture seule sur les données que Google Maps sert (`hl=fr` et
+`hl=en`, `gl=ma`), et sur la taxonomie des catégories (liste lobstr.io du
+09/2026, 4 053 lignes ; PlePer, vue au 21/09/2026). Rien n'est estimé.
+
+**1. Il n'existe aucune catégorie Hajj, Omra ou pèlerinage pour une agence.**
+Une recherche insensible à la casse de « hajj », « umra », « omra », « mecca »,
+« makka » dans les 4 053 catégories ne rend **rien**. « Lieu de pèlerinage »
+(`pilgrimages_place`) existe, mais c'est une catégorie de *lieu* (rangée avec
+Mosquée, Sanctuaire), pas d'agence. Google le dit lui-même : choisir ce que
+l'entreprise **est**, pas ce qu'elle **propose**.
+
+**2. Ce qu'utilisent les fiches du résultat Maps sur « agence omra casablanca ».**
+
+| Rang Maps | Fiche | Catégorie principale | Note (avis) |
+|---|---|---|---|
+| 1 | Omra Maroc Agence de Voyage | Agence de voyages (`tour_agency`) | non lu |
+| 2 | El Qods Voyages | Agence de voyages (`travel_agency`) | 4,5 (182) |
+| **3** | **Bab Makka By Wiki Tours INTL** | **Agence de voyages** + Agence de billets d'avion + Voyagiste | **4,8 (141)** |
+| 4 | SH Vacances | Agence de voyages | 4,9 (163) |
+| 5 | Karama Travel | Agence de voyages | non lu |
+| 6 | SB Voyages | Agence de voyages + 6 secondaires | 4,7 (26) |
+| 7 | Imperial Destination | Agence de voyages | 4,6 (77) |
+| 8 | El Yakout Voyages | Agence de voyages | 4,5 (93) |
+| 9 | Miya Travel | Agence de voyages | 4,9 (28) |
+| 10 | Agence Hadj et Omra | Agence de voyages | non lu |
+
+Sur « omra casablanca », Bab Makka est **2e** de la même liste. Ceci est la
+liste de résultats Maps, pas le pack à trois de la recherche Google — mais une
+fiche 2e ou 3e de la liste est en lice pour le pack, et c'est le relevé depuis
+Casablanca (§ 10) qui tranche.
+
+**Verdict catégorie : « Agence de voyages » (`travel_agency`) en principale —
+c'est déjà le cas.** 9 fiches sur 10 l'utilisent ; la seule autre principale
+vue est `tour_agency` (1 sur 10), qui s'affiche aussi « Agence de voyages » en
+français. Garder « Voyagiste » et « Agence de billets d'avion » en secondaires,
+comme aujourd'hui. Ne pas ajouter « Organisation religieuse » (Al Makarim l'a
+en secondaire) : l'agence n'*est* pas une organisation religieuse.
+
+**3. Deux choses lues sur notre propre fiche, à corriger ou confirmer.**
+
+- **Le nom de la fiche varie selon la langue de l'interface** : « Bab Makka By
+  Wiki Tours INTL » en français, « **Bab Makka Omra & Hajj** By Wiki Tours INTL »
+  en anglais et en arabe. « Omra & Hajj » est une **information de service dans
+  le nom**, ce que la règle de Google interdit expressément (« Service or
+  product information » — exemples refusés : « Midas Auto Service Experts »),
+  avec la suspension comme sanction possible. À corriger : un seul nom, celui
+  de l'enseigne, sans mots de service — et « International » plutôt que
+  « INTL » si c'est ce que porte l'enseigne. Pendant qu'on y est : l'agence ne
+  figure pas sur la liste Hajj 2026 du ministère, ce qui rend « Hajj » dans le
+  nom doublement fragile.
+- **Le code postal** : la fiche affiche « 418 Bd Abdelmoumen, Casablanca
+  **20340** », quartier Maârif. Ce code n'existe nulle part dans la base du
+  site (`settings.postal_code` est vide). À confirmer par le propriétaire, puis
+  à saisir dans Admin → Réglages pour que le site et la fiche disent la même
+  chose.
+
+**4. Pour les concurrents** : Galaxy Voyage porte **9 catégories** dont
+« Circuit de randonnée » et « Attraction touristique » — c'est une fiche
+généraliste qui dilue sa pertinence Omra ; Al Makarim porte « Service des visas
+et passeports » et « Organisation religieuse » en secondaires. Notre fiche est
+plus nette, avec une note supérieure à 7 des 9 fiches notées.
