@@ -1,0 +1,13 @@
+week,prompt_id,engine,google_position,snippet_owner,ai_overview_cited,cited_domains,brand_named,brand_position,third_party_names_us,map_pack,notes
+2026-W39,L1,Google,0,sabilevoyages.com,,,,,,,"Baseline read from outside Morocco (Brave country=ma, 2026-09-21): wikitours.ma absent from the top 17; Google's pack did not render. Maps list 2026-09-22 has Bab Makka 3rd. Owner to confirm the pack from Casablanca."
+2026-W39,L2,Google,0,galaxyvoyage.ma,,,,,,,"Baseline outside Morocco (2026-09-21): absent from the top 20; snippet = one generic sentence by galaxyvoyage.ma; pack not rendered."
+2026-W39,L3,Google,0,,,,,,,,"Baseline outside Morocco (2026-09-21): facebook.com and tiktok.com first, wikitours.ma not seen; pack not rendered."
+2026-W39,L5,Google,0,,,,,,,,"Baseline outside Morocco (2026-09-21): facebook.com first, wikitours.ma not seen in the returned set — yet /ar/omra-depuis-oujda earns Google sessions, so a Moroccan SERP likely differs."
+2026-W39,L6,Google,0,,,,,,,,"Baseline outside Morocco (2026-09-21): not seen; same caveat as L5."
+2026-W39,L7,Google,0,,,,,,,,"Baseline outside Morocco (2026-09-21): not seen; same caveat as L5."
+2026-W39,L9,Google,0,,,,,,,,"Baseline outside Morocco (2026-09-21): vactravel.ma, islyvoyages.com first; not seen."
+2026-W39,C1,Google,0,,,,,,,,"Baseline outside Morocco (2026-09-21): omra-compare.com, lepelerinage.com, travel-to-arabia.com; not seen; AI Overview not observable."
+2026-W39,C3,Google,0,,,,,,,,"Baseline outside Morocco (2026-09-21): facebook.com, rahhal.wego.com, namaz.day; not seen."
+2026-W39,C5,Google,0,,,,,,,,"Baseline outside Morocco (2026-09-21): facebook.com, snrtnews.com, rahhal.wego.com; not seen."
+2026-W39,C7,Google,0,,,,,,,,"Baseline outside Morocco (2026-09-21, query « omra pas cher Casablanca »): noussoukitravel.com, vacancia.ma, galaxyvoyage.ma; not seen."
+2026-W39,C4,Google,0,,,,,,,,"Baseline outside Morocco (2026-09-21, query « omra 2027 prix maroc »): loyaltours.ma, alqafila.fr, alkhouzama.ma; not seen."

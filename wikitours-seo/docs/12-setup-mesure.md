@@ -1,46 +1,157 @@
-# Mise en place de la mesure en une après-midi — Bab Makka (Layer 17.2)
+# Mise en place de la mesure — Bab Makka (Layer 17.2)
 
-## Google Search Console
-1. Ajouter la propriété **Domaine** `wikitours.ma` (couvre http, https, www, sous-domaines) ; vérification par enregistrement DNS TXT chez le registrar.
-2. Utilisateurs : le compte du client est propriétaire ; l'agence est ajoutée comme utilisateur complet.
-3. Sitemaps → soumettre `https://wikitours.ma/sitemap.xml`.
-4. Paramètres → **Contrôle de l'IA générative** : vérifier que le site n'est PAS exclu des fonctionnalités d'IA générative (AI Overviews, AI Mode) — condition d'éligibilité citée par le guide Google 2026.
-5. Performances → onglet **IA générative** (impressions dans AI Overviews / AI Mode ; pas de clics ni de requêtes pour l'instant) : noter la valeur de départ.
-6. Inspection d'URL → « Demander l'indexation » pour la page d'accueil et la page pilier.
+> Écrit le 22/09/2026 après lecture du code et des réglages du site. Ce site
+> mesure déjà beaucoup **par lui-même** : un traceur maison (`/wt.js`) écrit
+> chaque session, chaque clic WhatsApp et chaque formulaire dans sa base
+> (tables `sessions`, `events`, `leads`), avec l'attribution premier contact
+> sur 30 jours. C'est de là que viennent les chiffres de ce dossier (5 682
+> sessions sur 90 jours, 196 clics WhatsApp, 48 leads). Les outils ci-dessous
+> ne remplacent pas cette mesure : ils ajoutent ce qu'elle ne peut pas voir —
+> les requêtes Google, les impressions, les citations IA, la fiche.
 
-## Bing Webmaster Tools
-1. Ajouter le site ; **Importer depuis Google Search Console** (vérification en un clic).
-2. Sitemaps → soumettre la même URL. IndexNow → la clé est `bd8d103eb3fdf7cf0e28400a77bc8cfd`, servie à `https://wikitours.ma/bd8d103eb3fdf7cf0e28400a77bc8cfd.txt` (générée par `npm run generate`). Tester : `npm run indexnow` → 200 ou 202.
-3. Vérifier dans Bing : `site:wikitours.ma` après quelques jours. C'est l'index derrière ChatGPT search et Copilot.
+## 0. État des lieux, vérifié dans le code
 
-## GA4
-1. Une propriété, un flux web pour `https://wikitours.ma` ; balise gtag ou GTM chargée après consentement (loi 09-08).
-2. Événements : `whatsapp_click` et `phone_click` sont envoyés par `/js/whatsapp-event.js`. Admin → Événements → marquer `whatsapp_click` comme **événement clé**.
-3. Admin → Paramètres des données → **Groupes de canaux** → créer « AI » avec la règle *Source de la session* correspond à l'expression régulière :
-   `chatgpt\.com|chat\.openai\.com|openai\.com|perplexity\.ai|pplx\.ai|copilot\.microsoft\.com|bing\.com/chat|gemini\.google\.com|bard\.google\.com|claude\.ai|anthropic\.com|meta\.ai|grok\.com|x\.ai|deepseek\.com|chat\.mistral\.ai|you\.com|duckduckgo\.com/\?.*ia=chat|poe\.com|kimi\.moonshot\.cn|chatgpt|perplexity`
-   (ChatGPT ajoute `utm_source=chatgpt.com` à ses liens de citation ; les visites sans referrer apparaissent en « Direct » : le chiffre GA4 est un plancher.)
-4. Rapport Exploration : sessions par page de destination pour le canal AI (les pages que les moteurs recommandent).
+| Outil | État | Preuve |
+|---|---|---|
+| Traceur maison | ✅ en place | `public/wt.js` → `/api/t` ; `sessions.entry_path`, `referrer`, `utm_*` ; `events.type = whatsapp_click` |
+| GA4 | ✅ chargé, **mais n'avait aucun événement** | `settings.ga4_id` renseigné ; `TrackingScripts.jsx` charge gtag après consentement ; jusqu'au 22/09/2026 seuls Meta et TikTok recevaient les clics |
+| GA4 — `whatsapp_click` et les autres événements | ✅ **corrigé le 22/09/2026** | `wt.js` envoie désormais chaque événement du tunnel à `gtag('event', …)` : `whatsapp_click`, `cta_click`, `offer_view`, `form_start`, `tier_select`, `room_select` |
+| Meta pixel + API de conversions | ✅ | `settings.meta_pixel_id` ; `Contact` sur clic WhatsApp |
+| Bannière de consentement | ✅ activée | les pixels et GA4 attendent `wt_consent=1` ; le traceur maison ne dépend pas du consentement (pas de cookie tiers) |
+| IndexNow | ✅ en place et utilisé | clé servie sur `/indexnow-key.txt` ; 24 URL soumises les 21 et 22/09/2026, acceptées par api.indexnow.org et Bing |
+| robots.txt + Content-Signal | ✅ | 13 groupes, tous avec `search=yes, ai-input=yes, ai-train=yes` |
+| Search Console | ❓ **inconnu** — aucun export n'existe (`data/gsc/` absent) | à faire, § 1 |
+| Bing Webmaster Tools | ❓ inconnu | § 2 |
+| Google Ads | ✗ non configuré (`google_ads_id` vide) | rien à faire tant qu'il n'y a pas de campagne Google |
+| Fiche Google — Performances | ❓ jamais exporté | § 5 |
+| Clés d'API (Search Console, SerpApi, PageSpeed, moteurs IA) | ✗ aucune | § 7, facultatif |
 
-## Profil Google Business
-- Lien site web : `https://wikitours.ma/?utm_source=google&utm_medium=organic&utm_campaign=business_profile` (séparer le profil de l'organique classique).
-- Performances du profil : noter les valeurs de départ (recherches, appels, itinéraires, clics, messages).
+## 1. Google Search Console — 20 minutes, propriétaire
 
-## Journaux et CDN
-- Accès aux journaux (hébergeur) ou analytics bots du CDN activés.
-- Cloudflare : vérifier **AI Crawl Control / Block AI bots / Bot Fight Mode** → désactivés pour un site qui veut être cité ; vérifier que le robots.txt géré n'impose pas `ai-train=no` contre la volonté du client.
-- Test : `npm run crawlers` → aucun « BLOCKED AT EDGE ».
+1. `search.google.com/search-console` avec le compte Google **de l'entreprise**
+   (celui de la fiche). Ajouter une propriété → **Domaine** → `wikitours.ma`
+   (pas « préfixe d'URL » : le domaine couvre `/fr`, `/ar`, `/en`, http, www).
+2. Vérification par enregistrement DNS TXT chez le registrar du domaine : copier
+   la valeur affichée, l'ajouter comme enregistrement TXT sur `wikitours.ma`,
+   attendre quelques minutes, « Vérifier ».
+3. Sitemaps → soumettre `https://wikitours.ma/sitemap.xml` (276 URL, toutes
+   avec `lastmod`).
+4. Paramètres → **Contrôle de l'IA générative** (« Generative AI control ») :
+   laisser **activé** — c'est la même décision que `Content-Signal: ai-input=yes`
+   dans le robots.txt ; désactiver ici contredirait le site.
+5. Ajouter l'agence web en **utilisateur**, jamais en propriétaire : le compte
+   de l'entreprise reste propriétaire.
+6. **Le jour même** : Performances → Exporter → CSV, 12 mois, avec la
+   dimension *Requête* → déposer dans `data/gsc/`. Sans cet export, la moitié
+   du plan reste une hypothèse (langue des requêtes, impressions, positions
+   4–15 à pousser).
+7. Puis Inspection d'URL → « Demander l'indexation » sur les pages changées
+   cette semaine : `/fr|ar|en/omra-chaabane-ramadan`, `/fr|ar|en/omra-ramadan`,
+   `/fr|ar|en/omra-mars`, `/fr|ar|en/omra-fevrier`, les deux départs
+   Chaâbane-Ramadan. Google n'utilise pas IndexNow.
 
-## Suivi des positions
-- Gratuit : Search Console (positions moyennes, filtrer sur les prompts cibles) + relevé manuel hebdomadaire depuis un mobile au Maroc.
-- Payant si le tableau de bord le justifie : un rank tracker avec localisation marocaine ; Ahrefs Brand Radar / Semrush AI toolkit pour la part de citation à grande échelle.
+## 2. Bing Webmaster Tools — 10 minutes, propriétaire
 
-## Looker Studio (facultatif, gratuit)
-Une page : ligne de KPI (leads, part de citation, top-3, extraits), tableau des 30 prompts, courbe 16 mois. Sources : Search Console + GA4.
+1. `bing.com/webmasters` → « Importer depuis Google Search Console » (une fois
+   le § 1 fait) : le site est vérifié sans nouvel enregistrement DNS.
+2. Vérifier que le sitemap importé est bien `https://wikitours.ma/sitemap.xml`.
+3. IndexNow : rien à faire, la clé est déjà servie et Bing l'accepte (200 le
+   22/09/2026). Bing alimente Copilot et une partie de ChatGPT Search :
+   cette propriété compte plus que son trafic direct.
 
-## API (facultatif) — la mesure sans relevé manuel
-Les scripts lisent les clés dans les variables d'environnement (`.env.example` → `.env`, jamais commité).
-1. **Compte de service Google** (Search Console API + GA4 Data API, gratuit) : console.cloud.google.com → projet → « IAM et administration » → Comptes de service → créer → clé JSON → enregistrer sous `google-service-account.json` à la racine du projet (dans `.gitignore`). Activer les API « Google Search Console API » et « Google Analytics Data API » sur le projet. Puis : Search Console → Paramètres → Utilisateurs → ajouter l'e-mail du compte de service (`…@….iam.gserviceaccount.com`) en accès complet ; GA4 → Admin → Gestion des accès à la propriété → ajouter le même e-mail en Lecteur ; noter l'identifiant numérique de la propriété GA4 (Admin → Détails de la propriété) dans `GA4_PROPERTY_ID` ou `site.config.json → ga4PropertyId`. Test : `npm run gsc -- queries`, `npm run ga4 -- leads`.
-2. **SerpApi** (`SERPAPI_KEY`, payant à la recherche) : positions réelles depuis Casablanca sur mobile (nom de lieu canonique résolu automatiquement, ex. « Casablanca,Casablanca-Settat,Morocco »), extraits, PAA, AI Overviews, pack local, part de voix, grille locale. `npm run serp` = 33 recherches par semaine (Google ne rend que 10 résultats par page : `-- --pages 2` double le coût pour voir les positions 11–20 ; + 25 recherches par grille locale). Chaque réponse est enregistrée dans `serp/<semaine>/` et n'est jamais rachetée.
-3. **Moteurs IA** (`OPENAI_API_KEY`, `PERPLEXITY_API_KEY`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, payants à l'appel) : `npm run ai` interroge ChatGPT (Responses API + outil web_search), Perplexity (Agent API, preset `fast` par défaut — l'ancien endpoint Sonar chat-completions s'arrête le 27 septembre 2026), Gemini (grounding Google Search) et Claude (outil web_search) avec les 33 prompts, enregistre les sources citées, les requêtes de fan-out, les faits repris ou faux, la part de modèle des concurrents. Les identifiants changent : `OPENAI_MODEL`, `PERPLEXITY_PRESET` (fast | low | medium | high), `GEMINI_MODEL`, `ANTHROPIC_MODEL` dans `.env` si l'API refuse la valeur par défaut ; le message d'erreur du fournisseur est affiché tel quel, jamais remplacé par une valeur inventée. Copilot et AI Mode n'ont pas d'API : relevé manuel.
-4. **PageSpeed Insights** (`PSI_KEY`, gratuit) : évite la limite anonyme de `npm run cwv`.
-5. Charger les clés avant un run (bash : `set -a; . ./.env; set +a` ; PowerShell : `Get-Content .env | ForEach-Object { if ($_ -match "^(\w+)=(.*)$") { [Environment]::SetEnvironmentVariable($matches[1], $matches[2]) } }`), puis `npm run weekly`.
+## 3. GA4 — 15 minutes, propriétaire
+
+L'événement existe dès le déploiement du 22/09/2026 ; il reste à le déclarer.
+
+1. GA4 → Administration → **Événements** : attendre l'apparition de
+   `whatsapp_click` (24 h après le déploiement, dès le premier clic consenti).
+2. Basculer **« Marquer comme événement clé »** sur `whatsapp_click`. C'est
+   **la conversion** : les données propriétaires montrent 196 clics WhatsApp
+   pour 48 formulaires sur 90 jours, et les visiteurs arabophones écrivent sur
+   WhatsApp plutôt que de remplir le formulaire.
+3. Optionnel : marquer aussi `form_start` comme événement clé secondaire.
+4. **Groupe de canaux « IA »** — Administration → Groupes de canaux → créer un
+   groupe personnalisé, canal « AI engines » en **premier**, règle : *source*
+   correspond à l'expression régulière :
+   ```
+   (chatgpt|openai|perplexity|claude|anthropic|gemini|bard|copilot|you\.com|phind|mistral|poe\.com|meta\.ai|duckduckgo.*(ai|assist))
+   ```
+   Le traceur maison compte déjà ces sources (635 sessions IA sur 90 jours) ;
+   GA4 doit les isoler de « Referral » de la même façon.
+5. Rapports → **Génération de rapports sur l'IA générative** (si disponible sur
+   la propriété) : noter la valeur du jour comme base.
+6. Conserver la rétention des données à 14 mois (Administration → Paramètres
+   des données → Conservation) pour comparer Ramadan 1448 à Ramadan 1449.
+
+## 4. Fiche Google — le lien tagué
+
+Dans la fiche, champ « Site web » :
+```
+https://wikitours.ma/fr?utm_source=google&utm_medium=organic&utm_campaign=business_profile
+```
+Ainsi le trafic de la fiche se distingue de l'organique classique, dans GA4
+comme dans le traceur maison (`sessions.utm_campaign = business_profile`).
+Le lien du bouton « Réserver » (produits, posts) porte
+`utm_campaign=business_profile&utm_content=<slug-du-départ>`.
+
+## 5. Fiche Google — la base de Performances, aujourd'hui
+
+`business.google.com` → Performances → période **6 mois** → relever, une fois,
+dans `scoreboard/gbp-baseline.csv` (fichier à créer avec ces colonnes) :
+
+| Colonne | Où le lire |
+|---|---|
+| `mois` | — |
+| `recherches_total` | « Nombre de personnes ayant vu votre profil » |
+| `recherches_termes` | « Termes de recherche » — **exporter la liste entière** : c'est le seul endroit où Google donne les mots exacts tapés autour de la fiche, en arabe comme en français |
+| `appels` | Appels |
+| `messages` | Messages |
+| `itineraires` | Itinéraires |
+| `clics_site` | Clics vers le site |
+| `avis_nouveaux` | Avis → nouveaux sur le mois |
+
+La liste des termes de recherche va aussi dans `data/gsc/` : elle nourrit la
+réécriture de `scoreboard/prompts.csv` avec les mots réels.
+
+## 6. Le rythme hebdomadaire, sans clé d'API
+
+Chaque lundi, 45 minutes :
+
+1. Relever les 33 prompts de `scoreboard/prompts.csv` depuis un téléphone à
+   Casablanca (navigation privée, position activée) → une ligne par prompt et
+   par moteur dans `scoreboard/runs/<AAAA>-W<semaine>.csv`
+   (copier `runs-template.csv`). Google : position, propriétaire de l'extrait,
+   AI Overview cité ou non, pack local. ChatGPT / Perplexity / Gemini : domaines
+   cités dans l'ordre, marque nommée ou non.
+2. `npm run score` → part de citation par moteur, part d'extraits, top 1 /
+   top 3, pack, séries, domaines les plus cités, test de la « première place ».
+3. `npm run market` → `docs/19` réécrit avec les positions de la semaine.
+4. `npm run dashboard` → `reports/dashboard.html`, à ouvrir dans le navigateur.
+5. Lire Search Console (§ 1) : les requêtes en position 4–15 sont le travail de
+   la semaine.
+
+La règle de lecture : **quatre semaines** avant toute conclusion, jamais une
+seule ; geler les conclusions pendant un déploiement de mise à jour Google ;
+comparer à N-1 autour du Ramadan et de l'été.
+
+## 7. Facultatif — la mesure automatique (clés d'API)
+
+Sans ces clés, tout ce qui précède se fait à la main. Avec elles,
+`npm run weekly` fait le relevé seul :
+
+| Clé | Où l'obtenir | Ce qu'elle débloque | Coût |
+|---|---|---|---|
+| Compte de service Search Console | Google Cloud → IAM → compte de service, ajouté comme utilisateur de la propriété | positions réelles par prompt, requêtes en position 4–15, cannibalisation, CTR | gratuit |
+| Clé PageSpeed Insights | Google Cloud → API PageSpeed | Core Web Vitals sur les pages clés (aujourd'hui : quota dépassé sans clé) | gratuit |
+| SerpApi | serpapi.com | positions Google depuis le Maroc, extrait, AI Overview, **pack local et grille locale** | payant |
+| OpenAI / Perplexity / Gemini | leurs consoles | citations IA automatiques, part de modèle | payant à l'usage — **le site n'a pas de clé Anthropic et n'en aura pas** (règle du projet : 0 $) |
+
+Les clés vont dans `wikitours-seo/.env` (jamais dans le dépôt du site, jamais
+sur Vercel).
+
+## 8. Ce que le propriétaire possède
+
+Search Console, GA4, la fiche Google, Bing Webmaster Tools et la future chaîne
+YouTube sont créés et détenus par le compte **de l'entreprise**. L'agence web
+y est ajoutée comme utilisateur ou gestionnaire, et retirée à la fin du
+contrat sans que rien ne soit perdu.

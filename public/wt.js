@@ -96,6 +96,20 @@
       ts: Date.now()
     });
     if (MIRROR[t]) { try { MIRROR[t](); } catch (e) { /* never blocks */ } }
+    // GA4 gets every funnel event under its first-party name (whatsapp_click,
+    // form_start, offer_view, cta_click…) so `whatsapp_click` can be marked a
+    // key event in GA4 and attributed per channel. Until 2026-09-22 only the
+    // Meta/TikTok pixels were mirrored, so GA4 had page views and nothing else.
+    // gtag is absent when GA4 is not configured or consent was declined.
+    if (t !== 'pageview' && window.gtag) {
+      try {
+        gtag('event', t, {
+          event_label: (meta && meta.label) || undefined,
+          offer_id: (meta && meta.offer_id) || undefined,
+          page_path: location.pathname
+        });
+      } catch (e) { /* never blocks */ }
+    }
     set('wt_sla', Date.now(), 86400);
     clearTimeout(timer);
     timer = setTimeout(flush, 3000);

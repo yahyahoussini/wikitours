@@ -1,34 +1,34 @@
-id,type,lang,prompt,intent_note,deciding_system,w_weak_top10,w_authority_range,w_surface_winnable,w_buyer,w_score
-I1,informational,fr,agence de voyages spécialisée Omra c'est quoi,definition; wants 'X est ...' sentence,passage ranking + helpful content,,,,,
-I2,informational,fr,comment choisir agence de voyages spécialisée Omra à Casablanca,guide; list format,passage ranking + helpful content,,,,,
-I3,informational,fr,combien coûte agence de voyages spécialisée Omra au Maroc,price question; table,passage ranking + helpful content,,,,,
-I4,informational,fr,agence de voyages spécialisée Omra conditions et documents,process; ordered list,passage ranking + helpful content,,,,,
-I5,informational,fr,erreurs à éviter agence de voyages spécialisée Omra,experience content,passage ranking + helpful content,,,,,
-I6,informational,fr,agence de voyages spécialisée Omra avantages et inconvénients,comparison table,passage ranking + helpful content,,,,,
-I7,informational,ar,كيف أختار وكالة أسفار متخصصة في العمرة في الدار البيضاء,guide,passage ranking + helpful content,,,,,
-I8,informational,ar,كم تكلفة وكالة أسفار متخصصة في العمرة في المغرب,price,passage ranking + helpful content,,,,,
-I9,informational,ar,شروط وكالة أسفار متخصصة في العمرة في المغرب,process,passage ranking + helpful content,,,,,
-I10,informational,ar,نصائح وكالة أسفار متخصصة في العمرة,tips list,passage ranking + helpful content,,,,,
-C1,commercial,fr,meilleur agence de voyages spécialisée Omra Casablanca,listicle SERP; be on the lists,reviews system + link authority,,,,,
-C2,commercial,fr,top agence de voyages spécialisée Omra Casablanca,listicle,reviews system + link authority,,,,,
-C3,commercial,fr,agence de voyages spécialisée Omra Casablanca avis,reviews; GBP + review platforms,reviews system + link authority,,,,,
-C4,commercial,fr,comparatif agence de voyages spécialisée Omra Maroc,comparison page with criteria,reviews system + link authority,,,,,
-C5,commercial,fr,agence de voyages spécialisée Omra Casablanca prix,price page,reviews system + link authority,,,,,
-C6,commercial,fr,agence de voyages spécialisée Omra Casablanca tarifs,price page,reviews system + link authority,,,,,
-C7,commercial,ar,أفضل وكالة أسفار متخصصة في العمرة في الدار البيضاء,listicle,reviews system + link authority,,,,,
-C8,commercial,ar,وكالة أسفار متخصصة في العمرة الدار البيضاء أسعار,price,reviews system + link authority,,,,,
-C9,commercial,ar,وكالة أسفار متخصصة في العمرة الدار البيضاء آراء,reviews,reviews system + link authority,,,,,
-C10,commercial,darija,ahsan agence de voyages spécialisée Omra f Casablanca,REPLACE with real Darija-Latin phrasing from autocomplete,reviews system + link authority,,,,,
-L1,local,fr,agence de voyages spécialisée Omra près de moi,map pack; GBP,local (relevance/distance/prominence),,,,,
-L2,local,fr,agence de voyages spécialisée Omra Casablanca pas cher,price + local,local (relevance/distance/prominence),,,,,
-L3,local,fr,agence de voyages spécialisée Omra Casablanca centre,neighbourhood; city page,local (relevance/distance/prominence),,,,,
-L4,local,fr,agence de voyages spécialisée Omra Casablanca téléphone,GBP; contact page,local (relevance/distance/prominence),,,,,
-L5,local,fr,agence de voyages spécialisée Omra Casablanca whatsapp,contact; wa.me link,local (relevance/distance/prominence),,,,,
-L6,local,fr,agence de voyages spécialisée Omra ouvert maintenant Casablanca,hours exact on GBP,local (relevance/distance/prominence),,,,,
-L7,local,fr,agence de voyages spécialisée Omra Casablanca contact,contact page,local (relevance/distance/prominence),,,,,
-L8,local,ar,وكالة أسفار متخصصة في العمرة قريب مني,map pack,local (relevance/distance/prominence),,,,,
-L9,local,ar,وكالة أسفار متخصصة في العمرة الدار البيضاء رخيص,price + local,local (relevance/distance/prominence),,,,,
-L10,local,darija,agence de voyages spécialisée Omra f Casablanca rkhis,REPLACE with real Darija-Latin phrasing,local (relevance/distance/prominence),,,,,
-B1,brand,fr,Bab Makka avis,navigational; profile + reviews,entity / navigational,,,,,
-B2,brand,fr,Bab Makka Casablanca,navigational,entity / navigational,,,,,
-B3,brand,fr,c'est quoi Bab Makka,entity; About page is the answer,entity / navigational,,,,,
+id,type,lang,prompt,intent_note,deciding_system,w_weak_top10,w_authority_range,w_surface_winnable,w_buyer,w_score,wave
+I1,informational,fr,omra meilleure période,when to go; answerable from the month hubs' own data; Google autocomplete 2026-09-21,passage ranking + People Also Ask,4,4,5,2,15,2-core
+I2,informational,fr,omra pas cher sans agence,DIY vs agency; a licensed agency answers honestly what Nusuk self-booking does not cover; autocomplete 2026-09-21,passage ranking + helpful content,3,4,4,2,13,3-later
+I3,informational,ar,وثائق العمرة بالمغرب,documents needed; answer from the ministry FAQ facts (visa channel; passport 6 months from entry); autocomplete 2026-09-21,passage ranking + People Also Ask,4,4,5,2,15,2-core
+I4,informational,ar,شروط العمرة للمرأة بدون محرم,women without mahram; sourced official answer already live in the Ramadan FAQ; autocomplete 2026-09-21,People Also Ask + AI Overview,3,4,5,2,14,1-ramadan
+I5,informational,ar,الفرق بين عمرة شعبان ورمضان,the exact question our Chaâbane-Ramadan hub answers; autocomplete 2026-09-21,passage ranking,5,5,5,3,18,1-ramadan
+I6,informational,ar,واش ندي معايا العمرة,Darija in Arabic script: what to pack; owned today by forums; autocomplete 2026-09-21,passage ranking + PAA,5,5,4,1,15,3-later
+I7,informational,ar,تأشيرة العمرة من المغرب 2026,visa from Morocco; two official routes sourced; autocomplete 2026-09-21,passage ranking + PAA,3,4,4,2,13,2-core
+I8,informational,fr,omra ramadan 2027 10 derniers jours,last ten nights; the crowd facts are sourced; autocomplete 2026-09-21,passage ranking + AI Overview,3,4,4,3,14,1-ramadan
+I9,informational,darija-latin,omra fi ramadan,Darija Latin; distinct query per the harvest; seen in FB groups 2026-09-21,passage ranking,5,5,3,2,15,1-ramadan
+I10,informational,ar,كم تكلفة العمرة من المغرب 2026,cost question in Arabic; real prices per room type are our edge; autocomplete 2026-09-21,passage ranking + snippet,4,4,4,3,15,2-core
+C1,commercial,fr,omra ramadan 2027 prix,the wave-1 money query; SERP 2026-09-21: omra-compare.com and lepelerinage.com hold it with thin 2027 pages; we are absent,organic + price passage,4,4,4,5,17,1-ramadan
+C2,commercial,ar,ثمن عمرة رمضان من المغرب 2027,Arabic wave-1 money query; facebook.com first; no serious site; autocomplete 2026-09-21,organic + price passage,5,4,4,5,18,1-ramadan
+C3,commercial,ar,عمرة رمضان 2027 المغرب,SERP 2026-09-21: facebook.com and rahhal.wego.com; we are absent,organic,5,4,4,5,18,1-ramadan
+C4,commercial,fr,prix omra maroc 2027,2027 pages still thin; exitvoyages.com and saphirtravelmorocco.com titled for it; autocomplete 2026-09-21,organic + price passage,4,4,4,4,16,1-ramadan
+C5,commercial,ar,ثمن العمرة من المغرب,head Arabic price term; SERP 2026-09-21: facebook.com and snrtnews.com; no agency owns it,organic + snippet,4,3,4,4,15,2-core
+C6,commercial,fr,prix omra 2 personnes maroc 2026,#1 autocomplete for « prix omra » and no page targets the couple framing; our per-room prices answer it,organic + price passage,5,5,5,5,20,2-core
+C7,commercial,fr,omra pas cher maroc,we own /omra-pas-cher; SERP 2026-09-21: noussoukitravel.com; title alignment job,organic,4,4,4,5,17,2-core
+C8,commercial,darija-latin,taman l3omra 2026,Darija Latin price query; FB groups 2026-09-21,organic,5,5,3,4,17,2-core
+C9,commercial,ar,عمرة 15 يوم من المغرب,duration query; our 15-day programmes answer it; autocomplete 2026-09-21,organic,4,4,4,5,17,2-core
+C10,commercial,fr,omra chaabane 2027,our category page /omra-chaabane-ramadan owns it; almost no competition seen 2026-09-21,organic,5,5,4,5,19,1-ramadan
+L1,local,fr,agence omra casablanca,pack-decided; Maps list 2026-09-22: Bab Makka 3rd; Brave organic: sabilevoyages.com (FR-based) first,local pack + Business Profile,4,4,3,4,15,1-ramadan
+L2,local,fr,meilleure agence omra casablanca,pack + snippet; galaxyvoyage.ma holds the snippet with one generic sentence (2026-09-21),local pack + featured snippet,4,4,4,4,16,2-core
+L3,local,ar,وكالة عمرة الدار البيضاء,Arabic pack query; SERP 2026-09-21: facebook.com and tiktok.com first,local pack + Business Profile,5,4,3,4,16,1-ramadan
+L4,local,ar,عمرة رمضان من الدار البيضاء,Ramadan + city in Arabic; autocomplete 2026-09-21,local pack + organic,5,4,4,5,18,1-ramadan
+L5,local,ar,عمرة من المغرب وجدة,/ar/omra-depuis-oujda already earns Google sessions (36 in 90 d) on thin content,organic + pack,5,5,4,4,18,1-ramadan
+L6,local,ar,عمرة من المغرب اكادير,/ar/omra-depuis-agadir already earns Google sessions (14 in 90 d),organic + pack,5,5,4,4,18,2-core
+L7,local,ar,عمرة من المغرب فاس,/ar/omra-depuis-fes earns Google sessions (6 in 90 d),organic + pack,5,5,4,4,18,2-core
+L8,local,darija-latin,agence 3omra marrakech,Darija Latin local; FB groups 2026-09-21,organic + pack,5,5,3,4,17,3-later
+L9,local,fr,omra depuis oujda,SERP 2026-09-21: vactravel.ma and islyvoyages.com; our page exists,organic + pack,4,4,4,4,16,2-core
+L10,local,ar,عمرة رمضان وجدة,Ramadan + Oujda in Arabic; autocomplete 2026-09-21,organic + pack,5,5,4,5,19,1-ramadan
+B1,brand,fr,bab makka omra casablanca,brand + service; must resolve to us and the Business Profile,brand SERP + knowledge panel,5,5,5,5,20,1-ramadan
+B2,brand,ar,ويكي تورز,brand in Arabic; autocomplete 2026-09-21,brand SERP,5,5,5,4,19,2-core
+B3,brand,fr,wiki tours international avis,reputation query; the 141 Google reviews must be what answers it,brand SERP + reviews,5,5,5,4,19,2-core
