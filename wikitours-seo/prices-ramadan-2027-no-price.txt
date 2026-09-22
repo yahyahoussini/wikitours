@@ -1,0 +1,17 @@
+alaarabiavoyage.com (الوكالة العربية للأسفار والسياحة, Rabat 0537602323) — no Ramadan 2027 / Chaâbane 2027 offer on the home page or /services/hajj_omra/list; only 'عمرة الصيف 2026 à partir de 14,500 MAD' and 'عمرة أكتوبر 2026 à partir de 12,700 MAD'
+elhashmy.com (الهاشمي باشا, Casablanca) — visa-services site; no Umrah package or price; WhatsApp +212664036077 only
+karamatravel.ma (كرامة ترافل, Casablanca) — home page is a 7 KB title-only shell; /omra shows nothing; no package, no price
+aljaziratravel.com — DNS does not resolve (ENOTFOUND, also with www); the related saudi-voyage.com 301s to nearalharam.com
+alkhalijiya.ma (وكالة الخليجية) — prices printed (40 يوم from 20 500 درهم; 60 يوم from 19 000 درهم) but both pages are labelled 'رمضان 1447' (from 01 رمضان إلى 10 شوال 1447 / 15 شعبان إلى 15 شوال 1447), i.e. last season — not a 2027 price
+alkhouzama.ma (Alkhouzama Voyages, Nador; haj.php?id=37) — 'عمرة رمضان المبارك لسنة 1445هـ/2024م', economic from 18,900 درهم, tourist from 26,500 درهم, listed under 'Programmes Hajj & Omra de 2026-2027' — label is 2024, no dates/duration/hotels; not a 2027 row
+galaxyvoyage.ma (Galaxy Voyage, Casablanca) — only 'Omra Ramadan 2026 à partir de 26,300 DH'; no 2027 page
+doukkalivoyage.com (Rabat-Salé) — banner 'Omra Ramadan 2026 — Places disponibles ✦ Hajj 2027 — Inscriptions ouvertes'; no Ramadan 2027 price
+espacetourisme.com (Casablanca) — only Omra Ramadan 2026 product pages
+omramaroc.com, sabilevoyages.com — no Ramadan 2027 mention on the pages read
+vacancia.ma/voyages/omra (Marrakech) — 'Omra 5* 2025', price shows '0DHS/pers' (contact)
+Nature Holidays / ناتور هوليداي (Agadir) — public Facebook video post (facebook.com/Agence.natureholidays/videos/4491751881154048/) prints 'عمرة شعبان ورمضان بسعر 16,000 درهم فقط' for the first 20 registrants and 'مدة الرحلة: 56 يومًا … ابتداءً من 20,000 درهم للمسجلين مبكرًا' (Sha'ban + full Ramadan + Shawwal), but the post DATE is not readable without login, so it fails the social-post rule and is not a row
+TRANSATOUR MAROC — Facebook post titled 'عمرة رمضان 15 يوم الأخيرة إبتداء من 18500 درهم' (facebook.com/transatour/posts/2349619108429025/) — post body, year and date not readable (HTTP 400 without login)
+ثمن العمرة من المغرب 2026 (@omraprix) Facebook page and its post 1360210535800110 ('عمرة رمضان 2026 ابتداءً من 19500 درهم مع وكالة اسفار الجزيرة ترافيل') — 2026-labelled and unreadable without login
+'عمرة رمضان 2027 المغرب | Tangier' Facebook page (61575612801809) — HTTP 400 without login; nothing readable
+Alaqeq Voyages / أسفار العقيق (Marrakech) Facebook video 457334460783852 — 'عمرة رمضان عبر الخطوط السعودية انطلاقا من مطار مراكش … من 27 فبراير إلى 03 أبريل'; no price, no year, no date readable
+Instagram — not searchable/readable without login; no Instagram row

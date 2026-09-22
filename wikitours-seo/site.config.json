@@ -139,7 +139,9 @@
     "ai-train": "yes"
   },
   "indexnow": {
-    "key": "bd8d103eb3fdf7cf0e28400a77bc8cfd"
+    "key": "5d7a5b5d9ef83f37a4fa10b13695e1991dd2afb5e0f5f712",
+    "keyLocation": "https://wikitours.ma/indexnow-key.txt",
+    "note": "This is the key the SITE serves, from settings.indexnow_key via src/app/indexnow-key.txt/route.js. It is NOT at the IndexNow default path /<key>.txt (that 404s), so keyLocation must be sent with every submission. The scaffold key that was here until 2026-09-22 made api.indexnow.org answer 202 'validation pending' and then discard the batch; with this key and keyLocation it answers 200."
   },
   "llmsTxt": false,
   "redirects": [],

@@ -18,7 +18,8 @@
 | GA4 — `whatsapp_click` et les autres événements | ✅ **corrigé le 22/09/2026** | `wt.js` envoie désormais chaque événement du tunnel à `gtag('event', …)` : `whatsapp_click`, `cta_click`, `offer_view`, `form_start`, `tier_select`, `room_select` |
 | Meta pixel + API de conversions | ✅ | `settings.meta_pixel_id` ; `Contact` sur clic WhatsApp |
 | Bannière de consentement | ✅ activée | les pixels et GA4 attendent `wt_consent=1` ; le traceur maison ne dépend pas du consentement (pas de cookie tiers) |
-| IndexNow | ✅ en place et utilisé | clé servie sur `/indexnow-key.txt` ; 24 URL soumises les 21 et 22/09/2026, acceptées par api.indexnow.org et Bing |
+| IndexNow — depuis le site | ✅ correct depuis toujours | `src/lib/server/indexnow.js` envoie la clé **et** `keyLocation: /indexnow-key.txt`. C'est le chemin qu'emprunte le cron de publication |
+| IndexNow — depuis les outils rank-first | ✗ **cassé jusqu'au 22/09/2026, corrigé** | `site.config.json` portait la clé d'échafaudage (`bd8d103e…`), et l'outil déclarait `keyLocation: /<clé>.txt` — qui renvoie 404 sur ce site. L'API répondait **202 « validation pending »** puis jetait le lot. Les envois « acceptés » des 21 et 22/09 n'ont donc rien notifié. Avec la vraie clé et le bon `keyLocation`, l'API répond **200** : 24 URL soumises et validées le 22/09/2026 sur api.indexnow.org et bing.com/indexnow |
 | robots.txt + Content-Signal | ✅ | 13 groupes, tous avec `search=yes, ai-input=yes, ai-train=yes` |
 | Search Console | ❓ **inconnu** — aucun export n'existe (`data/gsc/` absent) | à faire, § 1 |
 | Bing Webmaster Tools | ❓ inconnu | § 2 |
