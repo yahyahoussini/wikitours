@@ -45,10 +45,67 @@
    dimension *Requête* → déposer dans `data/gsc/`. Sans cet export, la moitié
    du plan reste une hypothèse (langue des requêtes, impressions, positions
    4–15 à pousser).
-7. Puis Inspection d'URL → « Demander l'indexation » sur les pages changées
-   cette semaine : `/fr|ar|en/omra-chaabane-ramadan`, `/fr|ar|en/omra-ramadan`,
-   `/fr|ar|en/omra-mars`, `/fr|ar|en/omra-fevrier`, les deux départs
-   Chaâbane-Ramadan. Google n'utilise pas IndexNow.
+7. Puis Inspection d'URL → « Demander l'indexation ». **Google n'utilise pas
+   IndexNow** : c'est le seul moyen de lui signaler une page changée, et le
+   quota est d'une dizaine de demandes manuelles par jour. La liste exacte pour
+   la mise en ligne du 22/09/2026 est au § 1 ter.
+
+## 1 bis. Ce que Search Console ne peut pas faire pour cette mise en ligne
+
+Avant de demander quoi que ce soit, deux choses à savoir, pour ne pas attendre
+un résultat qui ne viendra pas :
+
+- **Le sitemap fait déjà le travail de fond.** Les 276 URL portent toutes un
+  `lastmod` ; une fois le sitemap soumis, Google recrawle sur cette base. Les
+  demandes manuelles ne servent qu'à *accélérer* une poignée de pages, pas à
+  faire indexer un site.
+- **Les résultats enrichis FAQ n'existent plus pour un site comme le nôtre.**
+  Depuis le 8 août 2023, Google ne les affiche que pour les sites
+  gouvernementaux et de santé reconnus. Le balisage `FAQPage` reste utile — Bing
+  l'affiche encore, et les moteurs IA lisent le JSON-LD — mais il ne faut pas
+  attendre d'étoiles ni d'accordéon FAQ dans Google. C'est pourquoi le
+  dédoublonnage du 22/09/2026 (§ 1 ter) se juge sur les citations IA et sur
+  « qui possède la question », pas sur un rapport d'enrichissement.
+
+## 1 ter. La mise en ligne du 22/09/2026 — la liste à demander, dans l'ordre
+
+24 URL ont changé : les 18 hubs de mois (correction d'un jeton `{month}` qui
+s'affichait en clair) et les 6 hubs d'occasion (FAQ propre à l'occasion).
+Vérifiées en direct le 22/09/2026 : 200, canonique autoréférente, indexables,
+4 hreflang, aucun blocage pour aucun robot.
+
+**Jour 1 — les 6 pages qui portent la vague Ramadan** (ce sont elles qui
+comptent ; le reste peut attendre le sitemap) :
+
+```
+https://wikitours.ma/fr/omra-ramadan
+https://wikitours.ma/ar/omra-ramadan
+https://wikitours.ma/en/omra-ramadan
+https://wikitours.ma/fr/omra-chaabane-ramadan
+https://wikitours.ma/ar/omra-chaabane-ramadan
+https://wikitours.ma/en/omra-chaabane-ramadan
+```
+
+**Jour 2 — les mois qui portent le Ramadan 1448** (février et mars 2027 sont
+les mois du Ramadan ; ce sont les seuls hubs de mois avec du contenu rédigé) :
+
+```
+https://wikitours.ma/fr/omra-fevrier   https://wikitours.ma/fr/omra-mars
+https://wikitours.ma/ar/omra-fevrier   https://wikitours.ma/ar/omra-mars
+https://wikitours.ma/en/omra-fevrier   https://wikitours.ma/en/omra-mars
+```
+
+**Ne pas demander** les six autres hubs de mois (septembre, octobre, novembre
+× 3 langues) : le jeton corrigé n'y était pas visible, et dépenser le quota
+sur eux retarde les pages qui rapportent.
+
+**Les trois rapports à lire le même jour**, une fois la propriété active :
+
+| Rapport | Ce qu'on y cherche | Décision qui en découle |
+|---|---|---|
+| Indexation des pages | combien des 276 URL sont indexées ; les « Explorée, actuellement non indexée » | une page de ville explorée et non indexée = contenu trop mince, elle passe dans la file de réécriture |
+| Performances → Requêtes, 12 mois, export CSV | les mots réellement tapés, et leur langue | réécrit `scoreboard/prompts.csv` avec des requêtes réelles au lieu de l'autocomplétion |
+| Sécurité et actions manuelles | doit être vide | une action manuelle gèle tout le reste du plan |
 
 ## 2. Bing Webmaster Tools — 10 minutes, propriétaire
 

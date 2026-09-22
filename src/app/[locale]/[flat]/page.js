@@ -472,13 +472,33 @@ export default async function FlatLandingPage({ params }) {
         : cityFaqs.length
           ? cityFaqs.map((f) => ({ q: pickLang(f, 'question', locale), a: pickLang(f, 'answer', locale) }))
           : null;
-  const faqJsonLd = faq
-    ? {
-        '@context': 'https://schema.org',
-        '@type': 'FAQPage',
-        mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
-      }
-    : null;
+
+  // The FAQ is DISPLAYED wherever it helps a reader, but the FAQPage node is
+  // emitted only by the page that OWNS the question set. Google renders one
+  // FAQPage per result and treats the same questions on several URLs as
+  // duplicate markup: it picks one page and discards the rest — the same
+  // one-instance rule that keeps offer pages and /a-propos visible-only.
+  // Two sets are shared today (measured live 2026-09-22):
+  //   • t.pages.pasCherFaq belongs to /omra-pas-cher and is the fallback for
+  //     every occasion hub with no rows of its own — it was on 5 pages
+  //     (/omra-pas-cher + 5-etoiles, ete, mawlid, special-septembre) × 3 locales.
+  //   • occasion-ramadan and occasion-chaabane-ramadan hold the SAME 8 rows, so
+  //     the head-term hub owns them until the Chaâbane set is written
+  //     (docs/content-system/faq-ownership.md).
+  // Remove a slug from BORROWED_FAQ the moment its own distinct rows exist.
+  const BORROWED_FAQ = new Set(['chaabane-ramadan']);
+  const ownsFaqMarkup =
+    resolved.kind === 'occasion'
+      ? occasionFaqs.length > 0 && !BORROWED_FAQ.has(resolved.occasion.slug)
+      : true;
+  const faqJsonLd =
+    faq && ownsFaqMarkup
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+        }
+      : null;
 
   return (
     <div className="bg-bm-black text-white">
