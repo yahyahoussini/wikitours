@@ -236,6 +236,7 @@ export async function saveOfferTiers(offerId, tiers) {
     price_triple: z.number().int().nullable().optional(),
     price_quad: z.number().int().nullable().optional(),
     price_quint: z.number().int().nullable().optional(),
+    price_sextuple: z.number().int().nullable().optional(),
     is_published: z.boolean().optional(),
   });
 
@@ -293,6 +294,7 @@ export async function saveOfferTiers(offerId, tiers) {
         price_triple: tier.price_triple || null,
         price_quad: tier.price_quad || null,
         price_quint: tier.price_quint || null,
+        price_sextuple: tier.price_sextuple || null,
         is_published: tier.is_published ?? true,
       };
       // No-id rows UPSERT on (offer_id, label): after a first save the client

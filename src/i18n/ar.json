@@ -162,7 +162,8 @@
       "double": "غرفة ثنائية",
       "triple": "غرفة ثلاثية",
       "quad": "غرفة رباعية",
-      "quint": "غرفة خماسية"
+      "quint": "غرفة خماسية",
+      "sextuple": "غرفة سداسية"
     },
     "datesLabel": "التواريخ",
     "airlineLabel": "شركة الطيران",
@@ -190,7 +191,8 @@
       "double": "ثنائية",
       "triple": "ثلاثية",
       "quad": "رباعية",
-      "quint": "خماسية"
+      "quint": "خماسية",
+      "sextuple": "سداسية"
     },
     "priceInRoom": "في غرفة {room}",
     "selectedRoom": "غرفة {room}",

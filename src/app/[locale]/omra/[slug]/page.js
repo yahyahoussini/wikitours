@@ -63,7 +63,7 @@ export async function generateStaticParams() {
 
 const nf = new Intl.NumberFormat('fr-MA');
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wikitours.ma';
-const ROOM_KEYS = ['double', 'triple', 'quad', 'quint'];
+const ROOM_KEYS = ['double', 'triple', 'quad', 'quint', 'sextuple'];
 const TIER_LABELS = ['economique', 'confort', 'premium', 'vip'];
 
 function fmtDate(value, locale) {

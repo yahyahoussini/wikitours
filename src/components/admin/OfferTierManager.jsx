@@ -16,6 +16,7 @@ const ROOM_KEYS = [
   { key: 'price_triple', label: 'Triple' },
   { key: 'price_quad', label: 'Quadruple' },
   { key: 'price_quint', label: 'Quintuple' },
+  { key: 'price_sextuple', label: 'Sextuple' },
 ];
 
 function emptyTier() {

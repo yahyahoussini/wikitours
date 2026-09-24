@@ -7,7 +7,7 @@ function computeMinPrice(tiers) {
   if (!tiers?.length) return null;
   const all = [];
   for (const tier of tiers) {
-    for (const key of ['price_double', 'price_triple', 'price_quad', 'price_quint']) {
+    for (const key of ['price_double', 'price_triple', 'price_quad', 'price_quint', 'price_sextuple']) {
       if (typeof tier[key] === 'number' && tier[key] > 0) all.push(tier[key]);
     }
   }

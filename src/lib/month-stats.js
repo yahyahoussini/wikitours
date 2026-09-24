@@ -5,7 +5,7 @@
  * with no data returns null and the page omits it (LAW §10).
  */
 
-const ROOM_PRICE_KEYS = ['price_double', 'price_triple', 'price_quad', 'price_quint'];
+const ROOM_PRICE_KEYS = ['price_double', 'price_triple', 'price_quad', 'price_quint', 'price_sextuple'];
 
 /** Every per-person price an offer advertised — its gammes, or the legacy row prices. */
 export function offerPrices(offer) {

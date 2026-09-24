@@ -11,7 +11,7 @@ export const runtime = 'nodejs';
 export const revalidate = 3600; // hourly, like every listing — publish-by-time needs no cron
 
 // Same order as the offer page's gamme cards.
-const ROOM_KEYS = ['double', 'triple', 'quad', 'quint'];
+const ROOM_KEYS = ['double', 'triple', 'quad', 'quint', 'sextuple'];
 
 /**
  * /llms.txt — the emerging convention for handing AI answer engines a curated,
@@ -254,7 +254,7 @@ export async function GET() {
     '## À savoir',
     '',
     '- Aucun paiement en ligne : la réservation se confirme par téléphone puis par contrat écrit signé à l\'agence, avec reçu officiel.',
-    '- Les prix affichés sont par personne, en MAD, et dépendent de la gamme (économique / confort / premium / VIP) et du type de chambre (double / triple / quadruple / quintuple).',
+    '- Les prix affichés sont par personne, en MAD, et dépendent de la gamme (économique / confort / premium / VIP) et du type de chambre (double / triple / quadruple / quintuple / sextuple).',
     '- Les offres passées sont retirées automatiquement ; ce fichier ne liste que les départs publiés et à venir.',
     '',
   );

@@ -24,6 +24,7 @@ function slimTier(tier) {
     price_triple: tier.price_triple ?? null,
     price_quad: tier.price_quad ?? null,
     price_quint: tier.price_quint ?? null,
+    price_sextuple: tier.price_sextuple ?? null,
     breakfast_included: tier.breakfast_included ?? null,
     distance_to_haram_m: tier.distance_to_haram_m ?? null,
     hotel_makkah: slimHotel(tier.hotel_makkah),
@@ -51,6 +52,7 @@ export function toOfferCard(offer, cover, locale) {
     price_triple: offer.price_triple ?? null,
     price_quad: offer.price_quad ?? null,
     price_quint: offer.price_quint ?? null,
+    price_sextuple: offer.price_sextuple ?? null,
     occasion: offer.occasion
       ? {
           slug: offer.occasion.slug,

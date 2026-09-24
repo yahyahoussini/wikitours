@@ -8,7 +8,14 @@ import { supabasePublic } from '@/lib/supabase/public';
  * failure so sections hide (LAWS §10).
  */
 
-const LEGACY_PRICE_KEYS = ['price_double', 'price_triple', 'price_quad', 'price_quint'];
+/**
+ * Every per-person room price a tier (or a legacy offer row) can carry, in the
+ * order a customer reads them: the more people share a room, the cheaper it is
+ * per head. This is THE list — three copies of it used to live in this file and
+ * drift apart. `price_sextuple` arrives with migration 027; until that is
+ * applied the key is simply absent from every row, which every reader skips.
+ */
+export const ROOM_PRICE_KEYS = ['price_double', 'price_triple', 'price_quad', 'price_quint', 'price_sextuple'];
 
 /**
  * Build a one-element tiers array from an offer's legacy per-offer columns
@@ -18,7 +25,7 @@ const LEGACY_PRICE_KEYS = ['price_double', 'price_triple', 'price_quad', 'price_
  * offer carries neither a legacy price nor a legacy hotel.
  */
 async function legacyTierFromOffer(supabase, offer) {
-  const hasPrice = LEGACY_PRICE_KEYS.some((k) => typeof offer[k] === 'number' && offer[k] > 0);
+  const hasPrice = ROOM_PRICE_KEYS.some((k) => typeof offer[k] === 'number' && offer[k] > 0);
   const hotelIds = [offer.hotel_makkah_id, offer.hotel_madinah_id].filter(Boolean);
   if (!hasPrice && hotelIds.length === 0) return [];
 
@@ -47,6 +54,7 @@ async function legacyTierFromOffer(supabase, offer) {
       price_triple: offer.price_triple ?? null,
       price_quad: offer.price_quad ?? null,
       price_quint: offer.price_quint ?? null,
+      price_sextuple: offer.price_sextuple ?? null,
       is_published: true,
       _legacy: true,
     },
@@ -78,7 +86,7 @@ export const getOfferBySlug = cache(async function getOfferBySlug(slug) {
 
     const prices = [];
     for (const tier of tiers) {
-      for (const key of LEGACY_PRICE_KEYS) {
+      for (const key of ROOM_PRICE_KEYS) {
         if (typeof tier[key] === 'number' && tier[key] > 0) prices.push(tier[key]);
       }
     }
@@ -126,7 +134,7 @@ async function attachTiers(supabase, offers) {
     // Compute starting_price from tiers for backward compat
     const prices = [];
     for (const tier of offer.tiers) {
-      for (const key of ['price_double', 'price_triple', 'price_quad', 'price_quint']) {
+      for (const key of ROOM_PRICE_KEYS) {
         if (typeof tier[key] === 'number' && tier[key] > 0) prices.push(tier[key]);
       }
     }
@@ -440,8 +448,6 @@ export const getIndexableLandingPages = cache(async function getIndexableLanding
     return [];
   }
 });
-
-const ROOM_PRICE_KEYS = ['price_double', 'price_triple', 'price_quad', 'price_quint'];
 
 /** Every per-person price across all tiers and room types, cheapest first. */
 function tierPrices(tiers) {

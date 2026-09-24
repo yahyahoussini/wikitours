@@ -162,7 +162,8 @@
       "double": "Double room",
       "triple": "Triple room",
       "quad": "Quadruple room",
-      "quint": "Quintuple room"
+      "quint": "Quintuple room",
+      "sextuple": "Six-bed room"
     },
     "datesLabel": "Dates",
     "airlineLabel": "Airline",
@@ -190,7 +191,8 @@
       "double": "double",
       "triple": "triple",
       "quad": "quadruple",
-      "quint": "quintuple"
+      "quint": "quintuple",
+      "sextuple": "six-bed"
     },
     "priceInRoom": "in a {room} room",
     "selectedRoom": "{room} room",

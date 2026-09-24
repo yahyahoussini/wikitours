@@ -618,6 +618,7 @@ export const ADMIN_ENTITIES = {
       { name: 'price_triple', type: 'number', label: 'Prix ch. triple (MAD/pers)' },
       { name: 'price_quad', type: 'number', label: 'Prix ch. quadruple (MAD/pers)' },
       { name: 'price_quint', type: 'number', label: 'Prix ch. quintuple (MAD/pers)' },
+      { name: 'price_sextuple', type: 'number', label: 'Prix ch. sextuple (MAD/pers)' },
     ],
   },
 
