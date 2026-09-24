@@ -131,7 +131,11 @@ const EXPECT = {
   month: ['WebPage', 'BreadcrumbList'],
   city: ['WebPage', 'BreadcrumbList'],
   occasion: ['WebPage', 'BreadcrumbList'],
-  offer: ['Product', 'TouristTrip', 'BreadcrumbList'],
+  // WebPage is required so the speakable block cannot silently disappear:
+  // until 2026-09-24 the departure pages carried no WebPage and therefore no
+  // speakable, which made the priced pages the only ones an answer engine
+  // could not read a marked answer from.
+  offer: ['Product', 'TouristTrip', 'BreadcrumbList', 'WebPage'],
   article: ['BlogPosting', 'BreadcrumbList'],
   hotel: ['Hotel', 'BreadcrumbList'],
   voyage: ['TouristTrip', 'BreadcrumbList'],

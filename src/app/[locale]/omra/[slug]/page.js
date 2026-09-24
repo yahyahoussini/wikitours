@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
-import { hreflangAlternates, clampDesc, BRAND_ID, hotelNode, tripNodeId } from '@/lib/seo';
+import { hreflangAlternates, clampDesc, BRAND_ID, hotelNode, tripNodeId, SPEAKABLE } from '@/lib/seo';
 import { pageDescription, trustClauses, authoredOr } from '@/lib/page-seo';
 import { routeTitle } from '@/lib/titles';
 import {
@@ -368,6 +368,24 @@ export default async function OfferPage({ params }) {
         ? { '@type': 'Offer', price: minPrice }
         : null;
 
+  // WebPage + speakable. `speakable` is defined on WebPage and CreativeWork,
+  // NOT on Product or Trip, so the departure pages had nowhere to carry it and
+  // went without: the pages that hold the prices were the only ones an answer
+  // engine could not read a marked answer from. The lede rendered below with
+  // `data-answer` is that answer, and SPEAKABLE is the shared selector set.
+  const webPageJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': `${offerUrl}#webpage`,
+    url: offerUrl,
+    name: title,
+    inLanguage: locale,
+    isPartOf: { '@id': `${SITE_URL}/#website` },
+    about: { '@id': `${SITE_URL}/#organization` },
+    ...(summary ? { description: summary } : {}),
+    speakable: SPEAKABLE,
+  };
+
   const productJsonLd = {
     '@context': 'https://schema.org',
     // Product drives the price rich result; TouristTrip is the accurate entity.
@@ -451,6 +469,7 @@ export default async function OfferPage({ params }) {
   return (
     <div id="offer-root" data-selected-tier={defaultTier ?? ''} data-selected-room={defaultRoom ?? ''} className="bg-wiki-white text-bm-black">
       <div className="scroll-progress" data-progress aria-hidden="true" suppressHydrationWarning />
+      <JsonLd data={webPageJsonLd} />
       <JsonLd data={productJsonLd} />
       <span data-wt-view={`offers:${offer.id}`} hidden />
 
@@ -513,10 +532,15 @@ export default async function OfferPage({ params }) {
                 />
               </div>
 
+              {/* The answer-first lede. `data-answer` is what `speakable` points
+                  at, and it is how an answer engine finds the sentence that
+                  actually answers "what is this departure". Every other page
+                  type has carried it since 2026-09-09; the departure pages —
+                  the ones that hold the prices — were the last without it. */}
               {intro ? (
-                <p className="mt-3 max-w-prose text-lg leading-relaxed text-bm-black/80">{intro}</p>
+                <p data-answer className="mt-3 max-w-prose text-lg leading-relaxed text-bm-black/80">{intro}</p>
               ) : summary ? (
-                <p className="mt-3 max-w-prose text-lg leading-relaxed text-bm-black/80">{summary}</p>
+                <p data-answer className="mt-3 max-w-prose text-lg leading-relaxed text-bm-black/80">{summary}</p>
               ) : null}
               {intro && summary ? (
                 <p className="mt-2 max-w-prose leading-relaxed text-bm-black/60">{summary}</p>
