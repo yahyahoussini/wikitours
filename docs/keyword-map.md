@@ -211,6 +211,23 @@ Enforced mechanically by `targetsLanderQuery()` in `src/lib/server/article-gate.
 | `/hajj` | hajj · hajj depuis le maroc · الحج من المغرب |
 | `/bab-makka` | départs / programmes omra (the pillar; posts support it, never own it) |
 
+## Departure pages (`/omra/{slug}`) — long tail only
+
+A departure page is ephemeral and **never** owns a hub's query family. It owns
+the long tail its own programme creates — the duration, the dates, the airline
+— and links up to the hub that owns the head term.
+
+| Query family | Owner page | Must NOT target |
+|---|---|---|
+| omra ramadan 32 jours · omra ramadan un mois complet · عمرة رمضان 32 يوم · عمرة رمضان شهر كامل · Ramadan umrah 32 days | `/omra/omra-ramadan-2027-32-jours` (added 2026-09-24, from the agency's own offer sheet: 12 Feb → 15 Mar 2027, Saudia, arrival **Madinah**, 4 nights Madinah then Makkah) | « omra ramadan 2027 prix » and « عمرة رمضان 2027 المغرب » — those belong to `/omra-ramadan`, which this page links up to |
+| omra chaâbane ramadan 25 jours · 15 jours | `/omra/omra-chaabane-ramadan-2027-25-jours`, `…-15-jours` | « omra chaâbane 2027 » — belongs to `/omra-chaabane-ramadan` |
+
+What makes the 32-day page distinct from the hub, and worth its own entry:
+it is the only Moroccan departure we have found that covers **the whole month
+of Ramadan**, arrives at **Madinah** rather than Jeddah, and prints a price for
+five- and six-bed rooms. Those are facts, not adjectives, and no hub page can
+carry them without becoming a departure page.
+
 Blog posts serve informational and long-tail intent and link TO these pages with
 `<CommercialCTA to="…" />`. The ten plan rows « omra janvier … omra decembre »
 seeded by migration 019 target lander queries and must be re-angled before they
