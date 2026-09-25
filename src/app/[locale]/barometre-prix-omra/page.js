@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, LOCALES } from '@/lib/i18n';
 import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc, SPEAKABLE } from '@/lib/seo';
+import { padDescription } from '@/lib/page-seo';
 import { withBrand } from '@/lib/titles';
 import { getPublishedOffers } from '@/lib/data/content';
 import { computePeriods } from '@/lib/barometer';
@@ -39,7 +40,12 @@ export async function generateMetadata({ params }) {
   const { periods } = computePeriods(await getPublishedOffers());
   return {
     title: { absolute: withBrand(t.barometer.title) },
-    description: clampDesc(t.barometer.desc),
+    // padDescription, not clampDesc: clampDesc only TRIMS a long description,
+    // it cannot lift a short one. This page sat noindex for months behind its
+    // >=3-departures rule, so nobody noticed its ar (96 chars) and en (118)
+    // descriptions were under the 120 floor. The moment three Ramadan 2027
+    // departures made it indexable, the gate caught both.
+    description: clampDesc(padDescription(t.barometer.desc, locale)),
     alternates: hreflangAlternates(locale, '/barometre-prix-omra'),
     // Render guard: no qualifying period ⇒ noindex (never thin/empty stats).
     ...(periods.length ? {} : { robots: { index: false, follow: true } }),
