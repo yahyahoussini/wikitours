@@ -59,6 +59,11 @@
     "[À VÉRIFIER] La section Sources pointe la FAQ ministérielle en anglais : la version arabe (haj.gov.sa/ar/FAQ) répond 403 au contrôle G7, alors que la note des faits fait de l'arabe le texte de référence.",
     "[À VÉRIFIER] Frère prévu par le slot non lié : /blog/ramadan-2027-dates-calendrier (retiré, is_published = false)."
   ],
-  "status": "skipped",
-  "skip_reason": "Relecteur FR 6,2 puis 7,8 après l'unique réécriture autorisée (seuil 8) ; relecteur AR 7,2 puis 8,4. La réécriture a corrigé l'arithmétique (arrivée à La Mecque comparée au soir le plus précoce possible, marge de ±2 jours), supprimé la promesse d'une nuit, la « nuit de l'annonce », la règle de l'eVisa et les délais ACYW. Restent, côté FR : les lignes 2 et 3 du tableau restent affirmatives sous la marge ; surtout, la méthode demande de comparer le jour d'ARRIVÉE à La Mecque alors que les cartes <LiveDepartures> n'affichent que les dates de départ et de retour de Casablanca — le lecteur ne peut pas appliquer la méthode centrale ; une phrase suppose un programme couvrant tout le Ramadan, qu'aucun départ en vente ne couvre ; répétitions. À reprendre quand les cartes de départ affichent le jour d'arrivée à La Mecque ou l'ordre des villes."
+  "status": "owner_override",
+  "review_history": "Relecteur FR 6,2 puis 7,8 après l'unique réécriture autorisée (seuil 8) ; relecteur AR 7,2 puis 8,4. La réécriture a corrigé l'arithmétique (arrivée à La Mecque comparée au soir le plus précoce possible, marge de ±2 jours), supprimé la promesse d'une nuit, la « nuit de l'annonce », la règle de l'eVisa et les délais ACYW. Restent, côté FR : les lignes 2 et 3 du tableau restent affirmatives sous la marge ; surtout, la méthode demande de comparer le jour d'ARRIVÉE à La Mecque alors que les cartes <LiveDepartures> n'affichent que les dates de départ et de retour de Casablanca — le lecteur ne peut pas appliquer la méthode centrale ; une phrase suppose un programme couvrant tout le Ramadan, qu'aucun départ en vente ne couvre ; répétitions. À reprendre quand les cartes de départ affichent le jour d'arrivée à La Mecque ou l'ordre des villes.",
+  "owner_override": {
+    "decided_by": "owner",
+    "decided_at": "2026-09-28T13:29:21.068Z",
+    "decision": "Publier maintenant, malgré le seuil de 8 non atteint en FR après l'unique réécriture (brief étape 4). Décision du propriétaire sur ces deux articles seulement ; la règle reste inchangée pour les autres."
+  }
 }
