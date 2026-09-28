@@ -1790,7 +1790,7 @@
       "date": "2026-10-13",
       "publish_at": "2026-10-13T17:00:00.000Z",
       "phase": "P1",
-      "status": "planned",
+      "status": "skipped",
       "how": "weights:P1",
       "track": "ramadan",
       "pillar": "omra_ramadan",
@@ -1918,7 +1918,9 @@
       ],
       "length_target": "mega",
       "topic_id": "ramadan-faq-complete",
-      "slug": null
+      "slug": "omra-ramadan-toutes-les-questions",
+      "skip_reason": "Relecteur FR 6,4 puis 7,6 après l'unique réécriture autorisée (seuil 8) ; relecteur AR 7,2 puis 8,1. La réécriture a levé tous les blocages factuels du premier tour : règle de passeport de l'eVisa touristique (non écrite pour un demandeur marocain), délais ACYW publiés sans version, licence « vérifiable » sur une liste ODV qui ne porte aucun numéro, baromètre présenté comme rempli alors qu'il est noindex, permis de la Rawda décrit comme une validité, observations écrites comme des faits. Restent, côté FR, des doublons : la section « Combien de temps partir » ne donne aucune durée et reprend la réponse Chaâbane-Ramadan / Ramadan de la FAQ du hub /omra-ramadan ; la FAQ répète le corps (Hajj, Rawda, parent âgé) ; « vérifier que les dix dernières nuits font partie du séjour » apparaît trois fois. À reprendre comme une page-index plus courte qui ne recoupe pas la FAQ du hub.",
+      "generated_at": "2026-09-28T13:23:55.407Z"
     },
     {
       "slot_index": 17,
@@ -2511,7 +2513,7 @@
       "date": "2026-10-22",
       "publish_at": "2026-10-22T17:00:00.000Z",
       "phase": "P1",
-      "status": "planned",
+      "status": "skipped",
       "how": "weights:P1",
       "track": "ramadan",
       "pillar": "omra_ramadan",
@@ -2622,7 +2624,9 @@
       ],
       "length_target": "explainer",
       "topic_id": "ramadan-arriver-avant-le-debut",
-      "slug": null
+      "slug": "arriver-avant-premiere-nuit-ramadan",
+      "skip_reason": "Relecteur FR 6,2 puis 7,8 après l'unique réécriture autorisée (seuil 8) ; relecteur AR 7,2 puis 8,4. La réécriture a corrigé l'arithmétique (arrivée à La Mecque comparée au soir le plus précoce possible, marge de ±2 jours), supprimé la promesse d'une nuit, la « nuit de l'annonce », la règle de l'eVisa et les délais ACYW. Restent, côté FR : les lignes 2 et 3 du tableau restent affirmatives sous la marge ; surtout, la méthode demande de comparer le jour d'ARRIVÉE à La Mecque alors que les cartes <LiveDepartures> n'affichent que les dates de départ et de retour de Casablanca — le lecteur ne peut pas appliquer la méthode centrale ; une phrase suppose un programme couvrant tout le Ramadan, qu'aucun départ en vente ne couvre ; répétitions. À reprendre quand les cartes de départ affichent le jour d'arrivée à La Mecque ou l'ordre des villes.",
+      "generated_at": "2026-09-28T13:23:55.412Z"
     },
     {
       "slot_index": 23,
