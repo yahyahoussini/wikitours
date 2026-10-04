@@ -245,8 +245,7 @@ export default async function OfferPage({ params }) {
   const inclusionLines = (inclusions ?? '').split('\n').map((s) => s.trim()).filter(Boolean);
   const exclusionLines = (exclusions ?? '').split('\n').map((s) => s.trim()).filter(Boolean);
 
-  // TEAM (responsable is used in the booking card; encadrant faces stream below)
-  const responsable = team.find((m) => (m.role_fr ?? '').toLowerCase().includes('responsable'));
+  // TEAM (encadrant faces stream below)
   const encadrants = team.filter((m) => (m.role_fr ?? '').toLowerCase().includes('encadrant'));
 
   // Testimonials (kept in the shell — the subnav needs to know if there are any)
@@ -812,11 +811,9 @@ export default async function OfferPage({ params }) {
                 </div>
               ) : null}
 
-              {responsable ? (
-                <p className="mt-3 rounded-ctrl bg-bm-gold/5 px-3 py-2 text-xs text-bm-black/70">
-                  {t.offer.bookingArrivesTo.replace('{name}', responsable.name)}
-                </p>
-              ) : null}
+              <p className="mt-3 rounded-ctrl bg-bm-gold/5 px-3 py-2 text-xs text-bm-black/70">
+                {t.offer.bookingReply}
+              </p>
               <div className="mt-4">
                 <LeadForm
                   locale={locale}
