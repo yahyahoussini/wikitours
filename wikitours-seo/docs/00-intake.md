@@ -22,7 +22,7 @@ Créée le 2026-09-21. Tout ce qui est marqué **À COLLECTER** manque encore ; 
 ## 3. Entité (Layer 8) — identique partout, caractère pour caractère
 - Nom commercial : Bab Makka · Nom arabe : باب مكة
 - Raison sociale : Wiki Tours International · RC : [[FACT NEEDED: rc]] · ICE : [[FACT NEEDED: ice]]
-- Adresse : Immeuble Anoual Capital Center, 418 Angle Bd Abdelmoumen et Bd Anoual, Magasin N°1 RDC, [[FACT NEEDED: postal]] Casablanca · Téléphone : +212634845177 · WhatsApp : 212601351105 · E-mail : contact@wikitours.ma
+- Adresse : Immeuble Anoual Capital Center, 418 Angle Bd Abdelmoumen et Bd Anoual, Magasin N°1 RDC, [[FACT NEEDED: postal]] Casablanca · Téléphone : +212601351105 (numéro principal depuis le 04/10/2026, la même ligne que WhatsApp) · WhatsApp : 212601351105 · E-mail : contact@wikitours.ma
 - Fondateur / responsable : [[FACT NEEDED: founder]], [[FACT NEEDED: founder role]] — photo, bio, parcours, profils : À COLLECTER
 - Année de création : [[FACT NEEDED]] · Nombre de clients / projets : [[FACT NEEDED]] · Zones servies : [[FACT NEEDED]]
 - Horaires exacts (y compris jours fériés, Ramadan) : [[FACT NEEDED]]

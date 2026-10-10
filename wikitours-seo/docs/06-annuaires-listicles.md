@@ -71,6 +71,12 @@ c'est la **dérive** : quatre adresses différentes coexistent aujourd'hui.
 > seule leur **adresse** est périmée. Le seul numéro réellement étranger aux
 > réglages est celui de Telecontact, `05 22 44 73 40`.
 
+> **Mise à jour du 04/10/2026 (décision du propriétaire).** Le numéro principal
+> est désormais `06 01 35 11 05` — `phone_1` dans les réglages, la même ligne que
+> WhatsApp, comme sur les affiches. `06 34 84 51 77` n'est plus dans les
+> réglages : la fiche City-Info, qui l'affiche, a donc aussi un **téléphone** à
+> corriger. `phone_2` (`06 60 65 56 55`) et `phone_3` (`06 94 13 94 94`) restent.
+
 **Ce qui appartient au propriétaire :**
 
 1. Le nom sur la fiche Waze est `Bab Makka Omra & Hajj By Wiki Tours INTL` — c'est

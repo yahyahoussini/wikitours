@@ -35,4 +35,4 @@ Le client possède tout ; l'agence est gestionnaire. Ce document liste chaque ac
 ## 5. Contacts utiles
 - Registrar / hébergeur support : [[FACT NEEDED]]
 - Juriste (loi 09-08, 31-08, OMPIC) : [[FACT NEEDED]]
-- Agence : [[FACT NEEDED: founder]] — +212634845177 — contact@wikitours.ma
+- Agence : [[FACT NEEDED: founder]] — +212601351105 — contact@wikitours.ma

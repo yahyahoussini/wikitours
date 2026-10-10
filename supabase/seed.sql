@@ -10,7 +10,10 @@
 insert into public.settings
   (id, default_locale, whatsapp_number, phone_1, phone_2, phone_3, email, community_count)
 values
-  (1, 'fr', '+212660655655', '0634845177', '0660655655', '0694139494',
+  -- whatsapp_number and phone_1 as the live row since 2026-10-04 (owner: one
+  -- main line, 06 01 35 11 05, also the WhatsApp line). Re-running this seed
+  -- overwrites the live settings, so it must carry the live values.
+  (1, 'fr', '+212 601-351105', '0601351105', '0660655655', '0694139494',
    'contact@wikitours.ma', '925K')
 on conflict (id) do update set
   default_locale = excluded.default_locale,
