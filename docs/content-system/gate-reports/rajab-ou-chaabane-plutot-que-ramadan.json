@@ -4,7 +4,7 @@
   "row": false,
   "state": null,
   "format": "comparison",
-  "checked_at": "2026-10-09T16:21:15.546Z",
+  "checked_at": "2026-10-10T11:13:45.217Z",
   "ok": true,
   "failed": [],
   "pending": [
@@ -12,9 +12,9 @@
     "G16"
   ],
   "words": {
-    "fr": 1521,
-    "ar": 1092,
-    "en": 1440
+    "fr": 1551,
+    "ar": 1113,
+    "en": 1473
   },
   "checks": {
     "G1": {
@@ -90,11 +90,11 @@
         },
         "ar": {
           "slug": "arriver-avant-premiere-nuit-ramadan",
-          "score": 0.026
+          "score": 0.028
         },
         "en": {
           "slug": "omra-ramadan-toutes-les-questions",
-          "score": 0.035
+          "score": 0.036
         }
       },
       "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
