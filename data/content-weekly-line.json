@@ -1,0 +1,52 @@
+{
+  "decided": "2026-10-09 — owner: ONE high-quality article per week, written ahead by the weekly routine, serving the departures on sale — first the Chaâbane-Ramadan programmes and the 25 November departure, then the Ramadan season. Quality beats cadence: a post under 8/10 with either reviewer after one rewrite is skipped, never published.",
+  "publish_weekday": "tuesday",
+  "publish_time_utc": "07:30",
+  "min_lead_hours": 30,
+  "serve": [
+    {
+      "intent": "occasion:chaabane-ramadan",
+      "departures_filter": "occasion:chaabane-ramadan",
+      "until": "2027-01-15",
+      "why": "the two Chaâbane-Ramadan programmes (departures in late January and early February) — the commercial priority of the season"
+    },
+    {
+      "intent": "month:11",
+      "departures_filter": "month:11",
+      "until": "2026-11-15",
+      "why": "the 25 November departure (14 days) — stop promoting it once its booking window has closed"
+    },
+    {
+      "intent": "month:12",
+      "departures_filter": "month:12",
+      "until": "2026-12-12",
+      "why": "the December departures, which fall in Rajab this season"
+    }
+  ],
+  "order": [
+    60,
+    39,
+    19,
+    47,
+    31,
+    38,
+    35,
+    14,
+    28,
+    42,
+    45,
+    46,
+    48,
+    68,
+    72,
+    76,
+    55
+  ],
+  "fallback_tracks": [
+    "ramadan",
+    "omra"
+  ],
+  "log": [
+    "2026-10-09 — slot #10 rajab-ou-chaabane-plutot-que-ramadan — written in a local session at the owner's request (AR first, FR adapted, EN lean) to serve the Chaâbane-Ramadan, December and November departures; one rewrite (FR 7.2 → 8.2, AR 7.6 → 8.2); should_fix applied, then two adversarial checks (reviewers, then fresh verifiers) — regressions fixed, incl. the « passage au Ramadan à La Mecque » premise, contradicted by both Chaâbane-Ramadan itineraries (Madinah around the computed start of Ramadan); gate PASS (G13/G16 at the build); SCHEDULED 2026-10-10T17:00:00.000Z (Saturday 18:00 Casablanca, « this week » — an exception to publish_weekday). From here the routine runs Sunday 21:00 UTC and publishes the next Tuesday 07:30 UTC at least min_lead_hours (30) ahead: first one Tuesday 2026-10-13."
+  ]
+}

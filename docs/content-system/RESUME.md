@@ -31,7 +31,7 @@ nothing costs money.
 | Topic pool | **172 topics** in `data/content-topics/*.json` — one file per batch. Add a batch file to extend it; the builder rejects a topic whose query is a lander's or whose angle is within 0.6 of an existing post |
 | Series | `ramadan-1448` 12 (AR co-master) · `hajj-1448` 8 (AR co-master) · `premiere-omra` 8 · `mois-par-mois` 12 · `villes` 7 — each placed exactly once |
 | Phase weights | **Not met, deliberately.** See `04-setup-report.md` § "The phase weights are not met, and forcing them would be wrong" — the Ramadan track has 22 distinct angles against a target needing ~60, because 19 of its floor rows are already held by a thin existing post that deserves a rewrite, not a duplicate |
-| Posts written and gated | 9 contract-era drafts in `content/articles/2026-09-*.json`, one gate report each in `gate-reports/`. **2 scheduled** (slots 2 and 4 — Hajj registration, 22 Sep; booking from Europe, 25 Sep), **2 published by owner override** (slots 16 and 22, 2026-09-28 — see below) and **5 skipped** (slots 1, 3, 5, 6, 8). **Owner override, 2026-09-28:** slots #16 and #22 were skipped under the one-rewrite rule (FR 7.6 and 7.8, AR 8.1 and 8.4) and the owner decided to publish both immediately. Recorded as `status: "owner_override"` + `owner_override` on the files and the slots, with the reviewers' notes kept as `review_history`. **The rule itself is unchanged** — this is a decision on two named posts, not a lower bar; a generating run still skips anything under 8 after one rewrite. Every skipped draft carries `status: "skipped"` and a `skip_reason` on the file and the calendar slot, and the ingest refuses it. That guard covers FILES only: a skipped post that is already a row stays whatever the row says — two are published rows today (owner item 00) |
+| Posts written and gated | 10 contract-era drafts in `content/articles/` (9 from September, 1 from 2026-10-09), one gate report each in `gate-reports/`. **Slot #10 scheduled for 2026-10-10 17:00 UTC** — the first post of the weekly line (FR 7.2 → 8.2, AR 7.6 → 8.2 after the one rewrite). **2 scheduled** (slots 2 and 4 — Hajj registration, 22 Sep; booking from Europe, 25 Sep), **2 published by owner override** (slots 16 and 22, 2026-09-28 — see below) and **5 skipped** (slots 1, 3, 5, 6, 8). **Owner override, 2026-09-28:** slots #16 and #22 were skipped under the one-rewrite rule (FR 7.6 and 7.8, AR 8.1 and 8.4) and the owner decided to publish both immediately. Recorded as `status: "owner_override"` + `owner_override` on the files and the slots, with the reviewers' notes kept as `review_history`. **The rule itself is unchanged** — this is a decision on two named posts, not a lower bar; a generating run still skips anything under 8 after one rewrite. Every skipped draft carries `status: "skipped"` and a `skip_reason` on the file and the calendar slot, and the ingest refuses it. That guard covers FILES only: a skipped post that is already a row stays whatever the row says — two are published rows today (owner item 00) |
 | Why both were skipped — read this before writing another | They promise **experience** ("comment se passe vraiment le mois", "météo, affluence"); the two that passed describe a **procedure**. `data/allowed-facts.json` holds business data only, and `month_pages` is empty, so there is no source for the experiential layer. Both reviewers rejected every way of faking it. **Roughly half the calendar — the month series, most of the Ramadan series, the seasonal block — is blocked the same way.** See `04-setup-report.md` § "The single most useful thing this run found" |
 | Existing posts | 40 rows (2026-09-17): 29 live, 2 scheduled (the two contract posts that passed both reviewers, 22 and 25 Sep), **9 held** (`is_published = false`): the 2 posts the reviewers skipped (21 and 24 Sep) and the 7 pre-contract posts still queued (20 Sep → 22 Oct, 330–400 words, no FAQ, below the current bar). The 8th pre-contract post, `telephone-internet-arabie-saoudite`, went live on 16 Sep and stays live (pulling a live URL would 404 it). Held rows keep their slug and slot; a held pre-contract post is released again only after a rewrite that passes both gates and both reviewers (owner decision, 2026-09-17) |
 | Landers | 58, of which 44 indexable (`data/lander-registry.json`) |
@@ -39,7 +39,68 @@ nothing costs money.
 | Database | migrations 025 + 026 are written and committed; **applying them is the owner's step** (`RUNBOOK.md` § Apply the database side). Everything works without them: the components fall back to dictionary copy and the repo's JSON files are the record |
 | `enabled` | `true` in `data/content-calendar-spec.json`; it reaches `content_ops_settings` on the first `npm run content:calendar -- --seed` after migration 026 |
 | Last audit | **2026-09-15** — `audit-2026-09.md`. Three system fixes: the drift re-gate (`content:gate -- --existing`), Hijri anchors as a real placement constraint, sitemap `lastmod` no longer predating publication. 28 published + 8 scheduled rows are below the current bar (all pre-contract); 0 link rot; **no Search Console export exists** |
-| Last generator run | **2026-09-28** — slots **#16** (the Ramadan Q&A mega post) and **#22** (arriving before the first night) written AR-first, gated, reviewed, rewritten once, re-reviewed: **AR passed both (8.1 and 8.4), FR failed both (7.6 and 7.8) → skipped**, reasons on the files and the slots. Unlike the earlier skips, neither failed for lack of experiential facts: every factual blocker was cleared by the rewrite. #16 failed on overlap with the `/omra-ramadan` hub FAQ and a FAQ that repeated its own body — retake it as a shorter index page. **#22 exposed a product gap, not a writing one**: its method compares the day of ARRIVAL IN MAKKAH with the earliest possible first night, but `<LiveDepartures>` cards show only the Casablanca departure and return dates, so a reader cannot apply it. Retake #22 after the offer card shows the arrival day in Makkah or the order of the cities. Also found on the way: several official facts carry a `note` that restricts their use (the passport rule is the tourist eVisa, not written for Moroccans; the ACYW delays must not be published without the version date; the ODV list carries no licence number) — **read the notes, not only the values**. Previous run: **2026-09-15** — `batch-2026-09-15.md`. Slots #5, #6, #8 written, reviewed and skipped (no draft cleared both reviewers); #7, #9, #10, #11 blocked by facts missing from `allowed-facts` (listed per slot, with what unblocks each); #12 and #13 writable next. Five gate/ingest defects fixed on the way |
+| Last generator run | **2026-10-09** — slot **#10** (`rajab-ou-chaabane-plutot-que-ramadan`, Rajab or Chaâbane instead of Ramadan), the first post of the weekly line, written AR-first in a local session at the owner's request. Round 1 FR 7.2 / AR 7.6 (unattributed experience — « le calme de la fin de Chaâbane » —, a catalogue range of durations in the key facts, meta sentences, calques); one rewrite; round 2 **FR 8.2 / AR 8.2 → scheduled 2026-10-10 17:00 UTC**. The reviewers' should_fix were applied before the slot and confirmed by both. What they caught is now « Lessons » in § The weekly line. Previous run: **2026-09-28** — slots **#16** (the Ramadan Q&A mega post) and **#22** (arriving before the first night) written AR-first, gated, reviewed, rewritten once, re-reviewed: **AR passed both (8.1 and 8.4), FR failed both (7.6 and 7.8) → skipped**, reasons on the files and the slots. Unlike the earlier skips, neither failed for lack of experiential facts: every factual blocker was cleared by the rewrite. #16 failed on overlap with the `/omra-ramadan` hub FAQ and a FAQ that repeated its own body — retake it as a shorter index page. **#22 exposed a product gap, not a writing one**: its method compares the day of ARRIVAL IN MAKKAH with the earliest possible first night, but `<LiveDepartures>` cards show only the Casablanca departure and return dates, so a reader cannot apply it. Retake #22 after the offer card shows the arrival day in Makkah or the order of the cities. Also found on the way: several official facts carry a `note` that restricts their use (the passport rule is the tourist eVisa, not written for Moroccans; the ACYW delays must not be published without the version date; the ODV list carries no licence number) — **read the notes, not only the values**. Previous run: **2026-09-15** — `batch-2026-09-15.md`. Slots #5, #6, #8 written, reviewed and skipped (no draft cleared both reviewers); #7, #9, #10, #11 blocked by facts missing from `allowed-facts` (listed per slot, with what unblocks each); #12 and #13 writable next. Five gate/ingest defects fixed on the way |
+
+---
+
+## The weekly line (owner decision, 2026-10-09)
+
+**One high-quality article per week, written ahead by the weekly routine, in
+the order of `data/content-weekly-line.json`** — not the calendar's two posts
+every three days. The line serves the departures on sale (`serve`: the
+Chaâbane-Ramadan programmes first, the 25 November departure until mid-November,
+the December departures that fall in Rajab), then the Ramadan season. Each post
+is scheduled for the next Tuesday 07:30 UTC at least `min_lead_hours` (30 h)
+after it is written — the Sunday 21:00 UTC run lands on the Tuesday right after
+it — which leaves the owner about a day and a half to read it in Admin → Blog. The
+bar does not move: both reviewers ≥ 8 after at most one rewrite, the gate
+passing, or the slot is skipped with the reasons.
+
+The routine (`trig_016HWofWPk7TRUsc11dLRNm4`, Sundays 21:00 UTC, Opus 5.5)
+works from the repository only: the cloud environment cannot reach wikitours.ma
+or Supabase, which is why the old prompt (`/api/content/facts`) never produced a
+post after 13 Sep. It runs the gate with `--offline` (database checks skip; the
+build's ingest re-gates before anything is published) and the two reviewers as
+sub-agents, then pushes. **It also needs the owner to re-enable Claude Code for
+the organisation**: the 4 Oct run was refused with « Your organization has
+disabled Claude subscription access for Claude Code ».
+
+**First post: slot #10, `rajab-ou-chaabane-plutot-que-ramadan`**, written in a
+local session on 2026-10-09 and scheduled for Saturday 10 October, 18:00
+Casablanca — the owner asked for a post that week. The routine takes over on
+Sunday 11 October; its first post publishes on Tuesday 13 October.
+
+### Lessons from the posts so far — apply every one
+
+1. **A tag shows what its component renders, nothing more.** A `<LiveDepartures>`
+   card shows the dates, the total days and nights and the price. The split of
+   nights between Makkah and Madinah, the hotels and the breakfast flag are on
+   the departure PAGE, and only when the programme gives them. Both reviewers
+   caught « its card shows its nights in Makkah and Madinah ».
+2. **Read a legal fact for what it says.** Law 11.16 art. 18 puts cancellation,
+   the calendar and price revision in the contract — not a change of date. Write
+   « ask before signing whether the date can change; read the cancellation terms
+   in the contract ».
+3. **A FAQ answer starts with the answer and stands alone** — it is extracted
+   into FAQPage: no « cette comparaison », no « le tableau plus haut », no
+   superlative (« le texte le plus connu »), no sentence copied from the body.
+4. **One occurrence per block.** A sourced phrase (« avant l'affluence des dix
+   dernières nuits ») or a definition (what a Chaâbane-Ramadan programme is)
+   appears once in the body and once in the FAQ, not in every section. Medical
+   advice once.
+5. **Children before puberty do not have to fast**, even in Ramadan: « without
+   obligatory fasting » makes a family's trip easier; it is not « important with
+   children ».
+6. **The gate counts a hyphenated word as two** (`Chaâbane-Ramadan`,
+   `al-Bukhari`): aim for ~50 words in an excerpt by a plain count.
+7. **Darija headings agree in the plural** (« علاش كيفكرو عائلات… »), never MSA
+   agreement inside a Darija sentence.
+8. **Each `<LiveDepartures>` prints its own H2** « Départs ouverts »: three in a
+   row give three identical H2s (component fix waiting for a working deploy).
+   One block per period, each announced by its own sentence, three at most.
+9. **A generalisation must not contradict another section.** « The choice of
+   month is organisational » contradicted « Ramadan keeps what no other month
+   offers »: scope it (« between Rajab and Chaâbane »).
 
 ---
 

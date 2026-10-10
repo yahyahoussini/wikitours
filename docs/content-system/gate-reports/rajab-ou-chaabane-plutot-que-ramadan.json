@@ -1,0 +1,115 @@
+{
+  "slug": "rajab-ou-chaabane-plutot-que-ramadan",
+  "file": "content/articles/2026-10-09-rajab-ou-chaabane-plutot-que-ramadan.json",
+  "row": false,
+  "state": null,
+  "format": "comparison",
+  "checked_at": "2026-10-09T16:21:15.546Z",
+  "ok": true,
+  "failed": [],
+  "pending": [
+    "G13",
+    "G16"
+  ],
+  "words": {
+    "fr": 1521,
+    "ar": 1092,
+    "en": 1440
+  },
+  "checks": {
+    "G1": {
+      "ok": true,
+      "details": [],
+      "format": "comparison"
+    },
+    "G2": {
+      "ok": true,
+      "details": []
+    },
+    "G3": {
+      "ok": true,
+      "details": []
+    },
+    "G4": {
+      "ok": true,
+      "details": []
+    },
+    "G5": {
+      "ok": true,
+      "details": []
+    },
+    "G6": {
+      "ok": true,
+      "details": []
+    },
+    "G7": {
+      "ok": true,
+      "details": [],
+      "warnings": []
+    },
+    "G8": {
+      "ok": true,
+      "details": []
+    },
+    "G9": {
+      "ok": true,
+      "details": [],
+      "arabicShare": 99.9
+    },
+    "G10": {
+      "ok": true,
+      "details": []
+    },
+    "G11": {
+      "ok": true,
+      "details": []
+    },
+    "G12": {
+      "ok": true,
+      "details": []
+    },
+    "G13": {
+      "ok": true,
+      "details": [
+        "BlogPosting.datePublished : attribué à l'ingestion (créneau) — vérifié après build",
+        "nœuds émis non vérifiés : pas de build de la page (ingérer puis construire)"
+      ],
+      "pending": true
+    },
+    "G14": {
+      "ok": true,
+      "details": []
+    },
+    "G15": {
+      "ok": true,
+      "details": [],
+      "closest": {
+        "fr": {
+          "slug": "omra-ramadan-toutes-les-questions",
+          "score": 0.036
+        },
+        "ar": {
+          "slug": "arriver-avant-premiere-nuit-ramadan",
+          "score": 0.026
+        },
+        "en": {
+          "slug": "omra-ramadan-toutes-les-questions",
+          "score": 0.035
+        }
+      },
+      "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
+    },
+    "G16": {
+      "ok": null,
+      "pending": true,
+      "details": [
+        "rendu non vérifié : ingérer puis construire (NEXT_DIST_DIR=.next-audit CONTENT_PREVIEW_SCHEDULED=1)"
+      ]
+    },
+    "G0": {
+      "ok": true,
+      "details": [],
+      "flags": []
+    }
+  }
+}

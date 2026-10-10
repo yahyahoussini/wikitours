@@ -1084,9 +1084,9 @@
     {
       "slot_index": 10,
       "date": "2026-10-04",
-      "publish_at": "2026-10-04T17:00:00.000Z",
+      "publish_at": "2026-10-10T17:00:00.000Z",
       "phase": "P1",
-      "status": "planned",
+      "status": "scheduled",
       "how": "weights:P1",
       "track": "ramadan",
       "pillar": "omra_ramadan",
@@ -1199,7 +1199,9 @@
       ],
       "length_target": "comparison",
       "topic_id": "ramadan-rajab-chaabane-alternatives",
-      "slug": null
+      "slug": "rajab-ou-chaabane-plutot-que-ramadan",
+      "generated_at": "2026-10-09T16:22:18.296Z",
+      "review_history": "Relecteur FR 7,2 puis 8,2 après l'unique réécriture (seuil 8) ; relecteur AR 7,6 puis 8,2. La réécriture a retiré la fourchette de durées du catalogue, remplacé « le calme de la fin de Chaâbane » par la formulation sourcée (glossaire Chaâbane, FAQ ccc00867), ramené les observations de l'agence à une seule, attribuée, et supprimé les phrases méta. Après la réussite, leurs corrections non bloquantes ont été appliquées avant le créneau (la carte de départ n'affiche que jours et nuits, la répartition La Mecque / Médine est sur la page du départ ; le changement de date n'est pas dans l'article 18 de la loi 11.16 ; le « choix d'organisation » est limité à Rajab contre Chaâbane ; les réponses de FAQ commencent par la réponse), puis vérifiées deux fois de façon adversariale (les relecteurs, puis des vérificateurs indépendants) : les régressions trouvées ont été corrigées, dont une erreur de fond — les deux programmes Chaâbane-Ramadan en vente placent Médine autour du début calculé du Ramadan, l'article dit donc « aux Lieux saints » et renvoie à l'ordre des villes sur la page du départ. Programmé un samedi à la demande du propriétaire (« pour cette semaine ») ; la ligne hebdomadaire reprend ensuite le mardi."
     },
     {
       "slot_index": 11,

@@ -20,6 +20,7 @@ States audited 2026-07-23. "live" = published, indexable, passing `seo:audit`.
 | quelle période du ramadan · début vs fin | `/blog/quelle-periode-ramadan-choisir-omra` (DRIP 8 oct) | informational seasonal | [ADMIN DATA] |
 | ramadan à la mecque · journée type | `/blog/journee-ramadan-la-mecque` (DRIP 15 oct) | informational | [ADMIN DATA] |
 | omra en jeûnant · tawaf en jeûne | `/blog/jeuner-pendant-omra-ramadan` (DRIP 22 oct) | informational | [ADMIN DATA] |
+| rajab ou chaâbane plutôt que ramadan · عمرة رجب ولا شعبان · واش شعبان أحسن من رمضان للعمرة | `/blog/rajab-ou-chaabane-plutot-que-ramadan` (slot #10, weekly line 2026-10-09; supports `/omra-ramadan`) — the comparison for someone already set on Ramadan. « omra rajab » / « omra chaâbane 2027 » stay with `/omra-{occasion}` and `/omra-chaabane-ramadan` | commercial investigation (comparison) | [ADMIN DATA] |
 | omra {mois} {année} | `/omra-{mois}` (12 hubs) | seasonal commercial | [ADMIN DATA] |
 | omra depuis {ville} | `/omra-depuis-{ville}` (8 villes, live) | local commercial | [ADMIN DATA] |
 | guide omra · préparer sa omra | `/guide-omra` | informational pillar | [ADMIN DATA] |
@@ -223,6 +224,14 @@ the long tail its own programme creates — the duration, the dates, the airline
 | **مجاورة رمضان** · مجاورة رمضان كاملاً · عمرة رمضان 56 يوم · omra ramadan 56 jours · omra ramadan deux mois | `/omra/omra-ramadan-2027-56-jours` (20 Jan → 16 Mar 2027) | the 53-day sibling's own duration terms |
 | عمرة رمضان 53 يوم · omra ramadan 53 jours | `/omra/omra-ramadan-2027-53-jours` (23 Jan → 16 Mar 2027) | the 56-day sibling's own duration terms |
 | omra chaâbane ramadan 25 jours · 15 jours | `/omra/omra-chaabane-ramadan-2027-25-jours`, `…-15-jours` | « omra chaâbane 2027 » — belongs to `/omra-chaabane-ramadan` |
+| omra 25 novembre 2026 · عمرة نونبر 14 يوم | `/omra/omra-novembre-2026-25-novembre` (created by the owner 2026-10-03; tiers from the owner's sheet 2026-10-04: 25 Nov → 8 Dec, 9 nights Makkah + 4 Madinah) | « omra novembre 2026 » — belongs to `/omra-novembre`; the 4-18 Nov sibling's dates |
+| omra 9 au 23 décembre 2026 · عمرة دجنبر 15 يوم | `/omra/omra-decembre-2026-9-au-23` (added 2026-10-04 from the owner's sheet: 10 nights Makkah + 4 Madinah) | « omra décembre 2026 » — belongs to `/omra-decembre`; the 16-day sibling's terms |
+| omra fin d'année · omra nouvel an 2027 · عمرة دجنبر 16 يوم · year-end umrah | `/omra/omra-decembre-2026-23-au-7-janvier` (added 2026-10-04: 23 Dec 2026 → 7 Jan 2027, 11 nights Makkah + 4 Madinah) | « omra décembre 2026 » and « omra janvier 2027 » — the month hubs'; the 15-day sibling's terms |
+
+15 and 16 days are too close for the duration to separate the two December
+departures, so the 16-day one takes the **year-end** angle (its dates span
+31 December / 1 January — a calendar fact, not a holiday claim) and the 15-day
+one keeps its dates.
 
 What makes these pages distinct from the hub, and worth their own entries:
 they print a price for five- and six-bed rooms, they name the hotel and its

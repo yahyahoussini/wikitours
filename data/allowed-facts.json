@@ -1,126 +1,126 @@
 {
-  "generated_at": "2026-09-28T11:46:04.587Z",
+  "generated_at": "2026-10-09T11:07:17.156Z",
   "rule": "Only facts listed here may be stated in prose. A fact not listed is written WITHOUT the figure. Volatile facts render live via placeholder tags. No year other than fondee_en, no price, no currency amount, no departure date, no seat count, no hotel distance in prose (gate G5); a number above 10 in prose must appear in this file.",
   "entity": [
     {
       "key": "organisation",
       "value": "Wiki Tours International",
       "source": "src/lib/brand.js",
-      "as_of": "2026-09-28"
+      "as_of": "2026-10-09"
     },
     {
       "key": "service_omra",
       "value": "Bab Makka",
       "source": "src/lib/brand.js",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "graphie canonique — jamais « Bab Makkah » en texte"
     },
     {
       "key": "lockup",
       "value": "Bab Makka by Wiki Tours International",
       "source": "src/lib/brand.js",
-      "as_of": "2026-09-28"
+      "as_of": "2026-10-09"
     },
     {
       "key": "fondee_en",
       "value": 2016,
       "source": "src/lib/brand.js / CLAUDE.md (project summary)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "le seul millésime autorisé en prose : « depuis 2016 »"
     },
     {
       "key": "licence",
       "value": "ODV-25012",
       "source": "settings.license_number",
-      "as_of": "2026-09-25",
+      "as_of": "2026-10-04",
       "note": "licence de voyages, Ministère du Tourisme"
     },
     {
       "key": "ville",
       "value": "Casablanca",
       "source": "settings.address_fr",
-      "as_of": "2026-09-25"
+      "as_of": "2026-10-04"
     },
     {
       "key": "adresse_fr",
       "value": "Immeuble Anoual Capital Center, 418 Angle Bd Abdelmoumen et Bd Anoual, Magasin N°1 RDC, Casablanca.",
       "source": "settings.address_fr",
-      "as_of": "2026-09-25"
+      "as_of": "2026-10-04"
     },
     {
       "key": "adresse_ar",
       "value": "عمارة أنوال كابيتال سنتر، 418 ملتقى شارع عبد المومن وشارع أنوال، محل رقم 1 الطابق الأرضي، الدار البيضاء.",
       "source": "settings.address_ar",
-      "as_of": "2026-09-25"
+      "as_of": "2026-10-04"
     },
     {
       "key": "adresse_en",
       "value": "Anoual Capital Center Building, 418 Corner of Abdelmoumen Blvd and Anoual Blvd, Shop No. 1 Ground Floor, Casablanca.",
       "source": "settings.address_en",
-      "as_of": "2026-09-25"
+      "as_of": "2026-10-04"
     },
     {
       "key": "telephone",
-      "value": "0634845177",
+      "value": "0601351105",
       "source": "settings.phone_1",
-      "as_of": "2026-09-25"
+      "as_of": "2026-10-04"
     },
     {
       "key": "whatsapp",
       "value": "+212 601-351105",
       "source": "settings.whatsapp_number",
-      "as_of": "2026-09-25"
+      "as_of": "2026-10-04"
     },
     {
       "key": "email",
       "value": "contact@wikitours.ma",
       "source": "settings.email",
-      "as_of": "2026-09-25"
+      "as_of": "2026-10-04"
     },
     {
       "key": "horaires_fr",
       "value": "Du lundi au vendredi : 08:30 – 21:30\nSamedi : 08:30 – 14:30\nDimanche : fermé\nWhatsApp et service en ligne : 24h/24, 7j/7 — réponse en moins de 5 minutes",
       "source": "settings.opening_hours_fr",
-      "as_of": "2026-09-25"
+      "as_of": "2026-10-04"
     },
     {
       "key": "horaires_ar",
       "value": "من الإثنين إلى الجمعة: 08:30 – 21:30\nالسبت: 08:30 – 14:30\nالأحد: مغلق\nواتساب والخدمة عبر الإنترنت: على مدار الساعة طوال أيام الأسبوع — نجيبكم في أقل من 5 دقائق",
       "source": "settings.opening_hours_ar",
-      "as_of": "2026-09-25"
+      "as_of": "2026-10-04"
     },
     {
       "key": "horaires_en",
       "value": "Monday to Friday: 08:30 – 21:30\nSaturday: 08:30 – 14:30\nSunday: closed\nWhatsApp and online service: 24/7 — we reply in under 5 minutes",
       "source": "settings.opening_hours_en",
-      "as_of": "2026-09-25"
+      "as_of": "2026-10-04"
     },
     {
       "key": "note_google",
       "value": 4.8,
       "source": "settings.gbp_rating (synced by /api/cron/sync-reviews)",
-      "as_of": "2026-09-25",
+      "as_of": "2026-10-04",
       "note": "visible copy only — never in schema; never rounded up"
     },
     {
       "key": "avis_google",
       "value": 142,
       "source": "settings.gbp_review_count (synced)",
-      "as_of": "2026-09-25",
+      "as_of": "2026-10-04",
       "note": "changes weekly — quote as « plus de N avis » only if N is the current value"
     },
     {
       "key": "paiement",
       "value": "Aucun paiement en ligne : contrat écrit signé à l’agence, acompte versé à l’agence, reçu officiel.",
       "source": "dictionaries meta.trustNoPayment · faqs (paiement)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "the amount of the deposit is NOT a fact here — <PolicyFact key=\"deposit\" /> renders the policy live"
     },
     {
       "key": "aeroport_depart",
       "value": "Aéroport Mohammed V (Casablanca) — le point de rassemblement de tous les départs",
       "source": "city_pages.logistics_fr (8 rows)",
-      "as_of": "2026-09-28"
+      "as_of": "2026-10-09"
     },
     {
       "key": "villes_de_depart",
@@ -175,7 +175,7 @@
         }
       ],
       "source": "src/i18n/*.json cities",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "Arabic pages use the Arabic name only"
     },
     {
@@ -255,7 +255,7 @@
         }
       ],
       "source": "src/i18n/*.json months",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "Moroccan Arabic month names — never the Levantine forms"
     }
   ],
@@ -321,21 +321,25 @@
       "key": "durees_proposees_jours",
       "value": [
         8,
+        14,
         15,
+        16,
         25,
-        32
+        32,
+        53
       ],
       "source": "offers (published, not returned) duration_days",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "the durations currently on sale — say « des séjours de 8 ou 15 jours » only while they are; departures themselves render via <LiveDepartures>"
     },
     {
       "key": "compagnies",
       "value": [
-        "Saudia"
+        "Saudia",
+        "Saudia Airlines"
       ],
       "source": "offers.airline (published)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "name only — schedules and prices never in prose"
     },
     {
@@ -397,7 +401,7 @@
         }
       ],
       "source": "hotels (published)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "names, city, stars — the distance renders via <HotelCard slug /> and is never in prose (gate G5)"
     }
   ],
@@ -496,273 +500,273 @@
       "key": "muharram_1448",
       "value": "2026-06-16",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "ashura_1448",
       "value": "2026-06-25",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "mawlid_1448",
       "value": "2026-08-25",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "rajab_1448",
       "value": "2026-12-10",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "shaban_1448",
       "value": "2027-01-09",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "ramadan_1448",
       "value": "2027-02-08",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "ramadan-last10_1448",
       "value": "2027-02-28",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "laylat-al-qadr_1448",
       "value": "2027-03-06",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "eid-al-fitr_1448",
       "value": "2027-03-09",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "dhul-qada_1448",
       "value": "2027-04-08",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "dhul-hijja_1448",
       "value": "2027-05-07",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "arafat_1448",
       "value": "2027-05-15",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "eid-al-adha_1448",
       "value": "2027-05-16",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "muharram_1449",
       "value": "2027-06-06",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "ashura_1449",
       "value": "2027-06-15",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "mawlid_1449",
       "value": "2027-08-14",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "rajab_1449",
       "value": "2027-11-29",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "shaban_1449",
       "value": "2027-12-29",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "ramadan_1449",
       "value": "2028-01-28",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "ramadan-last10_1449",
       "value": "2028-02-17",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "laylat-al-qadr_1449",
       "value": "2028-02-23",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "eid-al-fitr_1449",
       "value": "2028-02-26",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "dhul-qada_1449",
       "value": "2028-03-27",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "dhul-hijja_1449",
       "value": "2028-04-26",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "arafat_1449",
       "value": "2028-05-04",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "eid-al-adha_1449",
       "value": "2028-05-05",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "muharram_1450",
       "value": "2028-05-25",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "ashura_1450",
       "value": "2028-06-03",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "mawlid_1450",
       "value": "2028-08-03",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "rajab_1450",
       "value": "2028-11-18",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "shaban_1450",
       "value": "2028-12-17",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "ramadan_1450",
       "value": "2029-01-16",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "ramadan-last10_1450",
       "value": "2029-02-05",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "laylat-al-qadr_1450",
       "value": "2029-02-11",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "eid-al-fitr_1450",
       "value": "2029-02-14",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "dhul-qada_1450",
       "value": "2029-03-16",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "dhul-hijja_1450",
       "value": "2029-04-15",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "arafat_1450",
       "value": "2029-04-23",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "eid-al-adha_1450",
       "value": "2029-04-24",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-09-28",
+      "as_of": "2026-10-09",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     }
   ],
