@@ -101,6 +101,13 @@ Sunday 11 October; its first post publishes on Tuesday 13 October.
 9. **A generalisation must not contradict another section.** « The choice of
    month is organisational » contradicted « Ramadan keeps what no other month
    offers »: scope it (« between Rajab and Chaâbane »).
+10. **You cannot see the programmes, so never tie a generic fact to them.** The
+    glossary says a Chaâbane-Ramadan trip lets you live the passage into Ramadan
+    « à La Mecque »; both programmes on sale (2026-10-09) actually run Makkah →
+    Madinah → Makkah, with Madinah around the computed start of Ramadan 1448.
+    Write « aux Lieux saints » and send the reader to the departure page for the
+    city order. Never say in which city a programme's first nights, first
+    fasting days or tarawih fall.
 
 ---
 
