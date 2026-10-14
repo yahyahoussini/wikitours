@@ -2,6 +2,7 @@
 # wikitours-cron <job> — call one of the app's cron routes the way Vercel Cron did:
 # GET http://localhost:3000<path> with `Authorization: Bearer $CRON_SECRET` (the routes check it).
 # Started by the wikitours-cron-*.timer units; one log line per run in /var/log/wikitours/cron.log.
+# The secret reaches curl through stdin (--config -), never its command line, so `ps` cannot see it.
 set -euo pipefail
 case "${1:-}" in
   ping) path=/api/ping ;;
@@ -13,6 +14,8 @@ esac
 : "${CRON_SECRET:?CRON_SECRET is not set (EnvironmentFile=/etc/wikitours/env)}"
 out="$(mktemp)"
 trap 'rm -f "$out"' EXIT
-code="$(curl -s -o "$out" -m 330 -w '%{http_code}' -H "Authorization: Bearer $CRON_SECRET" -H 'Host: wikitours.ma' "http://localhost:3000$path" || true)"
-printf '%s %s %s HTTP %s %s\n' "$(date -u +%FT%TZ)" "$1" "$path" "${code:-000}" "$(head -c 300 "$out" | tr '\n' ' ')" >> /var/log/wikitours/cron.log
+code="$(printf 'header = "Authorization: Bearer %s"\n' "$CRON_SECRET" \
+  | curl -s --config - -o "$out" -m 330 -w '%{http_code}' -A 'wikitours-cron' -H 'Host: wikitours.ma' "http://localhost:3000$path" || true)"
+# The log line never decides the result: a log problem must not mark a successful run as failed.
+printf '%s %s %s HTTP %s %s\n' "$(date -u +%FT%TZ)" "$1" "$path" "${code:-000}" "$(head -c 300 "$out" | tr '\n' ' ')" >> /var/log/wikitours/cron.log || true
 case "$code" in 2??) exit 0 ;; *) exit 1 ;; esac

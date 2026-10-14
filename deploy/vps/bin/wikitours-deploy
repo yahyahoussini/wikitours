@@ -1,69 +1,85 @@
 #!/usr/bin/env bash
 # wikitours-deploy — build one commit of github.com/yahyahoussini/wikitours in a fresh release
-# directory, switch the `current` symlink, restart the app, health-check, roll back on failure.
-# Runs as the `wikitours` user with /etc/wikitours/env loaded (wikitours-deploy.service), so the
-# build sees the same variables Vercel had; `npm run build` runs prebuild (article ingest, which
-# writes to the live database exactly as on Vercel), next build and the postbuild SEO/test gates.
-#   --if-changed   exit quietly when the live release already is the target commit (the timer),
-#                  and do not retry a commit whose last build failed (no retry loop)
-#   --ref <x>      deploy this commit or branch instead of master
-#   --rollback     switch back to the previous release (no build)
-# Manual use (on the server):
-#   sudo systemctl start wikitours-deploy        deploy master now if it changed
-#   sudo -u wikitours bash -c 'set -a; . /etc/wikitours/env; set +a; wikitours-deploy --ref <sha>'
-#   sudo -u wikitours wikitours-deploy --rollback
+# directory, SMOKE-TEST it on a spare port, then switch `current`, restart and health-check
+# (with an automatic switch back). Runs as the `wikitours` user with /etc/wikitours/env loaded
+# (wikitours-deploy.service), so the build sees the same variables Vercel had. `npm run build`
+# runs prebuild (article ingest, which writes to the live database exactly as on Vercel; it is
+# idempotent), next build and the postbuild SEO/test gates.
+#
+#   (no flag)      deploy origin/master
+#   --if-changed   the 2-minute timer: do nothing when the live release already is master, when
+#                  that commit's last build failed (no retry loop), or while a HOLD is set
+#   --ref <x>      deploy this commit or branch instead of master, and set a HOLD on it
+#   --rollback     switch back to the previous release that was live and healthy, and set a HOLD
+#   --resume       clear the HOLD; the timer deploys master again on its next run
+#
+# Manual use on the server (systemd-run gives the exact same environment as the timer):
+#   sudo systemctl start wikitours-deploy                       deploy master now (if changed)
+#   sudo systemd-run --uid=wikitours --gid=wikitours -p EnvironmentFile=/etc/wikitours/env \
+#        --wait --pipe /usr/local/bin/wikitours-deploy --rollback      (or --ref <sha>, --resume)
 set -euo pipefail
 APP_DIR=/srv/wikitours
 MIRROR="$APP_DIR/repo.git"
 REPO=git@github.com:yahyahoussini/wikitours.git
 KEEP=3
 LOG=/var/log/wikitours/deploy.log
+HOLD="$APP_DIR/.hold"
+GOOD="$APP_DIR/.good"          # release dirs that went live and passed the health check, oldest first
+FAILED="$APP_DIR/.last-failed"
+UA='wikitours-deploy-healthcheck'
 MODE=deploy
 IF_CHANGED=0
 REF=master
 while [ $# -gt 0 ]; do
   case "$1" in
     --if-changed) IF_CHANGED=1 ;;
-    --ref) REF="${2:?--ref needs a commit or branch}"; shift ;;
+    --ref) REF="${2:?--ref needs a commit or branch}"; MODE=ref; shift ;;
     --rollback) MODE=rollback ;;
+    --resume) MODE=resume ;;
     *) echo "unknown argument: $1" >&2; exit 2 ;;
   esac
   shift
 done
 
-log() { printf '%s %s\n' "$(date -u +%FT%TZ)" "$*" | tee -a "$LOG"; }
-# The live release, or "" before the first deploy (readlink -f alone would echo the missing path).
+[ "$(id -un)" = wikitours ] || { echo "run as the wikitours user (see the header)" >&2; exit 2; }
+log() { printf '%s %s\n' "$(date -u +%FT%TZ)" "$*" | tee -a "$LOG" || true; }
 live() { [ -L "$APP_DIR/current" ] && readlink -f "$APP_DIR/current" || true; }
 releases() { ls -1dt "$APP_DIR"/releases/*/ 2>/dev/null | sed 's:/$::'; }
+probe() { curl -s -o /dev/null -m 10 -A "$UA" -w '%{http_code}' -H 'Host: wikitours.ma' "http://localhost:$1/fr" || true; }
+healthy() { for _ in $(seq 1 90); do [ "$(probe 3000)" = 200 ] && return 0; sleep 1; done; return 1; }
 switch_to() {
   ln -sfn "$1" "$APP_DIR/current.tmp"
   mv -Tf "$APP_DIR/current.tmp" "$APP_DIR/current"
   sudo /usr/bin/systemctl restart wikitours
 }
-healthy() {
-  local code
-  for _ in $(seq 1 90); do
-    code="$(curl -s -o /dev/null -m 10 -w '%{http_code}' -H 'Host: wikitours.ma' http://localhost:3000/fr || true)"
-    [ "$code" = 200 ] && return 0
-    sleep 1
-  done
-  return 1
-}
+mark_good() { grep -qxF "$1" "$GOOD" 2>/dev/null || echo "$1" >> "$GOOD"; }
 
 exec 9>"$APP_DIR/.deploy.lock"
-flock -n 9 || { echo "another deploy is running"; exit 0; }
-
-if [ "$MODE" = rollback ]; then
-  cur="$(live)"
-  prev="$(releases | grep -vxF "$cur" | head -1 || true)"
-  [ -n "$prev" ] || { log "rollback: no previous release"; exit 1; }
-  log "rollback: $(basename "$cur") -> $(basename "$prev")"
-  switch_to "$prev"
-  if healthy; then log "rollback: live"; exit 0; fi
-  log "rollback: UNHEALTHY"
+if ! flock -n 9; then
+  [ "$IF_CHANGED" = 1 ] && exit 0                      # the timer just tries again later
+  echo "another deploy is running; nothing was done" >&2
   exit 1
 fi
 
+case "$MODE" in
+  resume)
+    rm -f "$HOLD"; log "hold cleared: the timer deploys master again"; exit 0 ;;
+  rollback)
+    cur="$(live)"
+    # Step BACK in history: the healthy release recorded just before the current one (a second
+    # rollback goes one further back, never "forward" to the release just left).
+    prev="$( { [ -f "$GOOD" ] && while read -r d; do [ -d "$d" ] && echo "$d"; done < "$GOOD"; } | awk -v cur="$cur" '$0 == cur { exit } { last = $0 } END { print last }' || true)"
+    [ -n "$prev" ] || { log "rollback: no previous healthy release"; exit 1; }
+    log "rollback: ${cur##*/} -> ${prev##*/}"
+    if ! switch_to "$prev"; then log "rollback: restart FAILED"; exit 1; fi
+    if healthy; then
+      printf 'rollback to %s at %s\n' "${prev##*/}" "$(date -u +%FT%TZ)" > "$HOLD"
+      log "rollback: live; HOLD set (wikitours-deploy --resume to deploy master again)"; exit 0
+    fi
+    log "rollback: UNHEALTHY"; exit 1 ;;
+esac
+
+if [ "$IF_CHANGED" = 1 ] && [ -f "$HOLD" ]; then exit 0; fi
 [ -d "$MIRROR" ] || git clone --quiet --mirror "$REPO" "$MIRROR"
 git -C "$MIRROR" fetch --quiet --prune origin '+refs/heads/*:refs/heads/*'
 SHA="$(git -C "$MIRROR" rev-parse --verify --quiet "$REF^{commit}")" || { log "unknown ref: $REF"; exit 1; }
@@ -71,40 +87,55 @@ CUR="$(live)"
 LIVE="${CUR##*/}"
 if [ "$IF_CHANGED" = 1 ]; then
   [ "${LIVE%%-*}" = "${SHA:0:12}" ] && exit 0
-  [ "$(cat "$APP_DIR/.last-failed" 2>/dev/null || true)" = "$SHA" ] && exit 0
+  [ "$(cat "$FAILED" 2>/dev/null || true)" = "$SHA" ] && exit 0
 fi
 
 REL="$APP_DIR/releases/${SHA:0:12}-$(date -u +%Y%m%dT%H%M%SZ)"
 BUILD_LOG="$REL.build.log"
+fail() { echo "$SHA" > "$FAILED"; rm -rf -- "$REL"; log "deploy ${SHA:0:12} FAILED at $1; the live release is unchanged (${LIVE:-none}). Log: $BUILD_LOG"; exit 1; }
 log "deploy ${SHA:0:12} ($REF): building ${REL##*/}"
 git clone --quiet "$MIRROR" "$REL"
 git -C "$REL" -c advice.detachedHead=false checkout --quiet "$SHA"
 if ! ( cd "$REL" && npm ci --include=dev --no-audit --no-fund && npm run build ) > "$BUILD_LOG" 2>&1; then
-  echo "$SHA" > "$APP_DIR/.last-failed"
-  rm -rf -- "$REL"
-  log "deploy ${SHA:0:12} FAILED at build; the live release is unchanged (${LIVE:-none}). Log: $BUILD_LOG"
   tail -n 40 "$BUILD_LOG" >&2
-  exit 1
+  fail build
 fi
 
-switch_to "$REL"
+# Smoke test BEFORE the switch: the new release on a spare port must serve /fr with 200.
+( cd "$REL" && NODE_ENV=production exec node node_modules/next/dist/bin/next start --hostname localhost --port 3001 ) >> "$BUILD_LOG" 2>&1 &
+SMOKE_PID=$!
+smoke=000
+for _ in $(seq 1 60); do smoke="$(probe 3001)"; [ "$smoke" = 200 ] && break; sleep 1; done
+kill "$SMOKE_PID" 2>/dev/null || true
+wait "$SMOKE_PID" 2>/dev/null || true
+[ "$smoke" = 200 ] || fail "smoke test (HTTP $smoke on :3001)"
+
+if ! switch_to "$REL"; then
+  [ -n "$CUR" ] && ln -sfn "$CUR" "$APP_DIR/current.tmp" && mv -Tf "$APP_DIR/current.tmp" "$APP_DIR/current"
+  fail "restart (sudo systemctl restart wikitours)"
+fi
 if healthy; then
-  rm -f "$APP_DIR/.last-failed"
-  log "deploy ${SHA:0:12} LIVE (previous: ${LIVE:-none})"
+  rm -f "$FAILED"
+  mark_good "$REL"
+  if [ "$MODE" = ref ]; then printf 'pinned to %s (%s) at %s\n' "${SHA:0:12}" "$REF" "$(date -u +%FT%TZ)" > "$HOLD"; else rm -f "$HOLD"; fi
+  log "deploy ${SHA:0:12} LIVE (previous: ${LIVE:-none})$([ "$MODE" = ref ] && echo '; HOLD set')"
 else
-  echo "$SHA" > "$APP_DIR/.last-failed"
+  echo "$SHA" > "$FAILED"
   if [ -n "$CUR" ]; then
-    log "deploy ${SHA:0:12} unhealthy after restart; rolling back to $LIVE"
-    switch_to "$CUR"
+    log "deploy ${SHA:0:12} unhealthy after restart; switching back to $LIVE"
+    switch_to "$CUR" || log "switch back: restart FAILED"
   else
     log "deploy ${SHA:0:12} unhealthy after restart and there is no previous release"
   fi
+  rm -rf -- "$REL"
   exit 1
 fi
 
-# Keep the newest $KEEP releases (never the live one) and their build logs; drop older logs.
+# Keep the newest $KEEP releases (never the live one) with their logs; drop older logs.
 cur="$(live)"
 releases | tail -n +"$((KEEP + 1))" | while read -r d; do
   [ "$d" = "$cur" ] || rm -rf -- "$d" "$d.build.log"
 done
 ls -1t "$APP_DIR"/releases/*.build.log 2>/dev/null | tail -n +"$((KEEP + 6))" | xargs -r rm -f --
+# Forget good-list entries whose directory is gone.
+if [ -f "$GOOD" ]; then while read -r d; do [ -d "$d" ] && echo "$d"; done < "$GOOD" > "$GOOD.tmp"; mv -f "$GOOD.tmp" "$GOOD"; fi

@@ -18,24 +18,27 @@ GITHUB_ED25519_FP='SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU'
 
 timedatectl set-timezone UTC
 export DEBIAN_FRONTEND=noninteractive
-apt-get update -y
-apt-get -o Dpkg::Options::=--force-confold upgrade -y
-apt-get install -y curl git ufw fail2ban unattended-upgrades ca-certificates gnupg \
+# A fresh VPS often has cloud-init / apt-daily holding the dpkg lock for minutes: wait, don't fail.
+APT=(apt-get -y -o DPkg::Lock::Timeout=600)
+"${APT[@]}" update
+"${APT[@]}" -o Dpkg::Options::=--force-confold upgrade
+"${APT[@]}" install curl git ufw fail2ban unattended-upgrades ca-certificates gnupg \
   debian-keyring debian-archive-keyring apt-transport-https jq
 
 # Node.js 22 LTS (NodeSource)
 if ! node -v 2>/dev/null | grep -q "^v${NODE_MAJOR}\."; then
   curl -fsSL "https://deb.nodesource.com/setup_${NODE_MAJOR}.x" -o /tmp/nodesource_setup.sh
   bash /tmp/nodesource_setup.sh
-  apt-get install -y nodejs
+  "${APT[@]}" install nodejs
 fi
 
 # Caddy (official apt repository): HTTPS certificates and the reverse proxy
 if ! command -v caddy >/dev/null; then
   curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor --yes -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
   curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' -o /etc/apt/sources.list.d/caddy-stable.list
-  apt-get update -y
-  apt-get install -y caddy
+  chmod o+r /usr/share/keyrings/caddy-stable-archive-keyring.gpg /etc/apt/sources.list.d/caddy-stable.list
+  "${APT[@]}" update
+  "${APT[@]}" install caddy
 fi
 
 # App user and directories
@@ -46,7 +49,8 @@ install -d -m 750 -o root -g "$APP_USER" /etc/wikitours
 # Read-only GitHub deploy key for the app user; its public half goes to the repo's Deploy keys.
 install -d -m 700 -o "$APP_USER" -g "$APP_USER" "/home/$APP_USER/.ssh"
 [ -f "/home/$APP_USER/.ssh/id_ed25519" ] || runuser -u "$APP_USER" -- ssh-keygen -q -t ed25519 -N '' -C 'wikitours-vps-deploy (read-only)' -f "/home/$APP_USER/.ssh/id_ed25519"
-ssh-keyscan -t ed25519 github.com 2>/dev/null > /tmp/github_known_hosts
+ssh-keyscan -t ed25519 github.com 2>/dev/null > /tmp/github_known_hosts || true
+[ -s /tmp/github_known_hosts ] || { echo "cannot reach github.com:22 to read its host key" >&2; exit 1; }
 fp="$(ssh-keygen -lf /tmp/github_known_hosts | awk '{print $2}')"
 [ "$fp" = "$GITHUB_ED25519_FP" ] || { echo "github.com host key fingerprint mismatch: $fp" >&2; exit 1; }
 install -m 644 -o "$APP_USER" -g "$APP_USER" /tmp/github_known_hosts "/home/$APP_USER/.ssh/known_hosts"
@@ -55,8 +59,9 @@ install -m 644 -o "$APP_USER" -g "$APP_USER" /tmp/github_known_hosts "/home/$APP
 install -m 755 "$SRC/bin/wikitours-deploy" /usr/local/bin/wikitours-deploy
 install -m 755 "$SRC/bin/wikitours-cron" /usr/local/bin/wikitours-cron
 install -m 644 "$SRC"/systemd/*.service "$SRC"/systemd/*.timer /etc/systemd/system/
+# Validate BEFORE installing: a broken file in /etc/sudoers.d breaks sudo for the whole system.
+visudo -cf "$SRC/sudoers-wikitours" >/dev/null
 install -m 440 "$SRC/sudoers-wikitours" /etc/sudoers.d/wikitours
-visudo -cf /etc/sudoers.d/wikitours >/dev/null
 systemctl daemon-reload
 
 # Caddy starts in PREVIEW mode: internal certificates for the real hostnames (they still point
@@ -68,10 +73,11 @@ caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile >/dev/null
 systemctl enable caddy >/dev/null
 systemctl reload-or-restart caddy
 
-# Firewall: SSH, HTTP, HTTPS only
+# Firewall: SSH, HTTP, HTTPS (TCP, and UDP for Caddy's HTTP/3) only
 ufw allow OpenSSH >/dev/null
 ufw allow 80/tcp >/dev/null
 ufw allow 443/tcp >/dev/null
+ufw allow 443/udp >/dev/null
 ufw --force enable >/dev/null
 systemctl enable --now fail2ban >/dev/null
 
