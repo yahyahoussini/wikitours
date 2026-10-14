@@ -23,7 +23,7 @@ APT=(apt-get -y -o DPkg::Lock::Timeout=600)
 "${APT[@]}" update
 "${APT[@]}" -o Dpkg::Options::=--force-confold upgrade
 "${APT[@]}" install curl git ufw fail2ban unattended-upgrades ca-certificates gnupg \
-  debian-keyring debian-archive-keyring apt-transport-https jq
+  debian-keyring debian-archive-keyring apt-transport-https jq dnsutils
 
 # Node.js 22 LTS (NodeSource)
 if ! node -v 2>/dev/null | grep -q "^v${NODE_MAJOR}\."; then
@@ -62,6 +62,7 @@ install -m 644 -o "$APP_USER" -g "$APP_USER" /tmp/github_known_hosts "/home/$APP
 # Scripts, units, the narrow sudo rule (restart the app service only)
 install -m 755 "$SRC/bin/wikitours-deploy" /usr/local/bin/wikitours-deploy
 install -m 755 "$SRC/bin/wikitours-cron" /usr/local/bin/wikitours-cron
+install -m 700 "$SRC/bin/wikitours-cutover" /usr/local/sbin/wikitours-cutover   # root only
 install -m 644 "$SRC"/systemd/*.service "$SRC"/systemd/*.timer /etc/systemd/system/
 # Validate BEFORE installing: a broken file in /etc/sudoers.d breaks sudo for the whole system.
 visudo -cf "$SRC/sudoers-wikitours" >/dev/null

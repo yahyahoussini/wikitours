@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+# wikitours-cutover — the DNS switch helper, run as root on the VPS (README "Order", steps 7-8).
+#   wikitours-cutover check    what BOTH authoritative name servers answer for every host
+#   wikitours-cutover caddy    once both Heberjahiz servers answer 72.60.92.29 for wikitours.ma,
+#                              www and admin: install the production Caddyfile (validated first, as the
+#                              caddy user), restart Caddy, and wait until a publicly trusted
+#                              certificate is served for each host. A config that fails validation
+#                              or does not start is never left in place (the preview config comes back).
+#   wikitours-cutover caddy --force   skip the DNS check (only after a deliberate decision)
+set -euo pipefail
+IP=72.60.92.29
+KIT=/root/wikitours-kit
+WT_NS=(dmns1.heberjahiz.com dmns2.heberjahiz.com)
+BM_NS=(ns1.capconnect.com ns2.capconnect.com)
+WT_HOSTS=(wikitours.ma www.wikitours.ma admin.wikitours.ma)
+BM_HOSTS=(bab-makka.com www.bab-makka.com m.bab-makka.com)
+command -v dig >/dev/null || { echo "dig missing: apt-get install -y dnsutils" >&2; exit 1; }
+
+# The final A record a name server gives for a host (it follows a CNAME inside its own zone).
+answer() { dig +short +time=5 +tries=2 "$1" A @"$2" | grep -E '^[0-9.]+$' | sort | paste -sd, -; }
+serial() { dig +short +time=5 "$1" SOA @"$2" | awk '{print $3}'; }
+
+show() {
+  local zone="$1"; shift; local -n ns="$1"; shift
+  for s in "${ns[@]}"; do echo "  $s  SOA serial $(serial "$zone" "$s")"; done
+  for h in "$@"; do
+    for s in "${ns[@]}"; do printf '  %-22s @%-22s %s\n' "$h" "$s" "$(answer "$h" "$s")"; done
+  done
+}
+
+wt_moved() {
+  for h in "${WT_HOSTS[@]}"; do
+    for s in "${WT_NS[@]}"; do [ "$(answer "$h" "$s")" = "$IP" ] || return 1; done
+  done
+}
+
+case "${1:-}" in
+  check)
+    echo "wikitours.ma (Heberjahiz):"; show wikitours.ma WT_NS "${WT_HOSTS[@]}"
+    echo "bab-makka.com (Cap Connect):"; show bab-makka.com BM_NS "${BM_HOSTS[@]}"
+    if wt_moved; then echo "=> wikitours.ma hosts point at $IP on both servers: run 'wikitours-cutover caddy'"; else echo "=> wikitours.ma not (fully) moved yet"; fi
+    ;;
+  caddy)
+    if [ "${2:-}" != --force ] && ! wt_moved; then
+      echo "Both Heberjahiz servers must answer $IP for ${WT_HOSTS[*]} first (see: wikitours-cutover check)" >&2; exit 1
+    fi
+    install -m 644 "$KIT/Caddyfile" /etc/caddy/Caddyfile.new
+    runuser -u caddy -- caddy validate --config /etc/caddy/Caddyfile.new --adapter caddyfile >/dev/null
+    cp -f /etc/caddy/Caddyfile /etc/caddy/Caddyfile.before-cutover
+    mv -f /etc/caddy/Caddyfile.new /etc/caddy/Caddyfile
+    if ! systemctl restart caddy; then
+      cp -f /etc/caddy/Caddyfile.before-cutover /etc/caddy/Caddyfile; systemctl restart caddy
+      echo "production Caddyfile did not start: restored the previous config" >&2; exit 1
+    fi
+    touch /etc/caddy/.wikitours-production
+    echo "Caddy runs the production config; waiting for publicly trusted certificates..."
+    for h in "${WT_HOSTS[@]}"; do
+      ok=0
+      for _ in $(seq 1 60); do   # no -k: succeeds only with a valid public certificate
+        if curl -s -o /dev/null -m 10 --resolve "$h:443:127.0.0.1" "https://$h/" ; then ok=1; break; fi
+        sleep 3
+      done
+      if [ "$ok" = 1 ]; then
+        echo "  $h: $(echo | openssl s_client -connect 127.0.0.1:443 -servername "$h" 2>/dev/null | openssl x509 -noout -issuer -enddate | tr '\n' ' ')"
+      else
+        echo "  $h: NO trusted certificate after 3 minutes. Recent ACME log:" >&2
+        journalctl -u caddy --since -5min --no-pager -o cat | grep -iE 'acme|certificate|challenge|error' | tail -n 15 >&2
+        exit 1
+      fi
+    done
+    echo "Done: wikitours.ma, www and admin are served by this VPS with real certificates."
+    ;;
+  *) echo "usage: wikitours-cutover check | caddy [--force]" >&2; exit 2 ;;
+esac

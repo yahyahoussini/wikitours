@@ -23,21 +23,40 @@
 	# Vercel never exposed Next's internal rewrite header (it names the /admin rewrite).
 	header -X-Middleware-Rewrite
 	encode zstd gzip
-	reverse_proxy localhost:3000
+	# A deploy restarts the single Node process (~1 s). Keep retrying the upstream instead of
+	# answering 502 meanwhile (Vercel deploys were atomic).
+	reverse_proxy localhost:3000 {
+		lb_try_duration 15s
+		lb_try_interval 250ms
+	}
 }
 
-www.wikitours.ma {
-	redir https://wikitours.ma{uri} 301
-}
-
-wikitours.ma, admin.wikitours.ma, bab-makka.com, www.bab-makka.com, m.bab-makka.com {
-	import app
+(access_log) {
 	log {
 		output file /var/log/caddy/wikitours-access.log {
 			roll_size 50MiB
 			roll_keep 10
 		}
 	}
+}
+
+www.wikitours.ma {
+	redir https://wikitours.ma{uri} 301
+}
+
+wikitours.ma, admin.wikitours.ma {
+	import app
+	import access_log
+}
+
+# bab-makka.com's DNS moves LATER (another Cap Connect account; Vercel answers it until then).
+# Until its records point here, keep Caddy's internal certificate so no ACME attempt fails and
+# backs off. When `wikitours-cutover check` shows it moved: delete the `tls internal` line below,
+# then `systemctl restart caddy`.
+bab-makka.com, www.bab-makka.com, m.bab-makka.com {
+	tls internal
+	import app
+	import access_log
 }
 
 # The Hostinger name keeps working, never indexed, for direct checks of the server.

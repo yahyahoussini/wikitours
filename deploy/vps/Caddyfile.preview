@@ -24,7 +24,12 @@
 	# Vercel never exposed Next's internal rewrite header (it names the /admin rewrite).
 	header -X-Middleware-Rewrite
 	encode zstd gzip
-	reverse_proxy localhost:3000
+	# A deploy restarts the single Node process (~1 s). Keep retrying the upstream instead of
+	# answering 502 meanwhile (Vercel deploys were atomic).
+	reverse_proxy localhost:3000 {
+		lb_try_duration 15s
+		lb_try_interval 250ms
+	}
 }
 
 srv2062670.hstgr.cloud {

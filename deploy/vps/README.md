@@ -40,7 +40,8 @@ The owner chose on 2026-10-14 to move off the Vercel Hobby plan. The plan had ru
    - `www.wikitours.ma/fr?x=1` gives 301 to `https://wikitours.ma/fr?x=1`;
    - `admin.wikitours.ma/` gives 307 with `Location: /admin/login` (not 500);
    - `bab-makka.com/omra/1104/x` gives ONE 301 to `https://wikitours.ma/fr/bab-makka`;
-   - `/api/health/seo`, `/sitemap.xml`, `/robots.txt` and `/llms.txt` give 200;
+   - `/sitemap.xml`, `/robots.txt` and `/llms.txt` give 200;
+   - `/api/health/seo` gives **503** on BOTH Vercel and the VPS today. That is a content gap, not a hosting one: `settings.verification_metas` is empty. Compare it with Vercel, don't expect 200;
    - `/api/ping` WITHOUT the secret gives 401;
    - `sudo systemctl start wikitours-cron@ping` logs `HTTP 200` in `/var/log/wikitours/cron.log`. It is a read-only database keep-alive.
 7. **DNS cut-over.** These records were measured on 2026-10-14. Keep the **MX** (`dm.heberjahiz.com`, the e-mail) and the Google **TXT** untouched.
@@ -51,8 +52,17 @@ The owner chose on 2026-10-14 to move off the Vercel Hobby plan. The plan had ru
    - **bab-makka.com** (Cap Connect, NOT in the owner's own Cap Connect account; TTL 3600 / 14400):
      - `@` A 76.76.21.21 + 216.198.79.1 → one A `72.60.92.29`;
      - `www` and `m` CNAME `…vercel-dns-017.com` → A `72.60.92.29`.
-     - It only redirects, and Vercel keeps answering it until it moves.
-8. **Switch Caddy to production RIGHT AFTER the authoritative DNS answers the new IP.** Check with `dig +short wikitours.ma @dmns1.heberjahiz.com`, then run `install -m 644 Caddyfile /etc/caddy/Caddyfile && touch /etc/caddy/.wikitours-production && systemctl restart caddy`. Caddy then fetches the Let's Encrypt certificates in seconds. Check with `curl -sI https://wikitours.ma/fr`, which must succeed WITHOUT `-k`.
+     - It only redirects, and Vercel keeps answering it until it moves. The production Caddyfile keeps these 3 hosts on `tls internal` until then. After their DNS moves, delete that line and run `systemctl restart caddy`.
+   - **The swap:**
+     - Change a CNAME into an A record in place, or add the A right before deleting the CNAME. A gap gets cached as "does not exist" (the SOA minimum is 7200 s here, 86400 s at Cap Connect).
+     - Do NOT add AAAA records: IPv6 to 80/443 was never tested from outside.
+     - Use a low-traffic hour.
+8. **Switch Caddy to production RIGHT AFTER the authoritative DNS answers the new IP:**
+   1. `wikitours-cutover check` shows what BOTH Heberjahiz servers (dmns1, dmns2) answer, and their SOA serials.
+   2. `wikitours-cutover caddy` refuses until both answer 72.60.92.29 for `@`, `www` and `admin`. It then:
+      - validates the production Caddyfile as the `caddy` user;
+      - restarts Caddy, and restores the previous config if it does not start;
+      - waits until each host serves a publicly trusted certificate (checked without `-k`).
    - **New records:** give them a short TTL (300 s) for the first days, so a rollback to Vercel spreads in minutes rather than hours. Raise it to 3600 once stable.
    - **Why the order:** Let's Encrypt validates against the authoritative DNS. Switching earlier makes the issuance fail and back off. Between the DNS change and the issuance, a visitor whose resolver already sees the VPS gets the internal certificate. The old TTLs (2 h) keep almost everyone on Vercel during those seconds.
    - **Between DNS and step 9.3,** every push is built by BOTH Vercel and the VPS. The prebuild ingest is idempotent (it skips articles already ingested), but keep that window short.
@@ -60,7 +70,18 @@ The owner chose on 2026-10-14 to move off the Vercel Hobby plan. The plan had ru
    1. Push a commit that removes `crons` from `vercel.json`. Vercel deploys it, which removes its crons. **Confirm it before step 2:** the Vercel production deployment of that commit is "Ready", and Project → Settings → Cron Jobs lists none. Otherwise every job would run twice.
    2. `systemctl enable --now wikitours-cron-{rollup,sync-reviews,ping,publish-articles}.timer`.
    3. Push `vercel.json` with `"git": {"deploymentEnabled": false}`, so pushes stop building on Vercel. Each Vercel build also ran the article ingest against the live database.
-10. **Keep the Vercel project** (not deleted) for 2 weeks as a rollback: point the DNS back to Vercel.
+10. **Keep the Vercel project** (not deleted) for 2 weeks as a rollback.
+   - **Rollback before step 9:** point the 3 records back to Vercel: `@` A 76.76.21.21, and `www` and `admin` CNAME `cname.vercel-dns.com`.
+   - **Rollback after step 9:**
+     1. `systemctl disable --now wikitours-cron-*.timer` on the VPS.
+     2. Revert both vercel.json commits in ONE push. Vercel cannot build that push (deployments are off), so redeploy it from the Vercel dashboard: Deployments → the latest → Redeploy. That brings its crons and Git builds back.
+     3. Point the DNS back as above.
+   - **Risk:** if Vercel pauses the Hobby project for over-use, this rollback target is gone. Then the VPS is the only host; restore from its 3 kept releases.
+11. **During the split window** (up to the old TTL, 2 h, after the DNS change): no admin edits (prices above all), because a write revalidates only the host that receives it. Also no pushes.
+12. **Right after the switch:**
+    - one admin login (the owner);
+    - `curl https://wikitours.ma/api/lead` with a GET or an empty POST, which must answer 4xx and never insert;
+    - the outside monitor: `.github/workflows/uptime.yml` runs hourly. A failure e-mails the repo owner.
 
 ## Every day
 - **Deploy:** push to `master`. The timer notices within 2 minutes, and a build takes about 30 seconds on this machine.
