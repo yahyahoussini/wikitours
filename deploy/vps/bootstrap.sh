@@ -107,7 +107,8 @@ if [ -s /root/.ssh/authorized_keys ]; then
   printf 'PasswordAuthentication no\nKbdInteractiveAuthentication no\nPermitRootLogin prohibit-password\n' > /etc/ssh/sshd_config.d/01-wikitours.conf
   install -d -m 755 /run/sshd   # sshd -t needs it; Ubuntu 24.04 creates it only when ssh.service runs
   sshd -t && systemctl restart ssh
-  sshd -T | grep -qx 'passwordauthentication no' || { echo "sshd still allows passwords" >&2; exit 1; }
+  # (not `sshd -T | grep -q`: grep -q exits early, sshd gets SIGPIPE and pipefail reports failure)
+  [ "$(sshd -T | awk '$1 == "passwordauthentication" { print $2 }')" = no ] || { echo "sshd still allows passwords" >&2; exit 1; }
 fi
 
 echo "bootstrap: OK (node $(node -v), $(caddy version | cut -d' ' -f1))"
