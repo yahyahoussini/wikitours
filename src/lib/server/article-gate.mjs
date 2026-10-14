@@ -52,9 +52,10 @@ function zonedParts(date, timeZone = SITE_TZ) {
 
 /**
  * Next free RELEASE_HOUR (08:00) Africa/Casablanca morning after the last
- * scheduled post. Morocco is UTC+1 all year EXCEPT during Ramadan (UTC+0),
- * so the UTC instant of "08:00 local" moves — the zone data decides, never a
- * fixed offset.
+ * scheduled post. Morocco was UTC+1 all year except during Ramadan (UTC+0)
+ * until 2026-09-20, then moved to permanent UTC+0 (IANA tzdata 2026c), so the
+ * UTC instant of "08:00 local" moves — the zone data decides, never a fixed
+ * offset.
  */
 export function nextMorningSlot(lastScheduledAt, now = new Date(), { timeZone = SITE_TZ, hour = RELEASE_HOUR } = {}) {
   const last = lastScheduledAt ? new Date(lastScheduledAt) : null;

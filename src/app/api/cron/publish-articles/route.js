@@ -9,7 +9,8 @@ import { sendArticleQueueEmail } from '@/lib/server/marketing';
 export const runtime = 'nodejs';
 
 /**
- * Daily blog release (vercel.json cron, 07:00 UTC = 08:00 Casablanca).
+ * Daily blog release (vercel.json cron, 08:00 UTC = 08:00 Casablanca since
+ * Morocco moved to permanent UTC+0 on 2026-09-20; it ran at 07:00 UTC under UTC+1).
  *
  * The database already decides what is public — the anon RLS policy on
  * `articles` is `is_published and published_at <= now()` — so scheduling a

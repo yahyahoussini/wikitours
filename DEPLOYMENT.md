@@ -72,7 +72,8 @@ they live in the `settings` table and are managed in `/admin/reglages`.
   owner page lists it under « Pour aller plus loin ». Needs
   `ANTHROPIC_API_KEY` (no key ⇒ no-op). Pauses itself at 7 unreviewed drafts.
   Route sets `maxDuration = 300` — check your Vercel plan allows it.
-- `/api/cron/publish-articles` daily 07:00 UTC (08:00 Casablanca) — **the
+- `/api/cron/publish-articles` daily 08:00 UTC (08:00 Casablanca: Morocco is on
+  permanent UTC+0 since 2026-09-20; the cron ran at 07:00 UTC before) — **the
   blog's daily release.** Revalidates `/`, `/blog`, the article pages and
   `llms.txt`/sitemap for every article whose `published_at` passed since the
   last run, pings IndexNow, and e-mails `settings.email` (Resend) when a day
@@ -96,7 +97,7 @@ a human can always dépublier.
 « Publié automatiquement » FYI (dépubliez-le si besoin). Otherwise you get
 « Brouillon à relire » with the blocking problems, the flags (unsourced prices,
 missing links) and the model's « [À VÉRIFIER] » list, and it waits for your
-tick. 07:00 UTC the release cron makes due posts live, refreshes the pages,
+tick. 08:00 UTC the release cron makes due posts live, refreshes the pages,
 the supporting hub and the sitemap, and pings IndexNow. Migrations 016 → 021
 in order (019 needs `is_admin()` from 017) — or paste
 `supabase/APPLY-ALL-016-to-021.sql` once in the Supabase SQL editor: it carries
@@ -111,7 +112,7 @@ revalidation, so it is safe to call by hand.
 
 ### The $0 content path (default) — weekly cloud routine
 Owner decision 2026-09-07: no API spend. A Claude Code **routine** on the
-owner's subscription runs every Sunday 21:00 UTC (22:00 Casablanca) with a
+owner's subscription runs every Sunday 21:00 UTC (21:00 Casablanca since 2026-09-20) with a
 checkout of this repo. It reads `content/ARTICLE-BRIEF.md`, grounds itself on
 the public `GET /api/content/facts` (facts, live prices, FAQ, existing slugs,
 allowed links, the queued plan — no secrets), writes up to 7 articles as
@@ -119,7 +120,7 @@ allowed links, the queued plan — no secrets), writes up to 7 articles as
 build then runs `scripts/ingest-articles.mjs` (`prebuild`): the SAME quality
 gate as the API drafter, the publish decision from Réglages → Blog
 automatique, one 08:00 slot per article after the last scheduled post, plan
-rows marked drafted. The 07:00 release cron does the rest. One deploy a week,
+rows marked drafted. The 08:00 UTC release cron does the rest. One deploy a week,
 zero secrets outside Vercel, zero per-token cost. Manage the routine at
 https://claude.ai/code/routines. The API drafter (`/api/cron/draft-article`)
 stays in `vercel.json` but is a no-op without `ANTHROPIC_API_KEY` — leave the

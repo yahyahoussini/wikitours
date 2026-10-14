@@ -161,14 +161,24 @@ describe('strict gate — no volatile fact in prose', () => {
   });
 });
 
-describe('nextMorningSlot — 08:00 Africa/Casablanca, whatever the season', () => {
-  const localHour = (iso) => Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Casablanca', hour: '2-digit', hour12: false }).format(new Date(iso)));
-  test('outside Ramadan (UTC+1) the slot is 07:00Z = 08:00 Casablanca, the day after', () => {
+// Morocco moved to permanent UTC+0 on 2026-09-20 at 02:00 (IANA tzdata 2026c). A runtime with
+// older zone data (2026b and before) still answers UTC+1 after that date. So a slot after the
+// switch is asserted as Casablanca wall time (date + 08:00), never as a fixed UTC instant:
+// Vercel's Node already ships 2026c while a laptop may not, and a hard-coded "07:00Z" for
+// 2026-09-21 failed every production build from 2026-09-28 on.
+describe('nextMorningSlot — 08:00 Africa/Casablanca, whatever the zone data says', () => {
+  const localParts = (iso) => {
+    const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Casablanca', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hour12: false }).formatToParts(new Date(iso));
+    const get = (t) => parts.find((p) => p.type === t).value;
+    return { date: `${get('year')}-${get('month')}-${get('day')}`, hour: Number(get('hour')) % 24 };
+  };
+  const localHour = (iso) => localParts(iso).hour;
+  test('before the 2026-09-20 switch (UTC+1) the slot is 07:00Z = 08:00 Casablanca, the day after', () => {
     const slot = nextMorningSlot(null, new Date('2026-09-14T10:00:00Z'));
     assert.equal(slot, '2026-09-15T07:00:00.000Z');
     assert.equal(localHour(slot), 8);
   });
-  test('the slot reads 08:00 in Casablanca in every month of the year (Ramadan suspends DST)', () => {
+  test('the slot reads 08:00 in Casablanca in every month of the year', () => {
     for (let m = 0; m < 12; m++) {
       const slot = nextMorningSlot(null, new Date(Date.UTC(2027, m, 10, 12)));
       assert.equal(localHour(slot), 8, slot);
@@ -176,7 +186,13 @@ describe('nextMorningSlot — 08:00 Africa/Casablanca, whatever the season', () 
   });
   test('continues after the last scheduled post, never before now', () => {
     const now = new Date('2026-09-14T10:00:00Z');
-    assert.equal(nextMorningSlot('2026-09-20T07:00:00Z', now), '2026-09-21T07:00:00.000Z');
+    const after = nextMorningSlot('2026-09-20T07:00:00Z', now);
+    assert.deepEqual(localParts(after), { date: '2026-09-21', hour: 8 }, after);
     assert.equal(nextMorningSlot('2026-09-01T07:00:00Z', now), '2026-09-15T07:00:00.000Z');
+  });
+  test('after the switch the UTC instant follows the zone data: 08:00Z on 2026c+, 07:00Z on older data', () => {
+    const slot = nextMorningSlot(null, new Date('2026-10-14T10:00:00Z'));
+    assert.deepEqual(localParts(slot), { date: '2026-10-15', hour: 8 }, slot);
+    assert.ok(['2026-10-15T08:00:00.000Z', '2026-10-15T07:00:00.000Z'].includes(slot), slot);
   });
 });

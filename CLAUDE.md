@@ -386,9 +386,11 @@ There is no `tailwind.config.js` (Tailwind v4) and no RTL plugin.
   `status='scheduled' AND publish_at <= now()`, proven by
   `npm run content:proof`. The ingest schedules at the slot's `publish_at`
   (never earlier than now + 24 h), else the next free 08:00 **Africa/Casablanca**
-  morning (`nextMorningSlot`, zone-aware — Ramadan's UTC+0 included). ISR ≤ 3600
+  morning (`nextMorningSlot`, zone-aware — Morocco has been on permanent UTC+0
+  since 2026-09-20, tzdata 2026c; never hard-code a UTC instant for a slot in a
+  test, because older zone data still answers UTC+1). ISR ≤ 3600
   on the **listings that surface a new post** — the home, `/blog`, the sitemap
-  and llms.txt — makes the 07:00 `publish-articles` cron an accelerator only
+  and llms.txt — makes the 08:00 UTC `publish-articles` cron an accelerator only
   (IndexNow + runway e-mails), not the publishing mechanism. A scheduled post's
   own URL is not prerendered at build (it is not published yet), so it renders
   fresh on its first request whatever its `revalidate` is — which is why the
