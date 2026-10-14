@@ -104,6 +104,12 @@ if ! ( cd "$REL" && npm ci --include=dev --no-audit --no-fund && npm run build )
   fail build
 fi
 
+# Optimised-image cache shared across releases: each release is a fresh clone, and a cold cache
+# made the first visitors after every deploy wait for image re-encoding (about 1.8 s for a hero).
+install -d "$APP_DIR/shared/image-cache" "$REL/.next/cache"
+rm -rf "$REL/.next/cache/images"
+ln -s "$APP_DIR/shared/image-cache" "$REL/.next/cache/images"
+
 # Smoke test BEFORE the switch: the new release on a spare port must serve /fr with 200.
 ( cd "$REL" && NODE_ENV=production exec node node_modules/next/dist/bin/next start --hostname localhost --port 3001 ) >> "$BUILD_LOG" 2>&1 &
 SMOKE_PID=$!

@@ -79,6 +79,13 @@ install -d -o caddy -g caddy /var/log/caddy
 # ownership, and validate as the caddy user only.
 chown -R caddy:caddy /var/log/caddy
 runuser -u caddy -- caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile >/dev/null
+# `systemctl reload caddy` would call the admin API, which the Caddyfile turns off: make it fail
+# with the right instruction instead of a cryptic error.
+install -d /etc/systemd/system/caddy.service.d
+printf '%s\n' '[Service]' 'ExecReload=' \
+  "ExecReload=/bin/sh -c 'echo \"Caddy runs without its admin API: use systemctl restart caddy\" >&2; exit 1'" \
+  > /etc/systemd/system/caddy.service.d/10-no-admin-api.conf
+systemctl daemon-reload
 systemctl enable caddy >/dev/null
 systemctl restart caddy   # the Caddyfile turns the admin API off, so `reload` cannot work
 

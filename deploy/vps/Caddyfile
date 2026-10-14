@@ -22,6 +22,13 @@
 	request_header -X-Vercel-Ip-City
 	# Vercel never exposed Next's internal rewrite header (it names the /admin rewrite).
 	header -X-Middleware-Rewrite
+	# Browsers get HTML/RSC the way Vercel's CDN served them: "public, max-age=0, must-revalidate".
+	# Next's "s-maxage=…, stale-while-revalidate=…" is a CDN header; a browser honours the SWR part
+	# and would show a stale page (prices, seats) on a repeat visit. /_next/static and /_next/image
+	# carry other values and keep them.
+	header >Cache-Control "^s-maxage=\d+(, stale-while-revalidate=\d+)?$" "public, max-age=0, must-revalidate"
+	# HSTS on every response, redirects included (Next sets it on pages; this fills the gaps).
+	header ?Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
 	encode zstd gzip
 	# A deploy restarts the single Node process (~1 s). Keep retrying the upstream instead of
 	# answering 502 meanwhile (Vercel deploys were atomic).
@@ -29,6 +36,15 @@
 		lb_try_duration 15s
 		lb_try_interval 250ms
 	}
+}
+
+# Legacy hosts: the middleware matcher skips files, /api and /_next, so on bab-makka.com they would
+# be served directly (robots.txt, sitemap.xml, llms.txt…). Send them to the canonical site as well.
+(legacy_files) {
+	@legacy_file path_regexp \.[A-Za-z0-9]+$
+	redir @legacy_file https://wikitours.ma{uri} 301
+	@legacy_internal path /_next/* /api/*
+	redir @legacy_internal https://wikitours.ma{uri} 301
 }
 
 (access_log) {
@@ -41,6 +57,7 @@
 }
 
 www.wikitours.ma {
+	header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
 	redir https://wikitours.ma{uri} 301
 }
 
@@ -55,6 +72,7 @@ wikitours.ma, admin.wikitours.ma {
 # then `systemctl restart caddy`.
 bab-makka.com, www.bab-makka.com, m.bab-makka.com {
 	tls internal
+	import legacy_files
 	import app
 	import access_log
 }

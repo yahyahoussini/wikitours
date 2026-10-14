@@ -71,7 +71,9 @@ The owner chose on 2026-10-14 to move off the Vercel Hobby plan. The plan had ru
    2. `systemctl enable --now wikitours-cron-{rollup,sync-reviews,ping,publish-articles}.timer`.
    3. Push `vercel.json` with `"git": {"deploymentEnabled": false}`, so pushes stop building on Vercel. Each Vercel build also ran the article ingest against the live database.
 10. **Keep the Vercel project** (not deleted) for 2 weeks as a rollback.
-   - **Rollback before step 9:** point the 3 records back to Vercel: `@` A 76.76.21.21, and `www` and `admin` CNAME `cname.vercel-dns.com`.
+   - **Rollback before step 9:**
+     1. In the Vercel dashboard, Redeploy the latest production deployment first. After the switch, admin edits revalidate only the VPS, so Vercel's static pages (revalidate=false) would show pre-switch content.
+     2. Point the 3 records back: `@` A 76.76.21.21, and `www` and `admin` CNAME `cname.vercel-dns.com`.
    - **Rollback after step 9:**
      1. `systemctl disable --now wikitours-cron-*.timer` on the VPS.
      2. Revert both vercel.json commits in ONE push. Vercel cannot build that push (deployments are off), so redeploy it from the Vercel dashboard: Deployments → the latest → Redeploy. That brings its crons and Git builds back.
