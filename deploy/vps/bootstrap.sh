@@ -109,7 +109,8 @@ EOF
 # PasswordAuthentication yes, so this drop-in must sort before it (01-…). Verified with sshd -T.
 if [ -s /root/.ssh/authorized_keys ]; then
   rm -f /etc/ssh/sshd_config.d/99-wikitours.conf
-  printf 'PasswordAuthentication no\nKbdInteractiveAuthentication no\nPermitRootLogin prohibit-password\n' > /etc/ssh/sshd_config.d/01-wikitours.conf
+  printf '%s\n' 'PasswordAuthentication no' 'KbdInteractiveAuthentication no' 'PermitRootLogin prohibit-password' \
+    'X11Forwarding no' 'AllowAgentForwarding no' 'AllowTcpForwarding no' 'MaxAuthTries 3' > /etc/ssh/sshd_config.d/01-wikitours.conf
   install -d -m 755 /run/sshd   # sshd -t needs it; Ubuntu 24.04 creates it only when ssh.service runs
   sshd -t && systemctl restart ssh
   # (not `sshd -T | grep -q`: grep -q exits early, sshd gets SIGPIPE and pipefail reports failure)

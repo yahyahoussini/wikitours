@@ -1,19 +1,23 @@
 # Outside check of wikitours.ma every hour (Vercel's platform used to cover availability).
 # A failing run makes GitHub e-mail the repo owner (the author of this schedule). No secrets, no
-# build: it only reads public URLs and the certificate. Private-repo cost: about 1 Actions minute
-# per run, ~720 of the 2,000 free minutes a month (seo-audit.yml uses the rest on pushes).
+# build: it reads public URLs, the certificate and the live commit marker. Private-repo cost: about
+# 1 Actions minute per run, ~720 of the 2,000 free minutes a month (seo-audit.yml uses the rest).
 name: uptime
 on:
   schedule:
     - cron: '7 * * * *'
   workflow_dispatch:
-permissions: {}
+permissions:
+  contents: read
 jobs:
   check:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Pages, redirects, admin and certificate
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Pages, redirects, admin, certificate and the live commit
         run: |
           set -u
           fail=0
@@ -31,4 +35,17 @@ jobs:
           days=$(( ( $(date -d "$end" +%s) - $(date +%s) ) / 86400 ))
           echo "certificate expires $end ($days days)"
           [ "$days" -ge 14 ] || fail=1
+          # The VPS deploy writes /version.txt = the live commit. A quiet deploy failure keeps the
+          # old release live: alert when master has been ahead of it for more than 30 minutes.
+          # (A deliberate HOLD/rollback also alerts after 30 min, as a reminder to --resume.)
+          live=$(curl -s -m 20 https://wikitours.ma/version.txt | head -c 40)
+          if [ "${#live}" -ne 40 ]; then
+            echo "no live commit marker (site not served by the VPS?)"
+          elif [ "$live" != "$GITHUB_SHA" ]; then
+            age=$(( $(date +%s) - $(git log -1 --format=%ct "$GITHUB_SHA") ))
+            echo "live commit $live != master $GITHUB_SHA (master is ${age}s old)"
+            [ "$age" -lt 1800 ] || fail=1
+          else
+            echo "live commit = master ($live)"
+          fi
           exit $fail
