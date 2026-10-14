@@ -84,17 +84,34 @@ export async function middleware(request, event) {
   // (DEPLOYMENT.md §3), or the site would briefly serve under the old host.
   // Must sit above the www→apex block so www.bab-makka.com does not pay an
   // extra 308 into bab-makka.com first.
+  // Letter case. Vercel matched static route folders without regard to case
+  // (/fr/Bab-Makka answered 200 with the lowercase canonical); a self-hosted
+  // `next start` is case-sensitive and 404s them. Every locale, route and slug
+  // here is lowercase ASCII by design, so a mixed-case page path gets ONE 301 to
+  // its lowercase form (cleaner than Vercel's duplicate 200). Percent-encoded
+  // paths are left alone: the case of %XX hex is not a different URL. The
+  // matcher already skips /api, /_next and files.
+  const lowerPath = pathname.toLowerCase();
+  const caseFix = lowerPath !== pathname && !pathname.includes('%');
+  const pagePath = caseFix ? lowerPath : pathname;
+
   if (LEGACY_HOST.test(host.replace(/:\d+$/, ''))) {
-    const legacy = resolveLegacyRedirect(pathname);
-    const seg = pathname.split('/')[1] ?? '';
+    const legacy = resolveLegacyRedirect(pagePath);
+    const seg = pagePath.split('/')[1] ?? '';
     const path = legacy
       ? legacy.to
       : LOCALES.includes(seg)
-        ? pathname
-        : `/${FALLBACK_LOCALE}${pathname === '/' ? '' : pathname}`;
+        ? pagePath
+        : `/${FALLBACK_LOCALE}${pagePath === '/' ? '' : pagePath}`;
     const target = new URL(path, SITE_ORIGIN);
     target.search = request.nextUrl.search;
     return NextResponse.redirect(target, 301);
+  }
+
+  if (caseFix) {
+    const url = request.nextUrl.clone();
+    url.pathname = lowerPath;
+    return NextResponse.redirect(url, 301);
   }
 
   // 0) Canonical host: www → apex (SEO consistency, LAWS §5). Trailing-slash
