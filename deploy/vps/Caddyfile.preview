@@ -5,15 +5,31 @@
 #   are tested with:  curl -k --resolve wikitours.ma:443:<VPS IP> https://wikitours.ma/fr
 # - The app is reached as localhost:3000 (it listens on [::1]; see wikitours.service).
 {
-	admin localhost:2019
+	# No admin API: no local process (build scripts, the app) can reconfigure Caddy or read its
+	# keys through it. Config changes need `systemctl restart caddy` (a reload uses the API).
+	admin off
 	# tls internal: never try to add Caddy's local CA to the system trust store (the caddy user cannot).
 	skip_install_trust
 }
 
-srv2062670.hstgr.cloud {
-	header X-Robots-Tag "noindex, nofollow"
+(app) {
+	# Vercel refused request bodies over 4.5 MB before the app saw them; keep a similar ceiling.
+	request_body {
+		max_size 5MB
+	}
+	# The app trusts Vercel's geo headers; a client must not be able to send them through.
+	request_header -X-Vercel-Ip-Country
+	request_header -X-Vercel-Ip-Country-Region
+	request_header -X-Vercel-Ip-City
+	# Vercel never exposed Next's internal rewrite header (it names the /admin rewrite).
+	header -X-Middleware-Rewrite
 	encode zstd gzip
 	reverse_proxy localhost:3000
+}
+
+srv2062670.hstgr.cloud {
+	header X-Robots-Tag "noindex, nofollow"
+	import app
 }
 
 # www → apex here, not in the middleware: behind a proxy request.nextUrl carries the internal port,
@@ -25,8 +41,5 @@ www.wikitours.ma {
 
 wikitours.ma, admin.wikitours.ma, bab-makka.com, www.bab-makka.com, m.bab-makka.com {
 	tls internal
-	encode zstd gzip
-	# Vercel never exposed Next's internal rewrite header (it names the /admin rewrite).
-	header -X-Middleware-Rewrite
-	reverse_proxy localhost:3000
+	import app
 }

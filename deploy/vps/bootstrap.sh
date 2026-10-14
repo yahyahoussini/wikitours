@@ -42,7 +42,11 @@ if ! command -v caddy >/dev/null; then
 fi
 
 # App user and directories
-id -u "$APP_USER" >/dev/null 2>&1 || useradd --system --create-home --home-dir "/home/$APP_USER" --shell /bin/bash "$APP_USER"
+id -u "$APP_USER" >/dev/null 2>&1 || useradd --system --create-home --home-dir "/home/$APP_USER" --shell /usr/sbin/nologin "$APP_USER"
+# No login shell and no crontab: code running as this user (dependencies at build time, the app)
+# gets no interactive foothold. systemd, runuser and sudo -u still run commands as it.
+usermod -s /usr/sbin/nologin "$APP_USER"
+grep -qx "$APP_USER" /etc/cron.deny 2>/dev/null || echo "$APP_USER" >> /etc/cron.deny
 install -d -o "$APP_USER" -g "$APP_USER" "$APP_DIR" "$APP_DIR/releases" /var/log/wikitours
 install -d -m 750 -o root -g "$APP_USER" /etc/wikitours
 
@@ -71,7 +75,7 @@ systemctl daemon-reload
 install -d -o caddy -g caddy /var/log/caddy
 caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile >/dev/null
 systemctl enable caddy >/dev/null
-systemctl reload-or-restart caddy
+systemctl restart caddy   # the Caddyfile turns the admin API off, so `reload` cannot work
 
 # Firewall: SSH, HTTP, HTTPS (TCP, and UDP for Caddy's HTTP/3) only
 ufw allow OpenSSH >/dev/null
@@ -81,8 +85,18 @@ ufw allow 443/udp >/dev/null
 ufw --force enable >/dev/null
 systemctl enable --now fail2ban >/dev/null
 
-# Automatic security updates
+# Automatic security updates — Ubuntu's own, plus Node.js (NodeSource) and Caddy (Cloudsmith),
+# which unattended-upgrades ignores by default. Kernel updates need a reboot: allow one at 02:30
+# UTC (before the 03:30 rollup; the app and Caddy start at boot).
 printf 'APT::Periodic::Update-Package-Lists "1";\nAPT::Periodic::Unattended-Upgrade "1";\n' > /etc/apt/apt.conf.d/20auto-upgrades
+cat > /etc/apt/apt.conf.d/52wikitours-upgrades <<'EOF'
+Unattended-Upgrade::Origins-Pattern {
+        "site=deb.nodesource.com";
+        "site=dl.cloudsmith.io";
+};
+Unattended-Upgrade::Automatic-Reboot "true";
+Unattended-Upgrade::Automatic-Reboot-Time "02:30";
+EOF
 
 # SSH: keys only — but only once root has a key, so this can never lock the owner out.
 # (Hostinger's browser terminal in hPanel is a console login and keeps working.)

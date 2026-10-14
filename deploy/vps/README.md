@@ -4,7 +4,7 @@ The owner chose on 2026-10-14 to move off the Vercel Hobby plan. The plan had ru
 
 - **Server:** Hostinger KVM 8 `srv2062670.hstgr.cloud` (72.60.92.29), Paris: 8 vCPU, 32 GB RAM.
 - **OS:** Ubuntu 24.04.
-- **Site:** one Next.js server (`next start` on 127.0.0.1:3000) behind Caddy, which serves HTTPS for every hostname.
+- **Site:** one Next.js server (`next start --hostname localhost --port 3000`, listening on [::1]) behind Caddy, which serves HTTPS for every hostname. Why `localhost` and not 127.0.0.1 is explained in `systemd/wikitours.service`: it keeps every redirect and the admin rewrite relative, as on Vercel.
 - **Data:** Supabase is unchanged, so the app is stateless. The only server-side state is `/etc/wikitours/env` and the ISR cache.
 
 ## What runs where
@@ -17,7 +17,13 @@ The owner chose on 2026-10-14 to move off the Vercel Hobby plan. The plan had ru
 | Environment | `/etc/wikitours/env` (640 root:wikitours; names in `env.example`) | Vercel env vars (Production) |
 | Logs | `journalctl -u wikitours`, `/var/log/wikitours/{deploy,cron}.log`, `/var/log/caddy/` | Vercel logs |
 
-**Not ported:** the `x-vercel-ip-*` geo headers. Lead and visit rows get `country`, `region` and `city` = null until a GeoIP lookup is added. That is a follow-up; the code already falls back to null.
+**Not ported:** the `x-vercel-ip-*` geo headers. Lead and visit rows get `country`, `region` and `city` = null until a GeoIP lookup is added. That is a follow-up; the code already falls back to null. Caddy strips any client-sent `X-Vercel-Ip-*` header, so these fields cannot be spoofed.
+
+**Hardening:**
+- Caddy runs with no admin API, so config changes need `systemctl restart caddy`.
+- Request bodies are capped at 5 MB, close to Vercel's 4.5 MB.
+- The `wikitours` user has no login shell and no crontab.
+- Automatic updates also cover Node.js and Caddy, with an automatic reboot at 02:30 UTC when the kernel needs one.
 
 ## Order (first time)
 1. **Owner, in hPanel:**
@@ -29,10 +35,14 @@ The owner chose on 2026-10-14 to move off the Vercel Hobby plan. The plan had ru
 5. **First deploy:** `sudo systemctl start wikitours-deploy`, then `systemctl enable --now wikitours wikitours-deploy.timer`. Do **not** enable the cron timers yet: Vercel's crons still run, and both would hit the same database.
 6. **Test before DNS:**
    - `https://srv2062670.hstgr.cloud/fr` in a browser (noindex);
-   - `curl -k --resolve wikitours.ma:443:72.60.92.29 https://wikitours.ma/fr`;
-   - the same for `admin.wikitours.ma` and `bab-makka.com/omra/1104/x`, which must give ONE 301 to `https://wikitours.ma/fr/bab-makka`;
-   - `/api/health/seo`;
-   - `wikitours-cron ping`, which is read-only.
+   - `curl -k --resolve wikitours.ma:443:72.60.92.29 https://wikitours.ma/fr` gives 200;
+   - `/` gives 307 with `Location: /fr`, which is RELATIVE: no `localhost:3000` may appear in any Location;
+   - `www.wikitours.ma/fr?x=1` gives 301 to `https://wikitours.ma/fr?x=1`;
+   - `admin.wikitours.ma/` gives 307 with `Location: /admin/login` (not 500);
+   - `bab-makka.com/omra/1104/x` gives ONE 301 to `https://wikitours.ma/fr/bab-makka`;
+   - `/api/health/seo`, `/sitemap.xml`, `/robots.txt` and `/llms.txt` give 200;
+   - `/api/ping` WITHOUT the secret gives 401;
+   - `sudo systemctl start wikitours-cron@ping` logs `HTTP 200` in `/var/log/wikitours/cron.log`. It is a read-only database keep-alive.
 7. **DNS cut-over.** These records were measured on 2026-10-14. Keep the **MX** (`dm.heberjahiz.com`, the e-mail) and the Google **TXT** untouched.
    - **wikitours.ma** (Heberjahiz, TTL 7200):
      - `@` A 76.76.21.21 → `72.60.92.29`;
@@ -42,11 +52,12 @@ The owner chose on 2026-10-14 to move off the Vercel Hobby plan. The plan had ru
      - `@` A 76.76.21.21 + 216.198.79.1 → one A `72.60.92.29`;
      - `www` and `m` CNAME `…vercel-dns-017.com` → A `72.60.92.29`.
      - It only redirects, and Vercel keeps answering it until it moves.
-8. **Switch Caddy to production RIGHT AFTER the authoritative DNS answers the new IP.** Check with `dig +short wikitours.ma @dmns1.heberjahiz.com`, then run `install -m 644 Caddyfile /etc/caddy/Caddyfile && touch /etc/caddy/.wikitours-production && systemctl reload caddy`. Caddy then fetches the Let's Encrypt certificates in seconds.
+8. **Switch Caddy to production RIGHT AFTER the authoritative DNS answers the new IP.** Check with `dig +short wikitours.ma @dmns1.heberjahiz.com`, then run `install -m 644 Caddyfile /etc/caddy/Caddyfile && touch /etc/caddy/.wikitours-production && systemctl restart caddy`. Caddy then fetches the Let's Encrypt certificates in seconds. Check with `curl -sI https://wikitours.ma/fr`, which must succeed WITHOUT `-k`.
+   - **New records:** give them a short TTL (300 s) for the first days, so a rollback to Vercel spreads in minutes rather than hours. Raise it to 3600 once stable.
    - **Why the order:** Let's Encrypt validates against the authoritative DNS. Switching earlier makes the issuance fail and back off. Between the DNS change and the issuance, a visitor whose resolver already sees the VPS gets the internal certificate. The old TTLs (2 h) keep almost everyone on Vercel during those seconds.
    - **Between DNS and step 9.3,** every push is built by BOTH Vercel and the VPS. The prebuild ingest is idempotent (it skips articles already ingested), but keep that window short.
 9. **Hand the crons over** (same day, between two runs):
-   1. Push a commit that removes `crons` from `vercel.json`. Vercel deploys it, which removes its crons.
+   1. Push a commit that removes `crons` from `vercel.json`. Vercel deploys it, which removes its crons. **Confirm it before step 2:** the Vercel production deployment of that commit is "Ready", and Project → Settings → Cron Jobs lists none. Otherwise every job would run twice.
    2. `systemctl enable --now wikitours-cron-{rollup,sync-reviews,ping,publish-articles}.timer`.
    3. Push `vercel.json` with `"git": {"deploymentEnabled": false}`, so pushes stop building on Vercel. Each Vercel build also ran the article ingest against the live database.
 10. **Keep the Vercel project** (not deleted) for 2 weeks as a rollback: point the DNS back to Vercel.
