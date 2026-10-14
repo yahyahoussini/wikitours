@@ -1,15 +1,23 @@
 # PRODUCTION mode (after the DNS cut-over). Copy to /etc/caddy/Caddyfile, then
 #   touch /etc/caddy/.wikitours-production && systemctl reload caddy
 # Caddy gets and renews the Let's Encrypt certificates for every hostname by itself.
-# Every host goes to the Next.js server: the middleware already does www → apex (308),
-# admin.wikitours.ma → /admin, and bab-makka.com (+ www, m) → wikitours.ma/fr/… (one 301).
+# The Next.js middleware does admin.wikitours.ma → /admin and bab-makka.com (+ www, m) →
+# wikitours.ma/fr/… (one 301). www.wikitours.ma → apex is done HERE (301, as Vercel did), because
+# behind a proxy the middleware's host swap kept the internal :3000 port.
+# The app is reached as localhost:3000 (it listens on [::1]; see wikitours.service).
 {
 	admin localhost:2019
 }
 
-wikitours.ma, www.wikitours.ma, admin.wikitours.ma, bab-makka.com, www.bab-makka.com, m.bab-makka.com {
+www.wikitours.ma {
+	redir https://wikitours.ma{uri} 301
+}
+
+wikitours.ma, admin.wikitours.ma, bab-makka.com, www.bab-makka.com, m.bab-makka.com {
 	encode zstd gzip
-	reverse_proxy 127.0.0.1:3000
+	# Vercel never exposed Next's internal rewrite header (it names the /admin rewrite).
+	header -X-Middleware-Rewrite
+	reverse_proxy localhost:3000
 	log {
 		output file /var/log/caddy/wikitours-access.log {
 			roll_size 50MiB
@@ -22,5 +30,5 @@ wikitours.ma, www.wikitours.ma, admin.wikitours.ma, bab-makka.com, www.bab-makka
 srv2062670.hstgr.cloud {
 	header X-Robots-Tag "noindex, nofollow"
 	encode zstd gzip
-	reverse_proxy 127.0.0.1:3000
+	reverse_proxy localhost:3000
 }

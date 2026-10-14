@@ -1,5 +1,11 @@
+# --hostname localhost (not 127.0.0.1), on purpose: Next 15 builds its own request origin from this
+# hostname, while request.nextUrl normalises 127.0.0.1 to "localhost". When both say localhost, the
+# origins match, so Next turns every middleware redirect into a RELATIVE Location (/fr) and every
+# rewrite (admin.wikitours.ma → /admin) into an internal one. With 127.0.0.1 they leaked
+# https://localhost:3000/… and the admin rewrite was proxied over TLS (500). Verified 2026-10-14.
+# On this image localhost resolves to ::1, so the app listens on [::1]:3000; callers use localhost:3000.
 [Unit]
-Description=wikitours.ma Next.js server (127.0.0.1:3000, behind Caddy)
+Description=wikitours.ma Next.js server (localhost:3000, behind Caddy)
 After=network-online.target
 Wants=network-online.target
 
@@ -11,7 +17,7 @@ EnvironmentFile=/etc/wikitours/env
 Environment=NODE_ENV=production
 Environment=NEXT_TELEMETRY_DISABLED=1
 WorkingDirectory=/srv/wikitours/current
-ExecStart=/usr/bin/node /srv/wikitours/current/node_modules/next/dist/bin/next start --hostname 127.0.0.1 --port 3000
+ExecStart=/usr/bin/node /srv/wikitours/current/node_modules/next/dist/bin/next start --hostname localhost --port 3000
 Restart=always
 RestartSec=3
 TimeoutStopSec=20

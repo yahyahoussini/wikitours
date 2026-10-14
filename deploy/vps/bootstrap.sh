@@ -64,6 +64,7 @@ systemctl daemon-reload
 # production Caddyfile happens at the DNS cut-over (README.md).
 [ -f /etc/caddy/.wikitours-production ] || install -m 644 "$SRC/Caddyfile.preview" /etc/caddy/Caddyfile
 install -d -o caddy -g caddy /var/log/caddy
+caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile >/dev/null
 systemctl enable caddy >/dev/null
 systemctl reload-or-restart caddy
 
@@ -79,9 +80,14 @@ printf 'APT::Periodic::Update-Package-Lists "1";\nAPT::Periodic::Unattended-Upgr
 
 # SSH: keys only — but only once root has a key, so this can never lock the owner out.
 # (Hostinger's browser terminal in hPanel is a console login and keeps working.)
+# sshd keeps the FIRST value it reads for each keyword, and the image's 50-cloud-init.conf sets
+# PasswordAuthentication yes, so this drop-in must sort before it (01-…). Verified with sshd -T.
 if [ -s /root/.ssh/authorized_keys ]; then
-  printf 'PasswordAuthentication no\nKbdInteractiveAuthentication no\nPermitRootLogin prohibit-password\n' > /etc/ssh/sshd_config.d/99-wikitours.conf
-  sshd -t && systemctl reload ssh
+  rm -f /etc/ssh/sshd_config.d/99-wikitours.conf
+  printf 'PasswordAuthentication no\nKbdInteractiveAuthentication no\nPermitRootLogin prohibit-password\n' > /etc/ssh/sshd_config.d/01-wikitours.conf
+  install -d -m 755 /run/sshd   # sshd -t needs it; Ubuntu 24.04 creates it only when ssh.service runs
+  sshd -t && systemctl restart ssh
+  sshd -T | grep -qx 'passwordauthentication no' || { echo "sshd still allows passwords" >&2; exit 1; }
 fi
 
 echo "bootstrap: OK (node $(node -v), $(caddy version | cut -d' ' -f1))"

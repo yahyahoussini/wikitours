@@ -32,7 +32,8 @@ while [ $# -gt 0 ]; do
 done
 
 log() { printf '%s %s\n' "$(date -u +%FT%TZ)" "$*" | tee -a "$LOG"; }
-live() { readlink -f "$APP_DIR/current" 2>/dev/null || true; }
+# The live release, or "" before the first deploy (readlink -f alone would echo the missing path).
+live() { [ -L "$APP_DIR/current" ] && readlink -f "$APP_DIR/current" || true; }
 releases() { ls -1dt "$APP_DIR"/releases/*/ 2>/dev/null | sed 's:/$::'; }
 switch_to() {
   ln -sfn "$1" "$APP_DIR/current.tmp"
@@ -42,7 +43,7 @@ switch_to() {
 healthy() {
   local code
   for _ in $(seq 1 90); do
-    code="$(curl -s -o /dev/null -m 10 -w '%{http_code}' -H 'Host: wikitours.ma' http://127.0.0.1:3000/fr || true)"
+    code="$(curl -s -o /dev/null -m 10 -w '%{http_code}' -H 'Host: wikitours.ma' http://localhost:3000/fr || true)"
     [ "$code" = 200 ] && return 0
     sleep 1
   done

@@ -3,18 +3,30 @@
 #   browser before any DNS change. It is never indexed.
 # - The real hostnames still point at Vercel, so they get Caddy's INTERNAL certificate here and
 #   are tested with:  curl -k --resolve wikitours.ma:443:<VPS IP> https://wikitours.ma/fr
+# - The app is reached as localhost:3000 (it listens on [::1]; see wikitours.service).
 {
 	admin localhost:2019
+	# tls internal: never try to add Caddy's local CA to the system trust store (the caddy user cannot).
+	skip_install_trust
 }
 
 srv2062670.hstgr.cloud {
 	header X-Robots-Tag "noindex, nofollow"
 	encode zstd gzip
-	reverse_proxy 127.0.0.1:3000
+	reverse_proxy localhost:3000
 }
 
-wikitours.ma, www.wikitours.ma, admin.wikitours.ma, bab-makka.com, www.bab-makka.com, m.bab-makka.com {
+# www → apex here, not in the middleware: behind a proxy request.nextUrl carries the internal port,
+# so the middleware's host swap produced https://wikitours.ma:3000/… . 301 = what Vercel answers today.
+www.wikitours.ma {
+	tls internal
+	redir https://wikitours.ma{uri} 301
+}
+
+wikitours.ma, admin.wikitours.ma, bab-makka.com, www.bab-makka.com, m.bab-makka.com {
 	tls internal
 	encode zstd gzip
-	reverse_proxy 127.0.0.1:3000
+	# Vercel never exposed Next's internal rewrite header (it names the /admin rewrite).
+	header -X-Middleware-Rewrite
+	reverse_proxy localhost:3000
 }
