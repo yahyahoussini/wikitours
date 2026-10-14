@@ -18,7 +18,7 @@ command -v dig >/dev/null || { echo "dig missing: apt-get install -y dnsutils" >
 
 # The final A record a name server gives for a host (it follows a CNAME inside its own zone).
 answer() { dig +short +time=5 +tries=2 "$1" A @"$2" | grep -E '^[0-9.]+$' | sort | paste -sd, -; }
-serial() { dig +short +time=5 "$1" SOA @"$2" | awk '{print $3}'; }
+serial() { dig +short +time=5 +tries=2 "$1" SOA @"$2" 2>/dev/null | awk '$3 ~ /^[0-9]+$/ { s = $3 } END { print (s == "" ? "no answer" : s) }'; }
 
 show() {
   local zone="$1"; shift; local -n ns="$1"; shift
@@ -45,6 +45,10 @@ case "${1:-}" in
       echo "Both Heberjahiz servers must answer $IP for ${WT_HOSTS[*]} first (see: wikitours-cutover check)" >&2; exit 1
     fi
     install -m 644 "$KIT/Caddyfile" /etc/caddy/Caddyfile.new
+    # The service runs as caddy: its log files must be caddy's (a root-run validation once left a
+    # root-owned 0600 access log behind, which would have stopped Caddy from starting).
+    install -d -o caddy -g caddy /var/log/caddy
+    chown -R caddy:caddy /var/log/caddy
     runuser -u caddy -- caddy validate --config /etc/caddy/Caddyfile.new --adapter caddyfile >/dev/null
     cp -f /etc/caddy/Caddyfile /etc/caddy/Caddyfile.before-cutover
     mv -f /etc/caddy/Caddyfile.new /etc/caddy/Caddyfile

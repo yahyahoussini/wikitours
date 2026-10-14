@@ -74,7 +74,11 @@ systemctl daemon-reload
 # production Caddyfile happens at the DNS cut-over (README.md).
 [ -f /etc/caddy/.wikitours-production ] || install -m 644 "$SRC/Caddyfile.preview" /etc/caddy/Caddyfile
 install -d -o caddy -g caddy /var/log/caddy
-caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile >/dev/null
+# Caddy runs as `caddy`. A validation run as root opens the access-log writer and leaves a
+# root-owned 0600 log file that the service can then not open (it would fail to start). So: fix
+# ownership, and validate as the caddy user only.
+chown -R caddy:caddy /var/log/caddy
+runuser -u caddy -- caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile >/dev/null
 systemctl enable caddy >/dev/null
 systemctl restart caddy   # the Caddyfile turns the admin API off, so `reload` cannot work
 
