@@ -1,0 +1,20 @@
+# PREVIEW mode (before the DNS cut-over). Installed by bootstrap.sh.
+# - The server's own Hostinger name gets a real certificate, so the owner can open the site in a
+#   browser before any DNS change. It is never indexed.
+# - The real hostnames still point at Vercel, so they get Caddy's INTERNAL certificate here and
+#   are tested with:  curl -k --resolve wikitours.ma:443:<VPS IP> https://wikitours.ma/fr
+{
+	admin localhost:2019
+}
+
+srv2062670.hstgr.cloud {
+	header X-Robots-Tag "noindex, nofollow"
+	encode zstd gzip
+	reverse_proxy 127.0.0.1:3000
+}
+
+wikitours.ma, www.wikitours.ma, admin.wikitours.ma, bab-makka.com, www.bab-makka.com, m.bab-makka.com {
+	tls internal
+	encode zstd gzip
+	reverse_proxy 127.0.0.1:3000
+}

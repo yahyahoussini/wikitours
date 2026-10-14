@@ -1,0 +1,9 @@
+[Unit]
+Description=Deploy new commits on GitHub master (checked 2 minutes after each run ends)
+
+[Timer]
+OnBootSec=3min
+OnUnitInactiveSec=2min
+
+[Install]
+WantedBy=timers.target

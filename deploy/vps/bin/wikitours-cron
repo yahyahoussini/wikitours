@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# wikitours-cron <job> — call one of the app's cron routes the way Vercel Cron did:
+# GET http://127.0.0.1:3000<path> with `Authorization: Bearer $CRON_SECRET` (the routes check it).
+# Started by the wikitours-cron-*.timer units; one log line per run in /var/log/wikitours/cron.log.
+set -euo pipefail
+case "${1:-}" in
+  ping) path=/api/ping ;;
+  rollup) path=/api/cron/rollup ;;
+  sync-reviews) path=/api/cron/sync-reviews ;;
+  publish-articles) path=/api/cron/publish-articles ;;
+  *) echo "usage: wikitours-cron ping|rollup|sync-reviews|publish-articles" >&2; exit 2 ;;
+esac
+: "${CRON_SECRET:?CRON_SECRET is not set (EnvironmentFile=/etc/wikitours/env)}"
+out="$(mktemp)"
+trap 'rm -f "$out"' EXIT
+code="$(curl -s -o "$out" -m 330 -w '%{http_code}' -H "Authorization: Bearer $CRON_SECRET" -H 'Host: wikitours.ma' "http://127.0.0.1:3000$path" || true)"
+printf '%s %s %s HTTP %s %s\n' "$(date -u +%FT%TZ)" "$1" "$path" "${code:-000}" "$(head -c 300 "$out" | tr '\n' ' ')" >> /var/log/wikitours/cron.log
+case "$code" in 2??) exit 0 ;; *) exit 1 ;; esac

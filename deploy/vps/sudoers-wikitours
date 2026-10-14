@@ -1,0 +1,2 @@
+# The deploy (running as the wikitours user) may restart the app service, and nothing else.
+wikitours ALL=(root) NOPASSWD: /usr/bin/systemctl restart wikitours

@@ -1,0 +1,2 @@
+# Server scripts and units must keep LF line endings even in a Windows checkout (bash and systemd reject CRLF).
+/deploy/vps/** text eol=lf

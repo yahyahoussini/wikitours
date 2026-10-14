@@ -1,0 +1,10 @@
+[Unit]
+Description=wikitours.ma /api/ping daily 06:00 UTC (keepalive and health)
+
+[Timer]
+OnCalendar=*-*-* 06:00:00 UTC
+Persistent=true
+Unit=wikitours-cron@ping.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,10 @@
+[Unit]
+Description=wikitours.ma /api/cron/publish-articles daily 08:00 UTC (08:00 Casablanca: the blog's daily release)
+
+[Timer]
+OnCalendar=*-*-* 08:00:00 UTC
+Persistent=true
+Unit=wikitours-cron@publish-articles.service
+
+[Install]
+WantedBy=timers.target

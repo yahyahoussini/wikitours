@@ -1,0 +1,26 @@
+[Unit]
+Description=wikitours.ma Next.js server (127.0.0.1:3000, behind Caddy)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=wikitours
+Group=wikitours
+EnvironmentFile=/etc/wikitours/env
+Environment=NODE_ENV=production
+Environment=NEXT_TELEMETRY_DISABLED=1
+WorkingDirectory=/srv/wikitours/current
+ExecStart=/usr/bin/node /srv/wikitours/current/node_modules/next/dist/bin/next start --hostname 127.0.0.1 --port 3000
+Restart=always
+RestartSec=3
+TimeoutStopSec=20
+LimitNOFILE=65535
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/wikitours /var/log/wikitours
+
+[Install]
+WantedBy=multi-user.target

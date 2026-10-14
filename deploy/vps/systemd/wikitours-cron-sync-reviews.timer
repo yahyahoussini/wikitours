@@ -1,0 +1,10 @@
+[Unit]
+Description=wikitours.ma /api/cron/sync-reviews daily 05:00 UTC (Google rating and count)
+
+[Timer]
+OnCalendar=*-*-* 05:00:00 UTC
+Persistent=true
+Unit=wikitours-cron@sync-reviews.service
+
+[Install]
+WantedBy=timers.target

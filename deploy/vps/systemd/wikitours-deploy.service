@@ -1,0 +1,14 @@
+[Unit]
+Description=wikitours.ma deploy: build origin/master in a new release, switch, restart, health-check
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=wikitours
+Group=wikitours
+EnvironmentFile=/etc/wikitours/env
+Environment=NEXT_TELEMETRY_DISABLED=1
+ExecStart=/usr/local/bin/wikitours-deploy --if-changed
+TimeoutStartSec=45min
+Nice=5

@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+# wikitours-deploy — build one commit of github.com/yahyahoussini/wikitours in a fresh release
+# directory, switch the `current` symlink, restart the app, health-check, roll back on failure.
+# Runs as the `wikitours` user with /etc/wikitours/env loaded (wikitours-deploy.service), so the
+# build sees the same variables Vercel had; `npm run build` runs prebuild (article ingest, which
+# writes to the live database exactly as on Vercel), next build and the postbuild SEO/test gates.
+#   --if-changed   exit quietly when the live release already is the target commit (the timer),
+#                  and do not retry a commit whose last build failed (no retry loop)
+#   --ref <x>      deploy this commit or branch instead of master
+#   --rollback     switch back to the previous release (no build)
+# Manual use (on the server):
+#   sudo systemctl start wikitours-deploy        deploy master now if it changed
+#   sudo -u wikitours bash -c 'set -a; . /etc/wikitours/env; set +a; wikitours-deploy --ref <sha>'
+#   sudo -u wikitours wikitours-deploy --rollback
+set -euo pipefail
+APP_DIR=/srv/wikitours
+MIRROR="$APP_DIR/repo.git"
+REPO=git@github.com:yahyahoussini/wikitours.git
+KEEP=3
+LOG=/var/log/wikitours/deploy.log
+MODE=deploy
+IF_CHANGED=0
+REF=master
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --if-changed) IF_CHANGED=1 ;;
+    --ref) REF="${2:?--ref needs a commit or branch}"; shift ;;
+    --rollback) MODE=rollback ;;
+    *) echo "unknown argument: $1" >&2; exit 2 ;;
+  esac
+  shift
+done
+
+log() { printf '%s %s\n' "$(date -u +%FT%TZ)" "$*" | tee -a "$LOG"; }
+live() { readlink -f "$APP_DIR/current" 2>/dev/null || true; }
+releases() { ls -1dt "$APP_DIR"/releases/*/ 2>/dev/null | sed 's:/$::'; }
+switch_to() {
+  ln -sfn "$1" "$APP_DIR/current.tmp"
+  mv -Tf "$APP_DIR/current.tmp" "$APP_DIR/current"
+  sudo /usr/bin/systemctl restart wikitours
+}
+healthy() {
+  local code
+  for _ in $(seq 1 90); do
+    code="$(curl -s -o /dev/null -m 10 -w '%{http_code}' -H 'Host: wikitours.ma' http://127.0.0.1:3000/fr || true)"
+    [ "$code" = 200 ] && return 0
+    sleep 1
+  done
+  return 1
+}
+
+exec 9>"$APP_DIR/.deploy.lock"
+flock -n 9 || { echo "another deploy is running"; exit 0; }
+
+if [ "$MODE" = rollback ]; then
+  cur="$(live)"
+  prev="$(releases | grep -vxF "$cur" | head -1 || true)"
+  [ -n "$prev" ] || { log "rollback: no previous release"; exit 1; }
+  log "rollback: $(basename "$cur") -> $(basename "$prev")"
+  switch_to "$prev"
+  if healthy; then log "rollback: live"; exit 0; fi
+  log "rollback: UNHEALTHY"
+  exit 1
+fi
+
+[ -d "$MIRROR" ] || git clone --quiet --mirror "$REPO" "$MIRROR"
+git -C "$MIRROR" fetch --quiet --prune origin '+refs/heads/*:refs/heads/*'
+SHA="$(git -C "$MIRROR" rev-parse --verify --quiet "$REF^{commit}")" || { log "unknown ref: $REF"; exit 1; }
+CUR="$(live)"
+LIVE="${CUR##*/}"
+if [ "$IF_CHANGED" = 1 ]; then
+  [ "${LIVE%%-*}" = "${SHA:0:12}" ] && exit 0
+  [ "$(cat "$APP_DIR/.last-failed" 2>/dev/null || true)" = "$SHA" ] && exit 0
+fi
+
+REL="$APP_DIR/releases/${SHA:0:12}-$(date -u +%Y%m%dT%H%M%SZ)"
+BUILD_LOG="$REL.build.log"
+log "deploy ${SHA:0:12} ($REF): building ${REL##*/}"
+git clone --quiet "$MIRROR" "$REL"
+git -C "$REL" -c advice.detachedHead=false checkout --quiet "$SHA"
+if ! ( cd "$REL" && npm ci --include=dev --no-audit --no-fund && npm run build ) > "$BUILD_LOG" 2>&1; then
+  echo "$SHA" > "$APP_DIR/.last-failed"
+  rm -rf -- "$REL"
+  log "deploy ${SHA:0:12} FAILED at build; the live release is unchanged (${LIVE:-none}). Log: $BUILD_LOG"
+  tail -n 40 "$BUILD_LOG" >&2
+  exit 1
+fi
+
+switch_to "$REL"
+if healthy; then
+  rm -f "$APP_DIR/.last-failed"
+  log "deploy ${SHA:0:12} LIVE (previous: ${LIVE:-none})"
+else
+  echo "$SHA" > "$APP_DIR/.last-failed"
+  if [ -n "$CUR" ]; then
+    log "deploy ${SHA:0:12} unhealthy after restart; rolling back to $LIVE"
+    switch_to "$CUR"
+  else
+    log "deploy ${SHA:0:12} unhealthy after restart and there is no previous release"
+  fi
+  exit 1
+fi
+
+# Keep the newest $KEEP releases (never the live one) and their build logs; drop older logs.
+cur="$(live)"
+releases | tail -n +"$((KEEP + 1))" | while read -r d; do
+  [ "$d" = "$cur" ] || rm -rf -- "$d" "$d.build.log"
+done
+ls -1t "$APP_DIR"/releases/*.build.log 2>/dev/null | tail -n +"$((KEEP + 6))" | xargs -r rm -f --

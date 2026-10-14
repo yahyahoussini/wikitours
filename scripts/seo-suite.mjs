@@ -294,7 +294,8 @@ async function runSuite(rawPages, sitemapXml) {
         let c = null;
         try { c = new URL(p.canonical); } catch { /* not a URL */ }
         if (!c || c.origin !== SITE_EXPECTED) fail('canonical', p.route, `canonical origin is not ${SITE_EXPECTED} (NEXT_PUBLIC_SITE_URL): ${p.canonical}`);
-        else if (process.env.VERCEL_ENV === 'production' && c.protocol !== 'https:') fail('canonical', p.route, `canonical is not https in production: ${p.canonical}`);
+        // Production on Vercel sets VERCEL_ENV; the VPS sets DEPLOY_ENV (deploy/vps/env.example).
+        else if ((process.env.VERCEL_ENV === 'production' || process.env.DEPLOY_ENV === 'production') && c.protocol !== 'https:') fail('canonical', p.route, `canonical is not https in production: ${p.canonical}`);
         else if (c.search || c.hash) fail('canonical', p.route, `canonical carries a query string or fragment: ${p.canonical}`);
         else if (norm(c.pathname) !== p.route) fail('canonical', p.route, `canonical not self-referencing: ${c.pathname} (hard constraint 1: each locale self-canonicalises)`);
       }

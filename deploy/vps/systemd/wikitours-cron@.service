@@ -1,0 +1,11 @@
+[Unit]
+Description=wikitours.ma cron job %i (replaces Vercel Cron; vercel.json schedules, UTC)
+After=wikitours.service
+
+[Service]
+Type=oneshot
+User=wikitours
+Group=wikitours
+EnvironmentFile=/etc/wikitours/env
+ExecStart=/usr/local/bin/wikitours-cron %i
+TimeoutStartSec=6min

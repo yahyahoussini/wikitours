@@ -1,0 +1,10 @@
+[Unit]
+Description=wikitours.ma /api/cron/rollup daily 03:30 UTC (analytics rollups + expired-offer 301s)
+
+[Timer]
+OnCalendar=*-*-* 03:30:00 UTC
+Persistent=true
+Unit=wikitours-cron@rollup.service
+
+[Install]
+WantedBy=timers.target
