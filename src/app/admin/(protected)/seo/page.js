@@ -1,9 +1,11 @@
 import { supabaseServer } from '@/lib/supabase/server';
 import KeywordPanel from '@/components/admin/KeywordPanel';
+import { requireAdminPage } from '@/lib/admin/guard';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminSeoPage() {
+  await requireAdminPage();
   const sb = await supabaseServer();
   let groups = [];
   if (sb) {

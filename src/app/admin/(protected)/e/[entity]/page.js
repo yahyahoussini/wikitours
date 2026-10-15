@@ -2,10 +2,12 @@ import { notFound, redirect } from 'next/navigation';
 import { ADMIN_ENTITIES } from '@/lib/admin/registry';
 import { fetchEntityRows } from '@/lib/admin/server';
 import EntityList from '@/components/admin/EntityList';
+import { requireAdminPage } from '@/lib/admin/guard';
 
 export const dynamic = 'force-dynamic';
 
 export default async function EntityListPage({ params }) {
+  await requireAdminPage();
   const { entity } = await params;
   if (entity === 'offres') redirect('/admin/offres'); // custom daily screen
   const config = ADMIN_ENTITIES[entity];

@@ -3,6 +3,7 @@ import { supabaseServer } from '@/lib/supabase/server';
 import { supabasePublic } from '@/lib/supabase/public';
 import { LOCALES } from '@/lib/i18n';
 import { articleQueue, LOW_WATERMARK_DAYS } from '@/lib/server/article-queue';
+import { requireAdminPage } from '@/lib/admin/guard';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,6 +23,7 @@ function countByStatus(rows) {
 }
 
 export default async function AdminDashboard() {
+  await requireAdminPage();
   const sb = await supabaseServer();
   const anon = supabasePublic();
 

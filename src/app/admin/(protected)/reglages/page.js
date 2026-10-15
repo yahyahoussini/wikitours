@@ -1,9 +1,11 @@
 import { supabaseServer } from '@/lib/supabase/server';
 import SettingsForm from '@/components/admin/SettingsForm';
+import { requireAdminPage } from '@/lib/admin/guard';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminSettingsPage() {
+  await requireAdminPage();
   const sb = await supabaseServer();
   let settings = null;
   if (sb) {

@@ -4,10 +4,12 @@ import { z } from 'zod';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { ENTITY_TYPES, GALLERY_ENTITIES } from '@/lib/entities';
 import GalleryManager from '@/components/admin/GalleryManager';
+import { requireAdminPage } from '@/lib/admin/guard';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminGalleryEditPage({ params }) {
+  await requireAdminPage();
   const { entityType, id } = await params;
   if (!ENTITY_TYPES.includes(entityType)) notFound();
   // guid, not uuid: the virtual galleries (settings_hero/office/team) use

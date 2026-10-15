@@ -1,5 +1,6 @@
 import { supabaseServer } from '@/lib/supabase/server';
 import OffersBoard from '@/components/admin/OffersBoard';
+import { requireAdminPage } from '@/lib/admin/guard';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,6 +16,7 @@ function computeMinPrice(tiers) {
 }
 
 export default async function AdminOffersPage() {
+  await requireAdminPage();
   const sb = await supabaseServer();
   let groups = [];
 

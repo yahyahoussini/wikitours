@@ -1,8 +1,6 @@
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
-import { supabaseServer } from '@/lib/supabase/server';
-import { isAdminUser } from '@/lib/admin/authz';
+import { requireAdminPage } from '@/lib/admin/guard';
 import { signOut } from '@/app/admin/actions';
 
 const NAV = [
@@ -44,14 +42,8 @@ const NAV = [
 ];
 
 export default async function AdminProtectedLayout({ children }) {
-  const auth = await supabaseServer();
-  if (!auth) redirect('/admin/login');
-  const {
-    data: { user },
-  } = await auth.auth.getUser();
-  // Session + allowlist. A Supabase account that is not on ADMIN_EMAILS is
-  // treated exactly like a logged-out visitor.
-  if (!user || !isAdminUser(user)) redirect('/admin/login');
+  // The same check as every page (lib/admin/guard.js); one getUser() per request.
+  await requireAdminPage();
 
   return (
     <div className="flex min-h-dvh">

@@ -1,10 +1,12 @@
 import { supabaseServer } from '@/lib/supabase/server';
 import LeadsBoard from '@/components/admin/LeadsBoard';
 import { LEAD_STATUSES } from '@/lib/admin/lead-statuses';
+import { requireAdminPage } from '@/lib/admin/guard';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminCrmPage({ searchParams }) {
+  await requireAdminPage();
   const params = await searchParams;
   const filters = {
     q: typeof params.q === 'string' ? params.q.trim() : '',

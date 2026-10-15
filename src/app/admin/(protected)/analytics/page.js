@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { supabaseServer } from '@/lib/supabase/server';
 import { getAnalytics, getBotReport } from '@/lib/admin/analytics';
 import { getWebVitals, CWV_THRESHOLDS } from '@/lib/admin/web-vitals';
+import { requireAdminPage } from '@/lib/admin/guard';
 
 export const dynamic = 'force-dynamic';
 
@@ -185,6 +186,7 @@ function DataTable({ title, headers, rows }) {
 }
 
 export default async function AdminAnalyticsPage({ searchParams }) {
+  await requireAdminPage();
   const params = await searchParams;
   const to = /^\d{4}-\d{2}-\d{2}$/.test(params.to ?? '') ? params.to : isoDaysAgo(0);
   const from = /^\d{4}-\d{2}-\d{2}$/.test(params.from ?? '') ? params.from : isoDaysAgo(29);

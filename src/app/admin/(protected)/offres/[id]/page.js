@@ -10,10 +10,12 @@ import {
 } from '@/lib/admin/server';
 import EntityForm from '@/components/admin/EntityForm';
 import OfferTierManager from '@/components/admin/OfferTierManager';
+import { requireAdminPage } from '@/lib/admin/guard';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminOfferEditPage({ params }) {
+  await requireAdminPage();
   const { id } = await params;
   const isNew = id === 'new';
   const record = isNew ? null : await fetchEntityRecord('offres', id);

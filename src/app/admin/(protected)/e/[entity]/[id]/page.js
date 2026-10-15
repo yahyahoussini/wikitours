@@ -9,10 +9,12 @@ import {
   publicUrlBase,
 } from '@/lib/admin/server';
 import EntityForm from '@/components/admin/EntityForm';
+import { requireAdminPage } from '@/lib/admin/guard';
 
 export const dynamic = 'force-dynamic';
 
 export default async function EntityEditPage({ params }) {
+  await requireAdminPage();
   const { entity, id } = await params;
   const config = ADMIN_ENTITIES[entity];
   if (!config) notFound();

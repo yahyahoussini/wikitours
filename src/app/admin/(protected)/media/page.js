@@ -5,6 +5,7 @@ import { publicMediaUrl } from '@/lib/media';
 import MediaUploader from '@/components/admin/MediaUploader';
 import AltEditor from '@/components/admin/AltEditor';
 import DeleteMediaButton from '@/components/admin/DeleteMediaButton';
+import { requireAdminPage } from '@/lib/admin/guard';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,6 +36,7 @@ async function fetchMedia({ q, kind }) {
 }
 
 export default async function AdminMediaPage({ searchParams }) {
+  await requireAdminPage();
   const params = await searchParams;
   const q = typeof params.q === 'string' ? params.q.trim() : '';
   const kind = ['image', 'video', 'document'].includes(params.kind) ? params.kind : '';

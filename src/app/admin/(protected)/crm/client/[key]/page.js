@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { supabaseServer } from '@/lib/supabase/server';
 import { phoneKey } from '@/lib/crm/client-key';
 import { LEAD_STATUSES } from '@/lib/admin/lead-statuses';
+import { requireAdminPage } from '@/lib/admin/guard';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,6 +26,7 @@ const refHost = (referrer) => {
  * linked to the leads), and the submitting IPs (recorded from migration 013).
  */
 export default async function AdminClientProfilePage({ params }) {
+  await requireAdminPage();
   const { key } = await params;
   if (!/^\d{6,15}$/.test(key)) notFound();
   const sb = await supabaseServer();

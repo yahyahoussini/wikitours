@@ -2,10 +2,12 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { supabaseServer } from '@/lib/supabase/server';
 import LeadDetail from '@/components/admin/LeadDetail';
+import { requireAdminPage } from '@/lib/admin/guard';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminLeadPage({ params }) {
+  await requireAdminPage();
   const { id } = await params;
   const sb = await supabaseServer();
   if (!sb) notFound();

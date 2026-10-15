@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { GALLERY_ENTITIES, SETTINGS_HERO_ENTITY_ID, SETTINGS_OFFICE_ENTITY_ID, SETTINGS_TEAM_ENTITY_ID, SETTINGS_WHY_ENTITY_ID } from '@/lib/entities';
+import { requireAdminPage } from '@/lib/admin/guard';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,6 +11,7 @@ export const dynamic = 'force-dynamic';
  * every record's gallery is editable from day one.
  */
 export default async function AdminGalleriesPage() {
+  await requireAdminPage();
   const admin = supabaseAdmin();
 
   const groups = [];
