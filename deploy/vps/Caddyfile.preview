@@ -31,12 +31,21 @@
 	header >Cache-Control "^s-maxage=\d+(, stale-while-revalidate=\d+)?$" "public, max-age=0, must-revalidate"
 	# HSTS on every response, redirects included (Next sets it on pages; this fills the gaps).
 	header ?Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+	# TRACE/TRACK have no use here (Next answered them 500).
+	@trace method TRACE TRACK
+	respond @trace 405
 	encode zstd gzip
 	# A deploy restarts the single Node process (~1 s). Keep retrying the upstream instead of
 	# answering 502 meanwhile (Vercel deploys were atomic).
 	reverse_proxy localhost:3000 {
 		lb_try_duration 15s
 		lb_try_interval 250ms
+		# Node closes an idle keep-alive connection after 5 s. Caddy must drop it first: reusing a
+		# connection at the moment Node closes it fails a POST (a lead form) with 502, and only GETs
+		# are retried.
+		transport http {
+			keepalive 4s
+		}
 	}
 }
 

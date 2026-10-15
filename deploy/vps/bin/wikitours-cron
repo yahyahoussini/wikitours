@@ -12,6 +12,13 @@ case "${1:-}" in
   *) echo "usage: wikitours-cron ping|rollup|sync-reviews|publish-articles" >&2; exit 2 ;;
 esac
 : "${CRON_SECRET:?CRON_SECRET is not set (EnvironmentFile=/etc/wikitours/env)}"
+# After a reboot, Persistent=true fires a missed run at once, possibly before Next listens (or
+# during a deploy restart). Wait up to 1 minute for any HTTP answer (/api/ping without the secret
+# answers 401 and does nothing) instead of losing the day's run.
+for _ in $(seq 1 30); do
+  [ "$(curl -s -o /dev/null -m 5 -w '%{http_code}' -A 'wikitours-cron' -H 'Host: wikitours.ma' http://localhost:3000/api/ping || true)" != 000 ] && break
+  sleep 2
+done
 out="$(mktemp)"
 trap 'rm -f "$out"' EXIT
 code="$(printf 'header = "Authorization: Bearer %s"\n' "$CRON_SECRET" \

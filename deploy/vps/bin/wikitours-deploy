@@ -16,6 +16,7 @@
 # Manual use on the server (systemd-run gives the exact same environment as the timer):
 #   sudo systemctl start wikitours-deploy                       deploy master now (if changed)
 #   sudo systemd-run --uid=wikitours --gid=wikitours -p EnvironmentFile=/etc/wikitours/env \
+#        -p Environment=NEXT_TELEMETRY_DISABLED=1 -p Nice=5 \
 #        --wait --pipe /usr/local/bin/wikitours-deploy --rollback      (or --ref <sha>, --resume)
 set -euo pipefail
 APP_DIR=/srv/wikitours
@@ -79,6 +80,27 @@ case "$MODE" in
     log "rollback: UNHEALTHY"; exit 1 ;;
 esac
 
+# A release that went live but never finished its health check (the deploy was killed between the
+# switch and the check: a reboot, systemctl stop, the timeout) is checked now, so the timer never
+# takes an unchecked release for "already live". The outcome is the uninterrupted deploy's.
+if [ "$IF_CHANGED" = 1 ]; then
+  CUR="$(live)"
+  if [ -n "$CUR" ] && ! grep -qxF "$CUR" "$GOOD" 2>/dev/null; then
+    if healthy; then
+      mark_good "$CUR"; log "late health check: ${CUR##*/} answers 200 (marked good)"
+    else
+      git -C "$CUR" rev-parse HEAD > "$FAILED" 2>/dev/null || true
+      prev="$( { [ -f "$GOOD" ] && while read -r d; do [ -d "$d" ] && echo "$d"; done < "$GOOD"; } | tail -n 1 || true)"
+      if [ -n "$prev" ]; then
+        log "late health check: ${CUR##*/} does not answer 200; switching back to ${prev##*/}"
+        switch_to "$prev" || log "switch back: restart FAILED"
+      else
+        log "late health check: ${CUR##*/} does not answer 200 and no healthy release is left to switch to"
+      fi
+    fi
+  fi
+fi
+
 if [ "$IF_CHANGED" = 1 ] && [ -f "$HOLD" ]; then exit 0; fi
 [ -d "$MIRROR" ] || git clone --quiet --mirror "$REPO" "$MIRROR"
 git -C "$MIRROR" fetch --quiet --prune origin '+refs/heads/*:refs/heads/*'
@@ -93,6 +115,10 @@ fi
 REL="$APP_DIR/releases/${SHA:0:12}-$(date -u +%Y%m%dT%H%M%SZ)"
 BUILD_LOG="$REL.build.log"
 fail() { echo "$SHA" > "$FAILED"; rm -rf -- "$REL"; log "deploy ${SHA:0:12} FAILED at $1; the live release is unchanged (${LIVE:-none}). Log: $BUILD_LOG"; exit 1; }
+# An interrupted build (systemctl stop, the 45-min timeout, a reboot, a dropped manual session) must
+# not leave a half-built release behind: it would take one of the $KEEP places. Disarmed at the switch.
+trap 'rm -rf -- "$REL"' EXIT
+trap 'exit 1' INT TERM HUP
 log "deploy ${SHA:0:12} ($REF): building ${REL##*/}"
 git clone --quiet "$MIRROR" "$REL"
 git -C "$REL" -c advice.detachedHead=false checkout --quiet "$SHA"
@@ -119,6 +145,7 @@ kill "$SMOKE_PID" 2>/dev/null || true
 wait "$SMOKE_PID" 2>/dev/null || true
 [ "$smoke" = 200 ] || fail "smoke test (HTTP $smoke on :3001)"
 
+trap - EXIT INT TERM HUP   # from here on $REL may be live: an exit must never delete it
 if ! switch_to "$REL"; then
   [ -n "$CUR" ] && ln -sfn "$CUR" "$APP_DIR/current.tmp" && mv -Tf "$APP_DIR/current.tmp" "$APP_DIR/current"
   fail "restart (sudo systemctl restart wikitours)"

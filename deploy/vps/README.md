@@ -21,8 +21,10 @@ The owner chose on 2026-10-14 to move off the Vercel Hobby plan. The plan had ru
 
 **Hardening:**
 - Caddy runs with no admin API, so config changes need `systemctl restart caddy`.
-- Request bodies are capped at 5 MB, close to Vercel's 4.5 MB.
+- Request bodies are capped at 5 MB, close to Vercel's 4.5 MB. TRACE/TRACK get 405.
 - The `wikitours` user has no login shell and no crontab.
+- The app process can write only the live release and the shared image cache. The git mirror, the other releases and `current` are read-only for it (`ReadWritePaths` in `systemd/wikitours.service`).
+- Caddy drops idle connections to the app after 4 s, before Node's 5 s, so a POST (a lead form) never lands on a connection Node is closing.
 - Automatic updates also cover Node.js and Caddy, with an automatic reboot at 02:30 UTC when the kernel needs one.
 
 ## Order (first time)
@@ -66,7 +68,7 @@ The owner chose on 2026-10-14 to move off the Vercel Hobby plan. The plan had ru
    - **New records:** give them a short TTL (300 s) for the first days, so a rollback to Vercel spreads in minutes rather than hours. Raise it to 3600 once stable.
    - **Why the order:** Let's Encrypt validates against the authoritative DNS. Switching earlier makes the issuance fail and back off. Between the DNS change and the issuance, a visitor whose resolver already sees the VPS gets the internal certificate. The old TTLs (2 h) keep almost everyone on Vercel during those seconds.
    - **Between DNS and step 9.3,** every push is built by BOTH Vercel and the VPS. The prebuild ingest is idempotent (it skips articles already ingested), but keep that window short.
-9. **Hand the crons over** (same day, between two runs):
+9. **Hand the crons over** (same day, between **09:00 and 03:00 UTC**). Vercel Hobby runs each cron at some minute within its hour (08:00 → 08:00–08:59), and the jobs run at 03:30, 05:00, 06:00 and 08:00. In that window no job is due on either side:
    1. Push a commit that removes `crons` from `vercel.json`. Vercel deploys it, which removes its crons. **Confirm it before step 2:** the Vercel production deployment of that commit is "Ready", and Project → Settings → Cron Jobs lists none. Otherwise every job would run twice.
    2. `systemctl enable --now wikitours-cron-{rollup,sync-reviews,ping,publish-articles}.timer`.
    3. Push `vercel.json` with `"git": {"deploymentEnabled": false}`, so pushes stop building on Vercel. Each Vercel build also ran the article ingest against the live database.
@@ -91,15 +93,16 @@ The owner chose on 2026-10-14 to move off the Vercel Hobby plan. The plan had ru
   2. **Smoke test:** the new release starts on port 3001 and must serve `/fr` with 200. Only then does it replace the live one.
   3. **Health check:** after the restart. On failure it switches back by itself.
   - **Failures:** a failed build or smoke test never replaces the live site, and that commit is not retried until a new one arrives. Its log is `/srv/wikitours/releases/<sha>-<time>.build.log`.
+  - **Interruptions:** a build stopped halfway (reboot, `systemctl stop`, timeout) deletes its half-built release. If a deploy is stopped between the switch and the health check, the next timer run does the check. If the release answers 200, it is marked good. If not, the timer switches back, as an uninterrupted deploy would have.
   - **Check:** `tail /var/log/wikitours/deploy.log`.
 - **Manual commands** run with exactly the timer's environment:
-  `sudo systemd-run --uid=wikitours --gid=wikitours -p EnvironmentFile=/etc/wikitours/env --wait --pipe /usr/local/bin/wikitours-deploy <flag>`
+  `sudo systemd-run --uid=wikitours --gid=wikitours -p EnvironmentFile=/etc/wikitours/env -p Environment=NEXT_TELEMETRY_DISABLED=1 -p Nice=5 --wait --pipe /usr/local/bin/wikitours-deploy <flag>`
   - `--rollback`: back to the healthy release that was live before this one. Run it again to step further back. It sets a **HOLD**, so the timer does not redeploy master over it.
   - `--ref <sha>`: deploy a given commit. It also sets a HOLD.
   - `--resume`: clear the HOLD. The timer deploys master again.
   - `(no flag)`: rebuild and deploy master now.
   - The 3 newest releases are kept; `.good` lists those that went live healthy.
-- **Run a cron by hand:** `sudo systemctl start wikitours-cron@publish-articles`. One line per run goes to `/var/log/wikitours/cron.log`. The secret goes to curl through stdin, never its command line.
+- **Run a cron by hand:** `sudo systemctl start wikitours-cron@publish-articles`. One line per run goes to `/var/log/wikitours/cron.log`. The secret goes to curl through stdin, never its command line. A run first waits up to 1 minute for the app to answer, so a run caught up at boot is not lost.
 - **Status:**
   - `systemctl status wikitours caddy`;
   - `systemctl list-timers 'wikitours*'`.

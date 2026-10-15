@@ -26,7 +26,11 @@ NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=/srv/wikitours /var/log/wikitours
+# Writable for the app: only the LIVE release (Next's ISR and fetch cache live in .next) and the
+# shared image cache. systemd resolves the `current` symlink at every start, so the git mirror, the
+# other releases (the rollback targets) and `current` itself stay read-only for this internet-facing
+# process: code run through an app bug cannot change what the next deploy builds. Verified 2026-10-15.
+ReadWritePaths=/srv/wikitours/current -/srv/wikitours/shared
 
 [Install]
 WantedBy=multi-user.target

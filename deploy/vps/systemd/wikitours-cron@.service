@@ -8,4 +8,5 @@ User=wikitours
 Group=wikitours
 EnvironmentFile=/etc/wikitours/env
 ExecStart=/usr/local/bin/wikitours-cron %i
-TimeoutStartSec=6min
+# Up to 1 min waiting for the app (boot catch-up) + the 330 s request.
+TimeoutStartSec=8min
