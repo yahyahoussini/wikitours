@@ -1,0 +1,10 @@
+[Unit]
+Description=wikitours.ma DNS cut-over watch: switch Caddy to production once both Heberjahiz servers answer this VPS
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/wikitours-cutover watch
+# The switch itself waits up to 3 minutes per host for a trusted certificate.
+TimeoutStartSec=15min

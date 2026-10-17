@@ -31,7 +31,7 @@ The owner chose on 2026-10-14 to move off the Vercel Hobby plan. The plan had ru
 1. **Owner, in hPanel:**
    - reinstall the OS with plain Ubuntu 24.04;
    - add the SSH public key (`~/.ssh/wikitours_vps_ed25519.pub` on the owner's PC).
-2. **Bootstrap.** Copy `deploy/vps` **from a clean checkout of a pushed commit** (not a working tree with edits) to the server, then run `bash bootstrap.sh`. It installs Node 22, Caddy in **preview** mode, the firewall (22, 80, 443 tcp+udp), fail2ban, automatic security updates, keys-only SSH, the units and the scripts. It prints the server's GitHub deploy key.
+2. **Bootstrap.** Copy `deploy/vps` **from a clean checkout of a pushed commit** (not a working tree with edits) to the server, then run `bash bootstrap.sh`. It installs Node 22, Caddy in **preview** mode (with the production Caddyfile beside it, as `/etc/caddy/Caddyfile.production`), the cut-over watch timer (step 8), the firewall (22, 80, 443 tcp+udp), fail2ban, automatic security updates, keys-only SSH, the units and the scripts. It prints the server's GitHub deploy key.
 3. **GitHub deploy key:** add that key to the repo's Deploy keys, read-only.
 4. **Environment:** write `/etc/wikitours/env` with the 6 Vercel variables and `DEPLOY_ENV=production`. Use a NEW `CRON_SECRET`.
 5. **First deploy:** `sudo systemctl start wikitours-deploy`, then `systemctl enable --now wikitours wikitours-deploy.timer`. Do **not** enable the cron timers yet: Vercel's crons still run, and both would hit the same database.
@@ -54,17 +54,18 @@ The owner chose on 2026-10-14 to move off the Vercel Hobby plan. The plan had ru
    - **bab-makka.com** (Cap Connect, NOT in the owner's own Cap Connect account; TTL 3600 / 14400):
      - `@` A 76.76.21.21 + 216.198.79.1 → one A `72.60.92.29`;
      - `www` and `m` CNAME `…vercel-dns-017.com` → A `72.60.92.29`.
-     - It only redirects, and Vercel keeps answering it until it moves. The production Caddyfile keeps these 3 hosts on `tls internal` until then. After their DNS moves, delete that line and run `systemctl restart caddy`.
+     - It only redirects, and Vercel keeps answering it until it moves. The production Caddyfile keeps these 3 hosts on `tls internal` until then. After their DNS moves, delete that line in `deploy/vps/Caddyfile`, push, and install the kit again ("Kit updates" below). An edit made only on the server is undone by the next bootstrap run.
    - **The swap:**
      - Change a CNAME into an A record in place, or add the A right before deleting the CNAME. A gap gets cached as "does not exist" (the SOA minimum is 7200 s here, 86400 s at Cap Connect).
      - Do NOT add AAAA records: IPv6 to 80/443 was never tested from outside.
      - Use a low-traffic hour.
-8. **Switch Caddy to production RIGHT AFTER the authoritative DNS answers the new IP:**
-   1. `wikitours-cutover check` shows what BOTH Heberjahiz servers (dmns1, dmns2) answer, and their SOA serials.
-   2. `wikitours-cutover caddy` refuses until both answer 72.60.92.29 for `@`, `www` and `admin`. It then:
+8. **Switch Caddy to production RIGHT AFTER the authoritative DNS answers the new IP.** The server does it by itself: `wikitours-cutover-watch.timer` asks both Heberjahiz servers every minute and runs `wikitours-cutover caddy` as soon as both answer 72.60.92.29 for `@`, `www` and `admin`. So the DNS change can be made at any time, with nobody watching.
+   - It makes ONE attempt, then the timer disables itself. Each change in the DNS answers, the attempt and its result go to `/var/log/wikitours/cutover.log`.
+   - By hand (or after a failed attempt): `wikitours-cutover check` shows what BOTH servers (dmns1, dmns2) answer, their SOA serials and which Caddy config runs. `wikitours-cutover caddy` refuses until both answer 72.60.92.29 for the 3 names. It then:
       - validates the production Caddyfile as the `caddy` user;
       - restarts Caddy, and restores the previous config if it does not start;
       - waits until each host serves a publicly trusted certificate (checked without `-k`).
+   - The production Caddyfile is the copy the last bootstrap run installed (`/etc/caddy/Caddyfile.production`), never an older kit.
    - **New records:** give them a short TTL (300 s) for the first days, so a rollback to Vercel spreads in minutes rather than hours. Raise it to 3600 once stable.
    - **Why the order:** Let's Encrypt validates against the authoritative DNS. Switching earlier makes the issuance fail and back off. Between the DNS change and the issuance, a visitor whose resolver already sees the VPS gets the internal certificate. The old TTLs (2 h) keep almost everyone on Vercel during those seconds.
    - **Between DNS and step 9.3,** every push is built by BOTH Vercel and the VPS. The prebuild ingest is idempotent (it skips articles already ingested), but keep that window short.
@@ -97,11 +98,14 @@ The owner chose on 2026-10-14 to move off the Vercel Hobby plan. The plan had ru
   - **Check:** `tail /var/log/wikitours/deploy.log`.
 - **Manual commands** run with exactly the timer's environment:
   `sudo systemd-run --uid=wikitours --gid=wikitours -p EnvironmentFile=/etc/wikitours/env -p Environment=NEXT_TELEMETRY_DISABLED=1 -p Nice=5 --wait --pipe /usr/local/bin/wikitours-deploy <flag>`
-  - `--rollback`: back to the healthy release that was live before this one. Run it again to step further back. It sets a **HOLD**, so the timer does not redeploy master over it.
+  - `--rollback`: back to the healthy release that was live before this one. Run it again to step further back. It sets a **HOLD**, so the timer does not redeploy master over it. The release you left is never a rollback target again (deploy it with `--ref` if you want it back). If the target does not answer within 90 s, the release you left is put back.
   - `--ref <sha>`: deploy a given commit. It also sets a HOLD.
   - `--resume`: clear the HOLD. The timer deploys master again.
   - `(no flag)`: rebuild and deploy master now.
-  - The 3 newest releases are kept; `.good` lists those that went live healthy.
+  - The 3 newest releases are kept. `.good` is the live history: the releases that went live and passed the health check, oldest first. A rollback cuts it back to its target.
+- **Kit updates** (a pushed change under `deploy/vps`): a deploy does not install them. On the server, as root, with the pushed commit's sha:
+  `K=/root/kit-<sha>; mkdir -p $K && git -c safe.directory=/srv/wikitours/repo.git -C /srv/wikitours/repo.git archive <sha> deploy/vps | tar -x -C $K && bash $K/deploy/vps/bootstrap.sh`
+  It is safe to re-run. After the cut-over it also makes the new production Caddyfile live (validated first; the previous one comes back if Caddy does not start).
 - **Run a cron by hand:** `sudo systemctl start wikitours-cron@publish-articles`. One line per run goes to `/var/log/wikitours/cron.log`. The secret goes to curl through stdin, never its command line. A run first waits up to 1 minute for the app to answer, so a run caught up at boot is not lost.
 - **Status:**
   - `systemctl status wikitours caddy`;

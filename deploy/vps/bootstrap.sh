@@ -69,16 +69,26 @@ visudo -cf "$SRC/sudoers-wikitours" >/dev/null
 install -m 440 "$SRC/sudoers-wikitours" /etc/sudoers.d/wikitours
 systemctl daemon-reload
 
-# Caddy starts in PREVIEW mode: internal certificates for the real hostnames (they still point
-# at Vercel) and a real certificate for the server's own Hostinger name. The switch to the
-# production Caddyfile happens at the DNS cut-over (README.md).
-[ -f /etc/caddy/.wikitours-production ] || install -m 644 "$SRC/Caddyfile.preview" /etc/caddy/Caddyfile
+# Caddy. Until the DNS cut-over it runs in PREVIEW mode: internal certificates for the real
+# hostnames (they still point at Vercel) and a real certificate for the server's own Hostinger
+# name. This kit's production Caddyfile is installed beside it on every run, so the cut-over
+# (wikitours-cutover, by hand or from its watch timer) always uses the kit installed last. After
+# the cut-over (the marker file), a re-run makes this kit's production Caddyfile live instead.
 install -d -o caddy -g caddy /var/log/caddy
 # Caddy runs as `caddy`. A validation run as root opens the access-log writer and leaves a
 # root-owned 0600 log file that the service can then not open (it would fail to start). So: fix
-# ownership, and validate as the caddy user only.
+# ownership, and validate as the caddy user only. Both configs are validated before anything
+# changes: a broken production Caddyfile fails here, not at the cut-over, and never replaces the
+# installed one.
 chown -R caddy:caddy /var/log/caddy
-runuser -u caddy -- caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile >/dev/null
+install -m 644 "$SRC/Caddyfile" /etc/caddy/Caddyfile.production.new
+runuser -u caddy -- caddy validate --config /etc/caddy/Caddyfile.production.new --adapter caddyfile >/dev/null
+mv -f /etc/caddy/Caddyfile.production.new /etc/caddy/Caddyfile.production
+if [ -f /etc/caddy/.wikitours-production ]; then NEXT_CFG=/etc/caddy/Caddyfile.production; else NEXT_CFG="$SRC/Caddyfile.preview"; fi
+install -m 644 "$NEXT_CFG" /etc/caddy/Caddyfile.new
+runuser -u caddy -- caddy validate --config /etc/caddy/Caddyfile.new --adapter caddyfile >/dev/null
+[ -f /etc/caddy/Caddyfile ] && cp -f /etc/caddy/Caddyfile /etc/caddy/Caddyfile.before-bootstrap
+mv -f /etc/caddy/Caddyfile.new /etc/caddy/Caddyfile
 # `systemctl reload caddy` would call the admin API, which the Caddyfile turns off: make it fail
 # with the right instruction instead of a cryptic error.
 install -d /etc/systemd/system/caddy.service.d
@@ -87,7 +97,18 @@ printf '%s\n' '[Service]' 'ExecReload=' \
   > /etc/systemd/system/caddy.service.d/10-no-admin-api.conf
 systemctl daemon-reload
 systemctl enable caddy >/dev/null
-systemctl restart caddy   # the Caddyfile turns the admin API off, so `reload` cannot work
+# restart, not reload: the Caddyfile turns the admin API off
+if ! systemctl restart caddy; then
+  { [ -f /etc/caddy/Caddyfile.before-bootstrap ] && cp -f /etc/caddy/Caddyfile.before-bootstrap /etc/caddy/Caddyfile && systemctl restart caddy; } || true
+  echo "Caddy did not start with the new Caddyfile: the previous one is back" >&2; exit 1
+fi
+# Before the cut-over, the watch timer switches Caddy to production by itself as soon as both
+# Heberjahiz servers answer this VPS (README step 8). After it, the timer stays off.
+if [ -f /etc/caddy/.wikitours-production ]; then
+  systemctl disable --now wikitours-cutover-watch.timer >/dev/null 2>&1 || true
+else
+  systemctl enable --now wikitours-cutover-watch.timer >/dev/null
+fi
 
 # Firewall: SSH, HTTP, HTTPS (TCP, and UDP for Caddy's HTTP/3) only
 ufw allow OpenSSH >/dev/null

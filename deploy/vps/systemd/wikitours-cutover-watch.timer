@@ -1,0 +1,10 @@
+[Unit]
+Description=Check the wikitours.ma DNS every minute until the cut-over (the timer then disables itself)
+
+[Timer]
+OnActiveSec=30s
+OnBootSec=1min
+OnUnitInactiveSec=1min
+
+[Install]
+WantedBy=timers.target

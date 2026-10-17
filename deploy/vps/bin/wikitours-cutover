@@ -7,9 +7,19 @@
 #                              certificate is served for each host. A config that fails validation
 #                              or does not start is never left in place (the preview config comes back).
 #   wikitours-cutover caddy --force   skip the DNS check (only after a deliberate decision)
+#   wikitours-cutover watch    run every minute by wikitours-cutover-watch.timer until the switch: runs
+#                              `caddy` as soon as the DNS has moved, so the switch never waits for
+#                              someone to notice the change. ONE attempt, then the timer disables
+#                              itself. Everything goes to /var/log/wikitours/cutover.log.
+# The production Caddyfile is the copy bootstrap.sh installs from the kit it runs from
+# (/etc/caddy/Caddyfile.production), so the switch always uses the kit installed last.
 set -euo pipefail
 IP=72.60.92.29
-KIT=/root/wikitours-kit
+CADDY_DIR=/etc/caddy
+LOG=/var/log/wikitours/cutover.log
+DNS_STATE=/var/lib/wikitours-cutover/dns
+PROD="$CADDY_DIR/Caddyfile.production"
+MARK="$CADDY_DIR/.wikitours-production"
 WT_NS=(dmns1.heberjahiz.com dmns2.heberjahiz.com)
 BM_NS=(ns1.capconnect.com ns2.capconnect.com)
 WT_HOSTS=(wikitours.ma www.wikitours.ma admin.wikitours.ma)
@@ -34,29 +44,36 @@ wt_moved() {
   done
 }
 
+stamp() { date -u +%FT%TZ; }
+
 case "${1:-}" in
   check)
     echo "wikitours.ma (Heberjahiz):"; show wikitours.ma WT_NS "${WT_HOSTS[@]}"
     echo "bab-makka.com (Cap Connect):"; show bab-makka.com BM_NS "${BM_HOSTS[@]}"
     if wt_moved; then echo "=> wikitours.ma hosts point at $IP on both servers: run 'wikitours-cutover caddy'"; else echo "=> wikitours.ma not (fully) moved yet"; fi
+    if [ -f "$MARK" ]; then echo "=> Caddy runs the production config"; else echo "=> Caddy runs the preview config"; fi
     ;;
   caddy)
     if [ "${2:-}" != --force ] && ! wt_moved; then
       echo "Both Heberjahiz servers must answer $IP for ${WT_HOSTS[*]} first (see: wikitours-cutover check)" >&2; exit 1
     fi
-    install -m 644 "$KIT/Caddyfile" /etc/caddy/Caddyfile.new
+    [ -s "$PROD" ] || { echo "$PROD is missing: run bootstrap.sh from the kit first" >&2; exit 1; }
+    install -m 644 "$PROD" "$CADDY_DIR/Caddyfile.new"
     # The service runs as caddy: its log files must be caddy's (a root-run validation once left a
     # root-owned 0600 access log behind, which would have stopped Caddy from starting).
     install -d -o caddy -g caddy /var/log/caddy
     chown -R caddy:caddy /var/log/caddy
-    runuser -u caddy -- caddy validate --config /etc/caddy/Caddyfile.new --adapter caddyfile >/dev/null
-    cp -f /etc/caddy/Caddyfile /etc/caddy/Caddyfile.before-cutover
-    mv -f /etc/caddy/Caddyfile.new /etc/caddy/Caddyfile
+    if ! runuser -u caddy -- caddy validate --config "$CADDY_DIR/Caddyfile.new" --adapter caddyfile >/dev/null; then
+      rm -f "$CADDY_DIR/Caddyfile.new"
+      echo "the production Caddyfile does not validate (error above): nothing was changed" >&2; exit 1
+    fi
+    cp -f "$CADDY_DIR/Caddyfile" "$CADDY_DIR/Caddyfile.before-cutover"
+    mv -f "$CADDY_DIR/Caddyfile.new" "$CADDY_DIR/Caddyfile"
     if ! systemctl restart caddy; then
-      cp -f /etc/caddy/Caddyfile.before-cutover /etc/caddy/Caddyfile; systemctl restart caddy
+      cp -f "$CADDY_DIR/Caddyfile.before-cutover" "$CADDY_DIR/Caddyfile"; systemctl restart caddy
       echo "production Caddyfile did not start: restored the previous config" >&2; exit 1
     fi
-    touch /etc/caddy/.wikitours-production
+    touch "$MARK"
     echo "Caddy runs the production config; waiting for publicly trusted certificates..."
     for h in "${WT_HOSTS[@]}"; do
       ok=0
@@ -74,5 +91,28 @@ case "${1:-}" in
     done
     echo "Done: wikitours.ma, www and admin are served by this VPS with real certificates."
     ;;
-  *) echo "usage: wikitours-cutover check | caddy [--force]" >&2; exit 2 ;;
+  watch)
+    if [ -f "$MARK" ]; then systemctl disable --now wikitours-cutover-watch.timer >/dev/null 2>&1 || true; exit 0; fi
+    # One log line each time the answers change, so a partial or mistyped change shows up in the log.
+    now="$(for h in "${WT_HOSTS[@]}"; do for s in "${WT_NS[@]}"; do printf '%s@%s=%s ' "$h" "${s%%.*}" "$(answer "$h" "$s")"; done; done)"
+    mkdir -p "${DNS_STATE%/*}"
+    if [ "$now" != "$(cat "$DNS_STATE" 2>/dev/null || true)" ]; then
+      printf '%s\n' "$now" > "$DNS_STATE"
+      printf '%s dns: %s\n' "$(stamp)" "$now" >> "$LOG"
+    fi
+    wt_moved || exit 0
+    printf '%s both Heberjahiz servers answer %s for %s: switching Caddy to production (one attempt)\n' "$(stamp)" "$IP" "${WT_HOSTS[*]}" >> "$LOG"
+    rc=0; "$0" caddy >> "$LOG" 2>&1 || rc=$?
+    if [ "$rc" = 0 ]; then
+      result="done"
+    elif [ -f "$MARK" ]; then
+      result="the production config is live, but a host had no trusted certificate within 3 minutes; Caddy keeps retrying by itself (journalctl -u caddy)"
+    else
+      result="FAILED, the preview config is still live: fix the cause, then run 'wikitours-cutover caddy' by hand"
+    fi
+    printf '%s switch: %s (exit %s); the watch timer is now disabled\n' "$(stamp)" "$result" "$rc" >> "$LOG"
+    systemctl disable --now wikitours-cutover-watch.timer >/dev/null 2>&1 || true
+    exit "$rc"
+    ;;
+  *) echo "usage: wikitours-cutover check | caddy [--force] | watch" >&2; exit 2 ;;
 esac

@@ -1,5 +1,7 @@
-# PRODUCTION mode (after the DNS cut-over). Copy to /etc/caddy/Caddyfile, then
-#   touch /etc/caddy/.wikitours-production && systemctl restart caddy
+# PRODUCTION mode (after the DNS cut-over). bootstrap.sh installs it as /etc/caddy/Caddyfile.production;
+# `wikitours-cutover caddy` (by hand, or from wikitours-cutover-watch.timer once the DNS has moved)
+# makes it live and writes the marker /etc/caddy/.wikitours-production. From then on, re-running
+# bootstrap.sh from a newer kit makes that kit's version live.
 # Caddy gets and renews the Let's Encrypt certificates for every hostname by itself.
 # The Next.js middleware does admin.wikitours.ma → /admin and bab-makka.com (+ www, m) →
 # wikitours.ma/fr/… (one 301). www.wikitours.ma → apex is done HERE (301, as Vercel did), because
@@ -9,6 +11,9 @@
 	# No admin API: no local process (build scripts, the app) can reconfigure Caddy or read its
 	# keys through it. Config changes need `systemctl restart caddy` (a reload uses the API).
 	admin off
+	# tls internal (bab-makka.com below): never try to add Caddy's local CA to the system trust
+	# store (the caddy user cannot).
+	skip_install_trust
 }
 
 (app) {
@@ -77,8 +82,9 @@ wikitours.ma, admin.wikitours.ma {
 
 # bab-makka.com's DNS moves LATER (another Cap Connect account; Vercel answers it until then).
 # Until its records point here, keep Caddy's internal certificate so no ACME attempt fails and
-# backs off. When `wikitours-cutover check` shows it moved: delete the `tls internal` line below,
-# then `systemctl restart caddy`.
+# backs off. When `wikitours-cutover check` shows it moved: delete the `tls internal` line below in
+# the repo, push, and re-run bootstrap.sh from that commit (README "Kit updates"). An edit made only
+# on the server would be undone by the next bootstrap run.
 bab-makka.com, www.bab-makka.com, m.bab-makka.com {
 	tls internal
 	import legacy_files

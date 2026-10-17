@@ -25,7 +25,10 @@ REPO=git@github.com:yahyahoussini/wikitours.git
 KEEP=3
 LOG=/var/log/wikitours/deploy.log
 HOLD="$APP_DIR/.hold"
-GOOD="$APP_DIR/.good"          # release dirs that went live and passed the health check, oldest first
+# The live history: release dirs that went live and passed the health check, oldest first, so the
+# last line is the healthy release live most recently. A rollback cuts it back to its target (the
+# release left is never a rollback or switch-back target again, as in a browser's history).
+GOOD="$APP_DIR/.good"
 FAILED="$APP_DIR/.last-failed"
 UA='wikitours-deploy-healthcheck'
 MODE=deploy
@@ -54,6 +57,9 @@ switch_to() {
   sudo /usr/bin/systemctl restart wikitours
 }
 mark_good() { grep -qxF "$1" "$GOOD" 2>/dev/null || echo "$1" >> "$GOOD"; }
+# Cut the history back to $1 (kept). Without this, a rollback from C2 to C1 left C2 last in the
+# history, and a later switch-back (a killed deploy found unhealthy) or rollback went to C2.
+cut_history_to() { awk -v t="$1" '{ print } $0 == t { exit }' "$GOOD" > "$GOOD.tmp" && mv -f "$GOOD.tmp" "$GOOD"; }
 
 exec 9>"$APP_DIR/.deploy.lock"
 if ! flock -n 9; then
@@ -72,17 +78,29 @@ case "$MODE" in
     prev="$( { [ -f "$GOOD" ] && while read -r d; do [ -d "$d" ] && echo "$d"; done < "$GOOD"; } | awk -v cur="$cur" '$0 == cur { exit } { last = $0 } END { print last }' || true)"
     [ -n "$prev" ] || { log "rollback: no previous healthy release"; exit 1; }
     log "rollback: ${cur##*/} -> ${prev##*/}"
-    if ! switch_to "$prev"; then log "rollback: restart FAILED"; exit 1; fi
+    if ! switch_to "$prev"; then
+      [ -n "$cur" ] && ln -sfn "$cur" "$APP_DIR/current.tmp" && mv -Tf "$APP_DIR/current.tmp" "$APP_DIR/current"
+      log "rollback: restart FAILED; current points at ${cur##*/} again"; exit 1
+    fi
     if healthy; then
+      cut_history_to "$prev"
       printf 'rollback to %s at %s\n' "${prev##*/}" "$(date -u +%FT%TZ)" > "$HOLD"
       log "rollback: live; HOLD set (wikitours-deploy --resume to deploy master again)"; exit 0
     fi
-    log "rollback: UNHEALTHY"; exit 1 ;;
+    # The target does not answer: never leave the site down. The release just left answered before.
+    if [ -n "$cur" ]; then
+      log "rollback: ${prev##*/} does not answer 200; switching back to ${cur##*/}"
+      switch_to "$cur" || log "rollback: switch back: restart FAILED"
+    else
+      log "rollback: ${prev##*/} does not answer 200"
+    fi
+    exit 1 ;;
 esac
 
 # A release that went live but never finished its health check (the deploy was killed between the
 # switch and the check: a reboot, systemctl stop, the timeout) is checked now, so the timer never
-# takes an unchecked release for "already live". The outcome is the uninterrupted deploy's.
+# takes an unchecked release for "already live". The outcome is the uninterrupted deploy's: the
+# switch-back target is the last line of the live history, the release that was live before it.
 if [ "$IF_CHANGED" = 1 ]; then
   CUR="$(live)"
   if [ -n "$CUR" ] && ! grep -qxF "$CUR" "$GOOD" 2>/dev/null; then
