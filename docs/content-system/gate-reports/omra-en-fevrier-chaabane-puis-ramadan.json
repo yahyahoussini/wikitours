@@ -1,0 +1,131 @@
+{
+  "slug": "omra-en-fevrier-chaabane-puis-ramadan",
+  "file": "content/articles/2026-10-18-omra-en-fevrier-chaabane-puis-ramadan.json",
+  "row": false,
+  "state": null,
+  "format": "month_support",
+  "checked_at": "2026-10-18T21:23:25.818Z",
+  "ok": false,
+  "failed": [
+    "G6"
+  ],
+  "pending": [
+    "G13",
+    "G16"
+  ],
+  "words": {
+    "fr": 1509,
+    "ar": 1047,
+    "en": 1387
+  },
+  "checks": {
+    "G1": {
+      "ok": true,
+      "details": [],
+      "format": "month_support"
+    },
+    "G2": {
+      "ok": true,
+      "details": []
+    },
+    "G3": {
+      "ok": true,
+      "details": []
+    },
+    "G4": {
+      "ok": true,
+      "details": []
+    },
+    "G5": {
+      "ok": true,
+      "details": []
+    },
+    "G6": {
+      "ok": false,
+      "details": [
+        "body_fr : lien vers un article inexistant « /fr/blog/omra-10-derniers-jours-ramadan-2027 »",
+        "body_fr : lien vers un article inexistant « /fr/blog/omra-vacances-scolaires »",
+        "body_fr : lien vers un article inexistant « /fr/blog/omra-ramadan-2027-quand-reserver »",
+        "body_ar : lien vers un article inexistant « /ar/blog/omra-10-derniers-jours-ramadan-2027 »",
+        "body_ar : lien vers un article inexistant « /ar/blog/omra-vacances-scolaires »",
+        "body_ar : lien vers un article inexistant « /ar/blog/omra-ramadan-2027-quand-reserver »",
+        "body_en : lien vers un article inexistant « /en/blog/omra-10-derniers-jours-ramadan-2027 »",
+        "body_en : lien vers un article inexistant « /en/blog/omra-vacances-scolaires »",
+        "body_en : lien vers un article inexistant « /en/blog/omra-ramadan-2027-quand-reserver »",
+        "statut des liens non vérifié : pas de build isolé (NEXT_DIST_DIR)"
+      ],
+      "pending": true
+    },
+    "G7": {
+      "ok": true,
+      "details": [],
+      "warnings": []
+    },
+    "G8": {
+      "ok": true,
+      "details": []
+    },
+    "G9": {
+      "ok": true,
+      "details": [],
+      "arabicShare": 99.9
+    },
+    "G10": {
+      "ok": true,
+      "details": []
+    },
+    "G11": {
+      "ok": true,
+      "details": []
+    },
+    "G12": {
+      "ok": true,
+      "details": []
+    },
+    "G13": {
+      "ok": true,
+      "details": [
+        "BlogPosting.datePublished : attribué à l'ingestion (créneau) — vérifié après build",
+        "nœuds émis non vérifiés : pas de build de la page (ingérer puis construire)"
+      ],
+      "pending": true
+    },
+    "G14": {
+      "ok": true,
+      "details": [
+        "créneau omra : règle non applicable"
+      ]
+    },
+    "G15": {
+      "ok": true,
+      "details": [],
+      "closest": {
+        "fr": {
+          "slug": null,
+          "score": 0
+        },
+        "ar": {
+          "slug": null,
+          "score": 0
+        },
+        "en": {
+          "slug": null,
+          "score": 0
+        }
+      },
+      "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
+    },
+    "G16": {
+      "ok": null,
+      "pending": true,
+      "details": [
+        "rendu non vérifié : ingérer puis construire (NEXT_DIST_DIR=.next-audit CONTENT_PREVIEW_SCHEDULED=1)"
+      ]
+    },
+    "G0": {
+      "ok": true,
+      "details": [],
+      "flags": []
+    }
+  }
+}

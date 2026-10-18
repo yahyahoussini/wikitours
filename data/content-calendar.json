@@ -6891,9 +6891,9 @@
     {
       "slot_index": 60,
       "date": "2026-12-18",
-      "publish_at": "2026-12-18T17:00:00.000Z",
+      "publish_at": "2026-10-20T07:30:00.000Z",
       "phase": "P2",
-      "status": "planned",
+      "status": "scheduled",
       "how": "series:mois-par-mois",
       "track": "omra",
       "pillar": "seasonal",
@@ -7003,7 +7003,9 @@
       ],
       "length_target": "month_support",
       "topic_id": "mois-fevrier",
-      "slug": null
+      "slug": "omra-en-fevrier-chaabane-puis-ramadan",
+      "generated_at": "2026-10-18T21:23:16.324Z",
+      "review_history": "Relecteur FR 7,2 puis 8,2 après l’unique réécriture (seuil 8) ; relecteur AR 7,8 puis 8,6. Réécriture : tableau en trois formes de séjour autour de la bascule Chaâbane → Ramadan, une occurrence par bloc, calques arabes corrigés ; should_fix factuels appliqués ensuite. Gate hors ligne : tout passe sauf la vérification d’existence des billets liés (base injoignable), G13/G16 au build."
     },
     {
       "slot_index": 61,
