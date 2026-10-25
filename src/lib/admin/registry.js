@@ -792,12 +792,12 @@ export const ADMIN_ENTITIES = {
   },
 };
 
-/** Compute cheapest price across all tiers of an offer. */
+/** Compute cheapest price across all tiers of an offer (six-bed rooms included — they are the floor of the Ramadan 2027 programmes). */
 export function computeStartingPrice(tiers) {
   if (!tiers?.length) return null;
   const allPrices = [];
   for (const tier of tiers) {
-    for (const key of ['price_double', 'price_triple', 'price_quad', 'price_quint']) {
+    for (const key of ['price_double', 'price_triple', 'price_quad', 'price_quint', 'price_sextuple']) {
       if (typeof tier[key] === 'number' && tier[key] > 0) allPrices.push(tier[key]);
     }
   }

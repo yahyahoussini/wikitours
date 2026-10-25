@@ -38,9 +38,11 @@ jobs:
           # The VPS deploy writes /version.txt = the live commit. A quiet deploy failure keeps the
           # old release live: alert when master has been ahead of it for more than 30 minutes.
           # (A deliberate HOLD/rollback also alerts after 30 min, as a reminder to --resume.)
-          live=$(curl -s -m 20 https://wikitours.ma/version.txt | head -c 40)
-          if [ "${#live}" -ne 40 ]; then
-            echo "no live commit marker (site not served by the VPS?)"
+          # Only a real sha counts: on Vercel /version.txt is the site's 404 page, whose first
+          # 40 bytes of HTML used to pass the length test and fail every run as "behind master".
+          live=$(curl -sf -m 20 https://wikitours.ma/version.txt | head -c 40 || true)
+          if ! printf '%s' "$live" | grep -Eq '^[0-9a-f]{40}$'; then
+            echo "no live commit marker (site not served by the VPS yet)"
           elif [ "$live" != "$GITHUB_SHA" ]; then
             age=$(( $(date +%s) - $(git log -1 --format=%ct "$GITHUB_SHA") ))
             echo "live commit $live != master $GITHUB_SHA (master is ${age}s old)"

@@ -145,12 +145,37 @@ export default async function HotelPage({ params }) {
   // Auto-FAQ computed from DB fields only (LAW: never invented): the distance
   // question is the long-tail query these pages exist for. Answers are built
   // to sit in the audit's 25–75-word extractability window.
+  // The locale's own column only — pickLang() would put French on /ar.
+  const address = String(hotel[`address_${locale}`] ?? '').trim();
   const fill = (s) =>
     s
       .replaceAll('{name}', hotel.name)
       .replace('{m}', String(hotel.distance_to_haram_m))
       .replace('{city}', cityLabel)
-      .replace('{stars}', String(hotel.stars ?? ''));
+      .replace('{stars}', String(hotel.stars ?? ''))
+      .replace('{address}', address);
+
+  // Answer-first lede (data-answer): what customers ask at the agency first —
+  // how good the hotel is and how far from the Haram — as one sentence built
+  // from this row alone, then where it is used. A missing field drops its clause.
+  const answer = [
+    fill(
+      (hotel.stars ? t.offer.hotelAnswerLead : t.offer.hotelAnswerLeadNoStars) +
+        (hotel.distance_to_haram_m != null ? t.offer.hotelAnswerDistance : '') +
+        (hotel.breakfast_included ? t.offer.hotelAnswerBreakfast : ''),
+    ) + '.',
+    departures.length ? t.offer.hotelAnswerDepartures : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  // The amenities the admin lists (one per line) — also the source of the Hotel
+  // node's amenityFeature, so the markup now matches what the page shows.
+  const amenities = String(hotel[`amenities_${locale}`] ?? '')
+    .split('\n')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
   const hotelFaqs = [];
   if (hotel.distance_to_haram_m != null) {
     hotelFaqs.push({
@@ -163,6 +188,13 @@ export default async function HotelPage({ params }) {
         ].join(' '),
       ),
     });
+  }
+  // « كم نجمة … » / « combien d'étoiles » — a real Search Console query family.
+  if (hotel.stars) {
+    hotelFaqs.push({ q: fill(t.offer.hotelFaqStarsQ), a: fill(t.offer.hotelFaqStarsA) });
+  }
+  if (address) {
+    hotelFaqs.push({ q: fill(t.offer.hotelFaqWhereQ), a: fill(t.offer.hotelFaqWhereA) });
   }
   if (hotel.breakfast_included) {
     hotelFaqs.push({ q: fill(t.offer.hotelFaqBreakfastQ), a: fill(t.offer.hotelFaqBreakfastA) });
@@ -201,12 +233,8 @@ export default async function HotelPage({ params }) {
       </h1>
 
       {/* Answer-first crawlable facts (LAWS §5) */}
-      <p className="mt-2 text-lg text-bm-black/70">
-        {cityLabel}
-        {hotel.distance_to_haram_m != null
-          ? ` · ${t.offer.distanceToHaram.replace('{m}', hotel.distance_to_haram_m)}`
-          : ''}
-        {hotel.breakfast_included ? ` · ${t.offer.breakfastIncluded}` : ''}
+      <p data-answer className="mt-2 max-w-prose text-lg leading-relaxed text-bm-black/70">
+        {answer}
       </p>
 
       <div className="mt-8 overflow-hidden rounded-panel shadow-lift">
@@ -223,6 +251,20 @@ export default async function HotelPage({ params }) {
         <p className="mt-8 max-w-prose whitespace-pre-line text-lg leading-relaxed text-bm-black/80">
           {description}
         </p>
+      ) : null}
+
+      {amenities.length ? (
+        <section className="mt-10">
+          <h2 className="text-xl font-bold text-bm-black">{fill(t.offer.hotelAmenitiesTitle)}</h2>
+          <ul className="mt-4 grid gap-x-6 gap-y-2 text-bm-black/80 sm:grid-cols-2">
+            {amenities.map((item) => (
+              <li key={item} className="flex gap-2">
+                <span aria-hidden="true" className="text-bm-gold">•</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
       ) : null}
 
       {departures.length ? (

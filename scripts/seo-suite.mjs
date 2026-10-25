@@ -256,8 +256,15 @@ async function runSuite(rawPages, sitemapXml) {
   // titles · meta ───────────────────────────────────────────────────────────
   const seenTitle = new Map();
   const seenDesc = new Map();
+  // A departure page names its own dates (« Omra Décembre 2026 — 23 au 7 janvier »):
+  // that year is the trip, not a stale label, and the page goes noindex once the
+  // group is back (offerLifecycle). Checking it would fail every build while a
+  // departure that started last year is still running — 1–7 January for the
+  // December departure.
+  const DEPARTURE_ROUTE = /^\/(?:fr|ar|en)\/omra\/[^/]+$/;
   for (const p of indexable) {
     const t = p.title;
+    const datedPage = DEPARTURE_ROUTE.test(p.route);
     if (!t) fail('titles', p.route, 'missing <title>');
     else {
       if (p.titles > 1) fail('titles', p.route, `${p.titles} <title> tags`);
@@ -265,7 +272,7 @@ async function runSuite(rawPages, sitemapXml) {
       if (t.length < floor || t.length > TITLE_MAX) fail('titles', p.route, `title ${t.length} chars (want ${floor}–${TITLE_MAX}): "${t}"`);
       if (seenTitle.has(t)) fail('titles', p.route, `duplicate title with ${seenTitle.get(t)}: "${t}"`);
       else seenTitle.set(t, p.route);
-      for (const y of pastYears(t)) fail('titles', p.route, `hardcoded past year ${y} in the title: "${t}"`);
+      if (!datedPage) for (const y of pastYears(t)) fail('titles', p.route, `hardcoded past year ${y} in the title: "${t}"`);
       // The layout's "%s — Wiki Tours International" template trap: a plain-string
       // title gets the suffix on top of its own brand, and on /ar in Latin.
       const low = t.toLowerCase();
@@ -281,7 +288,7 @@ async function runSuite(rawPages, sitemapXml) {
       else if (!/[.!?؟؛»)"”’]\s*$/.test(d)) fail('meta', p.route, `description ends mid-sentence, without terminal punctuation (cut mid-word?): "…${d.slice(-50)}"`);
       if (seenDesc.has(d)) fail('meta', p.route, `duplicate description with ${seenDesc.get(d)}`);
       else seenDesc.set(d, p.route);
-      for (const y of pastYears(d)) fail('meta', p.route, `hardcoded past year ${y} in the description: "…${d.slice(Math.max(0, d.indexOf(String(y)) - 30), d.indexOf(String(y)) + 10)}…"`);
+      if (!datedPage) for (const y of pastYears(d)) fail('meta', p.route, `hardcoded past year ${y} in the description: "…${d.slice(Math.max(0, d.indexOf(String(y)) - 30), d.indexOf(String(y)) + 10)}…"`);
     }
   }
 

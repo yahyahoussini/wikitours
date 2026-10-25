@@ -482,11 +482,12 @@ export default async function FlatLandingPage({ params }) {
   //   • t.pages.pasCherFaq belongs to /omra-pas-cher and is the fallback for
   //     every occasion hub with no rows of its own — it was on 5 pages
   //     (/omra-pas-cher + 5-etoiles, ete, mawlid, special-septembre) × 3 locales.
-  //   • occasion-ramadan and occasion-chaabane-ramadan hold the SAME 8 rows, so
-  //     the head-term hub owns them until the Chaâbane set is written
-  //     (docs/content-system/faq-ownership.md).
-  // Remove a slug from BORROWED_FAQ the moment its own distinct rows exist.
-  const BORROWED_FAQ = new Set(['chaabane-ramadan']);
+  //   • occasion-ramadan and occasion-chaabane-ramadan held the SAME 8 rows until
+  //     2026-10-25, when the Chaâbane set was rewritten as its own questions
+  //     (where the group is when Ramadan starts, 15 vs 25 days, hotels per tier,
+  //     what the price includes…), so /omra-chaabane-ramadan now owns its markup.
+  // Add a slug to BORROWED_FAQ only while its rows duplicate another hub's.
+  const BORROWED_FAQ = new Set();
   const ownsFaqMarkup =
     resolved.kind === 'occasion'
       ? occasionFaqs.length > 0 && !BORROWED_FAQ.has(resolved.occasion.slug)
