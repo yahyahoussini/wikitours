@@ -1,5 +1,6 @@
 import { BRAND, SERVICE_SPELLING_SECONDARY } from '@/lib/brand';
 import { FALLBACK_LOCALE, pickLang, getDictionary } from '@/lib/i18n';
+import { airlineName } from '@/lib/airlines';
 import { toE164 } from '@/lib/pixels';
 import { absoluteUrl } from '@/lib/seo';
 import { getPublishedOffers, getHotels, getArticles, getFaqs, getGuidePages, getGlossaryTerms, getCityPages, getAnnouncements, computeMinPrice } from '@/lib/data/content';
@@ -136,7 +137,7 @@ export async function GET() {
       // hotel, how far, how much in a triple" can answer from here. An offer
       // with no tier rows keeps its single line.
       if (!o.tiers?.length) continue;
-      const flight = o.land_only ? t.offer.landOnly.toLowerCase() : o.airline;
+      const flight = o.land_only ? t.offer.landOnly.toLowerCase() : airlineName(o.airline, t);
       if (flight) out.push(`  - ${t.offer.airlineLabel} : ${flight}`);
       for (const tier of o.tiers) {
         const prices = ROOM_KEYS

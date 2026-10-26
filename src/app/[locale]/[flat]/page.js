@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
+import { airlineName } from '@/lib/airlines';
 import { getPublishedOffers, getOfferHistory, getOccasions, getCovers, getCityPage, getMonthPage, getFaqs } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import { toOfferCard } from '@/lib/offer-card';
@@ -276,7 +277,7 @@ function MonthEvergreen({ ctx, t, locale }) {
                         ? t.offer.duration.replace('{days}', d.duration_days).replace('{nights}', d.duration_nights ?? d.duration_days - 1)
                         : '—'}
                     </td>
-                    <td className="px-4 py-3">{d.airline ?? '—'}</td>
+                    <td className="px-4 py-3">{airlineName(d.airline, t) ?? '—'}</td>
                     <td className="px-4 py-3">{d.hotels.join(', ') || '—'}</td>
                     <td className="whitespace-nowrap px-4 py-3 tabular-nums">{d.from != null ? `${nf.format(d.from)} ${t.offer.currency}` : '—'}</td>
                   </tr>

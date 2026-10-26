@@ -1,5 +1,6 @@
 import { publicMediaUrl } from '@/lib/media';
-import { pickLang } from '@/lib/i18n';
+import { pickLang, getDictionary } from '@/lib/i18n';
+import { airlineName } from '@/lib/airlines';
 
 /**
  * Narrow an offers row (+ its cover row) to exactly what the client
@@ -40,7 +41,7 @@ export function toOfferCard(offer, cover, locale) {
     date_end: offer.date_end,
     duration_days: offer.duration_days,
     duration_nights: offer.duration_nights,
-    airline: offer.airline,
+    airline: airlineName(offer.airline, getDictionary(locale)),
     land_only: offer.land_only,
     starting_price: offer.starting_price ?? null,
     tier_label: offer.tier_label ?? null,

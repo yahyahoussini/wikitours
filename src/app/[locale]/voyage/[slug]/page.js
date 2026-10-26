@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
+import { airlineName } from '@/lib/airlines';
 import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc } from '@/lib/seo';
 import { pageDescription, trustClauses, authoredOr } from '@/lib/page-seo';
 import { withParentBrand } from '@/lib/titles';
@@ -93,7 +94,7 @@ export default async function VoyagePage({ params }) {
     voyage.duration_days && voyage.duration_nights
       ? ['clock', t.offer.duration.replace('{days}', voyage.duration_days).replace('{nights}', voyage.duration_nights)]
       : null,
-    voyage.airline ? ['plane', voyage.airline] : null,
+    voyage.airline ? ['plane', airlineName(voyage.airline, t)] : null,
   ].filter(Boolean);
 
   // The priced Offer node only when price AND departure date are both real

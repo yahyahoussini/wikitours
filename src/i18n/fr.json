@@ -177,6 +177,9 @@
     },
     "datesLabel": "Dates",
     "airlineLabel": "Compagnie aérienne",
+    "airlineNames": {
+      "saudia": "Saudia"
+    },
     "hotelsTitle": "Vos hôtels",
     "makkah": "La Mecque",
     "madinah": "Médine",

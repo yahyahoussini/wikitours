@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
+import { airlineName } from '@/lib/airlines';
 import { hreflangAlternates, clampDesc, BRAND_ID, hotelNode, tripNodeId, SPEAKABLE } from '@/lib/seo';
 import { pageDescription, trustClauses, authoredOr } from '@/lib/page-seo';
 import { routeTitle } from '@/lib/titles';
@@ -103,9 +104,19 @@ function computedIntro(offer, t, locale, tiers) {
   const year = new Date(offer.date_start).getUTCFullYear();
   // An occasion named "Spécial septembre 2026" already carries its year — don't
   // append a second one ("… 2026 2026" was live in the intro and the markup).
+  // A departure title already names the service and its dates (« Omra Novembre
+  // 2026 — Départ 4 novembre ») while the template adds the service word again:
+  // « L'Omra Omra Novembre 2026 — Départ 4 novembre de … » was live. Keep the part
+  // before the dash, without its Omra / عمرة / Umrah (leading in fr/ar, trailing
+  // in en: « November 2026 Umrah »).
+  const titleName = String(pickLang(offer, 'title', locale) ?? '')
+    .split(/\s+[—–-]\s+/)[0]
+    .replace(/^(?:l['’]\s*)?(?:omra|umrah|عمرة)\s+/i, '')
+    .replace(/\s+(?:omra|umrah|عمرة)$/i, '')
+    .trim();
   const name = occasionName
     ? occasionName.includes(String(year)) ? occasionName : `${occasionName} ${year}`
-    : pickLang(offer, 'title', locale) ?? String(year);
+    : titleName || String(year);
   const lockup = locale === 'ar' ? BRAND.lockupAr : BRAND.lockup;
 
   let lead = t.offer.introLead
@@ -119,7 +130,7 @@ function computedIntro(offer, t, locale, tiers) {
 
   const fragments = [lead];
   if (offer.airline && !offer.land_only) {
-    fragments.push(t.offer.introFlight.replace('{airline}', offer.airline));
+    fragments.push(t.offer.introFlight.replace('{airline}', airlineName(offer.airline, t)));
   }
   if (tiers[0]?.hotel_makkah?.distance_to_haram_m != null) {
     fragments.push(
@@ -172,7 +183,7 @@ export async function generateMetadata({ params }) {
     description: authoredOr(
       pickLang(offer, 'seo_description', locale),
       pageDescription(locale, minPrice != null ? 'offer' : 'offerNoPrice', {
-        vars: { dates, nights: nights ?? '', airline: offer.airline ?? '', price: priceFmt },
+        vars: { dates, nights: nights ?? '', airline: airlineName(offer.airline, getDictionary(locale)) ?? '', price: priceFmt },
         extra: [offerTrust.noPayment, offerTrust.whatsapp],
       }),
       { extra: [offerTrust.noPayment, offerTrust.whatsapp], locale },
@@ -263,7 +274,7 @@ export default async function OfferPage({ params }) {
     offer.duration_days && offer.duration_nights
       ? ['clock', t.offer.duration.replace('{days}', offer.duration_days).replace('{nights}', offer.duration_nights)]
       : null,
-    offer.land_only ? ['plane', t.offer.landOnly] : offer.airline ? ['plane', offer.airline] : null,
+    offer.land_only ? ['plane', t.offer.landOnly] : offer.airline ? ['plane', airlineName(offer.airline, t)] : null,
     // Derived, not the raw enum: seats_remaining=0 must read "Complet" even when
     // status is still 'open', or the chip contradicts the SoldOut in the JSON-LD.
     // A departed offer drops the chip entirely — the banner below already says so.
@@ -338,7 +349,7 @@ export default async function OfferPage({ params }) {
       ? { '@type': 'PropertyValue', name: t.offer.propNights, value: offer.duration_nights }
       : null,
     offer.airline && !offer.land_only
-      ? { '@type': 'PropertyValue', name: t.offer.airlineLabel, value: offer.airline }
+      ? { '@type': 'PropertyValue', name: t.offer.airlineLabel, value: airlineName(offer.airline, t) }
       : null,
     // Distance depends on the gamme chosen: a range when the gammes differ.
     tierDistances.length

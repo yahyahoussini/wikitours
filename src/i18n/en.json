@@ -177,6 +177,9 @@
     },
     "datesLabel": "Dates",
     "airlineLabel": "Airline",
+    "airlineNames": {
+      "saudia": "Saudia"
+    },
     "hotelsTitle": "Your hotels",
     "makkah": "Makkah",
     "madinah": "Madinah",

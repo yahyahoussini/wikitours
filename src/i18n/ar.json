@@ -177,6 +177,9 @@
     },
     "datesLabel": "التواريخ",
     "airlineLabel": "شركة الطيران",
+    "airlineNames": {
+      "saudia": "الخطوط السعودية"
+    },
     "hotelsTitle": "فنادقكم",
     "makkah": "مكة المكرمة",
     "madinah": "المدينة المنورة",
