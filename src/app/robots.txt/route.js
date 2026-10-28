@@ -31,6 +31,18 @@ export const dynamic = 'force-static';
  *   /admin   the dashboard (auth route + everything under `(protected)`).
  *   /api/    all route handlers under `src/app/api`. None is a page;
  *            /llms.txt is the canonical machine-readable summary.
+ *   ?_rsc=   React Server Component payloads (added 2026-10-28). The App
+ *            Router prefetches every visible <Link> as `<route>?_rsc=…`, and
+ *            Googlebot's renderer does the same on every page it renders.
+ *            Crawl stats (90 days to 2026-10-28) put "Other file type" at 48 %
+ *            of Googlebot requests, sampled as /fr/hajj?_rsc=… and
+ *            /fr/agrement?_rsc=…, while 37 sitemap pages — the Arabic Ramadan
+ *            departures among them — sat in "Discovered – currently not
+ *            indexed", never fetched. No page needs another route's payload to
+ *            render (the HTML is server-rendered and carries its own payload
+ *            inline), and fetched without the RSC header the same URL returns
+ *            the full page as a parameter duplicate of its canonical. Both
+ *            spellings: first parameter and any later one.
  *
  * NOT disallowed, deliberately:
  *   /_next/  CSS, JS and optimised images. Blocking it hides the rendered page
@@ -47,7 +59,7 @@ export const dynamic = 'force-static';
  * and `htmlLimitedBots` (next.config.mjs, blocking metadata so crawlers get
  * real 404s). Welcoming an agent without logging it makes GEO unmeasurable.
  */
-const DISALLOW = ['/admin', '/api/'];
+const DISALLOW = ['/admin', '/api/', '/*?_rsc=', '/*&_rsc='];
 
 // Content Signals Policy (contentsignals.org): declared per group because a
 // named user-agent never reads the `*` group.
