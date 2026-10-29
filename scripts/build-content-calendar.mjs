@@ -30,6 +30,7 @@ import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync } from 
 import path from 'node:path';
 import { createClient } from '@supabase/supabase-js';
 import { targetsLanderQuery } from '@/lib/server/article-gate';
+import { stripYearTokens } from '@/lib/content-tags';
 
 const DRY = process.argv.includes('--dry');
 const SEED = process.argv.includes('--seed');
@@ -98,7 +99,8 @@ const frozen = new Map((previous.slots ?? []).filter((s) => ['scheduled', 'publi
 // ── validation of the pool ──────────────────────────────────────────────────
 const landerQueries = new Set();
 for (const l of registry.landers) for (const loc of ['fr', 'ar', 'en']) if (l[loc]?.h1) landerQueries.add(norm(l[loc].h1).replace(/\b20\d{2}\b/g, '').trim());
-const existingTitles = new Set(inventory.posts.flatMap((p) => [p.title_fr, p.title_ar, p.title_en]).map((t) => norm(t).replace(/\b20\d{2}\b/g, '').trim()));
+// A {year:…} title token is read as the title without it, like a year in clear.
+const existingTitles = new Set(inventory.posts.flatMap((p) => [p.title_fr, p.title_ar, p.title_en]).map((t) => norm(stripYearTokens(t)).replace(/\b20\d{2}\b/g, '').trim()));
 const existingSlugs = new Set(inventory.posts.map((p) => p.slug));
 const rejected = [];
 const valid = [];
@@ -112,7 +114,7 @@ for (const t of topics) {
   if (existingTitles.has(q)) why.push('requête = titre d\'un article existant');
   if (seenQueries.has(q)) why.push('requête en double dans le pool');
   if (t.slug && existingSlugs.has(t.slug)) why.push(`slug « ${t.slug} » déjà dans la table`);
-  for (const p of inventory.posts) if (jaccardWords(t.angle, `${p.title_fr}`) > 0.6) { why.push(`angle trop proche de /blog/${p.slug}`); break; }
+  for (const p of inventory.posts) if (jaccardWords(t.angle, `${stripYearTokens(p.title_fr)}`) > 0.6) { why.push(`angle trop proche de /blog/${p.slug}`); break; }
   for (const o of valid) if (o.cluster === t.cluster && jaccardWords(o.angle, t.angle) > 0.6) { why.push(`angle trop proche du sujet ${o.id} (même dossier)`); break; }
   if (why.length) rejected.push({ id: t.id, batch: t.__batch, why });
   else { valid.push(t); seenQueries.add(q); }

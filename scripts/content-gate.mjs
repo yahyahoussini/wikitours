@@ -32,7 +32,8 @@ import { readFileSync, readdirSync, existsSync, mkdirSync, writeFileSync } from 
 import path from 'node:path';
 import { createClient } from '@supabase/supabase-js';
 import { qualityGate, proseViolations, targetsLanderQuery, brandedTitle, words, EXTERNAL_WHITELIST, offWhitelistHost, proseText } from '@/lib/server/article-gate';
-import { validateContentTags, stripContentTags, contentTagsOf, CTA_TARGET_RE } from '@/lib/content-tags';
+import { validateContentTags, stripContentTags, contentTagsOf, CTA_TARGET_RE, stripYearTokens, measureYearTokens, validateYearTokens, bodyYearTokensOf } from '@/lib/content-tags';
+import { resolveYearTokens } from '@/lib/title-tokens';
 import { extractFaq } from '@/lib/article-schema';
 import { CLUSTERS, clusterOfArticle } from '@/lib/clusters';
 import { BRAND } from '@/lib/brand';
@@ -68,6 +69,10 @@ const norm = (s) => String(s ?? '').toLowerCase().normalize('NFD').replace(/[̀-
 // The prose rules (G1, G2, G3, G5, G9, G10, G11, G15) read the body without
 // its tags AND without link targets — a URL is not prose (see proseText).
 const prose = (draft, lang) => proseText(draft[`body_${lang}`]);
+// A {year:<tag>} token in a title field (src/lib/content-tags.js) is a live
+// component: the prose and language rules read the field WITHOUT it
+// (stripYearTokens — a year in clear beside it still fails), the length rules
+// measure it as the four digits it renders (measureYearTokens).
 const wordCount = (s) => words(String(s ?? '').replace(/[#*_>|\-]+/g, ' '));
 const h2s = (body) => [...String(body ?? '').matchAll(/^##\s+(.+)$/gm)].map((m) => m[1].trim());
 const isQuestion = (h) => /[?؟]\s*$/.test(h) || /^(comment|pourquoi|quand|combien|quel|quelle|quels|quelles|est-ce|faut-il|peut-on|que |où|qu'|doit-on|how|when|why|what|which|can|should|is |are |do |does |where|كيف|متى|شنو|واش|هل|لماذا|علاش|ما |كم|أين|فين|ماذا|من )/i.test(h);
@@ -122,7 +127,7 @@ async function loadContext() {
   if (!sb) return ctx;
   const now = new Date().toISOString();
   const [{ data: rows }, { data: tm }, { data: settings }, { data: hotels }, { data: offers }] = await Promise.all([
-    sb.from('articles').select('slug, title_fr, title_ar, title_en, body_fr, body_ar, body_en, is_published, published_at, category, supports_path'),
+    sb.from('articles').select('slug, title_fr, title_ar, title_en, seo_title_fr, seo_title_ar, seo_title_en, seo_description_fr, seo_description_ar, seo_description_en, body_fr, body_ar, body_en, is_published, published_at, category, supports_path'),
     sb.from('testimonials').select('id').eq('is_published', true),
     sb.from('content_ops_settings').select('similarity_threshold').eq('id', 1).maybeSingle(),
     sb.from('hotels').select('name').eq('is_published', true),
@@ -153,7 +158,7 @@ function G1(draft, fmt) {
 function G2(draft) {
   const details = [];
   for (const l of LOCALES) {
-    const n = wordCount(draft[`excerpt_${l}`]);
+    const n = wordCount(measureYearTokens(draft[`excerpt_${l}`]));
     if (n < 40 || n > 55) details.push(`excerpt_${l} (bloc réponse d'abord) : ${n} mots, attendu 40–55`);
   }
   return { ok: !details.length, details };
@@ -191,9 +196,12 @@ function G5(draft) {
   ];
   for (const l of LOCALES) {
     for (const f of ['title', 'excerpt', 'seo_title', 'seo_description']) {
-      for (const v of proseViolations(draft[`${f}_${l}`])) details.push(`${f}_${l} : ${v.rule} en clair « ${v.match} »`);
-      for (const { rule, re } of extra) for (const m of String(draft[`${f}_${l}`] ?? '').matchAll(re)) details.push(`${f}_${l} : ${rule} en clair « ${m[0].trim()} »`);
+      for (const problem of validateYearTokens(draft[`${f}_${l}`])) details.push(`${f}_${l} : ${problem}`);
+      const text = stripYearTokens(draft[`${f}_${l}`]);
+      for (const v of proseViolations(text)) details.push(`${f}_${l} : ${v.rule} en clair « ${v.match} »`);
+      for (const { rule, re } of extra) for (const m of String(text ?? '').matchAll(re)) details.push(`${f}_${l} : ${rule} en clair « ${m[0].trim()} »`);
     }
+    for (const t of bodyYearTokensOf(draft[`body_${l}`])) details.push(`body_${l} : jeton d'année « ${t.raw} » interdit dans le corps — la date y passe par <HijriCountdown event="…" />`);
     const p = prose(draft, l);
     const seen = new Set();
     for (const v of proseViolations(p)) { const k = `${v.rule}|${v.match}`; if (!seen.has(k)) { seen.add(k); details.push(`body_${l} : ${v.rule} en clair « ${v.match} »`); } }
@@ -308,13 +316,35 @@ function G8(draft, ctx, allDrafts) {
   for (const r of ctx.existing) {
     if (r.slug === draft.slug) continue; // never compare a post against its own row
     for (const loc of LOCALES) {
-      const t = norm(r[`title_${loc}`]);
-      if (t && (t === q || (qa && t === qa))) details.push(`query_family égale au titre de l'article existant /blog/${r.slug}`);
+      // A title with a {year:…} token is compared as readers see it: with its year, and without it once that year has passed.
+      for (const t of new Set([norm(stripYearTokens(r[`title_${loc}`])), norm(resolveYearTokens(r[`title_${loc}`]))])) {
+        if (t && (t === q || (qa && t === qa))) details.push(`query_family égale au titre de l'article existant /blog/${r.slug}`);
+      }
     }
   }
   for (const s of calendar.slots ?? []) {
     if (s.slug === draft.slug || s.slot_index === draft.slot_index) continue;
     if (s.status === 'scheduled' && (norm(s.primary_query_fr) === q || (qa && norm(s.primary_query_ar) === qa))) details.push(`query_family égale à la requête du créneau ${s.slot_index} déjà programmé`);
+  }
+  // No two posts may read the same H1, <title> or description: the build's
+  // seo-suite fails a duplicate title or meta description on every page. A
+  // {year:…} token turns that into a time bomb — « Dates du Ramadan
+  // {year:ramadan_1449_start} : … » and the 1448 post differ today and read
+  // the same from the 1 January after both years, when every build fails with
+  // no content change. So each text is compared as it reads today (resolved)
+  // and once every year is gone (stripped), with every published or scheduled
+  // row and every other draft of the batch. The <title> is seo_title, else the
+  // H1 — what the page renders.
+  const readings = (s) => new Set([norm(stripYearTokens(s)), norm(resolveYearTokens(s))].filter(Boolean));
+  const textOf = (d, f, l) => (f === 'seo_title' ? d[`seo_title_${l}`] || d[`title_${l}`] : d[`${f}_${l}`]);
+  const others = [...ctx.existing.filter((r) => r.slug !== draft.slug && r.is_published), ...allDrafts.filter((d) => d !== draft && d.slug !== draft.slug)];
+  const what = { title: 'H1', seo_title: '<title>', seo_description: 'description' };
+  for (const l of LOCALES) {
+    for (const f of ['title', 'seo_title', 'seo_description']) {
+      const mine = readings(textOf(draft, f, l));
+      const twin = mine.size ? others.find((o) => [...readings(textOf(o, f, l))].some((x) => mine.has(x))) : null;
+      if (twin) details.push(`${f}_${l} : même ${what[f]} que /blog/${twin.slug}, aujourd'hui ou une fois l'année d'un jeton passée — ${f === 'title' ? 'deux billets ne portent jamais le même titre' : 'le build (seo-suite) échoue sur un <title> ou une description en double'}`);
+    }
   }
   for (const d of allDrafts) if (d !== draft && d.slug === draft.slug) details.push(`slug « ${draft.slug} » présent deux fois dans le lot`);
   // A slug already in the table is a collision UNLESS this is the same post
@@ -327,7 +357,7 @@ function G9(draft, ctx) {
   const properNouns = ['Nusuk', 'WhatsApp', 'ONCF', 'Al Boraq', 'CTM', 'Supratours', 'Saudia', 'Royal Air Maroc', 'RAM', 'eSIM', 'SIM', 'Bab Makka', 'Wiki Tours International', 'Wiki Tours', 'Zamzam', 'Maqam', 'Tawakkalna', 'Umm al-Qura', 'CIN', 'PDF', 'QR', 'Al Haramain', 'Haramain', ...ctx.hotels, ...ctx.airlines];
   const stripNouns = (s) => properNouns.reduce((acc, n) => acc.split(n).join(' '), s);
   // AR: ≥ 95 % Arabic letters once the proper-noun whitelist is removed; Latin cities and non-Moroccan months are already failed by the shared gate.
-  const ar = stripNouns(`${draft.title_ar ?? ''}\n${draft.excerpt_ar ?? ''}\n${prose(draft, 'ar')}`.replace(/\]\([^)]*\)/g, ''));
+  const ar = stripNouns(`${stripYearTokens(draft.title_ar) ?? ''}\n${stripYearTokens(draft.excerpt_ar) ?? ''}\n${prose(draft, 'ar')}`.replace(/\]\([^)]*\)/g, ''));
   const arLetters = (ar.match(/[؀-ۿ]/g) ?? []).length;
   const latinLetters = (ar.match(/[A-Za-zÀ-ÿ]/g) ?? []).length;
   const share = arLetters / Math.max(1, arLetters + latinLetters);
@@ -348,7 +378,7 @@ function G9(draft, ctx) {
 function G10(draft) {
   const details = [];
   for (const l of LOCALES) {
-    const text = norm(`${draft[`title_${l}`]}\n${draft[`excerpt_${l}`]}\n${draft[`seo_title_${l}`]}\n${draft[`seo_description_${l}`]}\n${prose(draft, l)}`);
+    const text = norm(`${stripYearTokens(draft[`title_${l}`])}\n${stripYearTokens(draft[`excerpt_${l}`])}\n${stripYearTokens(draft[`seo_title_${l}`])}\n${stripYearTokens(draft[`seo_description_${l}`])}\n${prose(draft, l)}`);
     for (const phrase of banned[l] ?? []) {
       const p = norm(phrase);
       if (p && new RegExp(`(?<![\\p{L}\\p{N}])${p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\p{N}])`, 'u').test(text)) details.push(`${l} : expression interdite « ${phrase} »`);
@@ -376,13 +406,16 @@ function G11(draft) {
 function G12(draft) {
   const details = [];
   for (const l of LOCALES) {
-    const t = brandedTitle(draft[`seo_title_${l}`] ?? '', l === 'ar' ? BRAND.serviceAr ?? BRAND.service : BRAND.service);
-    if (t.length < 45 || t.length > 60) details.push(`seo_title_${l} avec marque : ${t.length} caractères, attendu 45–60 (« ${t} »)`);
-    if (!/bab makka|باب مكة|wiki tours|ويكي تورز/i.test(t)) details.push(`seo_title_${l} : marque absente une fois composé (« ${t} »)`);
-    const d = String(draft[`seo_description_${l}`] ?? '').trim();
+    const raw = draft[`seo_title_${l}`] ?? '';
+    const measured = measureYearTokens(raw);
+    const t = brandedTitle(measured, l === 'ar' ? BRAND.serviceAr ?? BRAND.service : BRAND.service);
+    const shown = t === measured ? raw : `${raw}${t.slice(measured.length)}`; // the token as written, the brand as composed
+    if (t.length < 45 || t.length > 60) details.push(`seo_title_${l} avec marque : ${t.length} caractères, attendu 45–60 (« ${shown} »)`);
+    if (!/bab makka|باب مكة|wiki tours|ويكي تورز/i.test(t)) details.push(`seo_title_${l} : marque absente une fois composé (« ${shown} »)`);
+    const d = String(measureYearTokens(draft[`seo_description_${l}`]) ?? '').trim();
     if (d.length < 120 || d.length > 155) details.push(`seo_description_${l} : ${d.length} caractères, attendu 120–155`);
     if (/…$|\.\.\.$/.test(d) || !/[.!?؟،。]$/.test(d)) details.push(`seo_description_${l} : ne se termine pas par une ponctuation de phrase (coupure)`);
-    const h1 = String(draft[`title_${l}`] ?? '');
+    const h1 = String(measureYearTokens(draft[`title_${l}`]) ?? '');
     if (h1.length > 70) details.push(`title_${l} (H1) : ${h1.length} caractères, maximum 70`);
   }
   return { ok: !details.length, details };
@@ -391,7 +424,7 @@ function G13(draft, ctx) {
   const details = [];
   const faq = extractFaq(draft.body_fr);
   if (faq.length < 5) details.push(`FAQPage : ${faq.length} question(s) extraites de body_fr, minimum 5`);
-  for (const l of LOCALES) if (!String(draft[`title_${l}`] ?? '').trim()) details.push(`BlogPosting.headline (${l}) vide`);
+  for (const l of LOCALES) if (!String(stripYearTokens(draft[`title_${l}`]) ?? '').trim()) details.push(`BlogPosting.headline (${l}) vide`);
   if (!draft.published_at && !draft.__row) details.push('BlogPosting.datePublished : attribué à l\'ingestion (créneau) — vérifié après build');
   if (draft.__row && !draft.published_at) details.push('BlogPosting.datePublished absent sur la ligne');
   // The author @id resolves to the /equipe Person only when the profile is renderable; else the organisation — both valid targets.

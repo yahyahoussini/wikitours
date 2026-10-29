@@ -1,6 +1,6 @@
 import { getDictionary } from '@/lib/i18n';
 import { getHijriEvents } from '@/lib/data/content';
-import { HIJRI_EVENT_DEFS, nextHijriEvent, todayCasablanca, hijriToGregorian, parseHijriEventTag } from '@/lib/hijri';
+import { HIJRI_EVENT_DEFS, todayCasablanca, hijriTagDate, parseHijriEventTag } from '@/lib/hijri';
 
 /**
  * <HijriCountdown event="ramadan" /> · <HijriCountdown event="ramadan_1448_start" />
@@ -19,22 +19,9 @@ export default async function HijriCountdown({ event, locale }) {
   if (!parsed) return null;
   const def = HIJRI_EVENT_DEFS.find((e) => e.key === parsed.key);
   if (!def) return null;
-  const today = todayCasablanca();
-  const rows = await getHijriEvents();
-
-  let next = null;
-  if (parsed.hy) {
-    const stored = rows.find((r) => r.event === parsed.key && Number(r.hijri_year) === parsed.hy);
-    const date = stored?.gregorian_date ?? hijriToGregorian(parsed.hy, def.hm, def.hd);
-    next = { gregorian_date: date, days: Math.round((Date.parse(date) - Date.parse(today)) / 86400000), confirmed: Boolean(stored?.is_confirmed) };
-  } else {
-    const stored = rows
-      .filter((r) => r.event === parsed.key && r.gregorian_date >= today)
-      .sort((a, b) => a.gregorian_date.localeCompare(b.gregorian_date))[0];
-    next = stored
-      ? { gregorian_date: stored.gregorian_date, days: Math.round((Date.parse(stored.gregorian_date) - Date.parse(today)) / 86400000), confirmed: stored.is_confirmed }
-      : nextHijriEvent(parsed.key, today);
-  }
+  // The one computation a title's {year:<tag>} token reads too (hijriTagDate),
+  // so the year in the title and the date in this line cannot disagree.
+  const next = hijriTagDate(event, { today: todayCasablanca(), rows: await getHijriEvents() });
   if (!next) return null;
 
   const label = def[`label_${locale}`] ?? def.label_fr;

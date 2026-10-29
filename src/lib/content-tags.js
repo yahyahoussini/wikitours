@@ -176,3 +176,154 @@ export function contentTagsOf(body) {
 export function stripContentTags(body) {
   return parseContentTags(body).filter((s) => s.type === 'markdown').map((s) => s.text).join('');
 }
+
+/** The Hijri events a body's countdowns show (both spellings), parsed: [{ key, hy }]. */
+export function hijriEventsOf(body) {
+  return contentTagsOf(body).filter((t) => t.name === 'HijriCountdown').map((t) => parseHijriEventTag(t.attrs.event)).filter(Boolean);
+}
+
+// ── {year:<tag>} — the one year a title may carry (owner decision 2026-10-28) ──
+// A year written in clear in a title goes stale on 1 January, so the gate
+// fails it (G5) and the build fails a past one. But « ramadan 2027 maroc » is
+// the largest seasonal query family, and a post pinned to a dated Hijri event
+// could not say its year. `{year:ramadan_1448_start}` in a title, seo_title,
+// excerpt or seo_description renders as the Gregorian year of that event —
+// the date <HijriCountdown event="ramadan_1448_start" /> shows — while that
+// year has not passed in Africa/Casablanca, and disappears after
+// (resolveYearTokens, src/lib/title-tokens.js). Never in a body: the body has
+// the countdown. Parsing and validation live here, beside parseHijriEventTag,
+// so the dependency-free gate can strip and check a token without the calendar.
+
+/** The fields (× _fr / _ar / _en) that may carry a year token. */
+export const YEAR_TOKEN_FIELDS = Object.freeze(['title', 'seo_title', 'excerpt', 'seo_description']);
+/** A well-formed token; group 1 is the Hijri event tag. Global: use it with matchAll / replace, never .test(). */
+export const YEAR_TOKEN_RE = /\{year:([A-Za-z0-9_-]+)\}/g;
+/** What a valid token renders as, for every length rule: a four-digit year. */
+export const YEAR_TOKEN_WIDTH = 4;
+// Anything that LOOKS like a token, so a typo never reaches a page raw:
+// doubled braces, spaces, capitals, `years`, a brace missing on either side,
+// braces the wrong way round — what an editor types in a right-to-left field,
+// where « { » is drawn as « } » — and the full-width ｛ ｝ ： of an Arabic or
+// Asian keyboard. `year:` counts only when a brace touches it, so prose such
+// as « this year: dates » is never cut; a brace that opens the NEXT token is
+// never taken as this one's closing brace.
+const BRACE = '[{}\\uFF5B\\uFF5D]';
+const NOT_BRACE = '[^{}\\uFF5B\\uFF5D\\n]';
+const TAG_CHAR = '[^{}\\uFF5B\\uFF5D\\s]';
+const KEY = 'years?[^\\S\\n]*[:\\uFF1A]';
+const CLOSE = `(?:${BRACE}(?![^\\S\\n]*${KEY}))+`;
+const YEAR_TOKEN_ANY_SRC = [
+  `${BRACE}+[^\\S\\n]*${KEY}${NOT_BRACE}{0,60}${CLOSE}`, // {year:x} · }year:x{ · ｛year:x｝ · {{ year : x }}
+  `${BRACE}+[^\\S\\n]*${KEY}${TAG_CHAR}*`, // {year:x — no closing brace: up to the next space
+  `(?<![\\p{L}\\p{N}_])${KEY}[^\\S\\n]*${TAG_CHAR}+[^\\S\\n]*${CLOSE}`, // year:x} · year:x{ — no opening brace
+].join('|');
+const YEAR_TOKEN_ANY_RE = new RegExp(YEAR_TOKEN_ANY_SRC, 'giu');
+const YEAR_TOKEN_ANY_ONE_RE = new RegExp(YEAR_TOKEN_ANY_SRC, 'iu'); // stateless, for .test()
+const YEAR_TOKEN_EXACT_RE = /^\{year:([A-Za-z0-9_-]+)\}$/;
+// Removing a token must not leave a space the author never typed before these
+// (or at the end of a line), nor after these (or at the start of one).
+const AFTER_NO_SPACE_RE = /^(?:$|\r?\n|[,.;:!?…)\]»”’"'،؛؟%])/;
+const BEFORE_NO_SPACE_RE = /(?:^|\n|[([«“‘])$/;
+const BRACKET_PAIRS = { '(': ')', '[': ']' };
+
+/** True when a text contains something that looks like a year token. The plain « year » search first: the readers run this over every body. */
+export function hasYearToken(text) {
+  return typeof text === 'string' && /year/i.test(text) && YEAR_TOKEN_ANY_ONE_RE.test(text);
+}
+
+/**
+ * Every year token of a text, in order: [{ raw, index, tag, kind }], kind
+ * `valid` (a tag parseHijriEventTag knows), `unknown` (well-formed, unknown
+ * tag) or `malformed`.
+ */
+export function yearTokensOf(text) {
+  if (!hasYearToken(text)) return [];
+  const out = [];
+  for (const m of text.matchAll(YEAR_TOKEN_ANY_RE)) {
+    const exact = m[0].match(YEAR_TOKEN_EXACT_RE);
+    out.push({ raw: m[0], index: m.index, tag: exact ? exact[1] : null, kind: !exact ? 'malformed' : parseHijriEventTag(exact[1]) ? 'valid' : 'unknown' });
+  }
+  return out;
+}
+
+/**
+ * Replace each token by `replacer(token)`; a null / empty result REMOVES it
+ * and tidies the text around it: the space before it goes when it was
+ * followed by another space or by punctuation (« Ramadan {year:x}, dates » →
+ * « Ramadan, dates »), a pair of brackets it was alone in goes with it, runs
+ * of spaces collapse and the ends are trimmed. A text without a token comes
+ * back untouched; a non-string comes back as it is. `keepLayout` (markdown):
+ * only the token and the one space beside it go — no bracket, no collapse, no
+ * trim, so indentation and line breaks stay byte for byte.
+ */
+export function replaceYearTokens(text, replacer, { keepLayout = false } = {}) {
+  const tokens = yearTokensOf(text);
+  if (!tokens.length) return text;
+  let out = '';
+  let last = 0;
+  let removed = false;
+  for (const tok of tokens) {
+    out += text.slice(last, tok.index);
+    let end = tok.index + tok.raw.length;
+    const value = replacer(tok);
+    if (value != null && value !== '') {
+      out += String(value);
+      last = end;
+      continue;
+    }
+    removed = true;
+    const open = keepLayout ? null : out.match(/[([][^\S\n]*$/);
+    const close = keepLayout ? null : text.slice(end).match(/^[^\S\n]*[)\]]/);
+    if (open && close && BRACKET_PAIRS[open[0][0]] === close[0].trim()) {
+      out = out.slice(0, -open[0].length);
+      end += close[0].length;
+    }
+    const rest = text.slice(end);
+    const wsLeft = out.match(/[^\S\n]+$/)?.[0] ?? '';
+    const wsRight = rest.match(/^[^\S\n]+/)?.[0] ?? '';
+    if (wsLeft && (wsRight || AFTER_NO_SPACE_RE.test(rest))) out = out.slice(0, -wsLeft.length);
+    else if (wsRight && BEFORE_NO_SPACE_RE.test(out)) end += wsRight.length;
+    last = end;
+  }
+  out += text.slice(last);
+  return removed && !keepLayout ? out.replace(/ {2,}/g, ' ').trim() : out;
+}
+
+/** What the prose rules (year, price, date, language, banned phrases) read: every token removed, as on a page once its year has passed. */
+export function stripYearTokens(text) {
+  return replaceYearTokens(text, () => null);
+}
+
+/**
+ * A BODY with every year token removed — outside its content tags, whose
+ * `{{live:…}}` braces are not tokens — and nothing else touched. Bodies never
+ * carry a token (the gate fails one: the body has <HijriCountdown>), but the
+ * admin saves without the gate, so the public readers pass every body through
+ * this: a pasted token disappears instead of printing raw in the prose and the
+ * FAQPage JSON-LD. Removed, never resolved.
+ */
+export function stripBodyYearTokens(body) {
+  if (!hasYearToken(body)) return body;
+  return parseContentTags(body).map((s) => (s.type === 'markdown' ? replaceYearTokens(s.text, () => null, { keepLayout: true }) : s.raw)).join('');
+}
+
+/** The year tokens of a body, outside its content tags — each one fails the gate. */
+export function bodyYearTokensOf(body) {
+  if (!hasYearToken(body)) return [];
+  return parseContentTags(body).filter((s) => s.type === 'markdown').flatMap((s) => yearTokensOf(s.text));
+}
+
+/** What the length rules measure: a valid token counts YEAR_TOKEN_WIDTH characters (the year it renders), a broken one nothing. */
+export function measureYearTokens(text) {
+  return replaceYearTokens(text, (t) => (t.kind === 'valid' ? '0'.repeat(YEAR_TOKEN_WIDTH) : null));
+}
+
+/** The gate's view of one text: a French problem per malformed or unknown token, [] when every token is valid. */
+export function validateYearTokens(text) {
+  const problems = [];
+  for (const t of yearTokensOf(text)) {
+    if (t.kind === 'malformed') problems.push(`jeton d'année mal formé « ${t.raw} » — forme attendue {year:<événement hégirien>} sans espace, ex. {year:ramadan_1448_start}`);
+    else if (t.kind === 'unknown') problems.push(`jeton d'année « ${t.raw} » : événement hégirien inconnu — ${HIJRI_EVENTS.join(', ')} ou daté : ramadan_1448_start, arafah_1448…`);
+  }
+  return problems;
+}

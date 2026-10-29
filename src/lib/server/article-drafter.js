@@ -5,6 +5,7 @@ import { BRAND } from '@/lib/brand';
 import { CITY_SLUGS, MONTH_SLUGS } from '@/lib/months';
 import { GUIDE_PILLAR_SLUG, GUIDE_CHILD_SLUGS } from '@/lib/guides';
 import { computeMinPrice } from '@/lib/data/content';
+import { resolveYearTokens } from '@/lib/title-tokens';
 import { words, qualityGate, nextMorningSlot, publishDecision, toArticleRow, uniqueSlug } from './article-gate.mjs';
 
 // The gate lives in article-gate.mjs (dependency-free) so the $0 build-time
@@ -160,9 +161,11 @@ export async function buildFactSheet(admin, { today }) {
 
   const articles = articlesRes.data ?? [];
   const existingSlugs = new Set(articles.map((a) => a.slug));
+  // The title as the public page shows it: a {year:…} token resolved (this
+  // sheet is served publicly by /api/content/facts), never raw.
   const publishedArticles = articles
     .filter((a) => a.is_published && a.published_at && new Date(a.published_at) <= new Date())
-    .map((a) => ({ titre: a.title_fr, url: `/blog/${a.slug}` }));
+    .map((a) => ({ titre: resolveYearTokens(a.title_fr), url: `/blog/${a.slug}` }));
 
   const allowedLinks = [
     '/', '/bab-makka', '/omra-pas-cher', '/hotels-omra', '/agence-omra-casablanca', '/contact',

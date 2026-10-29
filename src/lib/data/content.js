@@ -1,6 +1,7 @@
 import { cache } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { supabasePublic } from '@/lib/supabase/public';
+import { articleHasYearTokens, resolveArticleYearTokens } from '@/lib/title-tokens';
 
 /**
  * Public content reads — anon client, RLS keeps them to published rows only
@@ -296,6 +297,24 @@ function articleReader() {
   return supabasePublic();
 }
 
+/**
+ * {year:<tag>} title tokens (src/lib/title-tokens.js) are resolved HERE, on
+ * the way out of the two public article readers, so every surface built on
+ * them — the article page and its metadata, BlogPosting JSON-LD, the OG and
+ * hero cards, /blog, the home teasers, the cluster blocks, /equipe, llms.txt —
+ * gets the year or nothing, never the raw token — and a token pasted into a
+ * body (the admin saves without the gate) is removed, not printed. The Hijri
+ * rows (one cached query, what <HijriCountdown> reads) are fetched only when a
+ * row carries a token. The admin reads its own rows and keeps the token for
+ * the editors.
+ */
+async function withYearTokens(rows) {
+  if (!rows.some(articleHasYearTokens)) return rows;
+  const events = await getHijriEvents();
+  const now = new Date();
+  return rows.map((row) => resolveArticleYearTokens(row, { now, events }));
+}
+
 export const getArticles = cache(async function getArticles(limit = 50) {
   try {
     const supabase = articleReader();
@@ -303,7 +322,7 @@ export const getArticles = cache(async function getArticles(limit = 50) {
     let query = supabase.from('articles').select('*').order('published_at', { ascending: false }).limit(limit);
     if (process.env.CONTENT_PREVIEW_SCHEDULED === '1') query = query.eq('is_published', true);
     const { data } = await query;
-    return data ?? [];
+    return await withYearTokens(data ?? []);
   } catch {
     return [];
   }
@@ -331,7 +350,7 @@ export const getArticleBySlug = cache(async function getArticleBySlug(slug) {
     let query = supabase.from('articles').select('*').eq('slug', slug);
     if (process.env.CONTENT_PREVIEW_SCHEDULED === '1') query = query.eq('is_published', true);
     const { data } = await query.maybeSingle();
-    return data;
+    return data ? (await withYearTokens([data]))[0] : data;
   } catch {
     return null;
   }

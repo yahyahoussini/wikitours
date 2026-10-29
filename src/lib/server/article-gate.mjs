@@ -1,5 +1,5 @@
 import { BRAND } from '../brand.js';
-import { validateContentTags, stripContentTags } from '../content-tags.js';
+import { validateContentTags, stripContentTags, YEAR_TOKEN_RE, YEAR_TOKEN_WIDTH, YEAR_TOKEN_FIELDS, yearTokensOf, bodyYearTokensOf, stripYearTokens, measureYearTokens, validateYearTokens, hijriEventsOf, parseHijriEventTag } from '../content-tags.js';
 
 /**
  * The blog quality gate and publish decision — DEPENDENCY-FREE on purpose.
@@ -31,13 +31,23 @@ export function brandedTitle(title, service = BRAND.service, max = 60) {
   return suffixed.length <= max ? suffixed : title;
 }
 
-/** ≤ n characters at a word boundary, with an ellipsis (same contract as lib/seo clampDesc). */
+/**
+ * ≤ n characters at a word boundary, with an ellipsis (same contract as lib/seo
+ * clampDesc). A {year:…} token (src/lib/content-tags.js) is measured as the
+ * four-digit year it renders and is never cut in half: it is masked by
+ * YEAR_TOKEN_WIDTH private-use characters while the text is measured and cut.
+ */
 export function clampDescription(s, n = 155) {
   const t = String(s ?? '').replace(/\s+/g, ' ').trim();
-  if (t.length <= n) return t;
-  const cut = t.slice(0, n - 1);
+  const tokens = [];
+  const maskChar = (i) => String.fromCharCode(0xe000 + i); // private use area: never in real copy
+  const masked = t.replace(YEAR_TOKEN_RE, (raw) => maskChar(tokens.push(raw) - 1).repeat(YEAR_TOKEN_WIDTH));
+  if (masked.length <= n) return t;
+  const cut = masked.slice(0, n - 1);
   const i = cut.lastIndexOf(' ');
-  return `${(i > 40 ? cut.slice(0, i) : cut).trim()}…`;
+  const out = `${(i > 40 ? cut.slice(0, i) : cut).trim()}…`;
+  // Whole masks back to their token; a mask the cut went through goes entirely.
+  return tokens.reduce((s, raw, k) => s.split(maskChar(k).repeat(YEAR_TOKEN_WIDTH)).join(raw).split(maskChar(k)).join(''), out);
 }
 
 export const SITE_TZ = 'Africa/Casablanca';
@@ -77,13 +87,19 @@ export function nextMorningSlot(lastScheduledAt, now = new Date(), { timeZone = 
 // GENERATE-AHEAD, RENDER-LIVE: volatile facts are never in prose. Any year
 // (other than the founding year in "depuis 2016"), price, currency amount,
 // departure date or seat count in a title, excerpt, description or body is a
-// blocking problem — the live component tags carry them instead.
+// blocking problem — the live component tags carry them instead. In the four
+// title fields the live form of a year is the token {year:<hijri tag>}
+// (src/lib/content-tags.js), stripped before these rules run.
 const FR_MONTHS = 'janvier|f[ée]vrier|mars|avril|mai|juin|juillet|ao[uû]t|septembre|octobre|novembre|d[ée]cembre';
 const EN_MONTHS = 'january|february|march|april|may|june|july|august|september|october|november|december';
 const AR_MONTHS = 'يناير|فبراير|مارس|أبريل|ابريل|ماي|مايو|يونيو|يوليوز|يوليو|غشت|أغسطس|شتنبر|سبتمبر|أكتوبر|اكتوبر|نونبر|نوفمبر|دجنبر|ديسمبر|أيلول|تشرين|كانون|شباط|آذار|نيسان|أيار|حزيران|تموز|آب';
 const FOUNDING_CONTEXT = /(depuis|since|منذ|fond[ée]e|founded|cr[ée][ée]e|established)\s+(en\s+|in\s+|عام\s+|سنة\s+)?$/i;
+// A year is four digits that no other digit touches — a letter or an
+// underscore may (« Ramadan2027 », « Ramadan_2027 » are years too). The rules
+// read the text with every digit in Western form (westernDigits), so
+// « رمضان ٢٠٢٧ » and « Ramadan２０２７ » fail like « Ramadan 2027 ».
 export const PROSE_RULES = [
-  { rule: 'année', re: /\b(?:19|20)\d{2}\b/g, allow: (ctx) => FOUNDING_CONTEXT.test(ctx) },
+  { rule: 'année', re: /(?<!\d)(?:19|20)\d{2}(?!\d)/g, allow: (ctx) => FOUNDING_CONTEXT.test(ctx) },
   { rule: 'année hégirienne', re: /\b1[45]\d{2}\s*(?:هـ|ه\b|AH\b|H\b)/g },
   { rule: 'montant', re: /\d[\d\s.,]*\s?(?:MAD|DH|Dhs?|dirhams?|درهم|دراهم|€|EUR|\$|USD)\b/gi },
   { rule: 'montant', re: /(?:à partir de|dès|from|ابتداءً من|ابتداء من)\s+\d/gi },
@@ -112,15 +128,25 @@ export const NON_MOROCCAN_MONTHS = ['أيلول', 'تشرين الأول', 'تش
 // Latin-script city names in Arabic prose (the CITY_SLUGS-instead-of-cityName trap).
 const LATIN_CITIES = ['Casablanca', 'Rabat', 'Marrakech', 'Marrakesh', 'Fès', 'Fes', 'Fez', 'Tanger', 'Tangier', 'Agadir', 'Meknès', 'Meknes', 'Oujda'];
 
-/** Every volatile-fact hit in a text: [{ rule, match }]. */
+/**
+ * Arabic-Indic (٠–٩), Eastern Arabic-Indic (۰–۹) and full-width (０–９) digits
+ * as the Western digits they stand for — one UTF-16 unit for one, so indexes
+ * and lengths do not move.
+ */
+export function westernDigits(text) {
+  return String(text ?? '').replace(/[٠-٩۰-۹０-９]/g, (d) => String(d.charCodeAt(0) & 0xf));
+}
+
+/** Every volatile-fact hit in a text, in any digit script: [{ rule, match }] — the match as written. */
 export function proseViolations(text) {
   const out = [];
-  const s = String(text ?? '');
+  const raw = String(text ?? '');
+  const s = westernDigits(raw);
   for (const { rule, re, allow } of PROSE_RULES) {
     re.lastIndex = 0;
     for (const m of s.matchAll(re)) {
       if (allow && allow(s.slice(Math.max(0, m.index - 20), m.index))) continue;
-      out.push({ rule, match: m[0].trim() });
+      out.push({ rule, match: raw.slice(m.index, m.index + m[0].length).trim() });
     }
   }
   return out;
@@ -292,9 +318,11 @@ export function qualityGate(draft, { ownerPath, existingSlugs, priceSet, strict 
       }
     }
     // No volatile fact in prose — titles, excerpts, descriptions, bodies, all locales.
+    // A {year:…} token is a live component, stripped first like a body tag;
+    // a year written in clear beside it still fails.
     for (const lang of ['fr', 'ar', 'en']) {
       for (const field of ['title', 'excerpt', 'seo_title', 'seo_description']) {
-        for (const v of proseViolations(draft[`${field}_${lang}`])) problems.push(`${field}_${lang} : ${v.rule} en clair « ${v.match} » — les faits volatils passent par une balise`);
+        for (const v of proseViolations(stripYearTokens(draft[`${field}_${lang}`]))) problems.push(`${field}_${lang} : ${v.rule} en clair « ${v.match} » — les faits volatils passent par une balise`);
       }
       const seen = new Set();
       for (const v of proseViolations(prose(lang))) {
@@ -305,12 +333,29 @@ export function qualityGate(draft, { ownerPath, existingSlugs, priceSet, strict 
       }
     }
     // Moroccan Arabic register: month names and city names (hard constraints 5 and 8).
-    const ar = `${draft.title_ar ?? ''}\n${draft.excerpt_ar ?? ''}\n${prose('ar')}`;
+    const ar = `${stripYearTokens(draft.title_ar) ?? ''}\n${stripYearTokens(draft.excerpt_ar) ?? ''}\n${prose('ar')}`;
     for (const m of nonMoroccanMonthsIn(ar)) problems.push(`body_ar : nom de mois non marocain « ${m} » (écrire شتنبر، غشت، نونبر، دجنبر…)`);
     for (const c of LATIN_CITIES) if (new RegExp(`(?<![\\p{L}])${c}(?![\\p{L}])`, 'u').test(ar)) problems.push(`body_ar : nom de ville en caractères latins « ${c} » (الدار البيضاء، الرباط، مراكش، فاس، طنجة، أكادير، مكناس، وجدة)`);
     // Anti-cannibalisation is mechanical: the query family must not be a lander's.
     const hit = targetsLanderQuery(draft.query_family);
     if (hit) problems.push(`query_family « ${draft.query_family} » est la requête d'une page commerciale (${hit}) — un article la soutient, il ne la cible jamais`);
+  }
+
+  // {year:<tag>} title tokens (src/lib/content-tags.js): well-formed, a known
+  // Hijri event, and an event the same locale's body shows in a
+  // <HijriCountdown> — the year in a title is the year of a date the reader
+  // sees under it. Never in a body, where markdown would print it raw.
+  for (const lang of ['fr', 'ar', 'en']) {
+    const shown = hijriEventsOf(draft[`body_${lang}`]);
+    for (const field of YEAR_TOKEN_FIELDS) {
+      const text = draft[`${field}_${lang}`];
+      for (const p of validateYearTokens(text)) problems.push(`${field}_${lang} : ${p}`);
+      for (const t of yearTokensOf(text)) {
+        const ev = t.kind === 'valid' ? parseHijriEventTag(t.tag) : null;
+        if (ev && !shown.some((s) => s.key === ev.key && s.hy === ev.hy)) problems.push(`${field}_${lang} : jeton « ${t.raw} » sans <HijriCountdown event="${t.tag}" /> dans body_${lang} — l'année d'un titre doit être celle d'une date que le corps affiche`);
+      }
+    }
+    for (const t of bodyYearTokensOf(draft[`body_${lang}`])) problems.push(`body_${lang} : jeton d'année « ${t.raw} » interdit dans le corps — il ne sert que dans title, seo_title, excerpt et seo_description ; dans le corps, la date passe par <HijriCountdown event="…" />`);
   }
 
   const bodyFr = String(draft.body_fr ?? '');
@@ -319,12 +364,15 @@ export function qualityGate(draft, { ownerPath, existingSlugs, priceSet, strict 
   if (faqQs < 2) problems.push(`bloc « Questions fréquentes » absent ou avec ${faqQs} question(s) (minimum 3)`);
 
   for (const lang of ['fr', 'ar', 'en']) {
-    const t = brandedTitle(draft[`seo_title_${lang}`] ?? '');
+    // Lengths are those of the rendered text: a valid {year:…} counts as its four digits.
+    const t = brandedTitle(measureYearTokens(draft[`seo_title_${lang}`] ?? ''));
     if (t.length > 60) problems.push(`seo_title_${lang} trop long une fois la marque ajoutée : ${t.length} > 60`);
-    const d = draft[`seo_description_${lang}`] ?? '';
+    const d = measureYearTokens(draft[`seo_description_${lang}`] ?? '');
     if (d.length > 155) flags.push(`seo_description_${lang} sera tronquée (${d.length} > 155)`);
     for (const k of ['title', 'excerpt', 'body', 'seo_title', 'seo_description']) {
-      if (!String(draft[`${k}_${lang}`] ?? '').trim()) problems.push(`${k}_${lang} vide`);
+      // A field that is nothing but a token is empty once its year has passed.
+      const v = k === 'body' ? draft[`${k}_${lang}`] : stripYearTokens(draft[`${k}_${lang}`]);
+      if (!String(v ?? '').trim()) problems.push(`${k}_${lang} vide`);
     }
   }
 

@@ -92,6 +92,44 @@ export function nextHijriEvent(key, fromDate = todayCasablanca()) {
 export { parseHijriEventTag };
 
 /**
+ * The date a Hijri event TAG points at — THE computation behind
+ * <HijriCountdown event> and the title token {year:<tag>}
+ * (src/lib/title-tokens.js), so a title's year and the countdown under it
+ * cannot disagree. A dated tag (`ramadan_1448_start`) pins its Hijri year:
+ * the stored row of public.hijri_events (`rows`, adjustable once the sighting
+ * is announced), else Umm al-Qura. A bare tag (`ramadan`) is the NEXT
+ * occurrence on or after `today`: the earliest stored row from today on, else
+ * the computation. → { gregorian_date, days, confirmed }, or null for an
+ * unknown tag — and for a Hijri year the Umm al-Qura tables do not cover
+ * (they stop at 1500 AH, the tag syntax reads up to 1599): the countdown then
+ * renders nothing and a title token is removed, never a crashed page.
+ */
+export function hijriTagDate(tag, opts) {
+  try {
+    const { today = todayCasablanca(), rows = [] } = opts ?? {};
+    const parsed = parseHijriEventTag(tag);
+    if (!parsed) return null;
+    const def = HIJRI_EVENT_DEFS.find((e) => e.key === parsed.key);
+    if (!def) return null;
+    const stored = Array.isArray(rows) ? rows : [];
+    const daysUntil = (date) => Math.round((Date.parse(date) - Date.parse(today)) / 86400000);
+    if (parsed.hy) {
+      const row = stored.find((r) => r.event === parsed.key && Number(r.hijri_year) === parsed.hy);
+      const date = row?.gregorian_date ?? hijriToGregorian(parsed.hy, def.hm, def.hd);
+      return { gregorian_date: date, days: daysUntil(date), confirmed: Boolean(row?.is_confirmed) };
+    }
+    const row = stored
+      .filter((r) => r.event === parsed.key && r.gregorian_date >= today)
+      .sort((a, b) => a.gregorian_date.localeCompare(b.gregorian_date))[0];
+    return row
+      ? { gregorian_date: row.gregorian_date, days: daysUntil(row.gregorian_date), confirmed: row.is_confirmed }
+      : nextHijriEvent(parsed.key, today);
+  } catch {
+    return null;
+  }
+}
+
+/**
  * The last ten nights of a Ramadan: night N (21…30) is the night BEFORE day N
  * — the evening of Gregorian date(N − 1). Odd nights flagged (Laylat al-Qadr
  * is sought among them). `startDate` (the stored, possibly confirmed

@@ -164,6 +164,19 @@ Run this, exactly, and stop cleanly.
 - **Never regenerate a scheduled post.** Its URL may already be indexed.
 - **Never a price, a year, a departure date, a seat count or a hotel distance in
   prose.** The tags carry them. « depuis 2016 » is the single exception.
+- **The one year a title may carry is the token `{year:<tag>}`** — only on a post
+  pinned to a dated Hijri event, with a tag its body already uses in a
+  `<HijriCountdown>` (`{year:ramadan_1448_start}` in `title_*`, `seo_title_*`,
+  `excerpt_*`, `seo_description_*`). The page renders it as that event's
+  Gregorian year and drops it by itself once that year is past in Casablanca
+  (`src/lib/title-tokens.js`), so the title never goes stale; the admin keeps the
+  raw token. A token in a body, a malformed or unknown one (a brace missing or
+  reversed, full-width braces), and a year in clear (any digit script, even
+  glued to a word) all still fail the gate, and G8 fails an H1, seo_title or
+  description that reads like another post's once the year is gone — next
+  year's post must not reuse this year's wording with a new tag. The public
+  readers remove a token found in a body instead of printing it, and the daily
+  release cron revalidates the whole site the day a token's reading changes.
 - **Never a hard-coded lander URL where `<CommercialCTA intent=…>` belongs.** The
   resolver exists so a post survives a lander going noindex.
 - **Never a fact outside `data/allowed-facts.json`.** A missing figure means the

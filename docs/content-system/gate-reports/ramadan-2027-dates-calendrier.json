@@ -4,7 +4,7 @@
   "row": false,
   "state": null,
   "format": "explainer",
-  "checked_at": "2026-10-25T08:56:43.869Z",
+  "checked_at": "2026-10-29T06:06:18.047Z",
   "ok": false,
   "failed": [
     "G8",
@@ -16,8 +16,8 @@
     "G16"
   ],
   "words": {
-    "fr": 1743,
-    "ar": 1265,
+    "fr": 1730,
+    "ar": 1287,
     "en": 1567
   },
   "checks": {
@@ -94,16 +94,16 @@
       "details": [],
       "closest": {
         "fr": {
-          "slug": "omra-en-fevrier-chaabane-puis-ramadan",
-          "score": 0.085
+          "slug": "quelle-periode-ramadan-choisir-omra",
+          "score": 0.096
         },
         "ar": {
-          "slug": "rajab-ou-chaabane-plutot-que-ramadan",
-          "score": 0.052
+          "slug": "quelle-periode-ramadan-choisir-omra",
+          "score": 0.073
         },
         "en": {
-          "slug": "omra-en-fevrier-chaabane-puis-ramadan",
-          "score": 0.075
+          "slug": "quelle-periode-ramadan-choisir-omra",
+          "score": 0.085
         }
       },
       "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"

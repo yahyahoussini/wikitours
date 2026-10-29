@@ -43,11 +43,19 @@ import { MONTH_SLUGS } from '@/lib/months';
 import { getDictionary } from '@/lib/i18n';
 import { titleFloor } from '@/lib/titles';
 import { DESC_MIN, DESC_MAX } from '@/lib/page-seo';
+import { todayCasablanca } from '@/lib/hijri';
+import { westernDigits } from '@/lib/server/article-gate';
 
 const t0 = performance.now();
 const ARGS = new Set(process.argv.slice(2));
 const BASE_URL = (process.env.BASE_URL ?? '').replace(/\/$/, '');
-const YEAR = new Date().getFullYear();
+// "This year" for the past-year rule: Casablanca's — the site's calendar, where
+// a {year:…} title token (src/lib/title-tokens.js) turns — as it was
+// BUILD_GRACE_MS ago. The build host's own clock (UTC on Vercel, maybe not on
+// the VPS) is not the site's, and a page prerendered before midnight on
+// 31 December by a build still running after it printed the right year then.
+const BUILD_GRACE_MS = 3 * 3600_000;
+const YEAR = Number(todayCasablanca(new Date(Date.now() - BUILD_GRACE_MS)).slice(0, 4));
 // A JS-less client, like the AI crawlers: next.config's htmlLimitedBots matches
 // "wt-seo-audit" so metadata blocks (a real 404 status, not a streamed 200).
 const UA = 'Mozilla/5.0 (compatible; wt-seo-audit/1; +https://wikitours.ma) wt-seo-suite';
@@ -75,8 +83,11 @@ const REGION_CODE = /^[a-z]{2}-[a-z]{2}$/i;
 const LATIN_CITIES = [...new Set([...Object.values(getDictionary('fr').cities ?? {}), ...Object.values(getDictionary('en').cities ?? {})])];
 const LATIN_CITY_RE = new RegExp(`(?<![\\p{L}])(${LATIN_CITIES.map((c) => c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})(?![\\p{L}])`, 'u');
 // A year in a title/description that is already behind us. A founding year
-// ("depuis 2016", "since 2016", "منذ 2016") is a fact, not a stale date.
-const YEAR_RE = /\b(20\d{2})\b/g;
+// ("depuis 2016", "since 2016", "منذ 2016") is a fact, not a stale date. Read
+// like the content gate's year rule: in any digit script (« ٢٠٢٥ », « ２０２５ »
+// → westernDigits) and even glued to a word (« Ramadan2025 ») — only another
+// digit may not touch it.
+const YEAR_RE = /(?<!\d)(20\d{2})(?!\d)/g;
 const FOUNDING = /(depuis|since|منذ|fondée|founded|créée|established)\s+(en\s+|in\s+)?$/i;
 
 // ── HTML → page model ───────────────────────────────────────────────────────
@@ -234,8 +245,9 @@ async function loadInput() {
 }
 
 // ── the assertions ──────────────────────────────────────────────────────────
-function pastYears(s) {
+function pastYears(text) {
   const out = [];
+  const s = westernDigits(text);
   for (const m of s.matchAll(YEAR_RE)) {
     const y = +m[1];
     if (y < YEAR && !FOUNDING.test(s.slice(Math.max(0, m.index - 16), m.index))) out.push(y);
