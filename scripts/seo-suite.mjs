@@ -272,11 +272,14 @@ async function runSuite(rawPages, sitemapXml) {
   // that year is the trip, not a stale label, and the page goes noindex once the
   // group is back (offerLifecycle). Checking it would fail every build while a
   // departure that started last year is still running — 1–7 January for the
-  // December departure.
-  const DEPARTURE_ROUTE = /^\/(?:fr|ar|en)\/omra\/[^/]+$/;
+  // December departure. A voyage page is the same kind of page (« Voyage Istanbul
+  // été 2026 ») and follows the same lifecycle — except a voyage stored without
+  // dates, which stays indexable: istanbul-ete-2026 would otherwise fail every
+  // build from 1 January 2027 over its admin title.
+  const DATED_ROUTE = /^\/(?:fr|ar|en)\/(?:omra|voyage)\/[^/]+$/;
   for (const p of indexable) {
     const t = p.title;
-    const datedPage = DEPARTURE_ROUTE.test(p.route);
+    const datedPage = DATED_ROUTE.test(p.route);
     if (!t) fail('titles', p.route, 'missing <title>');
     else {
       if (p.titles > 1) fail('titles', p.route, `${p.titles} <title> tags`);
