@@ -15,9 +15,13 @@ import JsonLd from '@/components/site/JsonLd';
 import SmartGallery from '@/components/SmartGallery';
 import LeadForm from '@/components/LeadForm';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
-import { todayISO } from '@/lib/offers';
+import { todayISO, offerIndexable } from '@/lib/offers';
 
-export const revalidate = false;
+// Daily, not false: what this page says moves with the CLOCK as well as with
+// admin writes — the Offer flips to SoldOut the day the trip leaves, and the
+// page leaves the index once the trip is back (generateMetadata). 3 locales ×
+// a handful of voyages is a negligible ISR load.
+export const revalidate = 86400;
 
 const nf = new Intl.NumberFormat('fr-MA');
 
@@ -64,6 +68,12 @@ export async function generateMetadata({ params }) {
       { extra: [voyageTrust.noPayment, voyageTrust.whatsapp], locale },
     ),
     alternates: hreflangAlternates(locale, `/voyage/${slug}`),
+    // A trip that has come back leaves the index (noindex, follow) and the
+    // sitemap — the departures' rule (offerIndexable, from the return date
+    // alone). Its admin title names its own season (« été 2026 »), which
+    // scripts/seo-suite.mjs refuses on an indexable page once that year is past:
+    // left indexable, the summer 2026 trips would fail every build from 1 January.
+    ...(offerIndexable(voyage) ? {} : { robots: { index: false, follow: true } }),
   };
 }
 

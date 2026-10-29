@@ -22,6 +22,7 @@ import { GUIDE_PILLAR_SLUG, GUIDE_CHILD_SLUGS, guideIndexable, GLOSSARY_MIN_TERM
 import { legalIsFilled } from '@/lib/legal-page';
 import { teamIndexable } from '@/lib/authors';
 import { computePeriods } from '@/lib/barometer';
+import { offerIndexable } from '@/lib/offers';
 
 // Hourly, like every listing: a scheduled article joins the sitemap within the
 // hour its published_at passes, without a cron (content architecture 2026-09-14).
@@ -97,7 +98,9 @@ export default async function sitemap() {
     // Voyages catalog: the hub is noindex while empty (scaffold law), so it
     // only enters the sitemap once a voyage is published.
     ...(voyages.length ? [['/voyages', 0.7, 'weekly', lastModifiedOf(voyages)]] : []),
-    ...voyages.map((v) => [`/voyage/${v.slug}`, 0.7, 'weekly', v.updated_at]),
+    // A trip that has come back is noindex on its page (the departures' rule,
+    // offerIndexable), so it leaves the sitemap the same day.
+    ...voyages.filter((v) => offerIndexable(v)).map((v) => [`/voyage/${v.slug}`, 0.7, 'weekly', v.updated_at]),
     ...hotels.map((h) => [`/hotel/${h.slug}`, 0.5, 'monthly', h.updated_at]),
     // Team / authors page: noindex until one complete published profile exists.
     ...(teamIndexable(team) ? [['/equipe', 0.5, 'monthly', lastModifiedOf(team)]] : []),
