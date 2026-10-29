@@ -333,14 +333,15 @@ export const getArticles = cache(async function getArticles(limit = 50) {
  * shows to its cluster. The owner is `articles.supports_path` when the admin
  * (or the drafter) set it, else the cluster map's pillar for that article
  * (src/lib/clusters.js): 34 of the 36 live articles carry no supports_path,
- * which is why every hub used to render nothing here. Anon client ⇒ RLS:
- * published AND published_at <= now() only. Request-cached, so the hubs and
- * the ClusterLinks blocks share one query.
+ * which is why every hub used to render nothing here. After them come the
+ * articles whose mandatory links name `path` (articlesForHub). Anon client ⇒
+ * RLS: published AND published_at <= now() only. Request-cached, so the hubs
+ * and the ClusterLinks blocks share one query.
  */
 export const getRelatedArticles = cache(async function getRelatedArticles(path, limit = 4) {
   if (!path) return [];
-  const { ownerPathOf } = await import('@/lib/clusters');
-  return (await getArticles(500)).filter((a) => ownerPathOf(a) === path).slice(0, limit);
+  const { articlesForHub } = await import('@/lib/clusters');
+  return articlesForHub(path, await getArticles(500), limit);
 });
 
 export const getArticleBySlug = cache(async function getArticleBySlug(slug) {

@@ -5,7 +5,8 @@
  *   - the pillar renders every page of every cluster from this map (ClusterIndex)
  *   - every cluster page renders its pillar, its mandatory targets and its
  *     siblings from this map (ClusterLinks)
- *   - a hub lists the articles that support it (RelatedArticles → ownerPathOf)
+ *   - a hub lists the articles that support it (RelatedArticles → ownerPathOf),
+ *     then the ones whose mandatory links name it (articlesForHub)
  * An article joins a cluster by, in order: its explicit entry below, its admin
  * `supports_path` (which page the article supports), or its `category` — so an
  * article the weekly routine adds is wired the moment it is published, with no
@@ -102,6 +103,13 @@ export const MANDATORY_LINKS = {
   'gammes-omra-economique-vip': ['/omra-5-etoiles', '/omra-pas-cher'],
   'que-visiter-la-mecque': ['/hotels-omra'],
   'que-visiter-medine-ziyara': ['/hotels-omra'],
+  // The Chaâbane-Ramadan hub (DB occasion) owns no post: these support
+  // /omra-ramadan or a month, yet are the ones about leaving in Chaâbane and
+  // arriving before the first night — they link it, and it lists them back.
+  'rajab-ou-chaabane-plutot-que-ramadan': ['/omra-chaabane-ramadan'],
+  'omra-en-fevrier-chaabane-puis-ramadan': ['/omra-chaabane-ramadan'],
+  'ramadan-2027-dates-calendrier': ['/omra-chaabane-ramadan'],
+  'quelle-periode-ramadan-choisir-omra': ['/omra-chaabane-ramadan'],
 };
 
 /** The Hajj → Omra bridge: rejected lottery applicants have budget and intent. */
@@ -167,4 +175,17 @@ export function siblingArticles(article, articles, n = 3) {
 }
 
 export const mandatoryTargetsFor = (slug) => MANDATORY_LINKS[slug] ?? [];
+
+/**
+ * What a hub lists (RelatedArticles): the articles that support it first,
+ * then the ones whose mandatory links name it — an article supports one page
+ * but may be required to link a second, and that page links it back, so a
+ * hub no post supports (the Chaâbane-Ramadan occasion) is not left empty.
+ */
+export function articlesForHub(path, articles, limit = 4) {
+  const all = articles ?? [];
+  const own = all.filter((a) => ownerPathOf(a) === path);
+  const linked = all.filter((a) => ownerPathOf(a) !== path && mandatoryTargetsFor(a.slug).includes(path));
+  return [...own, ...linked].slice(0, limit);
+}
 export const isHajjBridge = (slug) => HAJJ_BRIDGE_SLUGS.includes(slug);
