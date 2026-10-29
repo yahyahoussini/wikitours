@@ -2,12 +2,13 @@
   "slug": "inscription-hajj-maroc-les-etapes",
   "file": null,
   "row": true,
-  "state": "scheduled",
+  "state": "published",
   "format": "series_part",
-  "checked_at": "2026-09-21T18:01:50.215Z",
+  "checked_at": "2026-10-29T16:50:07.200Z",
   "ok": true,
   "failed": [],
   "pending": [
+    "G6",
     "G13",
     "G16"
   ],
@@ -40,7 +41,10 @@
     },
     "G6": {
       "ok": true,
-      "details": []
+      "details": [
+        "statut des liens non vérifié : pas de build isolé (NEXT_DIST_DIR)"
+      ],
+      "pending": true
     },
     "G7": {
       "ok": true,
@@ -73,7 +77,7 @@
     "G13": {
       "ok": true,
       "details": [
-        "ligne programmée absente d'un build normal (publish-by-time) : rejouer avec CONTENT_PREVIEW_SCHEDULED=1"
+        "nœuds émis non vérifiés : pas de build de la page (ingérer puis construire)"
       ],
       "pending": true
     },
@@ -91,7 +95,7 @@
         },
         "ar": {
           "slug": "guide-omra-ramadan-1-vivre-le-mois",
-          "score": 0.027
+          "score": 0.021
         },
         "en": {
           "slug": "guide-omra-ramadan-1-vivre-le-mois",
@@ -104,7 +108,7 @@
       "ok": null,
       "pending": true,
       "details": [
-        "ligne programmée absente d'un build normal (publish-by-time) : rejouer avec CONTENT_PREVIEW_SCHEDULED=1"
+        "rendu non vérifié : ingérer puis construire (NEXT_DIST_DIR=.next-audit CONTENT_PREVIEW_SCHEDULED=1)"
       ]
     },
     "G0": {
