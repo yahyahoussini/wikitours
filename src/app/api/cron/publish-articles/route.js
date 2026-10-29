@@ -6,7 +6,8 @@ import { revalidateForTable } from '@/lib/revalidate';
 import { articleQueue, LOW_WATERMARK_DAYS } from '@/lib/server/article-queue';
 import { sendArticleQueueEmail } from '@/lib/server/marketing';
 import { getHijriEvents } from '@/lib/data/content';
-import { resolveYearTokens, yearTokensChanged, YEAR_TOKEN_COLUMNS } from '@/lib/title-tokens';
+import { resolveYearTokens } from '@/lib/title-tokens';
+import { refreshYearTokenPages } from '@/lib/server/year-token-refresh';
 
 export const runtime = 'nodejs';
 
@@ -28,7 +29,8 @@ export const runtime = 'nodejs';
  *      the scheduled runway hits 7 / 3 / 1 / 0 days — the two ways "a post
  *      every day" fails silently;
  *   4. revalidates the whole site the day a {year:…} title token reads
- *      differently (yearTokensChanged, src/lib/title-tokens.js).
+ *      differently (refreshYearTokenPages — also run at 00:05 UTC on
+ *      1 January by /api/cron/year-tokens; this run is the backstop).
  * Cron-only: Vercel sends `Authorization: Bearer ${CRON_SECRET}`.
  */
 export async function GET(request) {
@@ -39,25 +41,11 @@ export async function GET(request) {
   const admin = supabaseAdmin();
   if (!admin) return NextResponse.json({ error: 'unconfigured' }, { status: 500 });
 
-  // A {year:…} title token resolves by the date. The day one reads differently
-  // than two days before — its year just ended on 1 January, or a bare tag's
-  // next occurrence moved on — every cached page that shows it is stale, and
-  // the ones rendered with revalidate = false (the article share cards, the
-  // guide chapters and hubs that list posts) would keep the old year until a
-  // deploy. One site-wide revalidation on those days, a handful a year; the
-  // 48 h window catches the change again the next morning if this run missed
-  // it. Best effort, first, so the release below never depends on it.
-  let yearTokensRefreshed = false;
-  try {
-    const { data: tokenRows } = await admin.from('articles').select(['slug', ...YEAR_TOKEN_COLUMNS].join(', ')).eq('is_published', true);
-    const now = new Date();
-    if (yearTokensChanged(tokenRows ?? [], { now, since: new Date(now.getTime() - 2 * 86400000), events: await getHijriEvents() })) {
-      revalidatePath('/', 'layout');
-      yearTokensRefreshed = true;
-    }
-  } catch {
-    yearTokensRefreshed = false;
-  }
+  // A {year:…} title token resolves by the date: the site-wide revalidation
+  // the day one reads differently (src/lib/server/year-token-refresh.js).
+  // Best effort, first, so the release below never depends on it; a failed
+  // check is logged and reported as 'error', never as « nothing changed ».
+  const yearTokensRefreshed = await refreshYearTokenPages(admin, { revalidate: revalidatePath, events: getHijriEvents });
 
   const q = await articleQueue(admin);
   if (q.error) return NextResponse.json({ ok: false, error: 'query' }, { status: 500 });

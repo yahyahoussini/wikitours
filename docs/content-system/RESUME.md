@@ -171,12 +171,15 @@ Run this, exactly, and stop cleanly.
   Gregorian year and drops it by itself once that year is past in Casablanca
   (`src/lib/title-tokens.js`), so the title never goes stale; the admin keeps the
   raw token. A token in a body, a malformed or unknown one (a brace missing or
-  reversed, full-width braces), and a year in clear (any digit script, even
-  glued to a word) all still fail the gate, and G8 fails an H1, seo_title or
-  description that reads like another post's once the year is gone — next
+  reversed, full-width braces, any other brace, `[year:…]`), one without a
+  Hijri year (`{year:ramadan}` would never go), and a year in clear (any digit
+  script, even glued to a word) all still fail the gate, and G8 — and the
+  ingest, at insert time — fails an H1, seo_title or description that reads
+  like another post's once the year is gone (withdrawn rows included) — next
   year's post must not reuse this year's wording with a new tag. The public
-  readers remove a token found in a body instead of printing it, and the daily
-  release cron revalidates the whole site the day a token's reading changes.
+  readers remove a token found in a body instead of printing it, and the site
+  is revalidated the day a token's reading changes: at 00:05 UTC on 1 January
+  (`/api/cron/year-tokens`) and again by the daily release cron.
 - **Never a hard-coded lander URL where `<CommercialCTA intent=…>` belongs.** The
   resolver exists so a post survives a lander going noindex.
 - **Never a fact outside `data/allowed-facts.json`.** A missing figure means the

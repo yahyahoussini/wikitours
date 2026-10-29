@@ -1,4 +1,4 @@
-import { YEAR_TOKEN_FIELDS, hasYearToken, replaceYearTokens, stripYearTokens, stripBodyYearTokens } from './content-tags.js';
+import { YEAR_TOKEN_FIELDS, hasYearToken, replaceYearTokens, stripYearTokens, stripBodyYearTokens, bodyYearTokensOf } from './content-tags.js';
 import { hijriTagDate, todayCasablanca } from './hijri.js';
 
 /**
@@ -7,21 +7,21 @@ import { hijriTagDate, todayCasablanca } from './hijri.js';
  *
  * Titles never carry a year in clear (gate G5, and the build fails a past
  * year in a rendered title), so they never go stale. A post pinned to a dated
- * event — « Ramadan {year:ramadan_1448_start} au Maroc » — still says its
+ * event — « Ramadan {year:ramadan_1448_start} à La Mecque » — still says its
  * year: the page computes it from the same date its <HijriCountdown> shows
  * (hijriTagDate, src/lib/hijri.js, Umm al-Qura or the admin-confirmed row),
  * prints it while the current year in Africa/Casablanca is not past it, and
- * drops it after, so the title reads « Ramadan au Maroc » from 1 January on.
+ * drops it after, so the title reads « Ramadan à La Mecque » from 1 January on.
  * Years are written in Western digits in every locale, as the Arabic titles
  * of this site already do (« عمرة رمضان 2027 من المغرب »).
  *
  * Public reads resolve (src/lib/data/content.js getArticles / getArticleBySlug,
  * so every page, card, OG image, JSON-LD node and llms.txt line gets resolved
  * text); the admin reads raw rows and keeps the token. A token in a BODY is
- * removed by the same readers, never resolved (the gate fails it). The daily
- * release cron revalidates the site the day a token's reading changes
- * (yearTokensChanged). Parsing, validation and the gate's stripping are in
- * src/lib/content-tags.js (dependency-free).
+ * removed by the same readers, never resolved (the gate fails it). The site
+ * is revalidated the day a token's reading changes (yearTokensChanged): at
+ * 00:05 UTC on 1 January and by the daily release cron. Parsing, validation
+ * and the gate's stripping are in src/lib/content-tags.js (dependency-free).
  */
 export { YEAR_TOKEN_RE, YEAR_TOKEN_FIELDS, YEAR_TOKEN_WIDTH, hasYearToken, yearTokensOf, stripYearTokens, measureYearTokens, validateYearTokens } from './content-tags.js';
 
@@ -30,10 +30,10 @@ export const YEAR_TOKEN_COLUMNS = Object.freeze(YEAR_TOKEN_FIELDS.flatMap((f) =>
 // Where a token may NOT sit, but an editor could paste one through the admin.
 const BODY_COLUMNS = Object.freeze(['body_fr', 'body_ar', 'body_en']);
 
-// The options of every reader below, read inside its try: `null` is no options, never a TypeError.
+// The options of every reader below, read inside its try: `null` is no options, never a TypeError,
+// and a null `now` is the current time — never the epoch, whose year would print a token forever.
 function optionsOf(opts) {
-  const { now = new Date(), events = [] } = opts ?? {};
-  return { now, events };
+  return { now: opts?.now ?? new Date(), events: opts?.events ?? [] };
 }
 
 // The year of the date a tag points at, from Casablanca's `today` (YYYY-MM-DD).
@@ -111,20 +111,21 @@ export function resolveArticleYearTokens(row, opts) {
     out[col] = resolveYearTokens(row[col], { now, events });
   }
   for (const col of BODY_COLUMNS) {
-    if (!hasYearToken(row[col])) continue;
-    if (out === row) out = { ...row };
     try {
+      // Outside the content tags only: prose between two {{live:…}} tags is not a token.
+      if (!bodyYearTokensOf(row[col]).length) continue;
+      if (out === row) out = { ...row };
       out[col] = stripBodyYearTokens(row[col]);
     } catch {
-      out[col] = row[col];
+      // the body stays as it is
     }
   }
   return out;
 }
 
-/** True when a row holds a token anywhere a reader shows it (the 12 title columns or a body) — the readers map the row only then. */
+/** True when a row holds a token anywhere a reader shows it (the 12 title columns, or a body outside its content tags) — the readers map the row only then. */
 export function articleHasYearTokens(row) {
-  return Boolean(row) && [...YEAR_TOKEN_COLUMNS, ...BODY_COLUMNS].some((col) => hasYearToken(row[col]));
+  return Boolean(row) && (YEAR_TOKEN_COLUMNS.some((col) => hasYearToken(row[col])) || BODY_COLUMNS.some((col) => bodyYearTokensOf(row[col]).length > 0));
 }
 
 /**
@@ -132,8 +133,8 @@ export function articleHasYearTokens(row) {
  * `since` (default: a day earlier) — the day every cached page showing it went
  * stale: its year just ended, or a bare tag's next occurrence moved on. Pages
  * rendered with revalidate = false (the share cards, some listings) would keep
- * the old reading until a deploy; the daily release cron revalidates the site
- * on it (src/app/api/cron/publish-articles/route.js). Never throws.
+ * the old reading until a deploy; the crons revalidate the site on it
+ * (refreshYearTokenPages, src/lib/server/year-token-refresh.js). Never throws.
  */
 export function yearTokensChanged(rows, opts) {
   try {

@@ -78,6 +78,11 @@ they live in the `settings` table and are managed in `/admin/reglages`.
   `llms.txt`/sitemap for every article whose `published_at` passed since the
   last run, pings IndexNow, and e-mails `settings.email` (Resend) when a day
   went by with no release or the scheduled runway hits 7 / 3 / 1 / 0 days.
+- `/api/cron/year-tokens` once a year, 1 January 00:05 UTC — revalidates the
+  whole site when a `{year:…}` title token's year has just ended
+  (`src/lib/server/year-token-refresh.js`), so no cached page keeps the past
+  year until the 08:00 release, which runs the same check as a backstop.
+  Nothing else: no release, no e-mail.
 
 ### How "one post a day, no daily action" works
 Release is data: the anon RLS policy on `articles` is

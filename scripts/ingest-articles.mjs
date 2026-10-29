@@ -35,6 +35,7 @@ import {
   toArticleRow,
   uniqueSlug,
   words,
+  yearlessReadings,
 } from '../src/lib/server/article-gate.mjs';
 
 // The GitHub Actions gate runs `npm run build` with the production database
@@ -88,7 +89,7 @@ async function main() {
 
   // What the gate needs, read once.
   const [{ data: existing }, { data: settings }, { data: last }, { data: testimonials }, { data: author }] = await Promise.all([
-    sb.from('articles').select('slug, published_at, is_published'),
+    sb.from('articles').select('slug, published_at, is_published, title_fr, title_ar, title_en, seo_title_fr, seo_title_ar, seo_title_en, seo_description_fr, seo_description_ar, seo_description_en'),
     sb.from('settings').select('blog_autopublish, blog_author_name').eq('id', 1).maybeSingle(),
     sb.from('articles').select('published_at').gt('published_at', now.toISOString()).order('published_at', { ascending: false }).limit(1).maybeSingle(),
     sb.from('testimonials').select('id').eq('is_published', true),
@@ -96,6 +97,12 @@ async function main() {
   ]);
   const existingSlugs = new Set((existing ?? []).map((a) => a.slug));
   const existingBySlug = new Map((existing ?? []).map((a) => [a.slug, a]));
+  // Every row's H1, <title> and description once its {year:…} tokens are gone
+  // (reading → the first slug that reads it), withdrawn rows included: the
+  // gate refuses a file that would read like one of them (yearlessReadings).
+  const existingReadings = new Map();
+  const addReadings = (row, slug) => { for (const r of yearlessReadings(row)) if (!existingReadings.has(r)) existingReadings.set(r, slug); };
+  for (const a of existing ?? []) addReadings(a, a.slug);
   const testimonialIds = new Set((testimonials ?? []).map((t) => t.id));
   const authorId = author?.id ?? null;
   if (!authorId) log(`author record « ${AUTHOR_SLUG} » not found in team_members — rows are inserted with author_name only`);
@@ -130,7 +137,7 @@ async function main() {
       if (!REFRESH || !stillScheduled) { alreadyIn++; continue; } // already ingested, or already live — never rewritten by a build
       // Corrected after review, before its slot: re-gate and update in place.
       const plan = { query_family: draft.query_family ?? null, owner_path: draft.owner_path ?? null, category: draft.category ?? null };
-      const gate = qualityGate(draft, { ownerPath: plan.owner_path, existingSlugs: new Set(), strict: true, testimonialIds });
+      const gate = qualityGate(draft, { ownerPath: plan.owner_path, existingSlugs: new Set(), strict: true, testimonialIds, existingReadings });
       const decision = publishDecision({ settings, gate });
       if (!decision.publish) {
         skippedGate++;
@@ -148,7 +155,7 @@ async function main() {
     }
 
     const plan = { query_family: draft.query_family ?? null, owner_path: draft.owner_path ?? null, category: draft.category ?? null };
-    const gate = qualityGate(draft, { ownerPath: plan.owner_path, existingSlugs, strict: true, testimonialIds });
+    const gate = qualityGate(draft, { ownerPath: plan.owner_path, existingSlugs, strict: true, testimonialIds, existingReadings });
     const decision = publishDecision({ settings, gate });
 
     if (!decision.publish) {
@@ -171,13 +178,14 @@ async function main() {
     const row = { ...toArticleRow(draft, { plan, settings, slug, authorId }), published_at: slot, is_published: true };
 
     log(`${file} → /blog/${slug} · ${words(draft.body_fr)} mots · programmé ${slot}${calendarSlot ? ` (créneau #${calendarSlot.slot_index})` : ''}${gate.flags.length ? ` · flags: ${gate.flags.join(' | ')}` : ''}`);
-    if (DRY) { inserted++; if (!calendarSlot) lastSlot = slot; existingSlugs.add(slug); continue; }
+    if (DRY) { inserted++; if (!calendarSlot) lastSlot = slot; existingSlugs.add(slug); addReadings(row, slug); continue; }
 
     const { data: insertedRow, error } = await sb.from('articles').insert(row).select('id').maybeSingle();
     if (error) { log(`FAILED ${file}: ${error.message}`); continue; }
     inserted++;
     if (!calendarSlot) lastSlot = slot;
     existingSlugs.add(slug);
+    addReadings(row, slug);
 
     // The calendar row (migration 026) — best effort: without the table the
     // repo's data/content-calendar.json, updated by the generator, is the record.

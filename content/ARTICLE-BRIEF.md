@@ -215,25 +215,29 @@ balise — jamais « 3 départs à partir de 12 300 MAD ».
   « wiki-tours », absent de la table `articles` et des autres fichiers du lot.
 - `seo_title_*` : **34 à 49 caractères SANS marque** (le site ajoute « | Bab
   Makka » / « | باب مكة » ; le total doit faire 45 à 60), contient la requête,
-  sans année (G12).
+  sans année (G5).
 - `seo_description_*` : **120 à 155 caractères**, réponse + bénéfice, se
-  termine par une ponctuation de phrase, sans point d'exclamation, sans année
-  ni montant (G12).
+  termine par une ponctuation de phrase, sans point d'exclamation (G12), sans
+  année ni montant (G5).
 - `title_*` (H1) : ≤ 70 caractères, peut différer du seo_title, sans année.
 - **Seule exception : le jeton `{year:<balise>}`.** Réservé à un article épinglé
   à un événement hégirien daté, avec une balise que son corps utilise déjà
   (`<HijriCountdown event="ramadan_1448_start" />` dans le corps de la même
   langue) : `title_*`, `seo_title_*`, `excerpt_*` et `seo_description_*` peuvent
-  écrire `{year:ramadan_1448_start}` (« Ramadan {year:ramadan_1448_start} au
-  Maroc : dates et calendrier »). La page l'affiche comme l'année grégorienne de
-  cette date (2027, chiffres occidentaux aussi en arabe) tant que cette année
-  n'est pas passée à Casablanca, puis il disparaît de lui-même (« Ramadan au
-  Maroc : dates et calendrier ») — écrire la phrase pour qu'elle tienne sans lui.
+  écrire `{year:ramadan_1448_start}` (« Ramadan {year:ramadan_1448_start} à La
+  Mecque : dates et calendrier » — les dates Umm al-Qura sont celles de La
+  Mecque, jamais le premier jour de jeûne au Maroc). La page l'affiche comme
+  l'année grégorienne de cette date (2027, chiffres occidentaux aussi en arabe)
+  tant que cette année n'est pas passée à Casablanca, puis il disparaît de lui-même
+  (« Ramadan à La Mecque : dates et calendrier ») — écrire la phrase pour
+  qu'elle tienne sans lui.
   Il compte 4 caractères dans les longueurs. Jamais dans un corps (la page l'y
   efface sans l'afficher) ; une forme mal écrite (accolade manquante ou
-  inversée, accolades pleine chasse ｛ ｝), une balise inconnue ou absente du
-  corps, et toute année en clair — en chiffres occidentaux ou arabes (٢٠٢٧),
-  même collée à un mot — font échouer le contrôle (G0, G5). Une fois l'année
+  inversée, accolades pleine chasse ｛ ｝, toute autre accolade, `[year:…]`,
+  `{year=…}`), une balise inconnue, sans année hégirienne (`{year:ramadan}` ne
+  disparaîtrait jamais) ou absente du corps, et toute année en clair — en
+  chiffres occidentaux ou arabes (٢٠٢٧), même collée à un mot — font échouer
+  le contrôle (G0, G5). Une fois l'année
   retirée, le H1, le seo_title et la description ne doivent reprendre ceux
   d'aucun autre billet (G8) : le billet de l'an prochain ne recopie pas
   « Dates du Ramadan {year:ramadan_1448_start} : … » en changeant la balise.

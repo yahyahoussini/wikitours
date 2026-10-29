@@ -44,7 +44,7 @@ import { getDictionary } from '@/lib/i18n';
 import { titleFloor } from '@/lib/titles';
 import { DESC_MIN, DESC_MAX } from '@/lib/page-seo';
 import { todayCasablanca } from '@/lib/hijri';
-import { westernDigits } from '@/lib/server/article-gate';
+import { westernDigits, FOUNDING_CONTEXT } from '@/lib/server/article-gate';
 
 const t0 = performance.now();
 const ARGS = new Set(process.argv.slice(2));
@@ -86,9 +86,9 @@ const LATIN_CITY_RE = new RegExp(`(?<![\\p{L}])(${LATIN_CITIES.map((c) => c.repl
 // ("depuis 2016", "since 2016", "منذ 2016") is a fact, not a stale date. Read
 // like the content gate's year rule: in any digit script (« ٢٠٢٥ », « ２０２５ »
 // → westernDigits) and even glued to a word (« Ramadan2025 ») — only another
-// digit may not touch it.
+// digit may not touch it — with the gate's founding words too (« منذ عام ٢٠١٦ »).
 const YEAR_RE = /(?<!\d)(20\d{2})(?!\d)/g;
-const FOUNDING = /(depuis|since|منذ|fondée|founded|créée|established)\s+(en\s+|in\s+)?$/i;
+const FOUNDING = FOUNDING_CONTEXT;
 
 // ── HTML → page model ───────────────────────────────────────────────────────
 const attr = (tag, name) => {
@@ -300,7 +300,8 @@ async function runSuite(rawPages, sitemapXml) {
       else if (!/[.!?؟؛»)"”’]\s*$/.test(d)) fail('meta', p.route, `description ends mid-sentence, without terminal punctuation (cut mid-word?): "…${d.slice(-50)}"`);
       if (seenDesc.has(d)) fail('meta', p.route, `duplicate description with ${seenDesc.get(d)}`);
       else seenDesc.set(d, p.route);
-      if (!datedPage) for (const y of pastYears(d)) fail('meta', p.route, `hardcoded past year ${y} in the description: "…${d.slice(Math.max(0, d.indexOf(String(y)) - 30), d.indexOf(String(y)) + 10)}…"`);
+      // Found in the Western-digit reading (same length), so « ٢٠٢٥ » is quoted in context too.
+      if (!datedPage) for (const y of pastYears(d)) { const at = westernDigits(d).indexOf(String(y)); fail('meta', p.route, `hardcoded past year ${y} in the description: "…${d.slice(Math.max(0, at - 30), at + 10)}…"`); }
     }
   }
 

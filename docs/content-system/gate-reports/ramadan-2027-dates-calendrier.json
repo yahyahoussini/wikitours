@@ -4,7 +4,7 @@
   "row": false,
   "state": null,
   "format": "explainer",
-  "checked_at": "2026-10-29T06:06:18.047Z",
+  "checked_at": "2026-10-29T07:46:59.582Z",
   "ok": false,
   "failed": [
     "G8",
@@ -18,7 +18,7 @@
   "words": {
     "fr": 1730,
     "ar": 1287,
-    "en": 1567
+    "en": 1594
   },
   "checks": {
     "G1": {
@@ -99,7 +99,7 @@
         },
         "ar": {
           "slug": "quelle-periode-ramadan-choisir-omra",
-          "score": 0.073
+          "score": 0.063
         },
         "en": {
           "slug": "quelle-periode-ramadan-choisir-omra",

@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import { resolveYearTokens, resolveArticleYearTokens, articleHasYearTokens, yearOfTag, yearTokensChanged, YEAR_TOKEN_COLUMNS } from '@/lib/title-tokens';
 import { yearTokensOf, stripYearTokens, measureYearTokens, validateYearTokens, hasYearToken, stripBodyYearTokens, bodyYearTokensOf } from '@/lib/content-tags';
 import { hijriTagDate, hijriToGregorian, nextHijriEvent, todayCasablanca } from '@/lib/hijri';
-import { qualityGate, clampDescription, proseViolations, westernDigits } from '@/lib/server/article-gate';
+import { qualityGate, clampDescription, proseViolations, westernDigits, FOUNDING_CONTEXT, yearlessReadings } from '@/lib/server/article-gate';
+import { refreshYearTokenPages } from '@/lib/server/year-token-refresh';
 
 // {year:<tag>} — the one year a title may carry (owner decision 2026-10-28).
 // Ramadan 1448 starts in February 2027 (Umm al-Qura), so ramadan_1448_start is 2027.
@@ -124,6 +125,22 @@ describe('resolveYearTokens — the year while it lasts, nothing after', () => {
     // No token → never a change, whatever today is (the test must not depend on the clock).
     assert.equal(yearTokensChanged([{ title_fr: 'Omra' }], null), false);
   });
+  test('a null clock is the current time, never the epoch — whose year would print the token forever', () => {
+    // Ramadan 1440 began in 2019: past today, never past 1970.
+    const past = 'Ramadan {year:ramadan_1440_start} : les dates';
+    assert.equal(resolveYearTokens(past, { now: null }), 'Ramadan : les dates');
+    assert.equal(resolveYearTokens(past, { now: null, events: null }), 'Ramadan : les dates');
+    assert.equal(resolveArticleYearTokens({ title_fr: past }, { now: null }).title_fr, 'Ramadan : les dates');
+    assert.equal(resolveYearTokens(T, { now: null }), resolveYearTokens(T, { now: new Date() }));
+  });
+  test('a pasted run of braces or of « year: » costs milliseconds, not seconds', () => {
+    for (const s of [`${'{'.repeat(50000)}year`, 'year:'.repeat(40000), `${'}'.repeat(50000)} year:x`]) {
+      const t0 = performance.now();
+      hasYearToken(s);
+      stripYearTokens(s);
+      assert.ok(performance.now() - t0 < 1000, `${s.slice(0, 12)}… took ${Math.round(performance.now() - t0)} ms`);
+    }
+  });
 });
 
 describe('a token in a body — removed by the public readers, never resolved, never raw', () => {
@@ -211,6 +228,10 @@ describe('resolveArticleYearTokens — the row mapper of the public readers', ()
     const plain = { title_fr: 'Omra', body_fr: 'Corps {{live:cta intent=ramadan}}' };
     assert.equal(resolveArticleYearTokens(plain, { now: BEFORE }), plain, 'nothing to resolve → the same object');
     assert.equal(articleHasYearTokens(plain), false);
+    // Prose between two {{live:…}} tags borrows their braces but is no token: no Hijri query, no copy.
+    const live = { title_fr: 'Omra', body_en: '{{live:countdown event=ramadan_1448_start}} Year: the start {{live:cta intent=ramadan}}' };
+    assert.equal(articleHasYearTokens(live), false);
+    assert.equal(resolveArticleYearTokens(live, { now: BEFORE }), live);
     assert.equal(articleHasYearTokens(row), true);
     const bodyOnly = { title_fr: 'Omra', body_ar: 'رمضان {year:ramadan} يبدأ' };
     assert.equal(articleHasYearTokens(bodyOnly), true, 'a body token alone still sends the row through the mapper');
@@ -228,6 +249,18 @@ describe('the pure token helpers the dependency-free gate uses', () => {
     assert.deepEqual(validateYearTokens(T), []);
     assert.match(validateYearTokens('{year: ramadan}')[0], /jeton d'année mal formé « \{year: ramadan\} »/);
     assert.match(validateYearTokens('{year:ramadan_2027}')[0], /événement hégirien inconnu/);
+  });
+  test('what no token pattern reads but was meant as one fails too: a stray brace, a year key before a dated tag', () => {
+    for (const s of ['{yaer:ramadan_1448_start}', '{year;ramadan_1448_start}', '{year=ramadan_1448_start}', '{year ramadan_1448_start}', '{an:ramadan_1448_start}', '{année:ramadan_1448_start}', '{}', 'year:ramadan_1448_start', '[year:ramadan_1448_start]', 'année=ramadan_1448']) {
+      const p = validateYearTokens(`Dates du Ramadan ${s} : début, fin`);
+      assert.equal(p.length, 1, s);
+      assert.match(p[0], /accolade hors d'un jeton|jeton d'année mal formé/, s);
+    }
+    for (const s of ['This year: dates and calendar', 'Omra 2 fois par an : le calendrier', 'Ramadan (dates et calendrier)', T]) assert.deepEqual(validateYearTokens(s), [], s);
+  });
+  test('a token without a Hijri year fails: the next occurrence never disappears', () => {
+    assert.match(validateYearTokens('Ramadan {year:ramadan} : les dates')[0], /sans année hégirienne/);
+    assert.deepEqual(validateYearTokens('Ramadan {year:ramadan_1448} : les dates'), []);
   });
 });
 
@@ -276,6 +309,13 @@ describe('qualityGate — a valid token is a live component, a year in clear sti
     const d = draft();
     d.title_ar = 'رمضان ٢٠٢٧: متى يبدأ ومتى ينتهي؟';
     assert.match(gate(d).problems.join('\n'), /title_ar : année en clair « ٢٠٢٧ »/);
+    assert.ok(FOUNDING_CONTEXT.test('منذ عام ') && FOUNDING_CONTEXT.test('fondee en '), 'the founding words the build\'s seo-suite reads too');
+  });
+  test('an amount, a date or a seat count ending in an Arabic word (or € / $) fails — \\b never matched after it', () => {
+    for (const [s, rule] of [['١٥٠٠٠ درهم', 'montant'], ['12 300 درهم للشخص', 'montant'], ['à 12 € par nuit', 'montant'], ['يبدأ يوم 8 فبراير', 'date'], ['8 مارس.', 'date'], ['بقي 5 مقاعد فقط', 'nombre de places'], ['le 8 février', 'date']]) {
+      assert.ok(proseViolations(s).some((v) => v.rule === rule), `${s} → ${rule}`);
+    }
+    for (const s of ['في النصف الأول من فبراير', 'les 3 placements', 'رحلة 15 يوما', 'ODV-25012']) assert.deepEqual(proseViolations(s), [], s);
   });
   test('a malformed or unknown token fails with a French message naming the field', () => {
     const d = draft();
@@ -311,5 +351,56 @@ describe('qualityGate — a valid token is a live component, a year in clear sti
     assert.ok([...cut].every((c) => c.charCodeAt(0) < 0xe000 || c.charCodeAt(0) > 0xf8ff), 'no mask character left');
     assert.ok(!cut.includes('{year') || cut.includes('{year:ramadan_1448_start}'), cut);
     assert.equal(clampDescription('Courte description.'), 'Courte description.');
+  });
+  test('a token title that reads like another row\'s once the year is gone fails at insert time (the 1449 clone)', () => {
+    const live = draft();
+    const readings = new Map(yearlessReadings({ ...live, slug: 'ramadan-2027-dates' }).map((r) => [r, 'ramadan-2027-dates']));
+    const clone = draft();
+    for (const k of ['title_fr', 'title_ar', 'title_en', 'seo_title_fr', 'seo_title_ar', 'seo_title_en']) clone[k] = clone[k].replaceAll('ramadan_1448_start', 'ramadan_1449_start');
+    clone.body_fr = body(COUNTDOWN.replace('1448', '1449'));
+    clone.body_ar = clone.body_fr;
+    clone.body_en = clone.body_fr;
+    const p = qualityGate(clone, { ownerPath: clone.owner_path, existingSlugs: [], priceSet: [], existingReadings: readings }).problems.join('\n');
+    assert.match(p, /title_fr : même texte que \/blog\/ramadan-2027-dates une fois l'année d'un jeton passée/);
+    assert.match(p, /seo_title_en : même texte/);
+    // Its own row is never a twin, and the check runs only when the caller passes the readings.
+    assert.deepEqual(qualityGate({ ...live, slug: 'ramadan-2027-dates' }, { ownerPath: live.owner_path, existingSlugs: [], priceSet: [], existingReadings: readings }).problems, []);
+    assert.deepEqual(gate(clone).problems, []);
+    // Folded like G8: case, punctuation and Arabic vowel marks do not make two titles differ.
+    assert.deepEqual(yearlessReadings({ title_ar: 'ماذا تغيّر تواريخه؟' }).slice(0, 1), yearlessReadings({ title_ar: 'ماذا تغير تواريخه' }).slice(0, 1));
+  });
+});
+
+describe('refreshYearTokenPages — the site-wide revalidation the crons run', () => {
+  const adminWith = (result) => ({ from: () => ({ select: () => ({ eq: async () => (result instanceof Error ? Promise.reject(result) : result) }) }) });
+  const quiet = async (fn) => {
+    const { error } = console;
+    const logged = [];
+    console.error = (...a) => logged.push(a.join(' '));
+    try {
+      return { value: await fn(), logged };
+    } finally {
+      console.error = error;
+    }
+  };
+  test('revalidates the layout once when a token reads differently than two days before, nothing otherwise', async () => {
+    const calls = [];
+    const opts = { revalidate: (...a) => calls.push(a), events: async () => [] };
+    const rows = { data: [{ slug: 'a', title_fr: 'Omra' }, { slug: 'b', seo_title_fr: T }] };
+    // 00:30 UTC on 1 January is already 1 January in Casablanca under UTC+0 and UTC+1 alike.
+    assert.equal(await refreshYearTokenPages(adminWith(rows), { ...opts, now: new Date('2028-01-01T00:30:00Z') }), true);
+    assert.deepEqual(calls, [['/', 'layout']]);
+    assert.equal(await refreshYearTokenPages(adminWith(rows), { ...opts, now: new Date('2027-06-01T08:00:00Z') }), false);
+    assert.equal(calls.length, 1);
+  });
+  test('a failed check is "error" and logged — never mistaken for "nothing changed"', async () => {
+    const opts = { revalidate: () => assert.fail('nothing may be revalidated'), events: async () => [], now: new Date('2028-01-01T08:00:00Z') };
+    for (const admin of [adminWith({ data: null, error: { message: 'column missing' } }), adminWith(new Error('network')), { from: () => { throw new Error('no client'); } }]) {
+      const { value, logged } = await quiet(() => refreshYearTokenPages(admin, opts));
+      assert.equal(value, 'error');
+      assert.equal(logged.length, 1);
+    }
+    const { value } = await quiet(() => refreshYearTokenPages(adminWith({ data: [{ title_fr: T }] }), { ...opts, events: async () => { throw new Error('hijri'); } }));
+    assert.equal(value, 'error');
   });
 });

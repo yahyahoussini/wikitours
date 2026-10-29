@@ -206,16 +206,18 @@ export const YEAR_TOKEN_WIDTH = 4;
 // where « { » is drawn as « } » — and the full-width ｛ ｝ ： of an Arabic or
 // Asian keyboard. `year:` counts only when a brace touches it, so prose such
 // as « this year: dates » is never cut; a brace that opens the NEXT token is
-// never taken as this one's closing brace.
+// never taken as this one's closing brace. The opening braces and a tag with
+// no opening brace are bounded runs: unbounded, a pasted run of thousands of
+// braces (or of « year: ») cost seconds per text, and the readers test every body.
 const BRACE = '[{}\\uFF5B\\uFF5D]';
 const NOT_BRACE = '[^{}\\uFF5B\\uFF5D\\n]';
 const TAG_CHAR = '[^{}\\uFF5B\\uFF5D\\s]';
 const KEY = 'years?[^\\S\\n]*[:\\uFF1A]';
 const CLOSE = `(?:${BRACE}(?![^\\S\\n]*${KEY}))+`;
 const YEAR_TOKEN_ANY_SRC = [
-  `${BRACE}+[^\\S\\n]*${KEY}${NOT_BRACE}{0,60}${CLOSE}`, // {year:x} · }year:x{ · ｛year:x｝ · {{ year : x }}
-  `${BRACE}+[^\\S\\n]*${KEY}${TAG_CHAR}*`, // {year:x — no closing brace: up to the next space
-  `(?<![\\p{L}\\p{N}_])${KEY}[^\\S\\n]*${TAG_CHAR}+[^\\S\\n]*${CLOSE}`, // year:x} · year:x{ — no opening brace
+  `${BRACE}{1,8}[^\\S\\n]*${KEY}${NOT_BRACE}{0,60}${CLOSE}`, // {year:x} · }year:x{ · ｛year:x｝ · {{ year : x }}
+  `${BRACE}{1,8}[^\\S\\n]*${KEY}${TAG_CHAR}*`, // {year:x — no closing brace: up to the next space
+  `(?<![\\p{L}\\p{N}_])${KEY}[^\\S\\n]*${TAG_CHAR}{1,60}[^\\S\\n]*${CLOSE}`, // year:x} · year:x{ — no opening brace
 ].join('|');
 const YEAR_TOKEN_ANY_RE = new RegExp(YEAR_TOKEN_ANY_SRC, 'giu');
 const YEAR_TOKEN_ANY_ONE_RE = new RegExp(YEAR_TOKEN_ANY_SRC, 'iu'); // stateless, for .test()
@@ -318,12 +320,34 @@ export function measureYearTokens(text) {
   return replaceYearTokens(text, (t) => (t.kind === 'valid' ? '0'.repeat(YEAR_TOKEN_WIDTH) : null));
 }
 
-/** The gate's view of one text: a French problem per malformed or unknown token, [] when every token is valid. */
+// What no token pattern catches but was meant as one — a misspelt key
+// (« {yaer:…} », « {an:…} »), another separator (« {year=…} », « [year;…] »),
+// no braces at all — would print raw: once its tokens are stripped, a title
+// field holds no brace and no year key before a dated tag.
+const LOOSE_BRACE_RE = /\S*[{}\uFF5B\uFF5D]\S*/u;
+const LOOSE_KEY_RE = /(?<![\p{L}\p{N}_])(?:years?|ann[ée]es?|an|سنة)[^\S\n]*[:\uFF1A;=][^\S\n]*[A-Za-z_-]*1[45]\d{2}/iu;
+
+/**
+ * The gate's view of one title field (title, seo_title, excerpt,
+ * seo_description): a French problem per malformed or unknown token, per
+ * token without a Hijri year (a bare `{year:ramadan}` is the NEXT occurrence:
+ * it never disappears, and moves to next year's the day after the event),
+ * and per brace or year key left once the tokens are stripped; [] when every
+ * token is valid and dated.
+ */
 export function validateYearTokens(text) {
   const problems = [];
   for (const t of yearTokensOf(text)) {
     if (t.kind === 'malformed') problems.push(`jeton d'année mal formé « ${t.raw} » — forme attendue {year:<événement hégirien>} sans espace, ex. {year:ramadan_1448_start}`);
-    else if (t.kind === 'unknown') problems.push(`jeton d'année « ${t.raw} » : événement hégirien inconnu — ${HIJRI_EVENTS.join(', ')} ou daté : ramadan_1448_start, arafah_1448…`);
+    else if (t.kind === 'unknown') problems.push(`jeton d'année « ${t.raw} » : événement hégirien inconnu — un événement daté : ${HIJRI_EVENTS.join(', ')} suivi de son année hégirienne, ex. ramadan_1448_start, arafah_1448…`);
+    else if (!parseHijriEventTag(t.tag).hy) problems.push(`jeton d'année « ${t.raw} » sans année hégirienne — il ne disparaîtrait jamais du titre : écrire l'événement daté, ex. {year:ramadan_1448_start}`);
+  }
+  const rest = stripYearTokens(text);
+  if (typeof rest === 'string') {
+    const brace = rest.match(LOOSE_BRACE_RE);
+    const key = rest.match(LOOSE_KEY_RE);
+    if (brace) problems.push(`accolade hors d'un jeton d'année « ${brace[0]} » — un titre n'en porte aucune ; forme attendue {year:<événement hégirien>}, ex. {year:ramadan_1448_start}`);
+    else if (key) problems.push(`jeton d'année mal formé « ${key[0]} » — forme attendue {year:<événement hégirien>}, ex. {year:ramadan_1448_start}`);
   }
   return problems;
 }

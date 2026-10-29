@@ -9,7 +9,8 @@ case "${1:-}" in
   rollup) path=/api/cron/rollup ;;
   sync-reviews) path=/api/cron/sync-reviews ;;
   publish-articles) path=/api/cron/publish-articles ;;
-  *) echo "usage: wikitours-cron ping|rollup|sync-reviews|publish-articles" >&2; exit 2 ;;
+  year-tokens) path=/api/cron/year-tokens ;;
+  *) echo "usage: wikitours-cron ping|rollup|sync-reviews|publish-articles|year-tokens" >&2; exit 2 ;;
 esac
 : "${CRON_SECRET:?CRON_SECRET is not set (EnvironmentFile=/etc/wikitours/env)}"
 # After a reboot, Persistent=true fires a missed run at once, possibly before Next listens (or

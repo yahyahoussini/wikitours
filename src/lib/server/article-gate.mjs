@@ -50,6 +50,28 @@ export function clampDescription(s, n = 155) {
   return tokens.reduce((s, raw, k) => s.split(maskChar(k).repeat(YEAR_TOKEN_WIDTH)).join(raw).split(maskChar(k)).join(''), out);
 }
 
+/**
+ * A post's H1, <title> (seo_title, else the H1) and stored description as
+ * they read once every {year:…} token is gone, per field and locale, folded
+ * like the content gate's G8 (case, accents, Arabic vowel marks,
+ * punctuation): ['title_fr|dates du ramadan debut fin …', …]. Two posts that
+ * share one read the same from the 1 January after their tokens' years —
+ * « Dates du Ramadan {year:ramadan_1449_start} : … » cloned from the 1448
+ * post — and from then on every build's seo-suite fails on the duplicate.
+ */
+export function yearlessReadings(post) {
+  const fold = (s) => String(stripYearTokens(s) ?? '').toLowerCase().normalize('NFD').replace(/[\p{M}ـ]/gu, '').replace(/[^\p{L}\p{N} ]+/gu, ' ').replace(/\s+/g, ' ').trim();
+  const out = [];
+  for (const l of ['fr', 'ar', 'en']) {
+    const texts = { title: post?.[`title_${l}`], seo_title: post?.[`seo_title_${l}`] || post?.[`title_${l}`], seo_description: clampDescription(post?.[`seo_description_${l}`]) };
+    for (const [field, s] of Object.entries(texts)) {
+      const reading = fold(s);
+      if (reading) out.push(`${field}_${l}|${reading}`);
+    }
+  }
+  return out;
+}
+
 export const SITE_TZ = 'Africa/Casablanca';
 export const RELEASE_HOUR = 8;
 
@@ -93,19 +115,22 @@ export function nextMorningSlot(lastScheduledAt, now = new Date(), { timeZone = 
 const FR_MONTHS = 'janvier|f[ée]vrier|mars|avril|mai|juin|juillet|ao[uû]t|septembre|octobre|novembre|d[ée]cembre';
 const EN_MONTHS = 'january|february|march|april|may|june|july|august|september|october|november|december';
 const AR_MONTHS = 'يناير|فبراير|مارس|أبريل|ابريل|ماي|مايو|يونيو|يوليوز|يوليو|غشت|أغسطس|شتنبر|سبتمبر|أكتوبر|اكتوبر|نونبر|نوفمبر|دجنبر|ديسمبر|أيلول|تشرين|كانون|شباط|آذار|نيسان|أيار|حزيران|تموز|آب';
-const FOUNDING_CONTEXT = /(depuis|since|منذ|fond[ée]e|founded|cr[ée][ée]e|established)\s+(en\s+|in\s+|عام\s+|سنة\s+)?$/i;
+/** The words before a founding year (« depuis 2016 », « منذ عام 2016 ») — a fact, not a stale date; the build's seo-suite reads the same. */
+export const FOUNDING_CONTEXT = /(depuis|since|منذ|fond[ée]e|founded|cr[ée][ée]e|established)\s+(en\s+|in\s+|عام\s+|سنة\s+)?$/i;
 // A year is four digits that no other digit touches — a letter or an
 // underscore may (« Ramadan2027 », « Ramadan_2027 » are years too). The rules
 // read the text with every digit in Western form (westernDigits), so
 // « رمضان ٢٠٢٧ » and « Ramadan２０２７ » fail like « Ramadan 2027 ».
+// A unit or a month ends where no letter follows, not at \b: \b never matches
+// after an Arabic letter (nor after € or $), so « ١٥٠٠٠ درهم » and « 8 فبراير » passed.
 export const PROSE_RULES = [
   { rule: 'année', re: /(?<!\d)(?:19|20)\d{2}(?!\d)/g, allow: (ctx) => FOUNDING_CONTEXT.test(ctx) },
   { rule: 'année hégirienne', re: /\b1[45]\d{2}\s*(?:هـ|ه\b|AH\b|H\b)/g },
-  { rule: 'montant', re: /\d[\d\s.,]*\s?(?:MAD|DH|Dhs?|dirhams?|درهم|دراهم|€|EUR|\$|USD)\b/gi },
+  { rule: 'montant', re: /\d[\d\s.,]*\s?(?:MAD|DH|Dhs?|dirhams?|درهم|دراهم|€|EUR|\$|USD)(?![\p{L}\p{N}_])/giu },
   { rule: 'montant', re: /(?:à partir de|dès|from|ابتداءً من|ابتداء من)\s+\d/gi },
-  { rule: 'date', re: new RegExp(`\\b\\d{1,2}(?:er|st|nd|rd|th)?\\s+(?:${FR_MONTHS}|${EN_MONTHS}|${AR_MONTHS})\\b`, 'gi') },
+  { rule: 'date', re: new RegExp(`\\b\\d{1,2}(?:er|st|nd|rd|th)?\\s+(?:${FR_MONTHS}|${EN_MONTHS}|${AR_MONTHS})(?![\\p{L}\\p{N}_])`, 'giu') },
   { rule: 'date', re: /\b\d{4}-\d{2}-\d{2}\b|\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/g },
-  { rule: 'nombre de places', re: /\b\d+\s*(?:places?|si[èe]ges?|seats?|مقعد|مقاعد)\b/gi },
+  { rule: 'nombre de places', re: /\b\d+\s*(?:places?|si[èe]ges?|seats?|مقعد|مقاعد)(?![\p{L}\p{N}_])/giu },
 ];
 // Levantine / MSA month names: Moroccan Arabic writes شتنبر، غشت، نونبر، دجنبر
 // (hard constraint 8) — the others fail the Arabic body.
@@ -280,7 +305,7 @@ export function proseText(body) {
  * Prose accuracy is not checked here — that is the fact-sheet grounding's job,
  * and the human's.
  */
-export function qualityGate(draft, { ownerPath, existingSlugs, priceSet, strict = true, testimonialIds = null } = {}) {
+export function qualityGate(draft, { ownerPath, existingSlugs, priceSet, strict = true, testimonialIds = null, existingReadings = null } = {}) {
   const problems = [];
   const flags = [];
   const slugs = existingSlugs instanceof Set ? existingSlugs : new Set(existingSlugs ?? []);
@@ -356,6 +381,16 @@ export function qualityGate(draft, { ownerPath, existingSlugs, priceSet, strict 
       }
     }
     for (const t of bodyYearTokensOf(draft[`body_${lang}`])) problems.push(`body_${lang} : jeton d'année « ${t.raw} » interdit dans le corps — il ne sert que dans title, seo_title, excerpt et seo_description ; dans le corps, la date passe par <HijriCountdown event="…" />`);
+  }
+  // The table's readings once every year is gone (yearlessReadings → slug),
+  // when the caller has them — the ingest passes every row, withdrawn ones
+  // included, since the admin can bring one back: the time bomb of a cloned
+  // token title is refused at insert time, not on the 1 January it goes off.
+  if (existingReadings) {
+    for (const reading of yearlessReadings(draft)) {
+      const other = existingReadings.get(reading);
+      if (other && other !== draft.slug) problems.push(`${reading.slice(0, reading.indexOf('|'))} : même texte que /blog/${other} une fois l'année d'un jeton passée — le build (seo-suite) échouerait sur le doublon`);
+    }
   }
 
   const bodyFr = String(draft.body_fr ?? '');

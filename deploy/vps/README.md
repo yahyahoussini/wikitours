@@ -13,7 +13,7 @@ The owner chose on 2026-10-14 to move off the Vercel Hobby plan. The plan had ru
 | Site + admin + legacy domains | `wikitours.service` (Next.js), Caddy `Caddyfile` | Vercel project `wikitours` |
 | HTTPS certificates | Caddy, automatic (Let's Encrypt) | Vercel |
 | Deploy on every push to `master` | `wikitours-deploy.timer`: checks GitHub every 2 min, builds in a new release, switches, health-checks, rolls back | Vercel Git integration |
-| The 4 daily jobs (UTC) | `wikitours-cron-{rollup,sync-reviews,ping,publish-articles}.timer` → `wikitours-cron` (same `Bearer CRON_SECRET`) | `vercel.json` crons |
+| The 4 daily jobs and the 1 January one (UTC) | `wikitours-cron-{rollup,sync-reviews,ping,publish-articles,year-tokens}.timer` → `wikitours-cron` (same `Bearer CRON_SECRET`) | `vercel.json` crons |
 | Environment | `/etc/wikitours/env` (640 root:wikitours; names in `env.example`) | Vercel env vars (Production) |
 | Logs | `journalctl -u wikitours`, `/var/log/wikitours/{deploy,cron}.log`, `/var/log/caddy/` | Vercel logs |
 
@@ -71,7 +71,7 @@ The owner chose on 2026-10-14 to move off the Vercel Hobby plan. The plan had ru
    - **Between DNS and step 9.3,** every push is built by BOTH Vercel and the VPS. The prebuild ingest is idempotent (it skips articles already ingested), but keep that window short.
 9. **Hand the crons over** (same day, between **09:00 and 03:00 UTC**). Vercel Hobby runs each cron at some minute within its hour (08:00 → 08:00–08:59), and the jobs run at 03:30, 05:00, 06:00 and 08:00. In that window no job is due on either side:
    1. Push a commit that removes `crons` from `vercel.json`. Vercel deploys it, which removes its crons. **Confirm it before step 2:** the Vercel production deployment of that commit is "Ready", and Project → Settings → Cron Jobs lists none. Otherwise every job would run twice.
-   2. `systemctl enable --now wikitours-cron-{rollup,sync-reviews,ping,publish-articles}.timer`.
+   2. `systemctl enable --now wikitours-cron-{rollup,sync-reviews,ping,publish-articles,year-tokens}.timer` (`year-tokens` fires only on 1 January at 00:05 UTC).
    3. Push `vercel.json` with `"git": {"deploymentEnabled": false}`, so pushes stop building on Vercel. Each Vercel build also ran the article ingest against the live database.
 10. **Keep the Vercel project** (not deleted) for 2 weeks as a rollback.
    - **Rollback before step 9:**

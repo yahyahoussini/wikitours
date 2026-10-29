@@ -1,0 +1,10 @@
+[Unit]
+Description=wikitours.ma /api/cron/year-tokens on 1 January 00:05 UTC (a {year:...} title token's year just ended: site-wide revalidation)
+
+[Timer]
+OnCalendar=*-01-01 00:05:00 UTC
+Persistent=true
+Unit=wikitours-cron@year-tokens.service
+
+[Install]
+WantedBy=timers.target

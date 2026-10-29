@@ -31,7 +31,7 @@
 import { readFileSync, readdirSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { createClient } from '@supabase/supabase-js';
-import { qualityGate, proseViolations, targetsLanderQuery, brandedTitle, words, EXTERNAL_WHITELIST, offWhitelistHost, proseText } from '@/lib/server/article-gate';
+import { qualityGate, proseViolations, targetsLanderQuery, brandedTitle, words, EXTERNAL_WHITELIST, offWhitelistHost, proseText, westernDigits } from '@/lib/server/article-gate';
 import { validateContentTags, stripContentTags, contentTagsOf, CTA_TARGET_RE, stripYearTokens, measureYearTokens, validateYearTokens, bodyYearTokensOf } from '@/lib/content-tags';
 import { resolveYearTokens } from '@/lib/title-tokens';
 import { extractFaq } from '@/lib/article-schema';
@@ -65,7 +65,9 @@ const registry = readJson('data/lander-registry.json', { landers: [] });
 const calendar = readJson('data/content-calendar.json', { slots: [] });
 
 // ── helpers ─────────────────────────────────────────────────────────────────
-const norm = (s) => String(s ?? '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\p{L}\p{N} ]+/gu, ' ').replace(/\s+/g, ' ').trim();
+// Every combining mark goes — Latin accents and Arabic vowel marks alike (a
+// shadda left in turned « تغيّر » into « تغي ر ») — and the tatweel.
+const norm = (s) => String(s ?? '').toLowerCase().normalize('NFD').replace(/[\p{M}ـ]/gu, '').replace(/[^\p{L}\p{N} ]+/gu, ' ').replace(/\s+/g, ' ').trim();
 // The prose rules (G1, G2, G3, G5, G9, G10, G11, G15) read the body without
 // its tags AND without link targets — a URL is not prose (see proseText).
 const prose = (draft, lang) => proseText(draft[`body_${lang}`]);
@@ -76,7 +78,8 @@ const prose = (draft, lang) => proseText(draft[`body_${lang}`]);
 const wordCount = (s) => words(String(s ?? '').replace(/[#*_>|\-]+/g, ' '));
 const h2s = (body) => [...String(body ?? '').matchAll(/^##\s+(.+)$/gm)].map((m) => m[1].trim());
 const isQuestion = (h) => /[?؟]\s*$/.test(h) || /^(comment|pourquoi|quand|combien|quel|quelle|quels|quelles|est-ce|faut-il|peut-on|que |où|qu'|doit-on|how|when|why|what|which|can|should|is |are |do |does |where|كيف|متى|شنو|واش|هل|لماذا|علاش|ما |كم|أين|فين|ماذا|من )/i.test(h);
-const digitsOf = (s) => [...String(s ?? '').matchAll(/(?<![\p{L}\d])(\d[\d\s.,]*\d|\d)(?![\d\p{L}])/gu)].map((m) => m[1].replace(/[\s.,]/g, ''));
+// In any digit script: « ١٥٠٠٠ » is checked like « 15000 » (westernDigits).
+const digitsOf = (s) => [...westernDigits(s).matchAll(/(?<![\p{L}\d])(\d[\d\s.,]*\d|\d)(?![\d\p{L}])/gu)].map((m) => m[1].replace(/[\s.,]/g, ''));
 const factNumbers = (() => {
   const nums = new Set();
   const walk = (v) => {
@@ -192,7 +195,8 @@ function G5(draft) {
   const details = [];
   const extra = [
     { rule: 'places disponibles', re: /\b(places?|si[èe]ges?|seats?)\s+(disponibles?|restantes?|available|left)\b|أماكن\s+(متوفرة|متاحة|متبقية)/gi },
-    { rule: 'distance hôtel', re: /\b\d[\d\s]*\s?(?:m|mètres?|metres?|meters?|km|kilom[èe]tres?)\b(?=[^.\n]{0,60}(?:haram|حرم|hôtel|hotel|فندق|mosqu|masjid|مسجد))|(?:\d+\s?(?:متر|كلم|كم)\b)/gi },
+    // An Arabic unit ends where no letter follows: \b never matches after an Arabic letter.
+    { rule: 'distance hôtel', re: /\b\d[\d\s]*\s?(?:m|mètres?|metres?|meters?|km|kilom[èe]tres?)\b(?=[^.\n]{0,60}(?:haram|حرم|hôtel|hotel|فندق|mosqu|masjid|مسجد))|(?:\d+\s?(?:متر|كلم|كم)(?![\p{L}\p{N}_]))/giu },
   ];
   for (const l of LOCALES) {
     for (const f of ['title', 'excerpt', 'seo_title', 'seo_description']) {
@@ -332,12 +336,14 @@ function G8(draft, ctx, allDrafts) {
   // {year:ramadan_1449_start} : … » and the 1448 post differ today and read
   // the same from the 1 January after both years, when every build fails with
   // no content change. So each text is compared as it reads today (resolved)
-  // and once every year is gone (stripped), with every published or scheduled
-  // row and every other draft of the batch. The <title> is seo_title, else the
-  // H1 — what the page renders.
+  // and once every year is gone (stripped), with every row of the table —
+  // withdrawn ones too: the admin has brought a held row back three times —
+  // and every other draft of the batch. The <title> is seo_title, else the
+  // H1 — what the page renders. The ingest refuses the same clone at insert
+  // time (yearlessReadings, src/lib/server/article-gate.mjs).
   const readings = (s) => new Set([norm(stripYearTokens(s)), norm(resolveYearTokens(s))].filter(Boolean));
   const textOf = (d, f, l) => (f === 'seo_title' ? d[`seo_title_${l}`] || d[`title_${l}`] : d[`${f}_${l}`]);
-  const others = [...ctx.existing.filter((r) => r.slug !== draft.slug && r.is_published), ...allDrafts.filter((d) => d !== draft && d.slug !== draft.slug)];
+  const others = [...ctx.existing.filter((r) => r.slug !== draft.slug), ...allDrafts.filter((d) => d !== draft && d.slug !== draft.slug)];
   const what = { title: 'H1', seo_title: '<title>', seo_description: 'description' };
   for (const l of LOCALES) {
     for (const f of ['title', 'seo_title', 'seo_description']) {
