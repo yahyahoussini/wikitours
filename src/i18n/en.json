@@ -326,6 +326,7 @@
   "occasionPage": {
     "empty": "Programme in preparation — leave your details to be notified first.",
     "answerWithOffers": "{n} Umrah {occasion} programme(s) from Morocco, from {min} MAD per person.",
+    "livePrice": "Current prices of the departures below: from {min} MAD per person.",
     "heading": "{name} Umrah",
     "bridgeTitle": "{name} programmes",
     "bridgeLead": {

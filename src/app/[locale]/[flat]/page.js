@@ -397,7 +397,17 @@ export default async function FlatLandingPage({ params }) {
     // Answer-first (LAWS §5): admin description if any, else a computed line
     // when offers match, else the honest empty state — never a blank lede.
     const minPrice = Math.min(...matching.map((o) => o.starting_price).filter((p) => p != null));
-    answer = pickLang(resolved.occasion, 'description', locale) ??
+    // The admin's text is evergreen; the price is not. When the hub has live
+    // departures, the lede ends with their current « from » price, computed —
+    // the line answer engines quote for « ثمن عمرة رمضان 2027 » — unless the
+    // admin text already names a price (special-septembre does), so one lede
+    // never carries two.
+    const adminAnswer = pickLang(resolved.occasion, 'description', locale);
+    const livePrice =
+      matching.length && Number.isFinite(minPrice) && !/\b(?:DH|MAD|dirhams?)\b|درهم/i.test(adminAnswer ?? '')
+        ? t.occasionPage.livePrice.replace('{min}', nf.format(minPrice))
+        : null;
+    answer = (adminAnswer ? [adminAnswer, livePrice].filter(Boolean).join(' ') : null) ??
       (matching.length === 0
         ? t.occasionPage.empty
         : t.occasionPage.answerWithOffers

@@ -326,6 +326,7 @@
   "occasionPage": {
     "empty": "Programme en préparation — laissez vos coordonnées pour être averti en premier.",
     "answerWithOffers": "{n} programme(s) Omra {occasion} au départ du Maroc, dès {min} MAD par personne.",
+    "livePrice": "Prix actuels des départs ci-dessous : dès {min} MAD par personne.",
     "heading": "Omra {name}",
     "bridgeTitle": "Programmes {name}",
     "bridgeLead": {
