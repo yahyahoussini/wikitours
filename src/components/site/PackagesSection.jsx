@@ -29,7 +29,10 @@ function formatDateRange(startISO, endISO, locale) {
   return `${startLabel} → ${full.format(end)}`;
 }
 
-const ROOM_KEYS = ['double', 'triple', 'quad', 'quint'];
+// Same list as the departure page's (omra/[slug]): a card that skipped the
+// six-bed room said « dès 25.900, chambre quintuple » above a page and a
+// comparison table saying 24.900 for the same departure.
+const ROOM_KEYS = ['double', 'triple', 'quad', 'quint', 'sextuple'];
 
 /**
  * The (gamme × room) combination whose per-person price is the offer's

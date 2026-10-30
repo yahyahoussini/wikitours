@@ -3,7 +3,10 @@
 import { useEffect, useState } from 'react';
 import { roomStore } from '@/lib/room-store';
 
-const ROOM_KEYS = ['double', 'triple', 'quad', 'quint'];
+// Must match the page's list: the page renders the six-bed room as the default
+// when it is the cheapest, and a selector without it switched the booking card
+// to the double room on hydration.
+const ROOM_KEYS = ['double', 'triple', 'quad', 'quint', 'sextuple'];
 
 /**
  * 2D selector: first pick a Gamme (tier), then a room type within that tier.

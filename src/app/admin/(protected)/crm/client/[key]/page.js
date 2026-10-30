@@ -44,7 +44,7 @@ export default async function AdminClientProfilePage({ params }) {
 
   const latest = leads[0];
   const statusLabel = new Map(LEAD_STATUSES.map((s) => [s.value, s.label]));
-  const roomLabels = { double: 'Double', triple: 'Triple', quad: 'Quadruple', quint: 'Quintuple' };
+  const roomLabels = { double: 'Double', triple: 'Triple', quad: 'Quadruple', quint: 'Quintuple', sextuple: 'Sextuple' };
   const ips = [...new Set(leads.map((l) => l.ip).filter(Boolean))];
   const totalValue = leads.reduce((sum, l) => sum + (l.value_mad ?? 0), 0);
 

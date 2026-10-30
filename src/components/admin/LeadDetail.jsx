@@ -44,7 +44,7 @@ export default function LeadDetail({ lead, activities, journey, gbpReviewUrl }) 
   const [busy, setBusy] = useState(false);
   const [savedFields, setSavedFields] = useState(false);
 
-  const roomLabels = { double: 'Double', triple: 'Triple', quad: 'Quadruple', quint: 'Quintuple' };
+  const roomLabels = { double: 'Double', triple: 'Triple', quad: 'Quadruple', quint: 'Quintuple', sextuple: 'Sextuple' };
   const facts = [
     ['Ville', lead.city],
     ['Offre', lead.offer_title],

@@ -32,7 +32,7 @@ const leadSchema = z.object({
   offer_title: optional(300),
   room_type: z.preprocess(
     (v) => (v === '' ? null : v),
-    z.enum(['double', 'triple', 'quad', 'quint']).nullable().optional(),
+    z.enum(['double', 'triple', 'quad', 'quint', 'sextuple']).nullable().optional(),
   ),
   tier_label: z.preprocess(
     (v) => (v === '' ? null : v),
@@ -172,6 +172,15 @@ export async function POST(request) {
       user_agent: userAgent,
     };
     let { data: inserted, error } = await admin.from('leads').insert(row).select('id').single();
+    if (error && row.room_type === 'sextuple') {
+      // leads.room_type accepts 'sextuple' only once migration 028 widens its
+      // check — until then keep the six-bed request in the message rather than
+      // lose the lead over it.
+      console.error('[lead] insert failed with room_type sextuple, retrying without it:', error.message);
+      row.room_type = null;
+      row.message = [row.message, 'Chambre souhaitée : sextuple'].filter(Boolean).join('\n');
+      ({ data: inserted, error } = await admin.from('leads').insert(row).select('id').single());
+    }
     if (error && (row.message != null || row.ip != null)) {
       // leads.message / leads.ip arrive with migrations 012/013 — if not yet
       // applied, NEVER lose the lead over them: retry without both.

@@ -437,7 +437,11 @@ p {
 [data-selected-tier="vip"][data-selected-room="double"]        .tier-price[data-tier="vip"][data-room="double"],
 [data-selected-tier="vip"][data-selected-room="triple"]        .tier-price[data-tier="vip"][data-room="triple"],
 [data-selected-tier="vip"][data-selected-room="quad"]          .tier-price[data-tier="vip"][data-room="quad"],
-[data-selected-tier="vip"][data-selected-room="quint"]         .tier-price[data-tier="vip"][data-room="quint"] {
+[data-selected-tier="vip"][data-selected-room="quint"]         .tier-price[data-tier="vip"][data-room="quint"],
+[data-selected-tier="economique"][data-selected-room="sextuple"] .tier-price[data-tier="economique"][data-room="sextuple"],
+[data-selected-tier="confort"][data-selected-room="sextuple"]  .tier-price[data-tier="confort"][data-room="sextuple"],
+[data-selected-tier="premium"][data-selected-room="sextuple"]  .tier-price[data-tier="premium"][data-room="sextuple"],
+[data-selected-tier="vip"][data-selected-room="sextuple"]      .tier-price[data-tier="vip"][data-room="sextuple"] {
   display: inline;
 }
 
@@ -455,7 +459,8 @@ p {
 [data-selected-room="double"] .gamme-card [data-room-line="double"],
 [data-selected-room="triple"] .gamme-card [data-room-line="triple"],
 [data-selected-room="quad"]   .gamme-card [data-room-line="quad"],
-[data-selected-room="quint"]  .gamme-card [data-room-line="quint"] {
+[data-selected-room="quint"]  .gamme-card [data-room-line="quint"],
+[data-selected-room="sextuple"] .gamme-card [data-room-line="sextuple"] {
   background: rgb(212 175 55 / 0.12);
 }
 
