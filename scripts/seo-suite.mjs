@@ -288,6 +288,15 @@ async function runSuite(rawPages, sitemapXml) {
       if (seenTitle.has(t)) fail('titles', p.route, `duplicate title with ${seenTitle.get(t)}: "${t}"`);
       else seenTitle.set(t, p.route);
       if (!datedPage) for (const y of pastYears(t)) fail('titles', p.route, `hardcoded past year ${y} in the title: "${t}"`);
+      // A price typed into an offer's admin title must not undercut what the
+      // page sells (2026-11-01: « dès 23 500 DH » in the 53-day titles while
+      // its lowest tier was 24 400 — the admin title wins over the template).
+      if (p.type === 'offer') {
+        const floorPrice = Number(p.html.match(/"lowPrice"\s*:\s*"?(\d+(?:\.\d+)?)/)?.[1] ?? p.html.match(/"@type"\s*:\s*"Offer"[^}]*?"price"\s*:\s*"?(\d+(?:\.\d+)?)/)?.[1] ?? NaN);
+        const m = westernDigits(t).match(/(\d{1,3}(?:[\s  .,]\d{3})+|\d{4,6})\s*(?:DH|MAD|Dhs?|درهم)/i);
+        const shown = m ? Number(m[1].replace(/[\s  .,]/g, '')) : NaN;
+        if (Number.isFinite(floorPrice) && Number.isFinite(shown) && shown < floorPrice) fail('titles', p.route, `title price ${shown} is below the page's lowest Offer price ${floorPrice} (admin seo_title out of date?): "${t}"`);
+      }
       // The layout's "%s — Wiki Tours International" template trap: a plain-string
       // title gets the suffix on top of its own brand, and on /ar in Latin.
       const low = t.toLowerCase();
@@ -545,6 +554,7 @@ async function selfTest(rawPages, sitemapXml) {
     ['rendering', 'a NON-sampled indexable page serving its empty scaffold', () => ({ pages: edit(secondCity, inMain('<div data-guard="empty"></div>')) }), 'serves its data-guard="empty" scaffold state'],
     ['rendering', 'a NON-sampled page with two <h1>', () => ({ pages: edit(secondCity, inMain('<h1>Deux</h1>')) }), '2 <h1> in the served HTML'],
     ['rendering', 'a markdown table printed as raw text', () => ({ pages: edit(secondCity, inMain('<p>| Gamme | Prix |<br/>|---|---|<br/>| Eco | 13 500 |</p>')) }), 'raw markdown table printed as text'],
+    ['titles', 'an offer title advertising a price below its lowest Offer', () => ({ pages: edit(pick('offer'), setTitle('Omra de démonstration — dès 9 900 DH')) }), "below the page's lowest Offer price", pick('offer') ? null : 'no offer page in this build'],
   ];
   const restOfRoute = (route) => route.split('/').slice(2).join('/');
 

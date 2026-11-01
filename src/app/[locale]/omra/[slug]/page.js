@@ -185,8 +185,11 @@ export async function generateMetadata({ params }) {
   const occasionName = offer.occasion ? pickLang(offer.occasion, 'name', locale) : '';
   const minPrice = computeMinPrice(offer.tiers) ?? offer.starting_price ?? null;
   const priceFmt = minPrice != null ? nf.format(minPrice) : nf.format(0);
-  const templated = routeTitle('offer', locale, { occasion: occasionName, tier: '', price: priceFmt });
   const year = offer.date_start ? new Date(offer.date_start).getUTCFullYear() : '';
+  // The departure's own year: without it {year} fell back to seasonYear(), so
+  // an offer saved with no admin seo_title would have read « Omra Ramadan 2026 »
+  // for a February 2027 trip (audit 2026-11-01).
+  const templated = routeTitle('offer', locale, { occasion: occasionName, tier: '', price: priceFmt, ...(year ? { year } : {}) });
   // Admin seo_description wins. Otherwise an AUTHORED template — the old
   // fallback chain used `summary` (body copy, clamped mid-sentence) and then a
   // hardcoded FRENCH string that rendered on /ar and /en too.

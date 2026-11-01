@@ -192,9 +192,13 @@ export async function generateMetadata({ params }) {
   const occComputed = occYear
     ? (occT.seoTitleBySlug?.[resolved.occasion.slug] ?? occT.seoTitle)?.replace('{heading}', occHeading).replace('{year}', String(occYear)) ?? occHeading
     : occHeading;
+  // The locale's OWN admin title only. pickLang() falls back to the French
+  // column, so an empty seo_title_ar rendered « Omra Ramadan 2027 depuis le
+  // Maroc » on /ar/omra-ramadan (the seo-suite caught it, 2026-11-01).
+  const typedTitle = String(resolved.occasion?.[`seo_title_${locale}`] ?? '').trim() || null;
   return {
     title: {
-      absolute: withBrand(pickLang(resolved.occasion, 'seo_title', locale) ?? occComputed),
+      absolute: withBrand(typedTitle ?? occComputed),
     },
     // An admin-authored seo_description always wins (LAWS §4 — admin controls
     // everything). The template is the FALLBACK, replacing what used to be a
