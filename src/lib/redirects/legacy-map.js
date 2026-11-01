@@ -18,6 +18,15 @@ const MAP = new Map([
   // Canonical entity rename: "Bab Makkah" → "Bab Makka" (decision, 2026-07).
   ['/bab-makkah', '/bab-makka'],
 
+  // Offers renamed or withdrawn before departure (audit 2026-11-01): the
+  // lifecycle 301 only covers departures that have left, so these 404'd in all
+  // three locales. A slug listed here shadows a future row with the same slug.
+  ['/omra/omra-novembre-2026-25-novembre', '/omra/omra-novembre-2026-24-novembre'], // renamed (same trip, 24 Nov → 8 Dec)
+  ['/omra/omra-ramadan-2027-56-jours', '/omra/omra-ramadan-2027-53-jours'], // withdrawn; same whole-Ramadan stay, same 16 Mar return
+  ['/omra/omra-5-etoiles-sur-mesure', '/omra-5-etoiles'], // withdrawn custom 5★ offer → its hub
+  ['/omra/omra-decembre-2026-23-aut-7-janvier', '/omra/omra-decembre-2026-23-au-7-janvier'], // slug typo fixed
+  ['/omra/omra-octobre-2026-vacances-scolaires-17-aut-24', '/bab-makka'], // slug typo fixed; the fixed slug itself now 301s to /bab-makka
+
   // --- SAMPLE (disabled) — shape for the pending legacy inventory ---
   // ['/omra/1104/omra-touristique-ramadan', '/omra-ramadan'],
 ]);

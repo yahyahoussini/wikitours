@@ -1,4 +1,4 @@
-import { YEAR_TOKEN_FIELDS, hasYearToken, replaceYearTokens, stripYearTokens, stripBodyYearTokens, bodyYearTokensOf } from './content-tags.js';
+import { CURRENT_YEAR_TAG, YEAR_TOKEN_FIELDS, hasYearToken, replaceYearTokens, stripYearTokens, stripBodyYearTokens, bodyYearTokensOf } from './content-tags.js';
 import { hijriTagDate, todayCasablanca } from './hijri.js';
 
 /**
@@ -23,7 +23,7 @@ import { hijriTagDate, todayCasablanca } from './hijri.js';
  * 00:05 UTC on 1 January and by the daily release cron. Parsing, validation
  * and the gate's stripping are in src/lib/content-tags.js (dependency-free).
  */
-export { YEAR_TOKEN_RE, YEAR_TOKEN_FIELDS, YEAR_TOKEN_WIDTH, hasYearToken, yearTokensOf, stripYearTokens, measureYearTokens, validateYearTokens } from './content-tags.js';
+export { CURRENT_YEAR_TAG, YEAR_TOKEN_RE, YEAR_TOKEN_FIELDS, YEAR_TOKEN_WIDTH, hasYearToken, yearTokensOf, stripYearTokens, measureYearTokens, validateYearTokens } from './content-tags.js';
 
 /** The 12 article columns a token may sit in. */
 export const YEAR_TOKEN_COLUMNS = Object.freeze(YEAR_TOKEN_FIELDS.flatMap((f) => ['fr', 'ar', 'en'].map((l) => `${f}_${l}`)));
@@ -39,6 +39,7 @@ function optionsOf(opts) {
 // The year of the date a tag points at, from Casablanca's `today` (YYYY-MM-DD).
 function yearFrom(tag, today, events) {
   try {
+    if (tag === CURRENT_YEAR_TAG) return Number(String(today).slice(0, 4)) || null;
     const date = hijriTagDate(tag, { today, rows: events });
     const y = Number(String(date?.gregorian_date ?? '').slice(0, 4));
     return Number.isInteger(y) && y > 0 ? y : null;

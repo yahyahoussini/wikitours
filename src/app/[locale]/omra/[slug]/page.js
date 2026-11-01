@@ -119,13 +119,31 @@ function computedIntro(offer, t, locale, tiers) {
     : titleName || String(year);
   const lockup = locale === 'ar' ? BRAND.lockupAr : BRAND.lockup;
 
-  let lead = t.offer.introLead
-    .replace('{name}', name)
-    .replace('{lockup}', lockup)
-    .replace('{start}', fmtDate(offer.date_start, locale))
-    .replace('{end}', fmtDate(offer.date_end, locale));
-  if (offer.duration_days && offer.duration_nights) {
-    lead += ` (${t.offer.duration.replace('{days}', offer.duration_days).replace('{nights}', offer.duration_nights)})`;
+  // The lede opens with what only this departure has — its length and dates —
+  // not with the hub's head term (2026-11-01): « عمرة رمضان 2027 من باب مكة… »
+  // on two Ramadan offers made each of them the exact answer to the query
+  // their occasion hub is meant to own, and Google swapped the hub out.
+  // Arabic only (only ar.json has introLeadDays): in French and English the
+  // hubs rank for nothing yet and the offers are the site's only Ramadan
+  // visibility, so they keep their head-first lede.
+  let lead;
+  if (offer.duration_days && offer.duration_nights && t.offer.introLeadDays) {
+    lead = t.offer.introLeadDays
+      .replace('{days}', offer.duration_days)
+      .replace('{nights}', offer.duration_nights)
+      .replace('{name}', name)
+      .replace('{lockup}', lockup)
+      .replace('{start}', fmtDate(offer.date_start, locale))
+      .replace('{end}', fmtDate(offer.date_end, locale));
+  } else {
+    lead = t.offer.introLead
+      .replace('{name}', name)
+      .replace('{lockup}', lockup)
+      .replace('{start}', fmtDate(offer.date_start, locale))
+      .replace('{end}', fmtDate(offer.date_end, locale));
+    if (offer.duration_days && offer.duration_nights) {
+      lead += ` (${t.offer.duration.replace('{days}', offer.duration_days).replace('{nights}', offer.duration_nights)})`;
+    }
   }
 
   const fragments = [lead];
@@ -202,13 +220,16 @@ export default async function OfferPage({ params }) {
 
   // Only the SEO-critical data is awaited here so the shell (H1, intro, prices,
   // gammes, JSON-LD, booking form) streams to the browser fast. The below-the-
-  // fold sections (encadrants, FAQ, similar offers) fetch their own data inside
+  // fold sections (encadrants, similar offers) fetch their own data inside
   // Suspense boundaries and stream in after — see the *Section components below.
-  const [offer, settings, team, allTestimonials] = await Promise.all([
+  // The FAQ is awaited here (2026-11-01): streamed, it shipped in a hidden div
+  // after </main>.
+  const [offer, settings, team, allTestimonials, omraFaqs] = await Promise.all([
     getOfferBySlug(slug),
     getSettings(),
     getTeam(),
     getTestimonials(),
+    getFaqs('omra'),
   ]);
   if (!offer) notFound();
 
@@ -489,9 +510,17 @@ export default async function OfferPage({ params }) {
         {/* Trail + its BreadcrumbList JSON-LD from ONE items array — no separate hand-built node to drift. */}
         <BreadcrumbTrail locale={locale}
           className="mt-3"
+          // A seasonal departure's parent is its occasion hub, not /bab-makka
+          // (2026-11-01): the trail and its BreadcrumbList now name the hub
+          // that owns « عمرة رمضان 2027 » as this page's parent.
           items={[
             { label: t.nav.home, href: `/${locale}` },
-            { label: BRAND.service, href: `/${locale}/bab-makka` },
+            offer.occasion?.slug
+              ? {
+                  label: (t.occasionPage?.heading ?? 'Omra {name}').replace('{name}', pickLang(offer.occasion, 'name', locale) ?? offer.occasion.slug),
+                  href: `/${locale}/omra-${offer.occasion.slug}`,
+                }
+              : { label: locale === 'ar' ? BRAND.serviceAr : BRAND.service, href: `/${locale}/bab-makka` },
             { label: title ?? offer.slug },
           ]}
         />
@@ -766,10 +795,8 @@ export default async function OfferPage({ params }) {
               </section>
             ) : null}
 
-            {/* FAQ — streamed */}
-            <Suspense fallback={null}>
-              <OfferFaqsSection locale={locale} faqTitle={t.home.faqTitle} />
-            </Suspense>
+            {/* FAQ — in <main>; the duration question is this departure's own */}
+            <OfferFaqsSection faqs={omraFaqs} offer={offer} locale={locale} t={t} />
 
             {/* SIMILAR — streamed */}
             <Suspense fallback={null}>
@@ -923,24 +950,44 @@ async function EncadrantsSection({ encadrants, locale, title }) {
   );
 }
 
-async function OfferFaqsSection({ locale, faqTitle }) {
-  const omraFaqs = await getFaqs('omra');
-  if (!omraFaqs.length) return null;
+// A generic « how long does an Omra last » row (« environ 15 jours ») is
+// replaced by the departure's own duration: it was shown on 25-, 32- and
+// 53-day departures (2026-11-01).
+const DURATION_FAQ_RE = /\bdur[ée]e?\b|combien de (?:temps|jours)|how long|كم (?:يوم|تدوم)|مدة/i;
+
+function OfferFaqsSection({ faqs, offer, locale, t }) {
+  const own =
+    offer.duration_days && offer.duration_nights && offer.date_start && offer.date_end && t.offer.faqDurationQ
+      ? {
+          id: 'duration',
+          q: t.offer.faqDurationQ,
+          a: t.offer.faqDurationA
+            .replace('{days}', offer.duration_days)
+            .replace('{nights}', offer.duration_nights)
+            .replace('{start}', fmtDate(offer.date_start, locale))
+            .replace('{end}', fmtDate(offer.date_end, locale)),
+        }
+      : null;
+  const generic = (faqs ?? [])
+    .filter((f) => !own || !DURATION_FAQ_RE.test(pickLang(f, 'question', 'fr') ?? ''))
+    .map((f) => ({ id: f.id, q: pickLang(f, 'question', locale), a: pickLang(f, 'answer', locale) }));
+  const rows = [own, ...generic].filter(Boolean).slice(0, 4);
+  if (!rows.length) return null;
   return (
     <section className="mt-12 max-w-prose">
-      <h2 className="text-xl font-bold text-bm-black">{faqTitle}</h2>
+      <h2 className="text-xl font-bold text-bm-black">{t.home.faqTitle}</h2>
       <div className="mt-4 flex flex-col gap-3">
-        {omraFaqs.slice(0, 4).map((faq, i) => (
+        {rows.map((faq, i) => (
           <details key={faq.id} open={i === 0} className="group rounded-card border border-bm-black/10 bg-white px-5 py-4">
             <summary className="cursor-pointer list-none font-semibold marker:content-none">
               <span className="flex items-center justify-between gap-4">
-                {pickLang(faq, 'question', locale)}
+                {faq.q}
                 <span className="text-bm-gold transition group-open:rotate-45">
                   <Icon name="plus" className="size-4" />
                 </span>
               </span>
             </summary>
-            <p data-faq-answer className="mt-3 text-sm leading-relaxed text-bm-black/70">{pickLang(faq, 'answer', locale)}</p>
+            <p data-faq-answer className="mt-3 text-sm leading-relaxed text-bm-black/70">{faq.a}</p>
           </details>
         ))}
       </div>

@@ -4,7 +4,8 @@ import { getDictionary, isLocale, pickLang, LOCALES } from '@/lib/i18n';
 import { BRAND } from '@/lib/brand';
 import { SITE_URL, absoluteUrl, hreflangAlternates, personNode } from '@/lib/seo';
 import { authoredOr, pageDescription, trustClauses } from '@/lib/page-seo';
-import { getArticleBySlug, getArticles, getCovers, getTeam } from '@/lib/data/content';
+import { getArticleBySlug, getArticles, getCovers, getTeam, getPublishedOffers } from '@/lib/data/content';
+import { offersForFilter } from '@/lib/content-resolver';
 import { getSettings } from '@/lib/data/settings';
 import { getGallerySlides } from '@/lib/data/gallery';
 import { findAuthor, authorName, isOrganisationByline } from '@/lib/authors';
@@ -19,6 +20,8 @@ import JsonLd from '@/components/site/JsonLd';
 import { isHajjBridge } from '@/lib/clusters';
 import SmartGallery from '@/components/SmartGallery';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
+
+const priceNf = new Intl.NumberFormat('fr-MA');
 
 // Publish-by-time: an article is public the moment its published_at has
 // passed (the anon RLS policy). A page requested BEFORE that moment renders a
@@ -116,6 +119,23 @@ export default async function ArticlePage({ params }) {
   // hero image: the gallery cover, else the typographic card the sibling
   // /hero route draws (title + cluster label + the Bab Makka mark).
   const body = pickLang(article, 'body', locale);
+  // A price post (it carries the sitewide <PriceRange filter="all" />) ends its
+  // answer-first lede with the live « from » price of the open departures,
+  // computed like that box (2026-11-01). The 10-28 rewrite of the prices post
+  // left its lede with no number at all — the passage AI Overviews quoted for
+  // « ثمن العمرة من المغرب » (2,080 of its 4,763 October impressions) — and
+  // the gate forbids typing a price into prose, so the number comes from data.
+  let ledePrice = null;
+  if (/<PriceRange\b[^>]*filter\s*=\s*"all"/.test(body ?? '') && t.content.ledePrice) {
+    const scoped = offersForFilter(await getPublishedOffers(), 'all');
+    const prices = scoped.map((o) => o.starting_price).filter((p) => typeof p === 'number' && p > 0);
+    if (prices.length) {
+      ledePrice = t.content.ledePrice
+        .replace('{n}', String(scoped.length))
+        .replace('{min}', priceNf.format(Math.min(...prices)))
+        .replace('{date}', dateFmt.format(new Date()));
+    }
+  }
   const heroUrl = coverUrl ?? absoluteUrl(locale, `/blog/${article.slug}/hero`);
   const articleJsonLd = blogPostingJsonLd({ article, locale, authorNode, reviewerNode, coverUrl: heroUrl });
   const faqJsonLd = faqPageJsonLd(extractFaq(body));
@@ -185,6 +205,7 @@ export default async function ArticlePage({ params }) {
         {pickLang(article, 'excerpt', locale) ? (
           <p data-answer className="mt-5 border-s-4 border-bm-gold ps-4 text-lg font-medium leading-relaxed text-bm-black/85">
             {pickLang(article, 'excerpt', locale)}
+            {ledePrice ? ` ${ledePrice}` : null}
           </p>
         ) : null}
 

@@ -3,6 +3,7 @@ import { getDictionary, pickLang } from '@/lib/i18n';
 import { getArticles, getPublishedOffers, getMonthPages } from '@/lib/data/content';
 import { clusterOfArticle, clusterOfPath, mandatoryTargetsFor, siblingArticles, articlesInCluster } from '@/lib/clusters';
 import { monthName, monthPagePath, indexableMonths, targetYearFor } from '@/lib/months';
+import { computePeriods } from '@/lib/barometer';
 
 /**
  * The related-content block every cluster page carries (blog articles, guide
@@ -42,6 +43,10 @@ export default async function ClusterLinks({ path, locale, article = null, class
       const o = offers.find((x) => /vacances-scolaires/.test(x.slug));
       if (o) push(`/${locale}/omra/${o.slug}`, anchors['school-holiday-departure'].replace('{title}', pickLang(o, 'title', locale) ?? o.slug));
       else hub('/bab-makka');
+    } else if (target === '/barometre-prix-omra' && !computePeriods(offers).periods.length) {
+      // The barometer self-noindexes below its minimum sample (the sitemap's
+      // predicate): no contextual link into a noindex page (audit 2026-11-01).
+      continue;
     } else {
       hub(target);
     }

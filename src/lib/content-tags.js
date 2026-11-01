@@ -194,6 +194,13 @@ export function hijriEventsOf(body) {
 // the countdown. Parsing and validation live here, beside parseHijriEventTag,
 // so the dependency-free gate can strip and check a token without the calendar.
 
+// `{year:now}` (2026-11-01) is the current year in Africa/Casablanca: it can
+// never be past, so it cannot go stale either, and it turns on 1 January like
+// the dated tokens. For an evergreen post whose queries carry the year
+// (« ثمن العمرة من المغرب 2026 »: 63 % of that family's impressions in October)
+// but which is pinned to no Hijri event. It needs no <HijriCountdown>.
+export const CURRENT_YEAR_TAG = 'now';
+
 /** The fields (× _fr / _ar / _en) that may carry a year token. */
 export const YEAR_TOKEN_FIELDS = Object.freeze(['title', 'seo_title', 'excerpt', 'seo_description']);
 /** A well-formed token; group 1 is the Hijri event tag. Global: use it with matchAll / replace, never .test(). */
@@ -243,7 +250,7 @@ export function yearTokensOf(text) {
   const out = [];
   for (const m of text.matchAll(YEAR_TOKEN_ANY_RE)) {
     const exact = m[0].match(YEAR_TOKEN_EXACT_RE);
-    out.push({ raw: m[0], index: m.index, tag: exact ? exact[1] : null, kind: !exact ? 'malformed' : parseHijriEventTag(exact[1]) ? 'valid' : 'unknown' });
+    out.push({ raw: m[0], index: m.index, tag: exact ? exact[1] : null, kind: !exact ? 'malformed' : exact[1] === CURRENT_YEAR_TAG || parseHijriEventTag(exact[1]) ? 'valid' : 'unknown' });
   }
   return out;
 }
@@ -340,7 +347,7 @@ export function validateYearTokens(text) {
   for (const t of yearTokensOf(text)) {
     if (t.kind === 'malformed') problems.push(`jeton d'année mal formé « ${t.raw} » — forme attendue {year:<événement hégirien>} sans espace, ex. {year:ramadan_1448_start}`);
     else if (t.kind === 'unknown') problems.push(`jeton d'année « ${t.raw} » : événement hégirien inconnu — un événement daté : ${HIJRI_EVENTS.join(', ')} suivi de son année hégirienne, ex. ramadan_1448_start, arafah_1448…`);
-    else if (!parseHijriEventTag(t.tag).hy) problems.push(`jeton d'année « ${t.raw} » sans année hégirienne — il ne disparaîtrait jamais du titre : écrire l'événement daté, ex. {year:ramadan_1448_start}`);
+    else if (t.tag !== CURRENT_YEAR_TAG && !parseHijriEventTag(t.tag)?.hy) problems.push(`jeton d'année « ${t.raw} » sans année hégirienne — il ne disparaîtrait jamais du titre : écrire l'événement daté, ex. {year:ramadan_1448_start}`);
   }
   const rest = stripYearTokens(text);
   if (typeof rest === 'string') {

@@ -7,6 +7,7 @@ import { getPublishedOffers, getHotels, getArticles, getFaqs, getGuidePages, get
 import { getSettings } from '@/lib/data/settings';
 import { GUIDE_PILLAR_SLUG, GUIDE_CHILD_SLUGS, guideIndexable, GLOSSARY_MIN_TERMS } from '@/lib/guides';
 import { CITY_SLUGS, cityPageIndexable } from '@/lib/months';
+import { computePeriods } from '@/lib/barometer';
 
 export const runtime = 'nodejs';
 export const revalidate = 3600; // hourly, like every listing — publish-by-time needs no cron
@@ -27,7 +28,8 @@ export async function GET() {
     getSettings(),
     getPublishedOffers(),
     getHotels(),
-    getArticles(20),
+    // Every published post: 20 left half the blog out (audit 2026-11-01).
+    getArticles(500),
     // General corpus only — city FAQs are emitted inside their city entries.
     Promise.all([getFaqs('confiance'), getFaqs('omra'), getFaqs('agence')]).then((r) => r.flat()),
     getGuidePages(),
@@ -245,7 +247,9 @@ export async function GET() {
     `- [Agence Omra Casablanca](${url('/agence-omra-casablanca')})`,
     `- [Guide Omra — préparer son départ](${url('/guide-omra')})`,
     `- [Glossaire de l'Omra](${url('/glossaire-omra')})`,
-    `- [Baromètre des prix Omra (données réelles)](${url('/barometre-prix-omra')})`,
+    // Only while it is indexable — the sitemap's predicate (the page
+    // self-noindexes below its minimum sample).
+    ...(computePeriods(offers).periods.length ? [`- [Baromètre des prix Omra (données réelles)](${url('/barometre-prix-omra')})`] : []),
     `- [Avis des pèlerins](${url('/avis')})`,
     `- [Notre agrément](${url('/agrement')})`,
     `- [Qui sommes-nous](${url('/a-propos')})`,

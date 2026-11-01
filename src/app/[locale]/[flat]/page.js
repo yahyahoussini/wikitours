@@ -179,11 +179,22 @@ export async function generateMetadata({ params }) {
   const occYear = occasionYearOf(occOffers);
   const occName = pickLang(resolved.occasion, 'name', locale);
   const occTrust = trustClauses(locale, { license: (await getSettings())?.license_number ?? null });
+  // With live departures the computed title says what the hub holds
+  // (« … من المغرب: البرامج والأثمنة »), with the year from those departures
+  // — never a year typed in the admin, which the build fails once past
+  // (2026-11-01). An occasion may name its own head query (Chaâbane:
+  // « عمرة شعبان 2027 », the site's #1 query, which the generic heading
+  // « عمرة شعبان رمضان 2027 » does not contain). An admin seo_title still wins.
+  // Arabic only for now (only ar.json has the templates): the French and
+  // English hubs keep their heading-only titles.
+  const occT = getDictionary(locale).occasionPage ?? {};
+  const occHeading = occasionHeading(getDictionary(locale), occName, occYear);
+  const occComputed = occYear
+    ? (occT.seoTitleBySlug?.[resolved.occasion.slug] ?? occT.seoTitle)?.replace('{heading}', occHeading).replace('{year}', String(occYear)) ?? occHeading
+    : occHeading;
   return {
     title: {
-      absolute: withBrand(
-        pickLang(resolved.occasion, 'seo_title', locale) ?? occasionHeading(getDictionary(locale), occName, occYear),
-      ),
+      absolute: withBrand(pickLang(resolved.occasion, 'seo_title', locale) ?? occComputed),
     },
     // An admin-authored seo_description always wins (LAWS §4 — admin controls
     // everything). The template is the FALLBACK, replacing what used to be a
@@ -347,6 +358,7 @@ export default async function FlatLandingPage({ params }) {
   let matching = offers;
   let heading;
   let answer = null;
+  let answerMore = null;
   let alertSource = `landing_${flat}`;
   let monthCtx = null;
   let bridges = [];
@@ -403,11 +415,30 @@ export default async function FlatLandingPage({ params }) {
     // admin text already names a price (special-septembre does), so one lede
     // never carries two.
     const adminAnswer = pickLang(resolved.occasion, 'description', locale);
+    // 2026-11-01: the hub's own departures out-answered it (their lede: brand,
+    // dates, price in 46 words; the hub's: 90–118 words, no brand, the price
+    // last) and took « عمرة رمضان 2027 » from it once indexed. With live
+    // departures the speakable lede is now ONE computed sentence — brand,
+    // number of departures, their date span, the live « from » price — and the
+    // admin's evergreen text follows as a second paragraph.
+    const dated = matching.filter((o) => o.date_start && o.date_end);
+    const leadFmt = new Intl.DateTimeFormat(locale === 'ar' ? 'ar-MA' : `${locale}-MA`, { day: 'numeric', month: 'long', timeZone: 'UTC' });
+    const computedLead =
+      dated.length && Number.isFinite(minPrice) && t.occasionPage.leadWithOffers
+        ? t.occasionPage.leadWithOffers
+            .replace('{heading}', heading)
+            .replace('{lockup}', locale === 'ar' ? BRAND.lockupAr : BRAND.lockup)
+            .replace('{n}', dated.length)
+            .replace('{first}', leadFmt.format(new Date(Math.min(...dated.map((o) => new Date(o.date_start).getTime())))))
+            .replace('{last}', leadFmt.format(new Date(Math.max(...dated.map((o) => new Date(o.date_end).getTime())))))
+            .replace('{min}', nf.format(minPrice))
+        : null;
+    if (computedLead) answerMore = adminAnswer;
     const livePrice =
-      matching.length && Number.isFinite(minPrice) && !/\b(?:DH|MAD|dirhams?)\b|درهم/i.test(adminAnswer ?? '')
+      !computedLead && matching.length && Number.isFinite(minPrice) && !/\b(?:DH|MAD|dirhams?)\b|درهم/i.test(adminAnswer ?? '')
         ? t.occasionPage.livePrice.replace('{min}', nf.format(minPrice))
         : null;
-    answer = (adminAnswer ? [adminAnswer, livePrice].filter(Boolean).join(' ') : null) ??
+    answer = computedLead ?? (adminAnswer ? [adminAnswer, livePrice].filter(Boolean).join(' ') : null) ??
       (matching.length === 0
         ? t.occasionPage.empty
         : t.occasionPage.answerWithOffers
@@ -537,6 +568,7 @@ export default async function FlatLandingPage({ params }) {
             {answer ? (
               <p data-answer className="mt-3 max-w-2xl text-lg leading-relaxed text-white/80">{answer}</p>
             ) : null}
+            {answerMore ? <p className="mt-3 max-w-2xl leading-relaxed text-white/70">{answerMore}</p> : null}
             {/* Reciprocal link to the agency entity page. Distinct intent — this
                 page is departure logistics, that one is who/where/licence — so
                 they link to each other instead of competing. */}
@@ -577,6 +609,7 @@ export default async function FlatLandingPage({ params }) {
 
         {matching.length > 0 ? (
           <div className="mt-8">
+            <h2 className="mb-6 text-2xl font-bold">{t.content.departuresTitle}</h2>
             <PackagesSection
               offers={matching.map((offer) => toOfferCard(offer, covers.get(offer.id), locale))}
               occasions={[]}

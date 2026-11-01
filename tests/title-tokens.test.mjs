@@ -404,3 +404,18 @@ describe('refreshYearTokenPages — the site-wide revalidation the crons run', (
     assert.equal(value, 'error');
   });
 });
+
+describe('{year:now} — the current year, for an evergreen post whose queries carry it (2026-11-01)', () => {
+  test('resolves to the current year in Africa/Casablanca and turns on 1 January', async () => {
+    const { resolveYearTokens } = await import('../src/lib/title-tokens.js');
+    assert.equal(resolveYearTokens('أسعار العمرة من المغرب {year:now} حسب الفئة', { now: new Date('2026-11-01T12:00:00Z') }), 'أسعار العمرة من المغرب 2026 حسب الفئة');
+    assert.equal(resolveYearTokens('Prix Omra Maroc {year:now}', { now: new Date('2026-12-31T21:00:00Z') }), 'Prix Omra Maroc 2026');
+    assert.equal(resolveYearTokens('Prix Omra Maroc {year:now}', { now: new Date('2027-01-01T02:00:00Z') }), 'Prix Omra Maroc 2027');
+  });
+  test('the gate accepts it without a Hijri year or a countdown', async () => {
+    const { validateYearTokens, yearTokensOf } = await import('../src/lib/content-tags.js');
+    assert.deepEqual(validateYearTokens('Prix Omra Maroc {year:now} par gamme'), []);
+    assert.equal(yearTokensOf('x {year:now}')[0].kind, 'valid');
+    assert.equal(yearTokensOf('x {year:nowish}')[0].kind, 'unknown');
+  });
+});

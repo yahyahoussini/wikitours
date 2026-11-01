@@ -153,14 +153,19 @@ export function OfferCard({ offer, locale, t, whatsappHref, compact = false }) {
           </p>
         )}
 
-        <h2 className="flex flex-wrap items-center gap-2 text-lg font-bold leading-snug">
-          {title}
+        {/* <h3>, badge outside the heading (2026-11-01): as <h2> with the tier
+            glued in (« …15 فبراير اقتصادية »), every listing page carried the
+            offers' head terms as its own section headings, and hubs competed
+            with their own departures. Every page that lists cards now puts an
+            <h2> above them. */}
+        <div className="flex flex-wrap items-center gap-2">
+          <h3 className="text-lg font-bold leading-snug">{title}</h3>
           {tierLabel && t.tier?.[tierLabel] ? (
             <span className="rounded-full border border-bm-gold/50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-bm-gold">
               {t.tier[tierLabel]}
             </span>
           ) : null}
-        </h2>
+        </div>
 
         <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-bm-black/55">
           {offer.duration_days && offer.duration_nights ? (
