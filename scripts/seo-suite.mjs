@@ -452,6 +452,11 @@ async function runSuite(rawPages, sitemapXml) {
     if (!p.hasMain) { fail('rendering', p.route, 'no <main> in the served HTML'); continue; }
     if (p.h1 !== 1) fail('rendering', p.route, `${p.h1} <h1> in the served HTML (want 1)`);
     if (!p.noindex && p.guardEmpty) fail('rendering', p.route, 'indexable page serves its data-guard="empty" scaffold state');
+    // 2026-11-01: renderMarkdown printed every post table as « | … |---| » text.
+    const rawTable = p.blocks.find((b) => /^\|.*\|$/.test(b) || /\|\s*:?-{3,}:?\s*\|/.test(b));
+    if (rawTable) fail('rendering', p.route, `raw markdown table printed as text (no <table> built): "${rawTable.slice(0, 80)}"`);
+    const rawQuote = p.blocks.find((b) => /^>\s/.test(b));
+    if (rawQuote) fail('rendering', p.route, `raw markdown quote printed as text: "${rawQuote.slice(0, 80)}"`);
   }
   for (const p of representative(live)) {
     if (p.hasMain && p.mainWords < RENDER_MIN_WORDS) fail('rendering', p.route, `<main> carries ${p.mainWords} words in the served HTML (want ≥ ${RENDER_MIN_WORDS}) — content must not depend on JavaScript (hard constraint 5)`);
@@ -539,6 +544,7 @@ async function selfTest(rawPages, sitemapXml) {
     ['rendering', 'the <h1> removed', () => ({ pages: edit(home, (h) => h.replace(/<h1\b/i, '<h2').replace(/<\/h1>/i, '</h2>')) }), '0 <h1> in the served HTML'],
     ['rendering', 'a NON-sampled indexable page serving its empty scaffold', () => ({ pages: edit(secondCity, inMain('<div data-guard="empty"></div>')) }), 'serves its data-guard="empty" scaffold state'],
     ['rendering', 'a NON-sampled page with two <h1>', () => ({ pages: edit(secondCity, inMain('<h1>Deux</h1>')) }), '2 <h1> in the served HTML'],
+    ['rendering', 'a markdown table printed as raw text', () => ({ pages: edit(secondCity, inMain('<p>| Gamme | Prix |<br/>|---|---|<br/>| Eco | 13 500 |</p>')) }), 'raw markdown table printed as text'],
   ];
   const restOfRoute = (route) => route.split('/').slice(2).join('/');
 
