@@ -221,7 +221,7 @@ the long tail its own programme creates — the duration, the dates, the airline
 | Query family | Owner page | Must NOT target |
 |---|---|---|
 | omra ramadan 32 jours · omra ramadan un mois complet · عمرة رمضان 32 يوم · عمرة رمضان شهر كامل · Ramadan umrah 32 days | `/omra/omra-ramadan-2027-32-jours` (added 2026-09-24, from the agency's own offer sheet: 12 Feb → 15 Mar 2027, Saudia, arrival **Madinah**, 4 nights Madinah then Makkah) | « omra ramadan 2027 prix » and « عمرة رمضان 2027 المغرب » — those belong to `/omra-ramadan`, which this page links up to |
-| **مجاورة رمضان** · مجاورة رمضان كاملاً · عمرة رمضان 56 يوم · omra ramadan 56 jours · omra ramadan deux mois | `/omra/omra-ramadan-2027-56-jours` (20 Jan → 16 Mar 2027) | the 53-day sibling's own duration terms |
+| **مجاورة رمضان** · مجاورة رمضان كاملاً · عمرة رمضان 56 يوم · omra ramadan 56 jours · omra ramadan deux mois | `/omra/omra-ramadan-2027-53-jours` (23 Jan → 16 Mar 2027); the 56-day URL was withdrawn and 301s here (2026-11-01) | the offer's own duration terms |
 | عمرة رمضان 53 يوم · omra ramadan 53 jours | `/omra/omra-ramadan-2027-53-jours` (23 Jan → 16 Mar 2027) | the 56-day sibling's own duration terms |
 | omra chaâbane ramadan 25 jours · 15 jours | `/omra/omra-chaabane-ramadan-2027-25-jours`, `…-15-jours` | « omra chaâbane 2027 » — belongs to `/omra-chaabane-ramadan` |
 | omra 25 novembre 2026 · عمرة نونبر 14 يوم | `/omra/omra-novembre-2026-25-novembre` (created by the owner 2026-10-03; tiers from the owner's sheet 2026-10-04: 25 Nov → 8 Dec, 9 nights Makkah + 4 Madinah) | « omra novembre 2026 » — belongs to `/omra-novembre`; the 4-18 Nov sibling's dates |

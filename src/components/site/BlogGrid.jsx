@@ -75,7 +75,18 @@ export default function BlogGrid({ locale, articles, labels }) {
                   blurDataURL={BLUR_DATA_URL}
                   className="object-cover transition duration-500 ease-luxe group-hover:scale-105"
                 />
-              ) : null}
+              ) : (
+                // No gallery cover: the same typographic hero card as the post page.
+                <img
+                  src={`/${locale}/blog/${article.slug}/hero`}
+                  alt={article.title ?? ''}
+                  width={1600}
+                  height={900}
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 h-full w-full object-cover transition duration-500 ease-luxe group-hover:scale-105"
+                />
+              )}
             </div>
             <div className="flex flex-1 flex-col p-5">
               <p className="text-xs font-semibold uppercase tracking-wide text-wiki-blue">
