@@ -64,29 +64,18 @@ export default function BlogGrid({ locale, articles, labels }) {
             }`}
           >
             <div className="relative aspect-[16/10] bg-bm-black/5">
-              {article.cover ? (
-                <MediaImage
-                  src={article.cover.src}
-                  alt={article.cover.alt ?? article.title ?? ''}
-                  fill
-                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  loading="lazy"
-                  placeholder="blur"
-                  blurDataURL={BLUR_DATA_URL}
-                  className="object-cover transition duration-500 ease-luxe group-hover:scale-105"
-                />
-              ) : (
-                // No gallery cover: the same typographic hero card as the post page.
-                <img
-                  src={`/${locale}/blog/${article.slug}/hero`}
-                  alt={article.title ?? ''}
-                  width={1600}
-                  height={900}
-                  loading="lazy"
-                  decoding="async"
-                  className="absolute inset-0 h-full w-full object-cover transition duration-500 ease-luxe group-hover:scale-105"
-                />
-              )}
+              {/* No gallery cover: the same typographic hero card as the post
+                  page, through the optimizer (a 480 KB PNG becomes ~6 KB). */}
+              <MediaImage
+                src={article.cover?.src ?? `/${locale}/blog/${article.slug}/hero`}
+                alt={article.cover?.alt ?? article.title ?? ''}
+                fill
+                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                loading="lazy"
+                placeholder="blur"
+                blurDataURL={BLUR_DATA_URL}
+                className="object-cover transition duration-500 ease-luxe group-hover:scale-105"
+              />
             </div>
             <div className="flex flex-1 flex-col p-5">
               <p className="text-xs font-semibold uppercase tracking-wide text-wiki-blue">
