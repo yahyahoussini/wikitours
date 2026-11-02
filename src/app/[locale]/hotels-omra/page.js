@@ -4,7 +4,7 @@ import { BRAND } from '@/lib/brand';
 import { getDictionary, isLocale, pickLang } from '@/lib/i18n';
 import { SITE_URL, absoluteUrl, hreflangAlternates, clampDesc, SPEAKABLE, hotelNode } from '@/lib/seo';
 import { pageDescription, trustClauses } from '@/lib/page-seo';
-import { getHotels } from '@/lib/data/content';
+import { getHotels, getPublishedOffers } from '@/lib/data/content';
 import { getSettings } from '@/lib/data/settings';
 import BrandLockup from '@/components/site/BrandLockup';
 import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
@@ -45,8 +45,19 @@ export default async function HotelsComparePage({ params }) {
   if (!isLocale(locale)) notFound();
   const t = getDictionary(locale);
 
-  const hotels = ranked(await getHotels());
+  const [allHotels, offers] = await Promise.all([getHotels(), getPublishedOffers()]);
+  const hotels = ranked(allHotels);
   if (!hotels.length) notFound();
+
+  // Breakfast is sold per gamme (offer_tiers.breakfast_included): a hotel whose
+  // own row says no can still come with it on an open trip, and a flat « Non »
+  // would contradict that trip's page.
+  const breakfastOnTrips = new Set(
+    offers
+      .flatMap((o) => o.tiers ?? [])
+      .filter((tier) => tier.breakfast_included)
+      .flatMap((tier) => [tier.hotel_makkah_id, tier.hotel_madinah_id]),
+  );
 
   const cityLabel = (c) => (c === 'makkah' ? t.offer.makkah : t.offer.madinah);
   const closest = hotels.find((h) => h.distance_to_haram_m != null) ?? hotels[0];
@@ -141,7 +152,7 @@ export default async function HotelsComparePage({ params }) {
                   {h.distance_to_haram_m != null ? `${h.distance_to_haram_m} m` : '—'}
                 </td>
                 <td className="px-4 py-3 text-bm-black/70">
-                  {h.breakfast_included ? t.pages.yes : t.pages.no}
+                  {h.breakfast_included ? t.pages.yes : breakfastOnTrips.has(h.id) ? t.pages.breakfastByTrip : t.pages.no}
                 </td>
               </tr>
             ))}

@@ -1,126 +1,126 @@
 {
-  "generated_at": "2026-10-09T11:07:17.156Z",
+  "generated_at": "2026-11-02T13:21:38.214Z",
   "rule": "Only facts listed here may be stated in prose. A fact not listed is written WITHOUT the figure. Volatile facts render live via placeholder tags. No year other than fondee_en, no price, no currency amount, no departure date, no seat count, no hotel distance in prose (gate G5); a number above 10 in prose must appear in this file.",
   "entity": [
     {
       "key": "organisation",
       "value": "Wiki Tours International",
       "source": "src/lib/brand.js",
-      "as_of": "2026-10-09"
+      "as_of": "2026-11-02"
     },
     {
       "key": "service_omra",
       "value": "Bab Makka",
       "source": "src/lib/brand.js",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "graphie canonique — jamais « Bab Makkah » en texte"
     },
     {
       "key": "lockup",
       "value": "Bab Makka by Wiki Tours International",
       "source": "src/lib/brand.js",
-      "as_of": "2026-10-09"
+      "as_of": "2026-11-02"
     },
     {
       "key": "fondee_en",
       "value": 2016,
       "source": "src/lib/brand.js / CLAUDE.md (project summary)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "le seul millésime autorisé en prose : « depuis 2016 »"
     },
     {
       "key": "licence",
       "value": "ODV-25012",
       "source": "settings.license_number",
-      "as_of": "2026-10-04",
+      "as_of": "2026-11-01",
       "note": "licence de voyages, Ministère du Tourisme"
     },
     {
       "key": "ville",
       "value": "Casablanca",
       "source": "settings.address_fr",
-      "as_of": "2026-10-04"
+      "as_of": "2026-11-01"
     },
     {
       "key": "adresse_fr",
       "value": "Immeuble Anoual Capital Center, 418 Angle Bd Abdelmoumen et Bd Anoual, Magasin N°1 RDC, Casablanca.",
       "source": "settings.address_fr",
-      "as_of": "2026-10-04"
+      "as_of": "2026-11-01"
     },
     {
       "key": "adresse_ar",
       "value": "عمارة أنوال كابيتال سنتر، 418 ملتقى شارع عبد المومن وشارع أنوال، محل رقم 1 الطابق الأرضي، الدار البيضاء.",
       "source": "settings.address_ar",
-      "as_of": "2026-10-04"
+      "as_of": "2026-11-01"
     },
     {
       "key": "adresse_en",
       "value": "Anoual Capital Center Building, 418 Corner of Abdelmoumen Blvd and Anoual Blvd, Shop No. 1 Ground Floor, Casablanca.",
       "source": "settings.address_en",
-      "as_of": "2026-10-04"
+      "as_of": "2026-11-01"
     },
     {
       "key": "telephone",
       "value": "0601351105",
       "source": "settings.phone_1",
-      "as_of": "2026-10-04"
+      "as_of": "2026-11-01"
     },
     {
       "key": "whatsapp",
       "value": "+212 601-351105",
       "source": "settings.whatsapp_number",
-      "as_of": "2026-10-04"
+      "as_of": "2026-11-01"
     },
     {
       "key": "email",
       "value": "contact@wikitours.ma",
       "source": "settings.email",
-      "as_of": "2026-10-04"
+      "as_of": "2026-11-01"
     },
     {
       "key": "horaires_fr",
       "value": "Du lundi au vendredi : 08:30 – 21:30\nSamedi : 08:30 – 14:30\nDimanche : fermé\nWhatsApp et service en ligne : 24h/24, 7j/7 — réponse en moins de 5 minutes",
       "source": "settings.opening_hours_fr",
-      "as_of": "2026-10-04"
+      "as_of": "2026-11-01"
     },
     {
       "key": "horaires_ar",
       "value": "من الإثنين إلى الجمعة: 08:30 – 21:30\nالسبت: 08:30 – 14:30\nالأحد: مغلق\nواتساب والخدمة عبر الإنترنت: على مدار الساعة طوال أيام الأسبوع — نجيبكم في أقل من 5 دقائق",
       "source": "settings.opening_hours_ar",
-      "as_of": "2026-10-04"
+      "as_of": "2026-11-01"
     },
     {
       "key": "horaires_en",
       "value": "Monday to Friday: 08:30 – 21:30\nSaturday: 08:30 – 14:30\nSunday: closed\nWhatsApp and online service: 24/7 — we reply in under 5 minutes",
       "source": "settings.opening_hours_en",
-      "as_of": "2026-10-04"
+      "as_of": "2026-11-01"
     },
     {
       "key": "note_google",
       "value": 4.8,
       "source": "settings.gbp_rating (synced by /api/cron/sync-reviews)",
-      "as_of": "2026-10-04",
+      "as_of": "2026-11-01",
       "note": "visible copy only — never in schema; never rounded up"
     },
     {
       "key": "avis_google",
-      "value": 142,
+      "value": 157,
       "source": "settings.gbp_review_count (synced)",
-      "as_of": "2026-10-04",
+      "as_of": "2026-11-01",
       "note": "changes weekly — quote as « plus de N avis » only if N is the current value"
     },
     {
       "key": "paiement",
       "value": "Aucun paiement en ligne : contrat écrit signé à l’agence, acompte versé à l’agence, reçu officiel.",
       "source": "dictionaries meta.trustNoPayment · faqs (paiement)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "the amount of the deposit is NOT a fact here — <PolicyFact key=\"deposit\" /> renders the policy live"
     },
     {
       "key": "aeroport_depart",
       "value": "Aéroport Mohammed V (Casablanca) — le point de rassemblement de tous les départs",
       "source": "city_pages.logistics_fr (8 rows)",
-      "as_of": "2026-10-09"
+      "as_of": "2026-11-02"
     },
     {
       "key": "villes_de_depart",
@@ -175,7 +175,7 @@
         }
       ],
       "source": "src/i18n/*.json cities",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "Arabic pages use the Arabic name only"
     },
     {
@@ -255,7 +255,7 @@
         }
       ],
       "source": "src/i18n/*.json months",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "Moroccan Arabic month names — never the Levantine forms"
     }
   ],
@@ -320,8 +320,6 @@
     {
       "key": "durees_proposees_jours",
       "value": [
-        8,
-        14,
         15,
         16,
         25,
@@ -329,7 +327,7 @@
         53
       ],
       "source": "offers (published, not returned) duration_days",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "the durations currently on sale — say « des séjours de 8 ou 15 jours » only while they are; departures themselves render via <LiveDepartures>"
     },
     {
@@ -339,7 +337,7 @@
         "Saudia Airlines"
       ],
       "source": "offers.airline (published)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "name only — schedules and prices never in prose"
     },
     {
@@ -373,19 +371,19 @@
           "slug": "emaar-grand-hotel",
           "name": "Emaar Grand",
           "city": "makkah",
-          "stars": 5
+          "stars": 4
+        },
+        {
+          "slug": "makarem-madinah",
+          "name": "Group Makarem Madinah",
+          "city": "madinah",
+          "stars": 3
         },
         {
           "slug": "jayden-medina-hotel",
           "name": "Jayden Medina Hotel",
           "city": "madinah",
           "stars": 4
-        },
-        {
-          "slug": "makarem-madinah",
-          "name": "Makarem Madinah",
-          "city": "madinah",
-          "stars": 5
         },
         {
           "slug": "swiss-international",
@@ -401,7 +399,7 @@
         }
       ],
       "source": "hotels (published)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "names, city, stars — the distance renders via <HotelCard slug /> and is never in prose (gate G5)"
     }
   ],
@@ -500,273 +498,273 @@
       "key": "muharram_1448",
       "value": "2026-06-16",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "ashura_1448",
       "value": "2026-06-25",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "mawlid_1448",
       "value": "2026-08-25",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "rajab_1448",
       "value": "2026-12-10",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "shaban_1448",
       "value": "2027-01-09",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "ramadan_1448",
       "value": "2027-02-08",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "ramadan-last10_1448",
       "value": "2027-02-28",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "laylat-al-qadr_1448",
       "value": "2027-03-06",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "eid-al-fitr_1448",
       "value": "2027-03-09",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "dhul-qada_1448",
       "value": "2027-04-08",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "dhul-hijja_1448",
       "value": "2027-05-07",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "arafat_1448",
       "value": "2027-05-15",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "eid-al-adha_1448",
       "value": "2027-05-16",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "muharram_1449",
       "value": "2027-06-06",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "ashura_1449",
       "value": "2027-06-15",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "mawlid_1449",
       "value": "2027-08-14",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "rajab_1449",
       "value": "2027-11-29",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "shaban_1449",
       "value": "2027-12-29",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "ramadan_1449",
       "value": "2028-01-28",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "ramadan-last10_1449",
       "value": "2028-02-17",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "laylat-al-qadr_1449",
       "value": "2028-02-23",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "eid-al-fitr_1449",
       "value": "2028-02-26",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "dhul-qada_1449",
       "value": "2028-03-27",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "dhul-hijja_1449",
       "value": "2028-04-26",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "arafat_1449",
       "value": "2028-05-04",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "eid-al-adha_1449",
       "value": "2028-05-05",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "muharram_1450",
       "value": "2028-05-25",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "ashura_1450",
       "value": "2028-06-03",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "mawlid_1450",
       "value": "2028-08-03",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "rajab_1450",
       "value": "2028-11-18",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "shaban_1450",
       "value": "2028-12-17",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "ramadan_1450",
       "value": "2029-01-16",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "ramadan-last10_1450",
       "value": "2029-02-05",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "laylat-al-qadr_1450",
       "value": "2029-02-11",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "eid-al-fitr_1450",
       "value": "2029-02-14",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "dhul-qada_1450",
       "value": "2029-03-16",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "dhul-hijja_1450",
       "value": "2029-04-15",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "arafat_1450",
       "value": "2029-04-23",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     },
     {
       "key": "eid-al-adha_1450",
       "value": "2029-04-24",
       "source": "src/lib/hijri.js (@umalqura/core, Umm al-Qura)",
-      "as_of": "2026-10-09",
+      "as_of": "2026-11-02",
       "note": "±2 jours selon l'observation de la lune — render via <HijriCountdown event=\"…\" />, never the date in prose"
     }
   ],
@@ -806,23 +804,6 @@
       }
     },
     {
-      "source": "faqs/bd9c9f04-af93-4dec-bf57-50cb1d545e19",
-      "as_of": "2026-09-07",
-      "category": "confiance",
-      "fr": {
-        "q": "Comment vérifier que Wiki Tours est une agence agréée ?",
-        "a": "Notre licence d'agence de voyages porte le numéro ODV-25012, délivrée par le Ministère du Tourisme. Elle est affichée à notre agence de Casablanca, boulevard Abdelmoumen, et vérifiable auprès du Ministère. Vous pouvez également venir nous rencontrer sur place avant toute réservation."
-      },
-      "ar": {
-        "q": "كيف أتأكد من أن ويكي تورز وكالة مرخصة؟",
-        "a": "رخصة وكالتنا للأسفار تحمل رقم ODV-25012، وهي صادرة عن وزارة السياحة بالمملكة المغربية. وهي معلَّقة بشكل ظاهر بوكالتنا بالدار البيضاء، شارع عبد المومن، وقابلة للتحقق لدى مصالح الوزارة، كما تُذكر في عقدكم. ويمكنكم كذلك زيارتنا في المقر والاطلاع عليها بأنفسكم قبل أي حجز أو أداء."
-      },
-      "en": {
-        "q": "How can I verify that Wiki Tours is a licensed agency?",
-        "a": "Our travel agency licence is number ODV-25012, issued by the Ministry of Tourism. It is displayed at our Casablanca agency on Boulevard Abdelmoumen, and can be verified with the Ministry. You are also welcome to visit us in person before any booking."
-      }
-    },
-    {
       "source": "faqs/f0fd9015-ed32-49e4-a07c-ccbc45617902",
       "as_of": "2026-09-07",
       "category": "agence",
@@ -840,20 +821,37 @@
       }
     },
     {
-      "source": "faqs/36ea3e24-54dc-402a-8831-072c8d60268c",
-      "as_of": "2026-09-21",
-      "category": "occasion-chaabane-ramadan",
+      "source": "faqs/bd9c9f04-af93-4dec-bf57-50cb1d545e19",
+      "as_of": "2026-09-07",
+      "category": "confiance",
       "fr": {
-        "q": "Quel visa faut-il pour une Omra pendant le Ramadan ?",
-        "a": "Il faut une tâchirat Omra. La FAQ officielle du ministère saoudien du Hajj et de la Omra prévoit deux voies : composer son programme sur une plateforme agréée comme Nusuk, ou passer par un agent extérieur qui dépose la demande. En tant qu'agence agréée ODV-25012, nous déposons votre dossier et vous suivez l'avancement sans démarche technique."
+        "q": "Comment vérifier que Wiki Tours est une agence agréée ?",
+        "a": "Notre licence d'agence de voyages porte le numéro ODV-25012, délivrée par le Ministère du Tourisme. Elle est affichée à notre agence de Casablanca, boulevard Abdelmoumen, et vérifiable auprès du Ministère. Vous pouvez également venir nous rencontrer sur place avant toute réservation."
       },
       "ar": {
-        "q": "ما هي التأشيرة المطلوبة لعمرة رمضان؟",
-        "a": "تلزم تأشيرة عمرة. وتنص الأسئلة الشائعة الرسمية لوزارة الحج والعمرة السعودية على طريقتين: تصميم البرنامج عبر منصة معتمدة مثل نُسُك، أو التواصل مع وكيل خارجي يتولى الطلب. وبصفتنا وكالة مرخصة برقم ODV-25012، نتكفل بملفكم وتتابعون التقدم دون إجراءات تقنية."
+        "q": "كيف أتأكد من أن ويكي تورز وكالة مرخصة؟",
+        "a": "رخصة وكالتنا للأسفار تحمل رقم ODV-25012، وهي صادرة عن وزارة السياحة بالمملكة المغربية. وهي معلَّقة بشكل ظاهر بوكالتنا بالدار البيضاء، شارع عبد المومن، وقابلة للتحقق لدى مصالح الوزارة، كما تُذكر في عقدكم. ويمكنكم كذلك زيارتنا في المقر والاطلاع عليها بأنفسكم قبل أي حجز أو أداء."
       },
       "en": {
-        "q": "Which visa do you need for an Umrah during Ramadan?",
-        "a": "You need an Umrah visa. The Saudi Ministry of Hajj and Umrah's official FAQ sets out two routes: building your programme on an approved platform such as Nusuk, or going through an external agent who files the application. As a licensed agency, ODV-25012, we file your application and you follow its progress with no technical steps."
+        "q": "How can I verify that Wiki Tours is a licensed agency?",
+        "a": "Our travel agency licence is number ODV-25012, issued by the Ministry of Tourism. It is displayed at our Casablanca agency on Boulevard Abdelmoumen, and can be verified with the Ministry. You are also welcome to visit us in person before any booking."
+      }
+    },
+    {
+      "source": "faqs/8a8aa382-9d68-42f6-a0a2-0d5a58acca31",
+      "as_of": "2026-09-07",
+      "category": "ville-fes",
+      "fr": {
+        "q": "Peut-on organiser son Omra depuis Fès ?",
+        "a": "Oui. Depuis Fès, le dossier se prépare par téléphone ou WhatsApp : notre équipe vous conseille la gamme, liste les documents nécessaires et répond à vos questions. La réservation se confirme ensuite par un contrat signé à notre agence de Casablanca, et le départ s'effectue à l'aéroport Mohammed V."
+      },
+      "ar": {
+        "q": "هل يمكن تنظيم العمرة انطلاقاً من فاس؟",
+        "a": "نعم. من فاس، يُعَدّ الملف بالكامل عبر الهاتف أو واتساب دون الحاجة إلى التنقل: فريقنا ينصحكم بالفئة المناسبة ويحدد الوثائق المطلوبة ويجيب عن جميع أسئلتكم. ثم يُؤكَّد الحجز بعقد يُوقَّع بوكالتنا بالدار البيضاء مع وصل رسمي، والانطلاق يكون من مطار محمد الخامس مع المجموعة."
+      },
+      "en": {
+        "q": "Can I arrange my Umrah from Fès?",
+        "a": "Yes. From Fès, the file is prepared by phone or WhatsApp: our team advises on the tier, lists the required documents and answers your questions. The booking is then confirmed with a contract signed at our Casablanca agency, and departure takes place at Mohammed V airport."
       }
     },
     {
@@ -891,23 +889,6 @@
       }
     },
     {
-      "source": "faqs/8a8aa382-9d68-42f6-a0a2-0d5a58acca31",
-      "as_of": "2026-09-07",
-      "category": "ville-fes",
-      "fr": {
-        "q": "Peut-on organiser son Omra depuis Fès ?",
-        "a": "Oui. Depuis Fès, le dossier se prépare par téléphone ou WhatsApp : notre équipe vous conseille la gamme, liste les documents nécessaires et répond à vos questions. La réservation se confirme ensuite par un contrat signé à notre agence de Casablanca, et le départ s'effectue à l'aéroport Mohammed V."
-      },
-      "ar": {
-        "q": "هل يمكن تنظيم العمرة انطلاقاً من فاس؟",
-        "a": "نعم. من فاس، يُعَدّ الملف بالكامل عبر الهاتف أو واتساب دون الحاجة إلى التنقل: فريقنا ينصحكم بالفئة المناسبة ويحدد الوثائق المطلوبة ويجيب عن جميع أسئلتكم. ثم يُؤكَّد الحجز بعقد يُوقَّع بوكالتنا بالدار البيضاء مع وصل رسمي، والانطلاق يكون من مطار محمد الخامس مع المجموعة."
-      },
-      "en": {
-        "q": "Can I arrange my Umrah from Fès?",
-        "a": "Yes. From Fès, the file is prepared by phone or WhatsApp: our team advises on the tier, lists the required documents and answers your questions. The booking is then confirmed with a contract signed at our Casablanca agency, and departure takes place at Mohammed V airport."
-      }
-    },
-    {
       "source": "faqs/f8f2ba29-2532-40a1-97eb-f8ee51945a58",
       "as_of": "2026-09-07",
       "category": "ville-rabat",
@@ -922,6 +903,23 @@
       "en": {
         "q": "Can I arrange my Umrah from Rabat?",
         "a": "Yes. From Rabat, the file is prepared by phone or WhatsApp: our team advises on the tier, lists the required documents and answers your questions. The booking is then confirmed with a contract signed at our Casablanca agency, and departure takes place at Mohammed V airport."
+      }
+    },
+    {
+      "source": "faqs/a68014c0-3edf-4bf6-bbd2-2e3c27e5b2aa",
+      "as_of": "2026-09-07",
+      "category": "ville-meknes",
+      "fr": {
+        "q": "Peut-on organiser son Omra depuis Meknès ?",
+        "a": "Oui. Depuis Meknès, le dossier se prépare par téléphone ou WhatsApp : notre équipe vous conseille la gamme, liste les documents nécessaires et répond à vos questions. La réservation se confirme ensuite par un contrat signé à notre agence de Casablanca, et le départ s'effectue à l'aéroport Mohammed V."
+      },
+      "ar": {
+        "q": "هل يمكن تنظيم العمرة انطلاقاً من مكناس؟",
+        "a": "نعم. من مكناس، يُعَدّ الملف بالكامل عبر الهاتف أو واتساب دون الحاجة إلى التنقل: فريقنا ينصحكم بالفئة المناسبة ويحدد الوثائق المطلوبة ويجيب عن جميع أسئلتكم. ثم يُؤكَّد الحجز بعقد يُوقَّع بوكالتنا بالدار البيضاء مع وصل رسمي، والانطلاق يكون من مطار محمد الخامس مع المجموعة."
+      },
+      "en": {
+        "q": "Can I arrange my Umrah from Meknès?",
+        "a": "Yes. From Meknès, the file is prepared by phone or WhatsApp: our team advises on the tier, lists the required documents and answers your questions. The booking is then confirmed with a contract signed at our Casablanca agency, and departure takes place at Mohammed V airport."
       }
     },
     {
@@ -942,20 +940,20 @@
       }
     },
     {
-      "source": "faqs/a68014c0-3edf-4bf6-bbd2-2e3c27e5b2aa",
-      "as_of": "2026-09-07",
-      "category": "ville-meknes",
+      "source": "faqs/36ea3e24-54dc-402a-8831-072c8d60268c",
+      "as_of": "2026-10-25",
+      "category": "occasion-chaabane-ramadan",
       "fr": {
-        "q": "Peut-on organiser son Omra depuis Meknès ?",
-        "a": "Oui. Depuis Meknès, le dossier se prépare par téléphone ou WhatsApp : notre équipe vous conseille la gamme, liste les documents nécessaires et répond à vos questions. La réservation se confirme ensuite par un contrat signé à notre agence de Casablanca, et le départ s'effectue à l'aéroport Mohammed V."
+        "q": "Qu'est-ce qu'une Omra Chaâbane-Ramadan ?",
+        "a": "C'est une Omra qui part pendant le mois de Chaâbane et se termine dans les premiers jours du Ramadan. Vous accomplissez votre Omra avant le mois de jeûne, puis vous vivez les premières nuits de tarawih et les premiers jours de jeûne aux Lieux saints, avant l'affluence des dix dernières nuits. Départ de Casablanca avec Saudia."
       },
       "ar": {
-        "q": "هل يمكن تنظيم العمرة انطلاقاً من مكناس؟",
-        "a": "نعم. من مكناس، يُعَدّ الملف بالكامل عبر الهاتف أو واتساب دون الحاجة إلى التنقل: فريقنا ينصحكم بالفئة المناسبة ويحدد الوثائق المطلوبة ويجيب عن جميع أسئلتكم. ثم يُؤكَّد الحجز بعقد يُوقَّع بوكالتنا بالدار البيضاء مع وصل رسمي، والانطلاق يكون من مطار محمد الخامس مع المجموعة."
+        "q": "ما هي عمرة شعبان رمضان؟",
+        "a": "هي عمرة تنطلق خلال شهر شعبان وتنتهي في الأيام الأولى من رمضان. تؤدّون عمرتكم قبل شهر الصيام، ثم تعيشون أولى ليالي التراويح وأولى أيام الصيام في الديار المقدسة، قبل ازدحام العشر الأواخر. الانطلاق من الدار البيضاء على متن الخطوط السعودية."
       },
       "en": {
-        "q": "Can I arrange my Umrah from Meknès?",
-        "a": "Yes. From Meknès, the file is prepared by phone or WhatsApp: our team advises on the tier, lists the required documents and answers your questions. The booking is then confirmed with a contract signed at our Casablanca agency, and departure takes place at Mohammed V airport."
+        "q": "What is a Sha'ban–Ramadan Umrah?",
+        "a": "It is an Umrah that leaves during the month of Sha'ban and ends in the first days of Ramadan. You perform your Umrah before the month of fasting, then spend the first nights of tarawih and the first days of fasting in the Holy Places, before the crowds of the last ten nights. Departure from Casablanca with Saudia."
       }
     },
     {
@@ -1010,23 +1008,6 @@
       }
     },
     {
-      "source": "faqs/cc1e430f-dd11-4d54-ba18-f447fd46271c",
-      "as_of": "2026-09-21",
-      "category": "occasion-chaabane-ramadan",
-      "fr": {
-        "q": "Combien de temps mon passeport doit-il rester valide ?",
-        "a": "Les conditions officielles du portail eVisa saoudien exigent au moins 6 mois de validité restante à compter de la date d'entrée dans le Royaume — pas à partir du retour. Un passeport qui expire moins de six mois après votre arrivée sera refusé : vérifiez-le avant de réserver, le renouvellement prend du temps."
-      },
-      "ar": {
-        "q": "ما هي المدة التي يجب أن يبقى فيها جواز سفري صالحاً؟",
-        "a": "تشترط الشروط الرسمية لبوابة التأشيرة الإلكترونية السعودية ما لا يقل عن 6 أشهر من الصلاحية المتبقية ابتداءً من تاريخ الدخول إلى المملكة، لا من تاريخ العودة. فإن كان جوازكم ينتهي قبل ستة أشهر من وصولكم، سيُرفض الطلب: تحققوا قبل الحجز لأن التجديد يستغرق وقتاً."
-      },
-      "en": {
-        "q": "How long must my passport stay valid?",
-        "a": "The official terms of the Saudi eVisa portal require at least 6 months of validity remaining from the date of entry into the Kingdom, not from the date of return. A passport expiring less than six months after you arrive will be refused, so check it before booking: renewal takes time."
-      }
-    },
-    {
       "source": "faqs/84634f2b-0b50-45dd-b738-de938aba32f8",
       "as_of": "2026-09-07",
       "category": "ville-oujda",
@@ -1061,6 +1042,23 @@
       }
     },
     {
+      "source": "faqs/cc1e430f-dd11-4d54-ba18-f447fd46271c",
+      "as_of": "2026-10-25",
+      "category": "occasion-chaabane-ramadan",
+      "fr": {
+        "q": "15 ou 25 jours : quelle différence entre les deux programmes ?",
+        "a": "Les deux finissent ensemble, dans les premiers jours du Ramadan, et suivent le même parcours : La Mecque, quatre nuits à Médine, puis retour à La Mecque. Le programme de 25 jours part environ dix jours plus tôt et ajoute surtout des nuits à La Mecque pendant Chaâbane. Dates et prix par gamme : sur la page du départ."
+      },
+      "ar": {
+        "q": "15 يوماً أو 25 يوماً: ما الفرق بين البرنامجين؟",
+        "a": "ينتهي البرنامجان معاً في الأيام الأولى من رمضان، ويسيران في المسار نفسه: مكة المكرمة، ثم أربع ليالٍ في المدينة المنورة، ثم العودة إلى مكة. برنامج 25 يوماً ينطلق قبل الآخر بنحو عشرة أيام، ويضيف أساساً ليالي في مكة خلال شعبان. التواريخ والليالي وأثمنة كل فئة معروضة في صفحة الرحلة."
+      },
+      "en": {
+        "q": "15 or 25 days: what is the difference between the two programmes?",
+        "a": "Both end together in the first days of Ramadan and follow the same route: Makkah, four nights in Madinah, then back to Makkah. The 25-day programme leaves about ten days earlier and mainly adds nights in Makkah during Sha'ban. The dates, nights and price of each tier are on the departure page."
+      }
+    },
+    {
       "source": "faqs/e646b353-f967-4022-897c-69615e32b671",
       "as_of": "2026-09-07",
       "category": "ville-fes",
@@ -1075,6 +1073,23 @@
       "en": {
         "q": "Where does the Umrah flight leave from for Fès residents?",
         "a": "All our departures leave from Casablanca's Mohammed V airport, where our team gathers the group and assists with boarding formalities. From Fès, direct trains run via Meknès and Rabat (about 290 km), with a rail link on to the airport."
+      }
+    },
+    {
+      "source": "faqs/24c346fa-4e68-47a8-906d-217be143197b",
+      "as_of": "2026-09-21",
+      "category": "occasion-ramadan",
+      "fr": {
+        "q": "Combien de temps mon passeport doit-il rester valide ?",
+        "a": "Les conditions officielles du portail eVisa saoudien exigent au moins 6 mois de validité restante à compter de la date d'entrée dans le Royaume — pas à partir du retour. Un passeport qui expire moins de six mois après votre arrivée sera refusé : vérifiez-le avant de réserver, le renouvellement prend du temps."
+      },
+      "ar": {
+        "q": "ما هي المدة التي يجب أن يبقى فيها جواز سفري صالحاً؟",
+        "a": "تشترط الشروط الرسمية لبوابة التأشيرة الإلكترونية السعودية ما لا يقل عن 6 أشهر من الصلاحية المتبقية ابتداءً من تاريخ الدخول إلى المملكة، لا من تاريخ العودة. فإن كان جوازكم ينتهي قبل ستة أشهر من وصولكم، سيُرفض الطلب: تحققوا قبل الحجز لأن التجديد يستغرق وقتاً."
+      },
+      "en": {
+        "q": "How long must my passport stay valid?",
+        "a": "The official terms of the Saudi eVisa portal require at least 6 months of validity remaining from the date of entry into the Kingdom, not from the date of return. A passport expiring less than six months after you arrive will be refused, so check it before booking: renewal takes time."
       }
     },
     {
@@ -1160,23 +1175,6 @@
       "en": {
         "q": "Where does the Umrah flight leave from for Tangier residents?",
         "a": "All our departures leave from Casablanca's Mohammed V airport, where our team gathers the group several hours before take-off and assists with check-in and boarding formalities. From Tangier, the Al Boraq high-speed train reaches Casa Voyageurs in just over two hours, with a rail link on to the airport."
-      }
-    },
-    {
-      "source": "faqs/24c346fa-4e68-47a8-906d-217be143197b",
-      "as_of": "2026-09-21",
-      "category": "occasion-ramadan",
-      "fr": {
-        "q": "Combien de temps mon passeport doit-il rester valide ?",
-        "a": "Les conditions officielles du portail eVisa saoudien exigent au moins 6 mois de validité restante à compter de la date d'entrée dans le Royaume — pas à partir du retour. Un passeport qui expire moins de six mois après votre arrivée sera refusé : vérifiez-le avant de réserver, le renouvellement prend du temps."
-      },
-      "ar": {
-        "q": "ما هي المدة التي يجب أن يبقى فيها جواز سفري صالحاً؟",
-        "a": "تشترط الشروط الرسمية لبوابة التأشيرة الإلكترونية السعودية ما لا يقل عن 6 أشهر من الصلاحية المتبقية ابتداءً من تاريخ الدخول إلى المملكة، لا من تاريخ العودة. فإن كان جوازكم ينتهي قبل ستة أشهر من وصولكم، سيُرفض الطلب: تحققوا قبل الحجز لأن التجديد يستغرق وقتاً."
-      },
-      "en": {
-        "q": "How long must my passport stay valid?",
-        "a": "The official terms of the Saudi eVisa portal require at least 6 months of validity remaining from the date of entry into the Kingdom, not from the date of return. A passport expiring less than six months after you arrive will be refused, so check it before booking: renewal takes time."
       }
     },
     {
@@ -1401,23 +1399,6 @@
       }
     },
     {
-      "source": "faqs/b09abaa2-0c2d-47e8-b247-f94ea7846a50",
-      "as_of": "2026-09-21",
-      "category": "occasion-chaabane-ramadan",
-      "fr": {
-        "q": "Quels vaccins sont exigés ?",
-        "a": "Le ministère saoudien de la Santé exige de toute personne venant accomplir la Omra un certificat de vaccination méningococcique ACYW, quel que soit le pays de départ. D'autres exigences peuvent s'ajouter selon le pays d'origine et la saison. Nous vous remettons la liste applicable à votre dossier avant le dépôt du visa."
-      },
-      "ar": {
-        "q": "ما هي التلقيحات المطلوبة؟",
-        "a": "تشترط وزارة الصحة السعودية على كل قادم لأداء العمرة شهادة التلقيح ضد الالتهاب السحائي الرباعي ACYW، أياً كان بلد القدوم. وقد تُضاف اشتراطات أخرى حسب بلد المنشأ والموسم. ونسلّمكم اللائحة المنطبقة على ملفكم قبل إيداع طلب التأشيرة."
-      },
-      "en": {
-        "q": "Which vaccinations are required?",
-        "a": "The Saudi Ministry of Health requires every person coming to perform Umrah to hold a quadrivalent ACYW meningococcal vaccination certificate, whatever their country of departure. Further requirements can apply depending on the country of origin and the season. We give you the list that applies to your file before the visa is filed."
-      }
-    },
-    {
       "source": "faqs/e9d7763a-d5b7-494a-86a0-6585db5bb6cf",
       "as_of": "2026-09-21",
       "category": "occasion-ramadan",
@@ -1435,20 +1416,37 @@
       }
     },
     {
-      "source": "faqs/87ca3c4a-e801-4dea-91f2-dca2d4505fe6",
-      "as_of": "2026-09-07",
-      "category": "confiance",
+      "source": "faqs/b09abaa2-0c2d-47e8-b247-f94ea7846a50",
+      "as_of": "2026-10-25",
+      "category": "occasion-chaabane-ramadan",
       "fr": {
-        "q": "Quels documents faut-il pour l'Omra ?",
-        "a": "Un passeport valide au moins 6 mois après la date de retour et des photos d'identité récentes. Notre équipe s'occupe de toutes les démarches de visa Omra via les canaux officiels et vous communique la liste complète des pièces à fournir lors de la confirmation de votre réservation, par téléphone ou WhatsApp."
+        "q": "Où serai-je au moment où commence le Ramadan ?",
+        "a": "À Médine. Dans nos deux programmes, le premier jour du Ramadan calculé par le calendrier Umm al-Qura tombe pendant l'étape de quatre nuits à Médine ; vous retrouvez ensuite La Mecque pour les premiers jours de jeûne au Haram. Le jour exact est annoncé à La Mecque après l'observation du croissant et peut varier d'un jour ou deux."
       },
       "ar": {
-        "q": "ما هي الوثائق المطلوبة للعمرة؟",
-        "a": "تحتاجون جواز سفر صالحاً لمدة 6 أشهر على الأقل بعد تاريخ العودة، بالإضافة إلى صور شخصية حديثة. يتكفل فريقنا بجميع إجراءات التأشيرة الخاصة بالعمرة عبر القنوات الرسمية، ويوافيكم بالقائمة الكاملة للوثائق المطلوبة بالتفصيل عند تأكيد الحجز، عبر الهاتف أو واتساب، حتى لا يفوتكم أي شيء."
+        "q": "أين سأكون عند بداية رمضان؟",
+        "a": "في المدينة المنورة. في برنامجينا، يصادف أول أيام رمضان المحسوب حسب تقويم أم القرى مرحلةَ الليالي الأربع في المدينة، ثم تعودون إلى مكة المكرمة لأولى أيام الصيام في الحرم. ويُعلَن اليوم الدقيق في مكة المكرمة بعد رؤية الهلال، وقد يتقدم أو يتأخر بيوم أو يومين."
       },
       "en": {
-        "q": "Which documents are needed for Umrah?",
-        "a": "A passport valid at least 6 months after the return date, plus recent identity photos. Our team handles the whole Umrah visa process through official channels and sends you the full list of documents to provide when your booking is confirmed, by phone or WhatsApp, so nothing is missed."
+        "q": "Where will I be when Ramadan begins?",
+        "a": "In Madinah. In both of our programmes, the first day of Ramadan computed by the Umm al-Qura calendar falls during the four-night stay in Madinah; you then return to Makkah for the first days of fasting at the Haram. The exact day is announced in Makkah after the moon sighting and can shift by a day or two."
+      }
+    },
+    {
+      "source": "faqs/f109998c-d3ff-440a-920a-5478daa2d8e4",
+      "as_of": "2026-09-07",
+      "category": "ville-tanger",
+      "fr": {
+        "q": "Combien de temps faut-il pour rejoindre l'aéroport depuis Tanger le jour du départ ?",
+        "a": "Le train à grande vitesse Al‑Boraq rejoint Casa Voyageurs en un peu plus de deux heures, puis une liaison ferroviaire mène à l'aéroport ; par la route, comptez environ quatre heures (340 km). Prévoyez une marge confortable : le rassemblement et l'enregistrement se font plusieurs heures avant le décollage, et notre équipe vous communique l'heure exacte de rendez-vous."
+      },
+      "ar": {
+        "q": "كم من الوقت يلزم للوصول إلى المطار من طنجة يوم السفر؟",
+        "a": "يصل قطار البراق الفائق السرعة إلى محطة الدار البيضاء المسافرين في ما يزيد قليلاً عن ساعتين، ثم يقود ربط سككي إلى المطار؛ وبالطريق احسبوا حوالي أربع ساعات (340 كلم). احرصوا على هامش زمني مريح: فتجمع المجموعة وإجراءات التسجيل تتم قبل الإقلاع بساعات، وفريقنا يبلغكم بالتوقيت الدقيق للموعد قبل السفر."
+      },
+      "en": {
+        "q": "How long does it take to reach the airport from Tangier on departure day?",
+        "a": "The Al‑Boraq high-speed train reaches Casa Voyageurs in just over two hours, then a rail link runs to the airport; by road allow about four hours (340 km). Leave a comfortable margin: the group meet-up and check-in formalities happen several hours before take-off, and our team gives you the exact meeting time before departure."
       }
     },
     {
@@ -1521,8 +1519,25 @@
     },
     {
       "source": "faqs/2688dbdd-7c27-4f04-b7a7-4f76d04e1bf1",
-      "as_of": "2026-09-21",
+      "as_of": "2026-10-25",
       "category": "occasion-chaabane-ramadan",
+      "fr": {
+        "q": "Dans quels hôtels loge-t-on ?",
+        "a": "Chaque programme propose trois gammes. Économique : Abeer Al Fadila à La Mecque et Group Makarem Madinah à Médine. Confort : Taj Park et Group Makarem Madinah. Premium : Emaar Grand et Jayden Medina Hotel, avec le petit-déjeuner inclus. La distance de chaque hôtel au Haram et le prix par type de chambre sont affichés sur la page du départ."
+      },
+      "ar": {
+        "q": "في أي فنادق سنقيم؟",
+        "a": "لكل برنامج ثلاث فئات. الاقتصادية: فندق عبير الفضيلة في مكة المكرمة وفندق مكارم المدينة في المدينة المنورة. المريحة: فندق تاج بارك وفندق مكارم المدينة. البريميوم: فندق إعمار جراند وفندق جايدن المدينة، مع فطور الصباح. بُعد كل فندق عن الحرم وثمن كل نوع من الغرف معروضان في صفحة الرحلة."
+      },
+      "en": {
+        "q": "Which hotels do we stay in?",
+        "a": "Each programme has three tiers. Economy: Abeer Al Fadila in Makkah and Group Makarem Madinah in Madinah. Comfort: Taj Park and Group Makarem Madinah. Premium: Emaar Grand and Jayden Medina Hotel, with breakfast included. Each hotel's distance to the Haram and the price per room type are shown on the departure page."
+      }
+    },
+    {
+      "source": "faqs/c874de1c-2998-4df4-ae9b-3a697dd463ed",
+      "as_of": "2026-09-21",
+      "category": "occasion-ramadan",
       "fr": {
         "q": "Une femme peut-elle partir sans mahram ?",
         "a": "Oui. La FAQ officielle du ministère saoudien du Hajj et de la Omra indique qu'une femme est autorisée à venir accomplir la Omra sans mahram, et n'y pose pas de condition d'âge. Nos départs accueillent des femmes voyageant seules comme en groupe ; l'encadrement est le même pour tout le monde."
@@ -1588,23 +1603,6 @@
       }
     },
     {
-      "source": "faqs/c874de1c-2998-4df4-ae9b-3a697dd463ed",
-      "as_of": "2026-09-21",
-      "category": "occasion-ramadan",
-      "fr": {
-        "q": "Une femme peut-elle partir sans mahram ?",
-        "a": "Oui. La FAQ officielle du ministère saoudien du Hajj et de la Omra indique qu'une femme est autorisée à venir accomplir la Omra sans mahram, et n'y pose pas de condition d'âge. Nos départs accueillent des femmes voyageant seules comme en groupe ; l'encadrement est le même pour tout le monde."
-      },
-      "ar": {
-        "q": "هل يمكن للمرأة أن تعتمر بدون محرم؟",
-        "a": "نعم. تذكر الأسئلة الشائعة الرسمية لوزارة الحج والعمرة السعودية أنه يُسمح للمرأة بالقدوم لأداء العمرة دون محرم، ولا تضع شرطاً للسن. ورحلاتنا تستقبل النساء بمفردهن كما في مجموعة، والتأطير نفسه للجميع."
-      },
-      "en": {
-        "q": "Can a woman travel without a mahram?",
-        "a": "Yes. The Saudi Ministry of Hajj and Umrah's official FAQ states that a woman is allowed to come and perform Umrah without a mahram, and sets no age condition for it. Our departures welcome women travelling alone as well as in a group, and the guidance on the ground is the same for everyone."
-      }
-    },
-    {
       "source": "faqs/1274ed43-c2c4-4091-b8c6-23c67ae6d1ad",
       "as_of": "2026-09-07",
       "category": "ville-oujda",
@@ -1622,37 +1620,20 @@
       }
     },
     {
-      "source": "faqs/f109998c-d3ff-440a-920a-5478daa2d8e4",
+      "source": "faqs/87ca3c4a-e801-4dea-91f2-dca2d4505fe6",
       "as_of": "2026-09-07",
-      "category": "ville-tanger",
+      "category": "confiance",
       "fr": {
-        "q": "Combien de temps faut-il pour rejoindre l'aéroport depuis Tanger le jour du départ ?",
-        "a": "Le train à grande vitesse Al‑Boraq rejoint Casa Voyageurs en un peu plus de deux heures, puis une liaison ferroviaire mène à l'aéroport ; par la route, comptez environ quatre heures (340 km). Prévoyez une marge confortable : le rassemblement et l'enregistrement se font plusieurs heures avant le décollage, et notre équipe vous communique l'heure exacte de rendez-vous."
+        "q": "Quels documents faut-il pour l'Omra ?",
+        "a": "Un passeport valide au moins 6 mois après la date de retour et des photos d'identité récentes. Notre équipe s'occupe de toutes les démarches de visa Omra via les canaux officiels et vous communique la liste complète des pièces à fournir lors de la confirmation de votre réservation, par téléphone ou WhatsApp."
       },
       "ar": {
-        "q": "كم من الوقت يلزم للوصول إلى المطار من طنجة يوم السفر؟",
-        "a": "يصل قطار البراق الفائق السرعة إلى محطة الدار البيضاء المسافرين في ما يزيد قليلاً عن ساعتين، ثم يقود ربط سككي إلى المطار؛ وبالطريق احسبوا حوالي أربع ساعات (340 كلم). احرصوا على هامش زمني مريح: فتجمع المجموعة وإجراءات التسجيل تتم قبل الإقلاع بساعات، وفريقنا يبلغكم بالتوقيت الدقيق للموعد قبل السفر."
+        "q": "ما هي الوثائق المطلوبة للعمرة؟",
+        "a": "تحتاجون جواز سفر صالحاً لمدة 6 أشهر على الأقل بعد تاريخ العودة، بالإضافة إلى صور شخصية حديثة. يتكفل فريقنا بجميع إجراءات التأشيرة الخاصة بالعمرة عبر القنوات الرسمية، ويوافيكم بالقائمة الكاملة للوثائق المطلوبة بالتفصيل عند تأكيد الحجز، عبر الهاتف أو واتساب، حتى لا يفوتكم أي شيء."
       },
       "en": {
-        "q": "How long does it take to reach the airport from Tangier on departure day?",
-        "a": "The Al‑Boraq high-speed train reaches Casa Voyageurs in just over two hours, then a rail link runs to the airport; by road allow about four hours (340 km). Leave a comfortable margin: the group meet-up and check-in formalities happen several hours before take-off, and our team gives you the exact meeting time before departure."
-      }
-    },
-    {
-      "source": "faqs/65d5133f-dc0a-40a4-9866-dd345ba765f5",
-      "as_of": "2026-09-21",
-      "category": "occasion-ramadan",
-      "fr": {
-        "q": "Peut-on emmener des enfants ?",
-        "a": "Oui, à partir de 5 ans : c'est l'âge minimum que donne la FAQ officielle du ministère saoudien du Hajj et de la Omra pour accomplir la Omra. Pendant le Ramadan, tenez compte du rythme : nuits tardives autour des prières, foule dense aux dix dernières nuits, chaleur l'après-midi. Un hôtel proche du Haram change tout avec de jeunes enfants."
-      },
-      "ar": {
-        "q": "هل يمكن اصطحاب الأطفال؟",
-        "a": "نعم، ابتداءً من سن الخامسة: وهو الحد الأدنى الذي تذكره الأسئلة الشائعة الرسمية لوزارة الحج والعمرة السعودية لأداء العمرة. وفي رمضان خذوا الإيقاع بعين الاعتبار: ليالٍ متأخرة حول الصلوات، وزحام شديد في العشر الأواخر، وحرارة بعد الظهر. والفندق القريب من الحرم يغيّر كل شيء مع الأطفال الصغار."
-      },
-      "en": {
-        "q": "Can you bring children?",
-        "a": "Yes, from the age of 5: that is the minimum age the Saudi Ministry of Hajj and Umrah's official FAQ gives for performing Umrah. During Ramadan, plan for the rhythm: late nights around the prayers, dense crowds in the last ten nights, and heat in the afternoon. A hotel close to the Haram changes everything with young children."
+        "q": "Which documents are needed for Umrah?",
+        "a": "A passport valid at least 6 months after the return date, plus recent identity photos. Our team handles the whole Umrah visa process through official channels and sends you the full list of documents to provide when your booking is confirmed, by phone or WhatsApp, so nothing is missed."
       }
     },
     {
@@ -1674,8 +1655,25 @@
     },
     {
       "source": "faqs/049a0dd5-933b-4516-8bd6-1d3f310901d8",
-      "as_of": "2026-09-21",
+      "as_of": "2026-10-25",
       "category": "occasion-chaabane-ramadan",
+      "fr": {
+        "q": "Le visa Omra est-il compris dans le prix ?",
+        "a": "Oui. Le prix comprend les frais de l'agent Omra, le visa et l'assurance médicale, ainsi que le billet Saudia aller-retour, les hôtels, le transport en autocar climatisé et les visites (ziyarat) de La Mecque et de Médine. Agence agréée ODV-25012, nous déposons votre dossier : vous suivez l'avancement sans aucune démarche technique."
+      },
+      "ar": {
+        "q": "هل التأشيرة مشمولة في الثمن؟",
+        "a": "نعم. يشمل الثمن مصاريف وكيل العمرة والتأشيرة والتأمين الطبي، إضافة إلى تذكرة الذهاب والإياب على الخطوط السعودية، والفنادق، والتنقل بحافلات مكيفة، والزيارات في مكة المكرمة والمدينة المنورة. وبصفتنا وكالة مرخصة (ODV-25012)، نتكلف بإيداع ملفكم وتتابعون تقدّمه دون أي إجراء تقني."
+      },
+      "en": {
+        "q": "Is the Umrah visa included in the price?",
+        "a": "Yes. The price covers the Umrah agent fees, the visa and medical insurance, plus the return flight with Saudia, the hotels, air-conditioned coach transport and the visits (ziyarat) in Makkah and Madinah. As a licensed agency (ODV-25012), we file your application and you follow its progress with no technical steps."
+      }
+    },
+    {
+      "source": "faqs/65d5133f-dc0a-40a4-9866-dd345ba765f5",
+      "as_of": "2026-09-21",
+      "category": "occasion-ramadan",
       "fr": {
         "q": "Peut-on emmener des enfants ?",
         "a": "Oui, à partir de 5 ans : c'est l'âge minimum que donne la FAQ officielle du ministère saoudien du Hajj et de la Omra pour accomplir la Omra. Pendant le Ramadan, tenez compte du rythme : nuits tardives autour des prières, foule dense aux dix dernières nuits, chaleur l'après-midi. Un hôtel proche du Haram change tout avec de jeunes enfants."
@@ -1704,6 +1702,40 @@
       "en": {
         "q": "What does the guidance during Umrah include?",
         "a": "Our offers include the round-trip flight, visa processing, on-site transfers between the airport, the hotels and the two Holy Mosques, and guidance from our team throughout the stay. The exact inclusions (meals, excursions, guide) are detailed on each offer's page — nothing is charged that isn't listed there."
+      }
+    },
+    {
+      "source": "faqs/ccc00867-51d9-4be4-95f8-faceca34b8e4",
+      "as_of": "2026-10-25",
+      "category": "occasion-chaabane-ramadan",
+      "fr": {
+        "q": "Chaâbane-Ramadan ou plein Ramadan : que choisir ?",
+        "a": "Chaâbane-Ramadan convient si vous voulez faire l'Omra avant le jeûne et vivre le début du mois aux Lieux saints, en 15 ou 25 jours, loin de la grande affluence. Les programmes de plein Ramadan restent jusqu'à la fin du mois pour les dix dernières nuits, dont la nuit du 27, la plus chargée de l'année au Haram."
+      },
+      "ar": {
+        "q": "شعبان رمضان أم رمضان كاملاً: ماذا أختار؟",
+        "a": "تناسبكم عمرة شعبان رمضان إن أردتم أداء العمرة قبل الصيام وعيش بداية الشهر في الديار المقدسة، في 15 أو 25 يوماً، بعيداً عن ذروة الازدحام. أما برامج رمضان الكامل فتمتد إلى آخر الشهر لإدراك العشر الأواخر، وفيها ليلة السابع والعشرين، أشد ليالي السنة ازدحاماً في الحرم."
+      },
+      "en": {
+        "q": "Sha'ban–Ramadan or a full Ramadan programme: which to choose?",
+        "a": "Sha'ban–Ramadan suits you if you want to perform Umrah before the fast and live the start of the month in the Holy Places, in 15 or 25 days, away from the peak crowds. Full Ramadan programmes stay until the end of the month for the last ten nights, including the 27th night, the busiest of the year at the Haram."
+      }
+    },
+    {
+      "source": "faqs/6f940af1-358b-4ea2-b176-715700be2bfb",
+      "as_of": "2026-09-22",
+      "category": "occasion-ramadan",
+      "fr": {
+        "q": "Peut-on payer en plusieurs fois ?",
+        "a": "Le paiement se fait à l'agence, jamais en ligne : vous signez un contrat écrit et recevez un reçu officiel, comme l'exige la loi 11.16 sur la profession d'agent de voyages. L'acompte figure dans les conditions de chaque programme ; le solde et son calendrier sont fixés dans ce contrat. Pour une formule particulière, demandez-nous avant de réserver."
+      },
+      "ar": {
+        "q": "هل يمكن الأداء على دفعات؟",
+        "a": "يتم الأداء في الوكالة وليس عبر الإنترنت: توقّعون عقداً مكتوباً وتتوصلون بوصل رسمي، كما يقتضي القانون 11.16 المتعلق بمهنة وكيل الأسفار. ويرد مبلغ التسبيق في شروط كل برنامج، أما الباقي وجدولة أدائه فيُحدَّدان في هذا العقد. ولأي صيغة خاصة، اسألونا قبل الحجز."
+      },
+      "en": {
+        "q": "Can you pay in instalments?",
+        "a": "Payment is made at the agency, never online: you sign a written contract and receive an official receipt, as law 11.16 on the travel agency profession requires. The deposit appears in each programme’s conditions; the balance and its schedule are set in that contract. For a particular arrangement, ask us before booking."
       }
     },
     {
@@ -1741,54 +1773,20 @@
       }
     },
     {
-      "source": "faqs/d42e05f2-4ae9-4999-bfec-51ec8bf3bf6c",
-      "as_of": "2026-09-22",
-      "category": "occasion-chaabane-ramadan",
+      "source": "faqs/5568a11d-2bef-4e4a-ac50-636b32508254",
+      "as_of": "2026-09-07",
+      "category": "omra",
       "fr": {
-        "q": "Peut-on payer en plusieurs fois ?",
-        "a": "Le paiement se fait à l'agence, jamais en ligne : vous signez un contrat écrit et recevez un reçu officiel, comme l'exige la loi 11.16 sur la profession d'agent de voyages. L'acompte figure dans les conditions de chaque programme ; le solde et son calendrier sont fixés dans ce contrat. Pour une formule particulière, demandez-nous avant de réserver."
+        "q": "Peut-on partir en famille avec des enfants ?",
+        "a": "Oui, nos groupes accueillent les familles. Les chambres triples, quadruples et quintuples réduisent le prix par personne, et chaque enfant doit disposer de son propre passeport en cours de validité. Les conditions par âge figurent sur la fiche de chaque départ — notre équipe vous conseille la meilleure configuration."
       },
       "ar": {
-        "q": "هل يمكن الأداء على دفعات؟",
-        "a": "يتم الأداء في الوكالة وليس عبر الإنترنت: توقّعون عقداً مكتوباً وتتوصلون بوصل رسمي، كما يقتضي القانون 11.16 المتعلق بمهنة وكيل الأسفار. ويرد مبلغ التسبيق في شروط كل برنامج، أما الباقي وجدولة أدائه فيُحدَّدان في هذا العقد. ولأي صيغة خاصة، اسألونا قبل الحجز."
+        "q": "هل يمكن السفر عائلياً مع الأطفال؟",
+        "a": "نعم، مجموعاتنا ترحب بالعائلات والأطفال. الغرف الثلاثية والرباعية والخماسية تخفض الثمن للشخص الواحد، ويجب أن يتوفر كل طفل على جواز سفر خاص به ساري الصلاحية. وتُذكر شروط الأعمار في صفحة كل رحلة — وفريقنا ينصحكم بأفضل تشكيلة للغرف حسب عدد أفراد أسرتكم وأعمارهم."
       },
       "en": {
-        "q": "Can you pay in instalments?",
-        "a": "Payment is made at the agency, never online: you sign a written contract and receive an official receipt, as law 11.16 on the travel agency profession requires. The deposit appears in each programme’s conditions; the balance and its schedule are set in that contract. For a particular arrangement, ask us before booking."
-      }
-    },
-    {
-      "source": "faqs/6f940af1-358b-4ea2-b176-715700be2bfb",
-      "as_of": "2026-09-22",
-      "category": "occasion-ramadan",
-      "fr": {
-        "q": "Peut-on payer en plusieurs fois ?",
-        "a": "Le paiement se fait à l'agence, jamais en ligne : vous signez un contrat écrit et recevez un reçu officiel, comme l'exige la loi 11.16 sur la profession d'agent de voyages. L'acompte figure dans les conditions de chaque programme ; le solde et son calendrier sont fixés dans ce contrat. Pour une formule particulière, demandez-nous avant de réserver."
-      },
-      "ar": {
-        "q": "هل يمكن الأداء على دفعات؟",
-        "a": "يتم الأداء في الوكالة وليس عبر الإنترنت: توقّعون عقداً مكتوباً وتتوصلون بوصل رسمي، كما يقتضي القانون 11.16 المتعلق بمهنة وكيل الأسفار. ويرد مبلغ التسبيق في شروط كل برنامج، أما الباقي وجدولة أدائه فيُحدَّدان في هذا العقد. ولأي صيغة خاصة، اسألونا قبل الحجز."
-      },
-      "en": {
-        "q": "Can you pay in instalments?",
-        "a": "Payment is made at the agency, never online: you sign a written contract and receive an official receipt, as law 11.16 on the travel agency profession requires. The deposit appears in each programme’s conditions; the balance and its schedule are set in that contract. For a particular arrangement, ask us before booking."
-      }
-    },
-    {
-      "source": "faqs/d6cb1ae4-4913-45a1-b326-af51e61af063",
-      "as_of": "2026-09-21",
-      "category": "occasion-chaabane-ramadan",
-      "fr": {
-        "q": "Quand faut-il réserver pour le Ramadan ?",
-        "a": "Tôt. Au Maroc, les places pour le Ramadan partent des mois à l'avance et les hôtels proches du Haram sont les premiers à afficher complet ; l'essentiel se réserve entre septembre et décembre. Vérifiez aussi le calendrier de la saison : les autorités saoudiennes fixent chaque saison une date limite d'entrée pour les pèlerins venus de l'étranger."
-      },
-      "ar": {
-        "q": "متى ينبغي الحجز لرمضان؟",
-        "a": "مبكراً. ففي المغرب تنفد أماكن رحلات رمضان قبل أشهر، والفنادق القريبة من الحرم أول ما يمتلئ، ويُحجز الجزء الأكبر بين شتنبر ودجنبر. وتحققوا كذلك من رزنامة الموسم: تحدد السلطات السعودية كل موسم آخر أجل لدخول المعتمرين القادمين من الخارج."
-      },
-      "en": {
-        "q": "When should you book for Ramadan?",
-        "a": "Early. In Morocco, places on Ramadan trips are booked up months in advance and the hotels closest to the Haram are the first to fill; most booking happens between September and December. Check the season calendar too: the Saudi authorities set a last entry date each season for pilgrims coming from abroad."
+        "q": "Can families travel with children?",
+        "a": "Yes, our groups welcome families and children. Triple, quad and quint rooms lower the per-person price, and every child needs their own valid passport. Age conditions appear on each departure page — our team advises the best room configuration for the size and ages of your family."
       }
     },
     {
@@ -1809,23 +1807,6 @@
       }
     },
     {
-      "source": "faqs/5568a11d-2bef-4e4a-ac50-636b32508254",
-      "as_of": "2026-09-07",
-      "category": "omra",
-      "fr": {
-        "q": "Peut-on partir en famille avec des enfants ?",
-        "a": "Oui, nos groupes accueillent les familles. Les chambres triples, quadruples et quintuples réduisent le prix par personne, et chaque enfant doit disposer de son propre passeport en cours de validité. Les conditions par âge figurent sur la fiche de chaque départ — notre équipe vous conseille la meilleure configuration."
-      },
-      "ar": {
-        "q": "هل يمكن السفر عائلياً مع الأطفال؟",
-        "a": "نعم، مجموعاتنا ترحب بالعائلات والأطفال. الغرف الثلاثية والرباعية والخماسية تخفض الثمن للشخص الواحد، ويجب أن يتوفر كل طفل على جواز سفر خاص به ساري الصلاحية. وتُذكر شروط الأعمار في صفحة كل رحلة — وفريقنا ينصحكم بأفضل تشكيلة للغرف حسب عدد أفراد أسرتكم وأعمارهم."
-      },
-      "en": {
-        "q": "Can families travel with children?",
-        "a": "Yes, our groups welcome families and children. Triple, quad and quint rooms lower the per-person price, and every child needs their own valid passport. Age conditions appear on each departure page — our team advises the best room configuration for the size and ages of your family."
-      }
-    },
-    {
       "source": "faqs/93cf8504-9c0d-4d7a-bc8e-ebf8f2dd437d",
       "as_of": "2026-09-21",
       "category": "occasion-ramadan",
@@ -1843,54 +1824,54 @@
       }
     },
     {
-      "source": "faqs/ccc00867-51d9-4be4-95f8-faceca34b8e4",
-      "as_of": "2026-09-21",
+      "source": "faqs/d6cb1ae4-4913-45a1-b326-af51e61af063",
+      "as_of": "2026-10-25",
       "category": "occasion-chaabane-ramadan",
       "fr": {
-        "q": "Quelle différence entre un programme Chaâbane-Ramadan et un départ en plein Ramadan ?",
-        "a": "Un programme Chaâbane-Ramadan part pendant le mois de Chaâbane et se termine dans les premiers jours du Ramadan : vous vivez le passage d'un mois à l'autre à La Mecque, avant l'affluence des dix dernières nuits. Un départ en plein Ramadan vise au contraire ces dernières nuits. Les dates exactes dépendent de l'observation du croissant."
+        "q": "Qui accompagne le groupe pendant le voyage ?",
+        "a": "Un encadrant religieux de l'agence accompagne le groupe du départ de Casablanca jusqu'au retour : il guide les rites de l'Omra et les visites de La Mecque et de Médine, et reste à vos côtés pendant tout le séjour. Notre équipe à Casablanca suit le voyage et vous répond sur WhatsApp à chaque étape."
       },
       "ar": {
-        "q": "ما الفرق بين برنامج شعبان رمضان ورحلة في قلب رمضان؟",
-        "a": "برنامج شعبان رمضان ينطلق في شهر شعبان وينتهي في الأيام الأولى من رمضان: تعيشون الانتقال من شهر إلى آخر بمكة المكرمة، قبل زحام العشر الأواخر. أما الرحلة في قلب رمضان فتستهدف تلك الليالي الأخيرة. وتبقى التواريخ الدقيقة مرتبطة برؤية الهلال."
+        "q": "من يرافق المجموعة خلال الرحلة؟",
+        "a": "يرافق المجموعةَ مؤطر ديني من الوكالة من الانطلاق من الدار البيضاء إلى العودة: يرشدكم في مناسك العمرة وفي زيارات مكة المكرمة والمدينة المنورة، ويبقى إلى جانبكم طوال الإقامة. وفريقنا في الدار البيضاء يتابع الرحلة ويجيبكم عبر واتساب في كل مرحلة."
       },
       "en": {
-        "q": "What is the difference between a Sha'ban–Ramadan programme and a departure in the middle of Ramadan?",
-        "a": "A Sha'ban–Ramadan programme leaves during the month of Sha'ban and ends in the first days of Ramadan: you live the passage from one month to the next in Makkah, before the crowds of the last ten nights. A departure inside Ramadan targets those last nights instead. The exact dates depend on the sighting of the crescent."
+        "q": "Who accompanies the group during the trip?",
+        "a": "A religious guide from the agency travels with the group from the departure in Casablanca to the return: they guide you through the rites of Umrah and the visits in Makkah and Madinah, and stay with you throughout the stay. Our team in Casablanca follows the trip and answers you on WhatsApp at every step."
       }
     },
     {
-      "source": "faqs/f236b479-4c14-4932-bfe7-b0c777a0eeed",
-      "as_of": "2026-09-07",
-      "category": "confiance",
+      "source": "faqs/d42e05f2-4ae9-4999-bfec-51ec8bf3bf6c",
+      "as_of": "2026-10-25",
+      "category": "occasion-chaabane-ramadan",
       "fr": {
-        "q": "Depuis quand Wiki Tours International existe-t-elle ?",
-        "a": "Wiki Tours International opère depuis 2016 à Casablanca. L'agence organise des Omras en groupe encadré tout au long de l'année, le Hajj, ainsi que des voyages organisés vers d'autres destinations — avec une équipe joignable à l'agence, par téléphone et sur WhatsApp."
+        "q": "Comment réserver, et peut-on payer en plusieurs fois ?",
+        "a": "Le paiement se fait à l'agence, jamais en ligne : vous signez un contrat écrit et recevez un reçu officiel, comme l'exige la loi 11.16 sur la profession d'agent de voyages. L'acompte figure dans les conditions de chaque programme ; le solde et son calendrier sont fixés dans ce contrat. Réservez par WhatsApp ou à notre agence de Casablanca."
       },
       "ar": {
-        "q": "منذ متى تأسست ويكي تورز الدولية؟",
-        "a": "تعمل ويكي تورز الدولية منذ 2016 بالدار البيضاء، بشارع عبد المومن. تنظم الوكالة رحلات عمرة جماعية مؤطرة على مدار السنة، والحج، إضافة إلى رحلات منظمة نحو وجهات أخرى — مع فريق دائم يمكن التواصل معه بالوكالة وعبر الهاتف وواتساب، قبل السفر وخلاله وبعد العودة."
+        "q": "كيف أحجز، وهل يمكن الأداء على دفعات؟",
+        "a": "يتم الأداء في الوكالة وليس عبر الإنترنت: توقّعون عقداً مكتوباً وتتسلّمون وصلاً رسمياً كما يفرض القانون 11.16 المنظم لمهنة وكيل الأسفار. العربون مذكور في شروط كل برنامج، أما الباقي وآجاله فتُحدَّد في العقد. احجزوا عبر واتساب أو في وكالتنا بالدار البيضاء."
       },
       "en": {
-        "q": "How long has Wiki Tours International existed?",
-        "a": "Wiki Tours International has operated since 2016 in Casablanca, on Boulevard Abdelmoumen. The agency organizes guided group Umrahs year-round, Hajj, and organized trips to other destinations — with a permanent team reachable at the agency, by phone and on WhatsApp, before, during and after your trip."
+        "q": "How do I book, and can I pay in instalments?",
+        "a": "Payment is made at the agency, never online: you sign a written contract and receive an official receipt, as Law 11.16 on travel agents requires. The deposit is stated in each programme's conditions; the balance and its schedule are set in that contract. Book on WhatsApp or at our agency in Casablanca."
       }
     },
     {
       "source": "faqs/2279253b-3ba9-4edb-8ba8-162d1faf099c",
-      "as_of": "2026-09-21",
+      "as_of": "2026-10-25",
       "category": "occasion-ramadan",
       "fr": {
         "q": "Quelle différence entre un programme Chaâbane-Ramadan et un départ en plein Ramadan ?",
-        "a": "Un programme Chaâbane-Ramadan part pendant le mois de Chaâbane et se termine dans les premiers jours du Ramadan : vous vivez le passage d'un mois à l'autre à La Mecque, avant l'affluence des dix dernières nuits. Un départ en plein Ramadan vise au contraire ces dernières nuits. Les dates exactes dépendent de l'observation du croissant."
+        "a": "Un programme Chaâbane-Ramadan part pendant le mois de Chaâbane et se termine dans les premiers jours du Ramadan : vous vivez le passage d'un mois à l'autre aux Lieux saints, avant l'affluence des dix dernières nuits. Un départ en plein Ramadan vise au contraire ces dernières nuits. Les dates exactes dépendent de l'observation du croissant."
       },
       "ar": {
         "q": "ما الفرق بين برنامج شعبان رمضان ورحلة في قلب رمضان؟",
-        "a": "برنامج شعبان رمضان ينطلق في شهر شعبان وينتهي في الأيام الأولى من رمضان: تعيشون الانتقال من شهر إلى آخر بمكة المكرمة، قبل زحام العشر الأواخر. أما الرحلة في قلب رمضان فتستهدف تلك الليالي الأخيرة. وتبقى التواريخ الدقيقة مرتبطة برؤية الهلال."
+        "a": "برنامج شعبان رمضان ينطلق في شهر شعبان وينتهي في الأيام الأولى من رمضان: تعيشون الانتقال من شهر إلى آخر في الديار المقدسة، قبل زحام العشر الأواخر. أما الرحلة في قلب رمضان فتستهدف تلك الليالي الأخيرة. وتبقى التواريخ الدقيقة مرتبطة برؤية الهلال."
       },
       "en": {
         "q": "What is the difference between a Sha'ban–Ramadan programme and a departure in the middle of Ramadan?",
-        "a": "A Sha'ban–Ramadan programme leaves during the month of Sha'ban and ends in the first days of Ramadan: you live the passage from one month to the next in Makkah, before the crowds of the last ten nights. A departure inside Ramadan targets those last nights instead. The exact dates depend on the sighting of the crescent."
+        "a": "A Sha'ban–Ramadan programme leaves during the month of Sha'ban and ends in the first days of Ramadan: you live the passage from one month to the next in the Holy Places, before the crowds of the last ten nights. A departure inside Ramadan targets those last nights instead. The exact dates depend on the sighting of the crescent."
       }
     },
     {
@@ -1908,6 +1889,23 @@
       "en": {
         "q": "How can I be notified of new Umrah departures?",
         "a": "Send your request via the site form or WhatsApp, stating the period you're interested in and the number of travellers: registered contacts are called back first whenever a matching departure opens — before any public announcement on the site or social networks. Especially useful for Ramadan and school holidays, where places go fast."
+      }
+    },
+    {
+      "source": "faqs/f236b479-4c14-4932-bfe7-b0c777a0eeed",
+      "as_of": "2026-09-07",
+      "category": "confiance",
+      "fr": {
+        "q": "Depuis quand Wiki Tours International existe-t-elle ?",
+        "a": "Wiki Tours International opère depuis 2016 à Casablanca. L'agence organise des Omras en groupe encadré tout au long de l'année, le Hajj, ainsi que des voyages organisés vers d'autres destinations — avec une équipe joignable à l'agence, par téléphone et sur WhatsApp."
+      },
+      "ar": {
+        "q": "منذ متى تأسست ويكي تورز الدولية؟",
+        "a": "تعمل ويكي تورز الدولية منذ 2016 بالدار البيضاء، بشارع عبد المومن. تنظم الوكالة رحلات عمرة جماعية مؤطرة على مدار السنة، والحج، إضافة إلى رحلات منظمة نحو وجهات أخرى — مع فريق دائم يمكن التواصل معه بالوكالة وعبر الهاتف وواتساب، قبل السفر وخلاله وبعد العودة."
+      },
+      "en": {
+        "q": "How long has Wiki Tours International existed?",
+        "a": "Wiki Tours International has operated since 2016 in Casablanca, on Boulevard Abdelmoumen. The agency organizes guided group Umrahs year-round, Hajj, and organized trips to other destinations — with a permanent team reachable at the agency, by phone and on WhatsApp, before, during and after your trip."
       }
     },
     {

@@ -25,7 +25,7 @@ const TABLE_PATHS = {
     'raw:/llms.txt',
   ],
   offer_tiers: () => [
-    '/', '/bab-makka', '/omra-pas-cher', '/barometre-prix-omra',
+    '/', '/bab-makka', '/omra-pas-cher', '/hotels-omra', '/barometre-prix-omra',
     '/[locale]/omra/[slug]', '/[locale]/[flat]', '/[locale]/hotel/[slug]',
     'raw:/llms.txt', // per-gamme hotels and prices are listed there
   ],
