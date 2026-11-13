@@ -147,9 +147,10 @@ async function attachTiers(supabase, offers) {
 const OFFER_SELECT = '*, occasion:occasion_id (id, slug, name_fr, name_ar, name_en, sort_order)';
 
 /**
- * The LISTINGS: published offers that have not returned yet (future or in
- * progress — the lifecycle's "live" state), with occasion + tiers. Departed
- * offers stay readable for their own page (archived state) but never list.
+ * The LISTINGS: published offers that have not departed yet (the lifecycle's
+ * "live" state), with occasion + tiers. A departed offer — even one still in
+ * progress — stays readable on its own page (archived state) but never lists,
+ * counts as open or sets a « dès » price.
  */
 export const getPublishedOffers = cache(async function getPublishedOffers() {
   try {
@@ -159,7 +160,7 @@ export const getPublishedOffers = cache(async function getPublishedOffers() {
     const { data, error } = await supabase
       .from('offers')
       .select(OFFER_SELECT)
-      .or(`date_end.gte.${today},date_end.is.null`)
+      .or(`date_start.gte.${today},and(date_start.is.null,or(date_end.gte.${today},date_end.is.null))`)
       .order('is_featured', { ascending: false })
       .order('date_start', { ascending: true });
     if (error) return [];

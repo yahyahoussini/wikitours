@@ -79,19 +79,21 @@ export function daysSince(dateISO, today = todayISO()) {
 export const ARCHIVE_DAYS = 90;
 
 /**
- * Departure lifecycle, from the RETURN date (date_end) alone — never a flag:
- *   live      future or in progress (date_end ≥ today, or no dates)
- *             → index, follow · self-canonical · in the sitemap
- *   archived  returned 1..90 days ago
- *             → noindex, follow · self-canonical · "archived" banner
+ * Departure lifecycle, from the dates alone — never a flag:
+ *   live      not departed yet (date_start ≥ today, or no dates)
+ *             → index, follow · self-canonical · in the sitemap · listed
+ *   archived  departed (in progress, or returned ≤ 90 days ago) — a trip that
+ *             left can no longer be booked, so its date has passed
+ *             → noindex, follow · self-canonical · "departed"/"archived" banner
  *   retired   returned > 90 days ago
  *             → 301 to the month lander (middleware; page backstop) —
  *               retiredRedirectPath() in src/lib/months.js picks the target
- * The transitions are exact: the return day itself is still live; day 90 is
- * still archived; day 91 is retired (tests/offers.test.mjs).
+ * The transitions are exact: the departure day itself is still live; day 90
+ * after the return is still archived; day 91 is retired (tests/offers.test.mjs).
  */
 export function offerLifecycle(offer, today = todayISO()) {
-  if (!offer?.date_end || offer.date_end >= today) return 'live';
+  if (!hasDeparted(offer, today) && !isOfferPast(offer, today)) return 'live';
+  if (!offer?.date_end || offer.date_end >= today) return 'archived';
   return daysSince(offer.date_end, today) <= ARCHIVE_DAYS ? 'archived' : 'retired';
 }
 

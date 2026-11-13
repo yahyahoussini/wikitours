@@ -23,7 +23,7 @@ import { publicMediaUrl } from '@/lib/media';
 import { toOfferCard } from '@/lib/offer-card';
 import { waLink } from '@/lib/whatsapp';
 import { monthPagePath, monthName, targetYearFor, indexableMonths, retiredRedirectPath } from '@/lib/months';
-import { offerAvailability, hasDeparted, seatsLabel, visibleStatusKey, offerLifecycle } from '@/lib/offers';
+import { offerAvailability, hasDeparted, isOfferPast, seatsLabel, visibleStatusKey, offerLifecycle } from '@/lib/offers';
 import BrandLockup from '@/components/site/BrandLockup';
 import BreadcrumbTrail from '@/components/site/BreadcrumbTrail';
 import OfferSubnav from '@/components/site/OfferSubnav';
@@ -528,15 +528,15 @@ export default async function OfferPage({ params }) {
           ]}
         />
 
-        {/* Lifecycle banner — ARCHIVED (returned ≤ 90 days ago: 200, noindex,
-            self-canonical, localised banner to the current month lander) or in
-            progress (departed, not yet returned: still live). Retired never
-            renders here — it 301s. Schema availability is SoldOut either way. */}
+        {/* Lifecycle banner — ARCHIVED (200, noindex, self-canonical): "ended"
+            with a link to the month lander once the group has returned, else
+            "departed" while it is still on the trip. Retired never renders
+            here — it 301s. Schema availability is SoldOut either way. */}
         {lifecycle === 'archived' || hasDeparted(offer) ? (
           <div className="mt-4 flex flex-wrap items-center gap-3 rounded-panel border border-bm-gold/40 bg-bm-gold/10 px-5 py-3 text-sm font-semibold text-bm-black">
             <span>
               ⏳{' '}
-              {lifecycle === 'archived' && offerMonth
+              {lifecycle === 'archived' && isOfferPast(offer) && offerMonth
                 ? t.offer.archivedBanner
                     .replace('{month}', monthName(offerMonth.getUTCMonth(), locale))
                     .replace('{year}', String(monthYear))

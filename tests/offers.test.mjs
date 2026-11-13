@@ -5,14 +5,15 @@ import { offerLifecycle, offerIndexable, daysSince, ARCHIVE_DAYS, offerAvailabil
 const TODAY = '2026-09-13';
 const shift = (iso, days) => new Date(Date.UTC(...iso.split('-').map(Number).map((n, i) => (i === 1 ? n - 1 : n))) + days * 86400000).toISOString().slice(0, 10);
 
-describe('offerLifecycle — three states from the return date, no flag', () => {
+describe('offerLifecycle — three states from the dates, no flag', () => {
   test('future departure → live', () => {
     assert.equal(offerLifecycle({ date_start: '2026-10-06', date_end: '2026-10-20' }, TODAY), 'live');
   });
-  test('in progress (departed, not yet returned) → live', () => {
+  test('in progress (departed, not yet returned) → archived: it can no longer be booked', () => {
     const o = { date_start: '2026-09-09', date_end: '2026-09-23' };
     assert.equal(hasDeparted(o, TODAY), true);
-    assert.equal(offerLifecycle(o, TODAY), 'live');
+    assert.equal(offerLifecycle(o, TODAY), 'archived');
+    assert.equal(offerIndexable(o, TODAY), false);
     assert.equal(offerAvailability(o, TODAY), 'https://schema.org/SoldOut');
   });
   test('à la carte (no dates) → live', () => {
@@ -29,9 +30,10 @@ describe('offerLifecycle — three states from the return date, no flag', () => 
 });
 
 describe('boundary transitions', () => {
-  test('live → archived: the return day is still live, the day after is archived', () => {
+  test('live → archived: the departure day is still live, the day after is archived', () => {
     const o = { date_start: '2026-08-24', date_end: '2026-09-08' };
-    assert.equal(offerLifecycle(o, '2026-09-08'), 'live');
+    assert.equal(offerLifecycle(o, '2026-08-24'), 'live');
+    assert.equal(offerLifecycle(o, '2026-08-25'), 'archived');
     assert.equal(offerLifecycle(o, '2026-09-09'), 'archived');
   });
   test(`archived → retired: day ${ARCHIVE_DAYS} is archived, day ${ARCHIVE_DAYS + 1} is retired`, () => {
@@ -41,7 +43,14 @@ describe('boundary transitions', () => {
     assert.equal(offerLifecycle(o, shift(o.date_end, ARCHIVE_DAYS + 1)), 'retired');
   });
   test('the transitions hold across a year boundary', () => {
-    const o = { date_start: '2026-12-20', date_end: '2026-12-31' };
+    const o = { date_start: '2026-12-31', date_end: '2027-01-14' };
+    assert.equal(offerLifecycle(o, '2026-12-31'), 'live');
+    assert.equal(offerLifecycle(o, '2027-01-01'), 'archived');
+    assert.equal(offerLifecycle(o, '2027-04-14'), 'archived'); // day 90 after the return
+    assert.equal(offerLifecycle(o, '2027-04-15'), 'retired'); // day 91
+  });
+  test('a return-only date still archives and retires from the return', () => {
+    const o = { date_start: null, date_end: '2026-12-31' };
     assert.equal(offerLifecycle(o, '2026-12-31'), 'live');
     assert.equal(offerLifecycle(o, '2027-01-01'), 'archived');
     assert.equal(offerLifecycle(o, '2027-03-31'), 'archived'); // day 90
