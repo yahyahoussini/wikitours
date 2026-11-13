@@ -120,6 +120,14 @@ describe('resolveIntent — the commercial-intent resolver', () => {
     assert.equal(offersForFilter(list, 'next').length, 1);
     assert.equal(offersForFilter(list, 'all').length, 2);
   });
+  test('offersForFilter: next is the earliest departure, not the first featured one', () => {
+    const list = [
+      { slug: 'featured-ramadan', is_featured: true, date_start: '2027-02-12' },
+      { slug: 'november', date_start: '2026-11-24' },
+      { slug: 'december', date_start: '2026-12-09' },
+    ];
+    assert.deepEqual(offersForFilter(list, 'next').map((o) => o.slug), ['november']);
+  });
 });
 
 describe('Hijri tag vocabulary and the last ten nights', () => {

@@ -320,6 +320,27 @@
       "time": "08:00",
       "track": "ramadan",
       "note": "owner request 2026-09-15: an extra Ramadan post on this day, written to serve the internal linking of cluster D"
+    },
+    {
+      "date": "2026-11-14",
+      "time": "18:00",
+      "track": "omra",
+      "topic_id": "prep-hotel-haram-ou-eloigne",
+      "note": "owner request 2026-11-13: three posts that answer the office's most asked questions (hotel distance, the programme, the papers) ahead of the 24-November departure"
+    },
+    {
+      "date": "2026-11-15",
+      "time": "08:00",
+      "track": "omra",
+      "topic_id": "prep-programme-jour-par-jour",
+      "note": "owner request 2026-11-13: three posts that answer the office's most asked questions (hotel distance, the programme, the papers) ahead of the 24-November departure"
+    },
+    {
+      "date": "2026-11-16",
+      "time": "08:00",
+      "track": "omra",
+      "topic_id": "prep-dossier-documents",
+      "note": "owner request 2026-11-13: three posts that answer the office's most asked questions (hotel distance, the programme, the papers) ahead of the 24-November departure"
     }
   ]
 }

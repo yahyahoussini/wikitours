@@ -1,0 +1,117 @@
+{
+  "slug": "hotel-proche-haram-ou-eloigne",
+  "file": "content/articles/2026-11-14-hotel-proche-haram-ou-eloigne.json",
+  "row": false,
+  "state": null,
+  "format": "comparison",
+  "checked_at": "2026-11-13T15:23:46.544Z",
+  "ok": true,
+  "failed": [],
+  "pending": [
+    "G13",
+    "G16"
+  ],
+  "words": {
+    "fr": 1767,
+    "ar": 1249,
+    "en": 1621
+  },
+  "checks": {
+    "G1": {
+      "ok": true,
+      "details": [],
+      "format": "comparison"
+    },
+    "G2": {
+      "ok": true,
+      "details": []
+    },
+    "G3": {
+      "ok": true,
+      "details": []
+    },
+    "G4": {
+      "ok": true,
+      "details": []
+    },
+    "G5": {
+      "ok": true,
+      "details": []
+    },
+    "G6": {
+      "ok": true,
+      "details": []
+    },
+    "G7": {
+      "ok": true,
+      "details": [],
+      "warnings": []
+    },
+    "G8": {
+      "ok": true,
+      "details": []
+    },
+    "G9": {
+      "ok": true,
+      "details": [],
+      "arabicShare": 99.9
+    },
+    "G10": {
+      "ok": true,
+      "details": []
+    },
+    "G11": {
+      "ok": true,
+      "details": []
+    },
+    "G12": {
+      "ok": true,
+      "details": []
+    },
+    "G13": {
+      "ok": true,
+      "details": [
+        "BlogPosting.datePublished : attribué à l'ingestion (créneau) — vérifié après build",
+        "nœuds émis non vérifiés : pas de build de la page (ingérer puis construire)"
+      ],
+      "pending": true
+    },
+    "G14": {
+      "ok": true,
+      "details": [
+        "créneau omra : règle non applicable"
+      ]
+    },
+    "G15": {
+      "ok": true,
+      "details": [],
+      "closest": {
+        "fr": {
+          "slug": "prix-omra-maroc-par-gamme-et-mois",
+          "score": 0.073
+        },
+        "ar": {
+          "slug": "prix-omra-maroc-par-gamme-et-mois",
+          "score": 0.03
+        },
+        "en": {
+          "slug": "prix-omra-maroc-par-gamme-et-mois",
+          "score": 0.049
+        }
+      },
+      "method": "n-gram Jaccard (3-grammes de mots) — ni gte-small ni transformers.js disponibles"
+    },
+    "G16": {
+      "ok": null,
+      "pending": true,
+      "details": [
+        "rendu non vérifié : ingérer puis construire (NEXT_DIST_DIR=.next-audit CONTENT_PREVIEW_SCHEDULED=1)"
+      ]
+    },
+    "G0": {
+      "ok": true,
+      "details": [],
+      "flags": []
+    }
+  }
+}

@@ -70,7 +70,11 @@ export function offersForFilter(offers, filter, { today = new Date() } = {}) {
     return (offers ?? []).filter((o) => slugs.includes(o.occasion?.slug));
   }
   if (f === 'hajj') return []; // the agency sells no Hajj package online (the /hajj page registers interest)
-  if (f === 'next') return (offers ?? []).slice(0, 1);
+  // The listings put featured offers first; "next" is the earliest departure.
+  if (f === 'next') {
+    const dated = (offers ?? []).filter((o) => o.date_start);
+    return [...dated].sort((a, b) => a.date_start.localeCompare(b.date_start)).slice(0, 1).concat(dated.length ? [] : (offers ?? []).slice(0, 1));
+  }
   const month = f.match(/^month:(\d{1,2})$/);
   if (month) return departuresInMonth(offers ?? [], Number(month[1]) - 1, { today });
   const occasion = f.match(/^occasion:([a-z0-9-]+)$/);

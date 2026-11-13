@@ -1,18 +1,18 @@
-# Calendar report — generated 2026-09-15T17:08Z
+# Calendar report — generated 2026-11-13T11:30Z
 
-Slots: **253** (2026-09-21 → 2027-09-19, 2 posts every 3 days at 08:30 / 18:00 Africa/Casablanca).
-Filled: **169** · unfillable: **84** · topics in the pool: 172 (valid 172, rejected 0, unused valid 3).
+Slots: **256** (2026-09-21 → 2027-09-19, 2 posts every 3 days at 08:30 / 18:00 Africa/Casablanca).
+Filled: **168** · unfillable: **88** · topics in the pool: 172 (valid 172, rejected 0, unused valid 4).
 
 ## Phases (assigned ramadan / omra / hajj vs the brief's weights)
 
 | Phase | Slots | Assigned R / O / H | Weights | Unfillable |
 |---|---|---|---|---|
-| P1 2026-09-13 → 2026-10-31 | 38 | 6 / 18 / 4 | 35/50/15 | 10 |
-| P2 2026-11-01 → 2026-12-31 | 40 | 10 / 29 / 1 | 50/35/15 | 0 |
+| P1 2026-09-13 → 2026-10-31 | 38 | 9 / 16 / 3 | 35/50/15 | 10 |
+| P2 2026-11-01 → 2026-12-31 | 43 | 7 / 34 / 2 | 50/35/15 | 0 |
 | P3 2027-01-01 → 2027-02-07 | 26 | 6 / 18 / 2 | 60/25/15 | 0 |
 | P4 2027-02-08 → 2027-03-09 | 20 | 0 / 18 / 2 | 60/20/20 | 0 |
 | P5 2027-03-10 → 2027-04-30 | 34 | 0 / 22 / 12 | 25/35/40 | 0 |
-| P6 2027-05-01 → 2027-06-15 | 31 | 0 / 13 / 3 | 10/40/50 | 15 |
+| P6 2027-05-01 → 2027-06-15 | 31 | 0 / 9 / 3 | 10/40/50 | 19 |
 | P7 2027-06-16 → 2027-08-31 | 51 | 1 / 3 / 1 | 20/60/20 | 46 |
 | P8 2027-09-01 → 2027-09-19 | 13 | 0 / 0 / 0 | 45/40/15 | 13 |
 
@@ -21,7 +21,8 @@ Filled: **169** · unfillable: **84** · topics in the pool: 172 (valid 172, rej
 - ramadan-1448: 12/12 parts placed
 - hajj-1448: 8/8 parts placed
 - premiere-omra: 8/8 parts placed
-- mois-par-mois: 12/12 parts placed
+- mois-par-mois part 2: no free slot in its window before its Hijri deadline 2026-12-01
+- mois-par-mois: 11/12 parts placed
 - villes: 7/7 parts placed
 
 ### ramadan-1448
@@ -72,8 +73,7 @@ Filled: **169** · unfillable: **84** · topics in the pool: 172 (valid 172, rej
 | Part | Slot | Date | Query |
 |---|---|---|---|
 | 1 | 3 | 2026-09-24 | partir en omra en novembre : météo, affluence et conseils |
-| 2 | 19 | 2026-10-18 | partir en omra en décembre : fin d'année, nuits fraîches et affluence |
-| 3 | 39 | 2026-11-17 | partir en omra en janvier : plein hiver et coupure scolaire de mi-année |
+| 3 | 64 | 2026-12-24 | partir en omra en janvier : plein hiver et coupure scolaire de mi-année |
 | 4 | 60 | 2026-12-18 | partir en omra en février : fin de chaabane puis premiers jours du ramadan |
 | 5 | 81 | 2027-01-19 | partir en omra en mars : dernières nuits du ramadan puis aïd al-fitr |
 | 6 | 99 | 2027-02-15 | partir en omra en avril : un haram dégagé après le pic du ramadan |
@@ -96,8 +96,12 @@ Filled: **169** · unfillable: **84** · topics in the pool: 172 (valid 172, rej
 | 6 | 36 | 2026-11-12 | omra depuis meknès : comment rejoindre le départ de casablanca |
 | 7 | 43 | 2026-11-23 | omra depuis oujda : comment rejoindre le départ de casablanca |
 
-## Unfillable slots (84)
+## Unfillable slots (88)
 
+- #158 2027-05-14 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-14
+- #159 2027-05-16 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-16
+- #161 2027-05-19 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-19
+- #162 2027-05-20 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-20
 - #163 2027-05-22 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-22
 - #164 2027-05-23 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-23
 - #166 2027-05-26 (P6) — no distinct topic left for P6 (hajj > ramadan > omra) on 2027-05-26
@@ -187,8 +191,9 @@ Filled: **169** · unfillable: **84** · topics in the pool: 172 (valid 172, rej
 
 - none
 
-## Unused valid topics (3)
+## Unused valid topics (4)
 
 - audience-entreprise-association [omra/B] une entreprise ou une association qui envoie un groupe en omra : comment procéder (window 2026-09-21 → 2026-11-30)
 - audience-etudiants-budget [omra/D] partir en omra quand on est étudiant : budget serré et pauses universitaires (window 2026-12-20 → 2027-01-20)
+- mois-decembre [omra/D] partir en omra en décembre : fin d'année, nuits fraîches et affluence
 - seasonal-coupure-mi-annee [omra/D] omra pendant la coupure de mi-année : partir en plein hiver avec des scolaires

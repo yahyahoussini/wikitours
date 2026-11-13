@@ -109,6 +109,22 @@ Sunday 11 October; its first post publishes on Tuesday 13 October.
     city order. Never say in which city a programme's first nights, first
     fasting days or tarawih fall.
 
+### Owner-requested run, 2026-11-13
+
+Three posts on the office's most asked questions, ahead of the 24-November
+departure, in extra slots #1011–#1013 (topics moved from cadence slots #40, #41
+and #52): `hotel-proche-haram-ou-eloigne` (14 Nov 17:00 UTC),
+`programme-omra-groupe-jour-par-jour` (15 Nov 07:00 UTC),
+`dossier-documents-omra-avant-depart` (16 Nov 07:00 UTC). Independent reviewers:
+FR 8.4 / AR 8.2, FR 8.5 / AR 8.6 (both after the one rewrite), FR 8 / AR 8.
+Their `needs_review` lines carry three owner questions: FAQ 71481137 promises
+accompaniment on every departure while only the November offers list it, and
+its French says "transferts sur place" where the Arabic and English say
+airport–hotels–Holy Mosques; the general passport rule (6 months after return)
+differs from the 8 months in the December and 24-Nov conditions.
+
+Scheduled 3 | Skipped 0 | Total 172/256 | Buffer until 2026-11-16 | Ramadan series unchanged | Hajj series unchanged | Next run resumes at slot #37
+
 ---
 
 ## The procedure for a generating run (Prompt 2)
